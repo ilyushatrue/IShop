@@ -1,7 +1,6 @@
 import * as React from "react";
 import Tabs from "@mui/material/Tabs";
 import LinkTab, { ILinkTab } from "./LinkTab";
-import { Box } from "@mui/material";
 
 interface IProps {
   menuItems: { label: string; href: string }[];
@@ -28,10 +27,17 @@ export default function NavTabs({ menuItems, orientation, onChange }: IProps) {
   }
 
   return (
-    <Tabs value={value} orientation={orientation}>
+    <Tabs
+      value={value}
+      orientation={orientation}
+      TabIndicatorProps={{
+        style: orientation === "vertical" ? { left: "0px", width: "4px" } : {},
+      }}
+    >
       {tabs.map((tab) => (
         <LinkTab
           key={tab.index}
+          isActive={value === tab.index}
           index={tab.index}
           label={tab.label}
           href={tab.href}

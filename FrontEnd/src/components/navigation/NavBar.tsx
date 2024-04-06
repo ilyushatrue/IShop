@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import NavTabs from "./tabs/NavTabs";
-import { Box, Button, Collapse, useMediaQuery } from "@mui/material";
+import { Box, Button, Collapse, SxProps, useMediaQuery } from "@mui/material";
 import { ArrowBack, Menu } from "@mui/icons-material";
 
 const menuItems = [
@@ -8,29 +8,42 @@ const menuItems = [
   { label: "Дополнительная", href: "/page2" },
   { label: "Личный кабинет", href: "/account" },
 ];
-export default function NavBar() {
-  const sm = useMediaQuery("(min-width:600px)");
-  const [isMenuCollapse, setIsMenuCollapse] = useState(sm ? false : true);
+
+const collapseSx: SxProps = {
+  position: "fixed",
+  top: 0,
+  bgcolor: "white",
+  zIndex: 2,
+};
+
+interface IProps{
+	sm?:boolean;
+}
+export default function NavBar({sm=false}:IProps) {
+  const [isMenuCollapsed, setIsMenuCollapsed] = useState(sm ? false : true);
 
   function toggleMenuCollapse() {
-    setIsMenuCollapse((prev) => !prev);
+    setIsMenuCollapsed((prev) => !prev);
   }
 
   function handleTabChange(tabIndex: number) {
-    setIsMenuCollapse(true);
+    console.log(sm)
+    if (!sm) {
+      setIsMenuCollapsed(true);
+    }
   }
 
   useEffect(() => {
     if (sm) {
-      setIsMenuCollapse(false);
+      setIsMenuCollapsed(false);
     } else {
-      setIsMenuCollapse(true);
+      setIsMenuCollapsed(true);
     }
   }, [sm]);
 
   return (
     <>
-      <Box height={54}>
+      <Box height={54} bgcolor={"white"} >
         {!sm && (
           <Button sx={{ height: 54 }} onClick={toggleMenuCollapse}>
             <Menu />
@@ -39,17 +52,21 @@ export default function NavBar() {
       </Box>
 
       <Collapse
-        in={!isMenuCollapse}
+        in={!isMenuCollapsed}
         orientation="horizontal"
-        sx={{
-          position: "fixed",
-          top: 0,
-          bottom: sm ? undefined : 0,
-          left: sm ? 0 : undefined,
-          right: sm ? 0 : undefined,
-          zIndex: 2,
-          bgcolor: sm ? undefined : "white",
-        }}
+        sx={
+          sm
+            ? {
+                ...collapseSx,
+                left: 0,
+                right: 0,
+              }
+            : {
+                ...collapseSx,
+                boxShadow: "0px 0px 120px rgba(0,0,0,0.6)",
+                bottom: 0,
+              }
+        }
       >
         <Box
           display={"flex"}
