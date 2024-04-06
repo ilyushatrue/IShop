@@ -1,0 +1,43 @@
+import * as React from "react";
+import Tabs from "@mui/material/Tabs";
+import LinkTab, { ILinkTab } from "./LinkTab";
+import { Box } from "@mui/material";
+
+interface IProps {
+  menuItems: { label: string; href: string }[];
+  orientation: "vertical" | "horizontal";
+  onChange: (tabIndex: number) => void;
+}
+
+export default function NavTabs({ menuItems, orientation, onChange }: IProps) {
+  const [value, setValue] = React.useState(0);
+
+  const tabs = React.useMemo(() => {
+    const items: ILinkTab[] = menuItems.map((tab, index) => ({
+      href: tab.href,
+      label: tab.label,
+      index: index,
+      onClick: handleClick,
+    }));
+    return items;
+  }, [menuItems]);
+
+  function handleClick(activeIndex: number) {
+    setValue(activeIndex);
+    onChange(activeIndex);
+  }
+
+  return (
+    <Tabs value={value} orientation={orientation}>
+      {tabs.map((tab) => (
+        <LinkTab
+          key={tab.index}
+          index={tab.index}
+          label={tab.label}
+          href={tab.href}
+          onClick={tab.onClick}
+        />
+      ))}
+    </Tabs>
+  );
+}
