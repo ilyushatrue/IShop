@@ -19,6 +19,7 @@ interface IProps {
 	helperText: ReactNode;
 }
 export default function PhoneInput({ onChange, sm, helperText }: IProps) {
+
 	return (
 		<TextField
 			onChange={onChange}
@@ -35,7 +36,27 @@ export default function PhoneInput({ onChange, sm, helperText }: IProps) {
 			InputProps={{
 				inputComponent: TextMaskCustom as any,
 				inputProps: {
-					mask: ["+","7"," ","(",/\d/,/\d/,/\d/,")"," ",/\d/,/\d/,/\d/,"-",/\d/,/\d/,"-",/\d/,/\d/,],
+					mask: [
+						"+",
+						/\d/,
+						" ",
+						"(",
+						/\d/,
+						/\d/,
+						/\d/,
+						")",
+						" ",
+						/\d/,
+						/\d/,
+						/\d/,
+						"-",
+						/\d/,
+						/\d/,
+						"-",
+						/\d/,
+						/\d/,
+					],
+					guide: true,
 				},
 			}}
 		/>

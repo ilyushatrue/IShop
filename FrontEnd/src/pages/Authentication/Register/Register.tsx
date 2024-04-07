@@ -1,8 +1,13 @@
 import { LockOutlined } from "@mui/icons-material";
 import Template, { IFormField } from "../Base/Template";
 import * as Yup from "yup";
+import { IRegisterRequest } from "../../../api/interfaces/authentication/IRegisterRequest";
 
-const initialValues = {
+interface IRegisterFormField extends IRegisterRequest {
+	confirmPassword: string;
+}
+
+const initialValues: IRegisterFormField = {
 	firstName: "",
 	lastName: "",
 	phone: "",
@@ -72,9 +77,38 @@ interface IProps {
 	sm?: boolean;
 }
 export default function Register({ sm = false }: IProps) {
+	function handleSubmit(data: IRegisterFormField) {
+		const request: IRegisterRequest = data;
+		register(request);
+	}
+
+	async function register(data: IRegisterRequest) {
+		try {
+			const response = await fetch(
+				"http://localhost:5261/auth/register",
+				{
+					method: "POST",
+					body: JSON.stringify(data),
+					headers: {
+						"Content-Type": "application/json",
+					},
+				}
+			);
+			if (response.ok) {
+				const result = await response.json();
+				console.log(result);
+			} else {
+				console.log("Error while server request");
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	}
+
 	return (
 		<Template
 			sm={sm}
+			onSumbit={handleSubmit}
 			validationSchema={validationSchema}
 			initialValues={initialValues}
 			avatarChildren={<LockOutlined />}

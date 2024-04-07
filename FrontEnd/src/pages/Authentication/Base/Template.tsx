@@ -11,7 +11,7 @@ import React, {
 	HTMLInputTypeAttribute,
 	ReactNode,
 } from "react";
-import { Formik, Field, Form, ErrorMessage } from "formik";
+import { Formik, Field, Form, ErrorMessage, FormikProps } from "formik";
 import * as Yup from "yup";
 import PhoneInput from "../../../components/input/phone/InputPhone";
 
@@ -58,6 +58,7 @@ interface IProps {
 	fields: IFormField[];
 	onChange?: (name: string, value: string) => void;
 	buttonLabel: string;
+	onSumbit: (data: any) => void;
 }
 
 export default function Template({
@@ -69,10 +70,38 @@ export default function Template({
 	children,
 	fields = [],
 	onChange,
+	onSumbit,
 	buttonLabel,
 }: IProps) {
 	function handleOnSubmit(values: any, props: any) {
-		console.log(values, props);
+		onSumbit(values);
+	}
+
+	function handlePhoneInputChange(
+		e: ChangeEvent<HTMLInputElement>,
+		formikProps: FormikProps<any>
+	) {
+		const phoneMaxLength = 11;
+		const countryCodeDigit = "7";
+		const inputDigits = e.target.value.replace(/[^\d]/g, "");
+		if (inputDigits.length === 1) {
+			if (inputDigits.startsWith(countryCodeDigit) || inputDigits.startsWith("8")) {
+				e.target.value = countryCodeDigit;
+			} else {
+				e.target.value = countryCodeDigit + inputDigits;
+			}
+		} else if (inputDigits.length === phoneMaxLength) {
+			e.target.value = countryCodeDigit + e.target.value.substring(2);
+		}
+		handleInputChange("phone", e.target.value, formikProps);
+	}
+
+	function handleInputChange(
+		fieldName: string,
+		value: string,
+		formikProps: FormikProps<any>
+	) {
+		formikProps.setFieldValue(fieldName, value);
 	}
 
 	return (
@@ -130,12 +159,9 @@ export default function Template({
 													)}
 												</ErrorMessage>
 											}
-											onChange={(e) => {
-												props.setFieldValue(
-													field.name,
-													e.target.value
-												);
-											}}
+											onChange={(e) =>
+												handlePhoneInputChange(e, props)
+											}
 										/>
 									) : (
 										<Field
@@ -145,12 +171,13 @@ export default function Template({
 											autoComplete="on"
 											onChange={(
 												e: ChangeEvent<HTMLInputElement>
-											) => {
-												props.setFieldValue(
+											) =>
+												handleInputChange(
 													field.name,
-													e.target.value
-												);
-											}}
+													e.target.value,
+													props
+												)
+											}
 											helperText={
 												<ErrorMessage name={field.name}>
 													{(msg) => (

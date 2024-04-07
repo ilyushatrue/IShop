@@ -3,7 +3,7 @@ import { Checkbox, FormControlLabel, Link, Typography } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Template, { IFormField } from "../Base/Template";
-import { ILoginRequest } from "../../../api/interfaces/ILoginRequest";
+import { ILoginRequest } from "../../../api/interfaces/authentication/ILoginRequest";
 import * as Yup from "yup";
 
 const initialValues = {
@@ -36,10 +36,10 @@ const validationSchema = Yup.object().shape({
 		.required("Ввод обязателен"),
 });
 
-interface IProps{
-	sm?:boolean;
+interface IProps {
+	sm?: boolean;
 }
-export default function Login({sm=false}:IProps) {
+export default function Login({ sm = false }: IProps) {
 	const [isRememberMeChecked, setIsRememberMeChecked] = useState(false);
 	const [loginRequest, setLoginRequest] = useState<ILoginRequest>({
 		email: "",
@@ -53,11 +53,36 @@ export default function Login({sm=false}:IProps) {
 		navigate("/register");
 	}
 
+	function handleSubmit(data: ILoginRequest) {
+		register(data);
+	}
 
+	async function register(data: ILoginRequest) {
+		console.log(JSON.stringify(data))
+		try {
+			const response = await fetch(
+				"http://localhost:5261/auth/login",
+				{
+					method: "POST",
+					body: JSON.stringify(data),
+					headers: {
+						"Content-Type": "application/json",
+					},
+				}
+			);
+			if (response.ok) {
+				const result = await response.json();
+				console.log(result)
+			} else {
+				console.log("Error while server request");
+			}
+		} catch (error) {}
+	}
 
 	return (
 		<Template
 			sm={sm}
+			onSumbit={handleSubmit}
 			fields={loginFields}
 			buttonLabel="Войти"
 			validationSchema={validationSchema}

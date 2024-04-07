@@ -43,7 +43,7 @@ export default function NavBar({sm=false}:IProps) {
 
   return (
     <>
-      <Box height={54} bgcolor={"white"} >
+      <Box height={54} bgcolor={"white"} boxShadow={"0px 0px 120px rgba(0,0,0,0.1)"}>
         {!sm && (
           <Button sx={{ height: 54 }} onClick={toggleMenuCollapse}>
             <Menu />
