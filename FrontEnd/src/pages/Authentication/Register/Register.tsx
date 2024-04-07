@@ -1,7 +1,9 @@
 import { LockOutlined } from "@mui/icons-material";
-import Template, { IFormField } from "../Base/Template";
+import Template from "../Base/Template";
 import * as Yup from "yup";
 import { IRegisterRequest } from "../../../api/interfaces/authentication/IRegisterRequest";
+import { IFormField } from "../../../components/input/fields/IFormField";
+import ValidationForm from "../../../components/input/form/ValidationForm";
 
 interface IRegisterFormField extends IRegisterRequest {
 	confirmPassword: string;
@@ -34,7 +36,7 @@ const validationSchema = Yup.object().shape({
 		.required("Ввод обязателен"),
 });
 
-const registerFields: IFormField[] = [
+const controlFields: IFormField[] = [
 	{
 		name: "firstName",
 		label: "Имя",
@@ -78,8 +80,8 @@ interface IProps {
 }
 export default function Register({ sm = false }: IProps) {
 	function handleSubmit(data: IRegisterFormField) {
-		const request: IRegisterRequest = data;
-		register(request);
+		data.phone = data.phone.replace(/[^\d]/g, "");
+		register(data);
 	}
 
 	async function register(data: IRegisterRequest) {
@@ -106,15 +108,14 @@ export default function Register({ sm = false }: IProps) {
 	}
 
 	return (
-		<Template
-			sm={sm}
-			onSumbit={handleSubmit}
-			validationSchema={validationSchema}
-			initialValues={initialValues}
-			avatarChildren={<LockOutlined />}
-			fields={registerFields}
-			title="Регистрация"
-			buttonLabel="Зарегистрироваться"
-		/>
+		<Template sm={sm} avatar={<LockOutlined />} title="Регистрация">
+			<ValidationForm
+				initialValues={initialValues}
+				onSubmit={(values, props) => handleSubmit(values)}
+				fields={controlFields}
+				buttonLabel="Зарегистрироваться"
+				validationSchema={validationSchema}
+			/>
+		</Template>
 	);
 }

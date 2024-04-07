@@ -17,12 +17,7 @@ public class Phone
 		if (string.IsNullOrWhiteSpace(input))
 			return Errors.Authentication.InvalidCredentials;
 
-		var phone = input.Trim();
-
-		if (!Regex.IsMatch(phone, @"^(?:\+7|8|7)\s*(?:\(\d{3}\)|\d{3})\s*\d{3}[-\s]?\d{2}[-\s]?\d{2}$"))
-			return Errors.Authentication.InvalidCredentials;
-
-		phone = DropSymbols(phone);
+		var phone = DropSymbols(input);
 
 		if (phone.Length != 11)
 			return Errors.Authentication.InvalidCredentials;
@@ -33,9 +28,9 @@ public class Phone
 		return new Phone(phone);
 	}
 
-	private static string DropSymbols(string phoneNumber)
+	public static string DropSymbols(string phoneNumber)
 	{
-		string digitsOnly = Regex.Replace(phoneNumber, @"\D", "");
+		string digitsOnly = Regex.Replace(phoneNumber, @"\D", "").Trim();
 		return digitsOnly;
 	}
 }

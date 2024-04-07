@@ -20,4 +20,9 @@ public class UserRepository(FlagDbContext dbContext) : IUserRepository
     {
         return await dbContext.Users.ToListAsync();
     }
+
+    public async Task<User?> GetUserByPhone(string phone)
+    {
+        return await dbContext.Users.SingleOrDefaultAsync(u => u.Phone.Value == phone);
+    }
 }

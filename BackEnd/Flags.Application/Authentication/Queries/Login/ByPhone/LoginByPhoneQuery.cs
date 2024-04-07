@@ -2,8 +2,8 @@ using ErrorOr;
 using Flags.Application.Authentication.Common;
 using MediatR;
 
-namespace Flags.Application.Authentication.Queries.Login;
+namespace Flags.Application.Authentication.Queries.Login.ByPhone;
 
-public record LoginQuery(
-    string Email,
+public record LoginByPhoneQuery(
+    string Phone,
     string Password) : IRequest<ErrorOr<AuthenticationResult>>;

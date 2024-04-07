@@ -1,35 +1,34 @@
 import { LockOutlined } from "@mui/icons-material";
-import { Checkbox, FormControlLabel, Link, Typography } from "@mui/material";
-import { useState } from "react";
+import {
+	Link,
+	ToggleButton,
+	ToggleButtonGroup,
+	Typography,
+} from "@mui/material";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Template, { IFormField } from "../Base/Template";
-import { ILoginRequest } from "../../../api/interfaces/authentication/ILoginRequest";
+import Template from "../Base/Template";
+import { ILoginByEmailRequest } from "../../../api/interfaces/authentication/ILoginByEmailRequest";
 import * as Yup from "yup";
+import { IFormField } from "../../../components/input/fields/IFormField";
+import ValidationForm from "../../../components/input/form/ValidationForm";
+import { ILoginByPhoneRequest } from "../../../api/interfaces/authentication/ILoginByPhoneRequest";
 
-const initialValues = {
-	login: "",
-	password: "",
-};
+type AuthType = "phone" | "email";
 
-const loginFields: IFormField[] = [
-	{
-		name: "login",
-		label: "Логин",
-		placeholder: "Введите номер телефона или email",
-		isRequired: true,
-	},
-	{
-		name: "password",
-		label: "Пароль",
-		placeholder: "Введите пароль",
-		isRequired: true,
-		type: "password",
-	},
-];
-
-const validationSchema = Yup.object().shape({
-	login: Yup.string()
-		.min(3, "Недостаточно символов")
+const emailValidationSchema = Yup.object().shape({
+	email: Yup.string().email("Некорректный email"),
+	password: Yup.string()
+		.min(6, "Недостаточно символов")
+		.required("Ввод обязателен"),
+});
+const phoneValidationSchema = Yup.object().shape({
+	phone: Yup.string()
+		.test(
+			"maxDigits",
+			"Некорректный номер",
+			(value) => value!.replace(/\D/g, "").length === 11
+		)
 		.required("Ввод обязателен"),
 	password: Yup.string()
 		.min(6, "Недостаточно символов")
@@ -40,39 +39,70 @@ interface IProps {
 	sm?: boolean;
 }
 export default function Login({ sm = false }: IProps) {
-	const [isRememberMeChecked, setIsRememberMeChecked] = useState(false);
-	const [loginRequest, setLoginRequest] = useState<ILoginRequest>({
-		email: "",
-		password: "",
-	});
+	const [authType, setAuthType] = useState<AuthType>("email");
 	const navigate = useNavigate();
-	function handleRememberMeChange() {
-		setIsRememberMeChecked((prev) => !prev);
-	}
+	const loginFields = useMemo<IFormField[]>(
+		() => [
+			{
+				name: authType === "email" ? "email" : "phone",
+				label: authType === "email" ? "Эл. почта" : "Номер телефона",
+				placeholder:
+					authType === "email"
+						? "Введите email"
+						: "Введите номер телефона",
+				isRequired: true,
+			},
+			{
+				name: "password",
+				label: "Пароль",
+				placeholder: "Введите пароль",
+				isRequired: true,
+				type: "password",
+			},
+		],
+		[authType]
+	);
 	function handleForgotPassword() {
 		navigate("/register");
 	}
 
-	function handleSubmit(data: ILoginRequest) {
-		register(data);
+	const handleAuthTypeChange = (
+		event: React.MouseEvent<HTMLElement>,
+		authType: AuthType
+	) => {
+		setAuthType(authType);
+	};
+
+	function handleSubmit(data: any) {
+		if (authType === "email") {
+			login<ILoginByEmailRequest>({
+				email: data.email,
+				password: data.password,
+			});
+		} else {
+			login<ILoginByPhoneRequest>({
+				phone: data.phone,
+				password: data.password,
+			});
+		}
 	}
 
-	async function register(data: ILoginRequest) {
-		console.log(JSON.stringify(data))
+	async function login<T extends ILoginByEmailRequest | ILoginByPhoneRequest>(
+		data: T
+	) {
 		try {
-			const response = await fetch(
-				"http://localhost:5261/auth/login",
-				{
-					method: "POST",
-					body: JSON.stringify(data),
-					headers: {
-						"Content-Type": "application/json",
-					},
-				}
-			);
+			let url = "http://localhost:5261/auth/login-by-";
+			url = url + (authType === "email" ? "email" : "phone");
+			const response = await fetch(url, {
+				method: "POST",
+				body: JSON.stringify(data),
+				headers: {
+					"Content-Type": "application/json",
+				},
+			});
 			if (response.ok) {
 				const result = await response.json();
-				console.log(result)
+				console.log(result);
 			} else {
 				console.log("Error while server request");
 			}
@@ -80,33 +110,48 @@ export default function Login({ sm = false }: IProps) {
 	}
 
 	return (
-		<Template
-			sm={sm}
-			onSumbit={handleSubmit}
-			fields={loginFields}
-			buttonLabel="Войти"
-			validationSchema={validationSchema}
-			initialValues={initialValues}
-			avatarChildren={<LockOutlined />}
-			title={"Войти"}
-		>
-			<FormControlLabel
-				control={
-					<Checkbox
-						checked={isRememberMeChecked}
-						onChange={handleRememberMeChange}
-						name="rememberMe"
-						color="primary"
-					/>
-				}
-				label={<Typography variant="body2">Запомнить</Typography>}
-			/>
+		<Template sm={sm} avatar={<LockOutlined />} title={"Войти"}>
+			<ToggleButtonGroup
+				fullWidth
+				color="primary"
+				value={authType}
+				exclusive
+				sx={{ marginY: 1 }}
+				onChange={handleAuthTypeChange}
+			>
+				<ToggleButton value="email" sx={{ fontSize: 11.5 }}>
+					Почта
+				</ToggleButton>
+				<ToggleButton value="phone" sx={{ fontSize: 11.5 }}>
+					Номер телефона
+				</ToggleButton>
+			</ToggleButtonGroup>
+
+			{authType === "email" ? (
+				<ValidationForm<ILoginByEmailRequest>
+					initialValues={{ email: "", password: "" }}
+					onSubmit={(values, props) => handleSubmit(values)}
+					fields={loginFields}
+					buttonLabel="Войти"
+					validationSchema={emailValidationSchema}
+				/>
+			) : (
+				<ValidationForm<ILoginByPhoneRequest>
+					initialValues={{ phone: "", password: "" }}
+					onSubmit={(values, props) => handleSubmit(values)}
+					fields={loginFields}
+					buttonLabel="Войти"
+					validationSchema={phoneValidationSchema}
+				/>
+			)}
+
 			<Typography sx={{ cursor: "pointer" }} variant="body2">
 				Забыли пароль?
 				<Link onClick={handleForgotPassword} marginLeft={1}>
 					Восстановить
 				</Link>
 			</Typography>
+
 			<Typography sx={{ cursor: "pointer" }} variant="body2">
 				Нет аккаунта?
 				<Link onClick={handleForgotPassword} marginLeft={1}>

@@ -17,13 +17,18 @@ interface IProps {
 	onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 	sm?: boolean;
 	helperText: ReactNode;
+	required?: boolean;
 }
-export default function PhoneInput({ onChange, sm, helperText }: IProps) {
-
+export default function PhoneInput({
+	onChange,
+	sm,
+	helperText,
+	required = false,
+}: IProps) {
 	return (
 		<TextField
 			onChange={onChange}
-			label="Номер телефона"
+			label={"Номер телефона" + (required ? " *" : "")}
 			fullWidth
 			sx={{
 				input: {

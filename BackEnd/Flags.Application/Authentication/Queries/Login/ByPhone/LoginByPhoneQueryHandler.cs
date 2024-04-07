@@ -3,26 +3,29 @@ using Flags.Application.Authentication.Common;
 using Flags.Application.Common.Interfaces.Authentication;
 using Flags.Application.Common.Interfaces.Persistance;
 using Flags.Domain.Common.Errors;
+using Flags.Domain.User.ValueObjects;
 using MediatR;
 
-namespace Flags.Application.Authentication.Queries.Login;
+namespace Flags.Application.Authentication.Queries.Login.ByPhone;
 
-public class LoginQueryHandler(
+public class LoginByPhoneQueryHandler(
     IUserRepository userRepository,
     IJwtTokenGenerator jwtTokenGenerator
 ) :
-    IRequestHandler<LoginQuery, ErrorOr<AuthenticationResult>>
+    IRequestHandler<LoginByPhoneQuery, ErrorOr<AuthenticationResult>>
 {
-    public async Task<ErrorOr<AuthenticationResult>> Handle(LoginQuery query, CancellationToken cancellationToken)
+    public async Task<ErrorOr<AuthenticationResult>> Handle(LoginByPhoneQuery query, CancellationToken cancellationToken)
     {
-        var user = await userRepository.GetUserByEmail(query.Email.Trim());
+        var phone = Phone.DropSymbols(query.Phone);
+        
+        var user = await userRepository.GetUserByPhone(phone);
 
         if (user is null)
             return Errors.Authentication.UserNotFound;
 
         if (user.Password.Value != query.Password)
             return Errors.Authentication.InvalidCredentials;
-        
+
         var token = jwtTokenGenerator.GenerateToken(user);
 
         return new AuthenticationResult(user, token);

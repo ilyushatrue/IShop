@@ -1,5 +1,5 @@
 import React from 'react'
-import PhoneInput from '../components/input/phone/InputPhone'
+import PhoneInput from '../components/input/fields/phone/InputPhone'
 
 export default function Page1() {
   return (
