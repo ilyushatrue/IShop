@@ -12,8 +12,10 @@ public class Program
         builder.Services
             .AddPresentation()
             .AddServices()
-            .AddInfrastructure(builder.Configuration);
-
+            .AddInfrastructure(builder.Configuration)
+            .AddCors(p=>p.AddPolicy("CORS", build=>{
+                build.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader();
+            }));
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
@@ -27,6 +29,7 @@ public class Program
             app.UseSwaggerUI();
         }
 
+        app.UseCors("CORS");
         app.UseExceptionHandler("/error");
         app.UseHttpsRedirection();
         app.UseAuthentication();
