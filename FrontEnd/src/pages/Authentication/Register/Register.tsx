@@ -77,8 +77,9 @@ const controlFields: IFormField[] = [
 
 interface IProps {
 	sm?: boolean;
+	onRegister: () => void;
 }
-export default function Register({ sm = false }: IProps) {
+export default function Register({ sm = false, onRegister }: IProps) {
 	function handleSubmit(data: IRegisterFormField) {
 		data.phone = data.phone.replace(/[^\d]/g, "");
 		register(data);
@@ -98,12 +99,12 @@ export default function Register({ sm = false }: IProps) {
 			);
 			if (response.ok) {
 				const result = await response.json();
-				console.log(result);
+				onRegister()
 			} else {
-				console.log("Error while server request");
+				console.error("Error while server request");
 			}
 		} catch (error) {
-			console.log(error);
+			console.error(error);
 		}
 	}
 

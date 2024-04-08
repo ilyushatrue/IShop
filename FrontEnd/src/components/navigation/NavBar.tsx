@@ -1,13 +1,6 @@
 import React, { useEffect, useState } from "react";
 import NavTabs from "./tabs/NavTabs";
-import {
-	Avatar,
-	Box,
-	Button,
-	Collapse,
-	SxProps,
-	useMediaQuery,
-} from "@mui/material";
+import { Avatar, Box, Button, Collapse, SxProps } from "@mui/material";
 import { ArrowBack, Menu } from "@mui/icons-material";
 
 const menuItems = [
@@ -34,7 +27,6 @@ export default function NavBar({ sm = false }: IProps) {
 	}
 
 	function handleTabChange(tabIndex: number) {
-		console.log(sm);
 		if (!sm) {
 			setIsMenuCollapsed(true);
 		}
@@ -52,7 +44,6 @@ export default function NavBar({ sm = false }: IProps) {
 		<>
 			<Box
 				display={"flex"}
-				
 				alignItems={"center"}
 				height={54}
 				bgcolor={"white"}
@@ -63,7 +54,13 @@ export default function NavBar({ sm = false }: IProps) {
 						<Menu />
 					</Button>
 				)}
-				<Avatar sx={{marginLeft:"auto", marginRight: 2, backgroundColor:"primary.main"}}>
+				<Avatar
+					sx={{
+						marginLeft: "auto",
+						marginRight: 2,
+						backgroundColor: "primary.main",
+					}}
+				>
 					A
 				</Avatar>
 			</Box>

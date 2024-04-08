@@ -34,7 +34,6 @@ export default function ValidationForm<T>({
 	onSubmit,
 	buttonLabel,
 }: IProps<T>) {
-	console.log(initialValues, validationSchema, fields);
 	function handleOnSubmit(values: any, props: any) {
 		onSubmit(values, props);
 	}

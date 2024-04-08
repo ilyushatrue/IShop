@@ -39,17 +39,18 @@ export default function Template({
 				flexDirection: "column",
 			}}
 		>
-			<Box display={"flex"} alignItems={"center"} gap={2}>
+			<Box
+				display={"flex"}
+				flexDirection={sm ? "column" : "row"}
+				alignItems={"center"}
+				gap={sm ? 0 : 2}
+			>
 				<Avatar style={avatarStyle} sx={{ bgcolor: "secondary.light" }}>
 					{avatarChildren}
 				</Avatar>
 				<h2>{title}</h2>
 			</Box>
-			<Box
-				width={"100%"}
-			>
-				{children}
-			</Box>
+			<Box width={"100%"}>{children}</Box>
 		</Box>
 	);
 }
