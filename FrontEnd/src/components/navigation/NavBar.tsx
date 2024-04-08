@@ -59,6 +59,8 @@ export default function NavBar({ sm = false }: IProps) {
 						marginLeft: "auto",
 						marginRight: 2,
 						backgroundColor: "primary.main",
+						zIndex: 3,
+						cursor:"pointer"
 					}}
 				>
 					A

@@ -36,7 +36,7 @@ function App() {
 					path="/login"
 					element={<Authentication isRegistered sm={sm}/>}
 				/>
-				<Route path="/register" element={<Authentication sm={sm}/>} />
+				<Route path="/register" element={<Authentication isRegistered={false} sm={sm}/>} />
 				<Route path="*" element={<NotFound />} />
 			</Routes>
 		</ThemeProvider>

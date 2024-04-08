@@ -4,6 +4,8 @@ import * as Yup from "yup";
 import { IRegisterRequest } from "../../../api/interfaces/authentication/IRegisterRequest";
 import { IFormField } from "../../../components/input/fields/IFormField";
 import ValidationForm from "../../../components/input/form/ValidationForm";
+import { Link, Typography } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 interface IRegisterFormField extends IRegisterRequest {
 	confirmPassword: string;
@@ -80,11 +82,17 @@ interface IProps {
 	onRegister: () => void;
 }
 export default function Register({ sm = false, onRegister }: IProps) {
+	const navigate = useNavigate();
+
 	function handleSubmit(data: IRegisterFormField) {
 		data.phone = data.phone.replace(/[^\d]/g, "");
 		register(data);
 	}
 
+	function redirectToLogin(){
+		navigate("../login")
+	}
+	
 	async function register(data: IRegisterRequest) {
 		try {
 			const response = await fetch(
@@ -99,7 +107,7 @@ export default function Register({ sm = false, onRegister }: IProps) {
 			);
 			if (response.ok) {
 				const result = await response.json();
-				onRegister()
+				onRegister();
 			} else {
 				console.error("Error while server request");
 			}
@@ -117,6 +125,13 @@ export default function Register({ sm = false, onRegister }: IProps) {
 				buttonLabel="Зарегистрироваться"
 				validationSchema={validationSchema}
 			/>
+
+			<Typography sx={{ cursor: "pointer" }} variant="body2">
+				Уже есть аккант?
+				<Link onClick={redirectToLogin} marginLeft={1}>
+					Войти
+				</Link>
+			</Typography>
 		</Template>
 	);
 }
