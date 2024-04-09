@@ -16,15 +16,13 @@ export default function NavTabs({ menuItems, orientation, onChange }: IProps) {
 			href: tab.href,
 			label: tab.label,
 			index: index,
-			onClick: handleClick,
+			onClick: (activeIndex: number) => {
+				setValue(activeIndex);
+				onChange(activeIndex);
+			},
 		}));
 		return items;
-	}, [menuItems]);
-
-	function handleClick(activeIndex: number) {
-		setValue(activeIndex);
-		onChange(activeIndex);
-	}
+	}, [menuItems, onChange]);
 
 	return (
 		<Tabs
