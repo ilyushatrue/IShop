@@ -60,4 +60,16 @@ public class AuthenticationController(
             errors => Problem(errors)
         );
     }
+
+    
+    [HttpGet("refresh-jwt")]
+    public async Task<IActionResult> RefreshJwt(LoginByPhoneQuery query)
+    {
+        var authResult = await mediator.Send(query);
+
+        return authResult.Match(
+            authResult => Ok(mapper.Map<AuthenticationResponse>(authResult)),
+            errors => Problem(errors)
+        );
+    }
 }

@@ -1,5 +1,6 @@
 using Flags.Application;
 using Flags.Infrastructure;
+using Microsoft.AspNetCore.Identity;
 
 namespace Flags.Api;
 
@@ -32,6 +33,7 @@ public class Program
         app.UseCors("CORS");
         app.UseExceptionHandler("/error");
         app.UseHttpsRedirection();
+        app.MapIdentityApi<IdentityUser>();
         app.UseAuthentication();
         app.UseAuthorization();
         app.MapControllers();

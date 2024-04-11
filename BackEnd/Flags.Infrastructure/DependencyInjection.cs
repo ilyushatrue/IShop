@@ -12,6 +12,7 @@ using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
 using Flags.Infrastructure.Persistance.Repositories;
+using Microsoft.AspNetCore.Identity;
 
 namespace Flags.Infrastructure;
 
@@ -23,7 +24,9 @@ public static class DependencyInjection
     {
         services
             .AddAuth(configuration)
-            .AddPersistance();
+            .AddPersistance()
+            .AddIdentityApiEndpoints<IdentityUser>()
+            .AddEntityFrameworkStores<UserDbContext>();
 
         services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
 
@@ -35,9 +38,16 @@ public static class DependencyInjection
     {
         var apiPath = Environment.CurrentDirectory;
         var rootPath = Directory.GetParent(apiPath)!.FullName;
-        var dbPath = rootPath + "\\Flags.Infrastructure\\Persistance\\DB\\db.sql";
+        var dbPath = rootPath + "\\Flags.Infrastructure\\Persistance\\DB\\";
+
+        var flagsDbPath = dbPath + "flags.sql";
         services.AddDbContext<FlagDbContext>(options => options
-            .UseSqlite($"Data Source={dbPath}")
+            .UseSqlite($"Data Source={flagsDbPath}")
+            .UseSnakeCaseNamingConvention());
+
+        var usersDbPath = dbPath + "users.sql";
+        services.AddDbContext<UserDbContext>(options => options
+            .UseSqlite($"Data Source={usersDbPath}")
             .UseSnakeCaseNamingConvention());
 
         services.AddScoped<IUserRepository, UserRepository>();
