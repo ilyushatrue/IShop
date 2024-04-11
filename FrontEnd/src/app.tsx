@@ -1,11 +1,16 @@
-import { CssBaseline, createTheme, ThemeProvider, useMediaQuery } from "@mui/material";
+import {
+	CssBaseline,
+	createTheme,
+	ThemeProvider,
+	useMediaQuery,
+} from "@mui/material";
 import { Routes, Route } from "react-router-dom";
-import Page1 from "./pages/Page1";
-import Page2 from "./pages/Page2";
-import NotFound from "./pages/NotFound/NotFound";
-import NavBar from "./components/navigation/NavBar";
-import Account from "./pages/Account/Account";
-import Authentication from "./pages/Authentication/Authentication";
+import NotFound from "./pages/not-found/not-found";
+import NavBar from "./components/navigation/nav-bar";
+import Page1 from "./pages/page1";
+import Page2 from "./pages/page2";
+import Account from "./pages/account/account";
+import Authentication from "./pages/authentication/authentication";
 
 const theme = createTheme({
 	palette: {
@@ -27,16 +32,19 @@ function App() {
 	return (
 		<ThemeProvider theme={theme}>
 			<CssBaseline />
-			<NavBar sm={sm}/>
+			<NavBar sm={sm} />
 			<Routes>
 				<Route path="/page1" element={<Page1 />} />
 				<Route path="/page2" element={<Page2 />} />
 				<Route path="/account/*" element={<Account />} />
 				<Route
 					path="/login"
-					element={<Authentication isRegistered sm={sm}/>}
+					element={<Authentication isRegistered sm={sm} />}
 				/>
-				<Route path="/register" element={<Authentication isRegistered={false} sm={sm}/>} />
+				<Route
+					path="/register"
+					element={<Authentication isRegistered={false} sm={sm} />}
+				/>
 				<Route path="*" element={<NotFound />} />
 			</Routes>
 		</ThemeProvider>

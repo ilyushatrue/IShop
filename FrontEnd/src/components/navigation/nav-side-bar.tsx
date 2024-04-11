@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { ArrowBack, Menu } from "@mui/icons-material";
 import { Avatar, Box, Button, Collapse, SxProps } from "@mui/material";
-import NavTabs from "./tabs/NavTabs";
+import NavTabs from "./tabs/nav-tabs";
 
 const collapseSx: SxProps = {
 	position: "fixed",

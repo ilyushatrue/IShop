@@ -1,5 +1,4 @@
 import React from "react";
-import Template from "../Base/Template";
 import { LockOutlined } from "@mui/icons-material";
 import {
 	Link,
@@ -9,8 +8,9 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import LoginByEmail from "./LoginByEmail";
-import LoginByPhone from "./LoginByPhone";
+import LoginByEmail from "./login-by-email";
+import LoginByPhone from "./login-by-phone";
+import Template from "../base/template";
 
 type AuthType = "phone" | "email";
 

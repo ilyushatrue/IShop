@@ -1,5 +1,5 @@
 import React from "react";
-import NavTabs from "./tabs/NavTabs";
+import NavTabs from "./tabs/nav-tabs";
 import { Avatar, Box } from "@mui/material";
 
 interface IProps {

@@ -1,7 +1,7 @@
 import { useState } from "react";
-import Login from "./Login";
-import Register from "./Register/Register";
 import { Box, Typography } from "@mui/material";
+import Register from "./register/register";
+import Login from "./login";
 
 interface IProps {
 	isRegistered?: boolean;
@@ -28,7 +28,7 @@ export default function Authentication({
 				</Box>
 			):(
 				<Typography variant="h1">
-					ЗАШЕЛ ЕБАТЬ
+					ЗАШЕЛ
 				</Typography>
 			)}
 		</>

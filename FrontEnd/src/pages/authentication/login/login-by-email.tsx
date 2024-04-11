@@ -1,7 +1,7 @@
 import { ILoginByEmailRequest } from "../../../api/interfaces/authentication/ILoginByEmailRequest";
 import * as Yup from "yup";
 import { IFormField } from "../../../components/input/fields/IFormField";
-import ValidationForm from "../../../components/input/form/ValidationForm";
+import ValidationForm from "../../../components/input/form/validation-form";
 
 const emailValidationSchema = Yup.object().shape({
 	email: Yup.string().email("Некорректный email").required("Ввод обязателен"),

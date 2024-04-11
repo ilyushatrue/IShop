@@ -1,6 +1,6 @@
 import * as Yup from "yup";
 import { IFormField } from "../../../components/input/fields/IFormField";
-import ValidationForm from "../../../components/input/form/ValidationForm";
+import ValidationForm from "../../../components/input/form/validation-form";
 import { ILoginByPhoneRequest } from "../../../api/interfaces/authentication/ILoginByPhoneRequest";
 
 const loginFields: IFormField[] = [

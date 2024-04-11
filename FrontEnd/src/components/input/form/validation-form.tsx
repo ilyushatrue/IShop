@@ -1,7 +1,7 @@
 import { Box, Button, FilledTextFieldProps, TextField } from "@mui/material";
 import { ErrorMessage, Field, Form, Formik, FormikProps } from "formik";
 import React, { ChangeEvent } from "react";
-import PhoneInput from "../fields/phone/InputPhone";
+import PhoneInput from "../fields/phone/input-phone";
 import * as Yup from "yup";
 import { IFormField } from "../fields/IFormField";
 

@@ -1,7 +1,7 @@
 import React from "react";
 
-import NavSideBar from "./NavSideBar";
-import NavTopBar from "./NavTopBar";
+import NavSideBar from "./nav-side-bar";
+import NavTopBar from "./nav-top-bar";
 
 const menuItems = [
 	{ label: "Главная", href: "/page1" },

@@ -1,12 +1,11 @@
 import { LockOutlined } from "@mui/icons-material";
-import Template from "../Base/Template";
 import * as Yup from "yup";
 import { IRegisterRequest } from "../../../api/interfaces/authentication/IRegisterRequest";
 import { IFormField } from "../../../components/input/fields/IFormField";
-import ValidationForm from "../../../components/input/form/ValidationForm";
+import ValidationForm from "../../../components/input/form/validation-form";
 import { Link, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-
+import Template from "../base/template";
 interface IRegisterFormField extends IRegisterRequest {
 	confirmPassword: string;
 }

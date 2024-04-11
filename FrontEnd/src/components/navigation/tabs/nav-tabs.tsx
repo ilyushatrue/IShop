@@ -1,6 +1,6 @@
 import * as React from "react";
 import Tabs from "@mui/material/Tabs";
-import LinkTab, { ILinkTab } from "./LinkTab";
+import LinkTab, { ILinkTab } from "./link-tab";
 
 interface IProps {
 	menuItems: { label: string; href: string }[];
