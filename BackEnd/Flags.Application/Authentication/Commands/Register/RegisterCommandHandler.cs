@@ -10,7 +10,8 @@ namespace Flags.Application.Authentication.Commands.Register;
 
 public class RegisterCommandHandler(
 	IUserRepository userRepository,
-	IJwtTokenGenerator jwtTokenGenerator
+	IJwtTokenGenerator jwtTokenGenerator,
+	IPasswordHasher passwordHasher
 ) :
 	IRequestHandler<RegisterCommand, ErrorOr<AuthenticationResult>>
 {
@@ -21,9 +22,12 @@ public class RegisterCommandHandler(
 		var existingEmails = existingUsers.Select(x => x.Email.Value).ToArray();
 		var existingPhones = existingUsers.Select(x => x.Phone.Value).ToArray();
 
+
 		var email = Email.Create(command.Email, existingEmails);
 		var phone = Phone.Create(command.Phone, existingPhones);
-		var password = Password.Create(command.Password);
+
+		var passwordHash = passwordHasher.Generate(command.Password);
+		var password = Password.Create(passwordHash);
 
 		if (email.IsError)
 			errors.AddRange(email.Errors);
@@ -33,6 +37,7 @@ public class RegisterCommandHandler(
 			errors.AddRange(password.Errors);
 		if (errors.Count > 0)
 			return errors;
+
 
 		var user = User.Create(
 			firstName: command.FirstName,

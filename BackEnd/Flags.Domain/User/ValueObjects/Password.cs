@@ -5,23 +5,22 @@ namespace Flags.Domain.User.ValueObjects;
 
 public class Password
 {
-	private const int MIN_LENGTH = 6;
-	private const int MAX_LENGTH = 20;
+	private const int HASH_LENGTH = 60;
 	private Password(string value)
 	{
 		Value = value;
 	}
 
 	public string Value { get; private set; } = null!;
-
-	public static ErrorOr<Password> Create(string input)
+	
+	public static ErrorOr<Password> Create(string passwordHash)
 	{
-		if (string.IsNullOrWhiteSpace(input))
+		if (string.IsNullOrWhiteSpace(passwordHash))
 			return Errors.Authentication.InvalidCredentials;
 
-		var password = input.Trim();
+		var password = passwordHash.Trim();
 
-		if (password.Length < MIN_LENGTH || password.Length > MAX_LENGTH)
+		if (password.Length != HASH_LENGTH)
 			return Errors.Authentication.InvalidCredentials;
 
 		return new Password(password);

@@ -44,6 +44,8 @@ public class AuthenticationController(
     {
         var authResult = await mediator.Send(query);
 
+        HttpContext.Response.Cookies.Append("cookies", authResult.Value.Token);
+
         return authResult.Match(
             authResult => Ok(mapper.Map<AuthenticationResponse>(authResult)),
             errors => Problem(errors)
@@ -54,6 +56,8 @@ public class AuthenticationController(
     public async Task<IActionResult> LoginByPhone(LoginByPhoneQuery query)
     {
         var authResult = await mediator.Send(query);
+
+        HttpContext.Response.Cookies.Append("cookies", authResult.Value.Token);
 
         return authResult.Match(
             authResult => Ok(mapper.Map<AuthenticationResponse>(authResult)),

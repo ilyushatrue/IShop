@@ -24,9 +24,7 @@ public static class DependencyInjection
     {
         services
             .AddAuth(configuration)
-            .AddPersistance()
-            .AddIdentityApiEndpoints<IdentityUser>()
-            .AddEntityFrameworkStores<UserDbContext>();
+            .AddPersistance();
 
         services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
 
@@ -38,16 +36,10 @@ public static class DependencyInjection
     {
         var apiPath = Environment.CurrentDirectory;
         var rootPath = Directory.GetParent(apiPath)!.FullName;
-        var dbPath = rootPath + "\\Flags.Infrastructure\\Persistance\\DB\\";
+        var dbPath = rootPath + "\\Flags.Infrastructure\\Persistance\\DB\\flags.sql";
 
-        var flagsDbPath = dbPath + "flags.sql";
         services.AddDbContext<FlagDbContext>(options => options
-            .UseSqlite($"Data Source={flagsDbPath}")
-            .UseSnakeCaseNamingConvention());
-
-        var usersDbPath = dbPath + "users.sql";
-        services.AddDbContext<UserDbContext>(options => options
-            .UseSqlite($"Data Source={usersDbPath}")
+            .UseSqlite($"Data Source={dbPath}")
             .UseSnakeCaseNamingConvention());
 
         services.AddScoped<IUserRepository, UserRepository>();
@@ -65,19 +57,31 @@ public static class DependencyInjection
         services.AddSingleton(Options.Create(jwtSettings));
 
         services.Configure<JwtSettings>(configuration.GetSection(JwtSettings.SectionName));
+        services.AddSingleton<IPasswordHasher, PasswordHasher>();
         services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
         services.AddAuthentication(defaultScheme: JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options => options.TokenValidationParameters = new TokenValidationParameters()
+            .AddJwtBearer(options =>
             {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-                ValidIssuer = jwtSettings.Issuer,
-                ValidAudience = jwtSettings.Audience,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret))
+                options.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = jwtSettings.Issuer,
+                    ValidAudience = jwtSettings.Audience,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret))
+                };
+                options.Events = new JwtBearerEvents()
+                {
+                    OnMessageReceived = context =>
+                    {
+                        context.Token = context.Request.Cookies["cookies"];
+                        return Task.CompletedTask;
+                    }
+                };
             });
-
+            
         return services;
     }
 }

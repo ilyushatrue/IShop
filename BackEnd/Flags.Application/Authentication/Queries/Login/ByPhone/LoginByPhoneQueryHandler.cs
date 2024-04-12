@@ -10,7 +10,8 @@ namespace Flags.Application.Authentication.Queries.Login.ByPhone;
 
 public class LoginByPhoneQueryHandler(
     IUserRepository userRepository,
-    IJwtTokenGenerator jwtTokenGenerator
+    IJwtTokenGenerator jwtTokenGenerator,
+    IPasswordHasher passwordHasher
 ) :
     IRequestHandler<LoginByPhoneQuery, ErrorOr<AuthenticationResult>>
 {
@@ -23,7 +24,9 @@ public class LoginByPhoneQueryHandler(
         if (user is null)
             return Errors.Authentication.UserNotFound;
 
-        if (user.Password.Value != query.Password)
+        var passwordsMatch = passwordHasher.Verify(query.Password, user.Password.Value);
+
+        if (!passwordsMatch)
             return Errors.Authentication.InvalidCredentials;
 
         var token = jwtTokenGenerator.GenerateToken(user);
