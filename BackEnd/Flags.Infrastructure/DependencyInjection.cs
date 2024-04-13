@@ -12,7 +12,6 @@ using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
 using Flags.Infrastructure.Persistance.Repositories;
-using Microsoft.AspNetCore.Identity;
 
 namespace Flags.Infrastructure;
 
@@ -81,7 +80,13 @@ public static class DependencyInjection
                     }
                 };
             });
-            
+
+        services.AddAuthorizationBuilder()
+            .AddPolicy("AdminPolicy", policy =>
+            {
+                policy.RequireClaim("Admin", "true");
+            });
+
         return services;
     }
 }

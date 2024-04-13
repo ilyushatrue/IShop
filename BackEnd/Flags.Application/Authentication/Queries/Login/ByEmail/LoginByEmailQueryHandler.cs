@@ -18,7 +18,7 @@ public class LoginByEmailQueryHandler(
         LoginByEmailQuery query,
         CancellationToken cancellationToken)
     {
-        var user = await userRepository.GetUserByEmail(query.Email.Trim());
+        var user = await userRepository.GetUserByEmailAsync(query.Email.Trim());
 
         if (user is null)
             return Errors.Authentication.UserNotFound;

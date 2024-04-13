@@ -1,7 +1,6 @@
 using Flags.Application;
 using Flags.Infrastructure;
 using Microsoft.AspNetCore.CookiePolicy;
-using Microsoft.AspNetCore.Identity;
 
 namespace Flags.Api;
 
@@ -35,12 +34,12 @@ public class Program
         app.UseCors("CORS");
         app.UseExceptionHandler("/error");
         app.UseHttpsRedirection();
-        app.UseCookiePolicy(new CookiePolicyOptions
-        {
-            MinimumSameSitePolicy = SameSiteMode.Strict,
-            HttpOnly = HttpOnlyPolicy.Always,
-            Secure = CookieSecurePolicy.Always
-        });
+        // app.UseCookiePolicy(new CookiePolicyOptions
+        // {
+        //     MinimumSameSitePolicy = SameSiteMode.Strict,
+        //     HttpOnly = HttpOnlyPolicy.Always,
+        //     Secure = CookieSecurePolicy.Always
+        // });
         app.UseAuthentication();
         app.UseAuthorization();
         app.MapControllers();

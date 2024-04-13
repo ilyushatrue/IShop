@@ -2,6 +2,7 @@ import * as Yup from "yup";
 import { IFormField } from "../../../components/input/fields/IFormField";
 import ValidationForm from "../../../components/input/form/validation-form";
 import { ILoginByPhoneRequest } from "../../../api/interfaces/authentication/ILoginByPhoneRequest";
+import api from "../../../infrastructure/apiAccessor";
 
 const loginFields: IFormField[] = [
 	{
@@ -34,25 +35,15 @@ const phoneValidationSchema = Yup.object().shape({
 
 interface IProps {
 	sm?: boolean;
-	onLogin: ()=>void;
+	onLogin: () => void;
 }
 export default function LoginByPhone({ sm = false, onLogin }: IProps) {
 	async function login(data: ILoginByPhoneRequest) {
 		try {
-			let url = "http://localhost:5261/auth/login-by-phone";
-			const response = await fetch(url, {
-				method: "POST",
-				body: JSON.stringify(data),
-				headers: {
-					"Content-Type": "application/json",
-				},
-			});
-			if (response.ok) {
-				const result = await response.json();
-				onLogin()
-			} else {
-				console.error("Error while server request");
-			}
+			let url = "auth/login-by-phone";
+			const fetchResult = await api.postAsync(url, data);
+			console.log(fetchResult);
+			onLogin()
 		} catch (error) {}
 	}
 

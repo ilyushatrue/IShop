@@ -7,6 +7,7 @@ const menuItems = [
 	{ label: "Главная", href: "/page1" },
 	{ label: "Дополнительная", href: "/page2" },
 	{ label: "Личный кабинет", href: "/account" },
+	{ label: "Пользователи", href: "/users" },
 ];
 
 interface IProps {

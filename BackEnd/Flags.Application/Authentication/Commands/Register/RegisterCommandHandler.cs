@@ -18,7 +18,7 @@ public class RegisterCommandHandler(
 	public async Task<ErrorOr<AuthenticationResult>> Handle(RegisterCommand command, CancellationToken cancellationToken)
 	{
 		var errors = new List<Error>();
-		var existingUsers = await userRepository.GetAll();
+		var existingUsers = await userRepository.GetAllAsync();
 		var existingEmails = existingUsers.Select(x => x.Email.Value).ToArray();
 		var existingPhones = existingUsers.Select(x => x.Phone.Value).ToArray();
 
@@ -47,7 +47,7 @@ public class RegisterCommandHandler(
 			password: password.Value
 		);
 
-		await userRepository.Add(user);
+		await userRepository.AddAsync(user);
 
 		var token = jwtTokenGenerator.GenerateToken(user);
 

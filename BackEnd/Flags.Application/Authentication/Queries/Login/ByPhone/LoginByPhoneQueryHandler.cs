@@ -18,8 +18,8 @@ public class LoginByPhoneQueryHandler(
     public async Task<ErrorOr<AuthenticationResult>> Handle(LoginByPhoneQuery query, CancellationToken cancellationToken)
     {
         var phone = Phone.DropSymbols(query.Phone);
-        
-        var user = await userRepository.GetUserByPhone(phone);
+
+        var user = await userRepository.GetUserByPhoneAsync(phone);
 
         if (user is null)
             return Errors.Authentication.UserNotFound;

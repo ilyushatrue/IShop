@@ -32,6 +32,8 @@ public class AuthenticationController(
                 title: authResult.FirstError.Description);
         }
 
+        HttpContext.Response.Cookies.Append("cookies", authResult.Value.Token);
+
         return authResult.Match(
             authResult => Ok(mapper.Map<AuthenticationResponse>(authResult)),
             errors => Problem(errors)
@@ -65,7 +67,7 @@ public class AuthenticationController(
         );
     }
 
-    
+
     [HttpGet("refresh-jwt")]
     public async Task<IActionResult> RefreshJwt(LoginByPhoneQuery query)
     {
