@@ -1,9 +1,9 @@
 @host=http://localhost:5261
 
-POST {{host}}/auth/login
+POST {{host}}/auth/login-by-email
 Content-Type: application/json
 
 {
-	"email": "ilya.trukhin.99@mail.ru",
+	"email": "ilya.trukhin.98@mail.ru",
 	"password": "qwer1234"
 }

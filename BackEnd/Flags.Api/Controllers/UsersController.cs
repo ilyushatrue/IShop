@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Flags.Api.Controllers;
 
-[AllowAnonymous]
 [Route("users")]
 public class UsersController(
     ISender mediatr

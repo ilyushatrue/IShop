@@ -81,11 +81,11 @@ public static class DependencyInjection
                 };
             });
 
-        services.AddAuthorizationBuilder()
-            .AddPolicy("AdminPolicy", policy =>
-            {
-                policy.RequireClaim("Admin", "true");
-            });
+        // services.AddAuthorizationBuilder()
+        //     .AddPolicy("AdminPolicy", policy =>
+        //     {
+        //         policy.RequireClaim("Admin", "true");
+        //     });
 
         return services;
     }

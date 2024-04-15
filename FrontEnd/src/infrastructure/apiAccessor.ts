@@ -6,7 +6,7 @@ const api = {
         console.log(fullUrl)
 		const response = await fetch(fullUrl, {
 			method: "GET",
-			credentials: "same-origin",
+			credentials: "include",
 			headers: {
 				"Content-Type": "application/json",
 			},
@@ -19,7 +19,7 @@ const api = {
 		const response = await fetch(fullUrl, {
 			method: "POST",
 			body: JSON.stringify(data),
-			credentials: "same-origin",
+			credentials: "include",
 			headers: {
 				"Content-Type": "application/json",
 			},
