@@ -13,5 +13,13 @@ public static partial class Errors
 		public static Error DuplicatePhone => Error.Conflict(
 			code: "User.DuplicatePhone",
 			description: "Phone is already in use.");
+
+		public static Error NotFound => Error.NotFound(
+			code: "User.NotFound",
+			description: "User with provided Id does not exist.");
+
+		public static Error InvalidInput => Error.Failure(
+			code: "User.InvalidInput",
+			description: "Provided Id is not correct.");
 	}
 }
