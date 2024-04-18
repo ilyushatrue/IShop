@@ -2,7 +2,7 @@ import { ILoginByEmailRequest } from "../../../api/interfaces/authentication/ILo
 import * as Yup from "yup";
 import { IFormField } from "../../../components/input/fields/IFormField";
 import ValidationForm from "../../../components/input/form/validation-form";
-import api from "../../../infrastructure/apiAccessor";
+import api from "../../../api/apiAccessor";
 
 const emailValidationSchema = Yup.object().shape({
 	email: Yup.string().email("Некорректный email").required("Ввод обязателен"),
@@ -39,7 +39,9 @@ export default function LoginByEmail({ sm = false, onLogin }: IProps) {
 			const fetchResult = await api.postAsync(url, data);
 			console.log(fetchResult)
 			onLogin()
-		} catch (error) {}
+		} catch (error) {
+			console.log(error)
+		}
 	}
 
 	return (

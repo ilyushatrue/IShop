@@ -3,6 +3,6 @@ import PhoneInput from '../components/input/fields/phone/input-phone'
 
 export default function Page1() {
   return (
-	<div></div>
+	<div>Page1</div>
   )
 }
