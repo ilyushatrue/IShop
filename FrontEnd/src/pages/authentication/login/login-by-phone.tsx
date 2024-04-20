@@ -43,12 +43,12 @@ export default function LoginByPhone({ sm = false, onLogin }: IProps) {
 			let url = "auth/login-by-phone";
 			const fetchResult = await api.postAsync(url, data);
 			console.log(fetchResult);
-			onLogin()
+			onLogin();
 		} catch (error) {}
 	}
 
 	return (
-		<ValidationForm<ILoginByPhoneRequest>
+		<ValidationForm
 			initialValues={{ phone: "", password: "" }}
 			onSubmit={(values, props) => login(values)}
 			fields={loginFields}

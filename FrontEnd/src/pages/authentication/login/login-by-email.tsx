@@ -32,20 +32,19 @@ interface IProps {
 	onLogin: () => void;
 }
 export default function LoginByEmail({ sm = false, onLogin }: IProps) {
-
 	async function login(data: ILoginByEmailRequest) {
 		try {
 			let url = "auth/login-by-email";
 			const fetchResult = await api.postAsync(url, data);
-			console.log(fetchResult)
-			onLogin()
+			console.log(fetchResult);
+			onLogin();
 		} catch (error) {
-			console.log(error)
+			console.log(error);
 		}
 	}
 
 	return (
-		<ValidationForm<ILoginByEmailRequest>
+		<ValidationForm
 			initialValues={{ email: "", password: "" }}
 			onSubmit={(values, props) => login(values)}
 			fields={loginFields}

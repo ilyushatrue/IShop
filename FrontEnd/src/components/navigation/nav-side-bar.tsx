@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { ArrowBack, Menu } from "@mui/icons-material";
-import { Avatar, Box, Button, Collapse, SxProps } from "@mui/material";
+import { Box, Button, Collapse, SxProps } from "@mui/material";
 import NavTabs from "./tabs/nav-tabs";
+import NavAvatar, { IAvatar } from "./nav-avatar";
+import { INavBar } from "./nav-bar";
 
 const collapseSx: SxProps = {
 	position: "fixed",
@@ -13,8 +15,9 @@ const collapseSx: SxProps = {
 interface IProps {
 	menuItems: { label: string; href: string }[];
 	onTabChange: (tabIndex: number) => void;
+	avatar: IAvatar;
 }
-export default function NavSideBar({ menuItems, onTabChange }: IProps) {
+export default function NavSideBar({ menuItems, onTabChange, avatar }: IProps) {
 	const [isMenuCollapsed, setIsMenuCollapsed] = useState(true);
 
 	function toggleMenuCollapse() {
@@ -39,16 +42,17 @@ export default function NavSideBar({ menuItems, onTabChange }: IProps) {
 				<Button sx={{ height: 54 }} onClick={toggleMenuCollapse}>
 					<Menu />
 				</Button>
-				<Avatar
-					sx={{
-						marginLeft: "auto",
-						marginRight: 2,
-						backgroundColor: "primary.main",
-						cursor: "pointer",
-					}}
-				>
-					A
-				</Avatar>
+				{avatar && (
+					<NavAvatar
+						menuItems={avatar.menuItems}
+						tip={avatar.tip}
+						containerSx={{
+							marginLeft: "auto",
+							marginRight: 2,
+						}}
+						sx={avatar.sx}
+					/>
+				)}
 			</Box>
 			<Collapse
 				in={!isMenuCollapsed}

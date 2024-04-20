@@ -1,6 +1,6 @@
 import { Box, SxProps, Typography, styled } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import Icon, { IconType } from "../Icon";
+import Icon, { IconType } from "../icon";
 
 const ExpandMore = styled((props: { className?: string }) => (
 	<ExpandMoreIcon className={props.className} />

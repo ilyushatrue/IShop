@@ -1,12 +1,15 @@
 import React from "react";
 import NavTabs from "./tabs/nav-tabs";
 import { Avatar, Box } from "@mui/material";
+import NavAvatar, { IAvatar } from "./nav-avatar";
+import { INavBar } from "./nav-bar";
 
 interface IProps {
 	menuItems: { label: string; href: string }[];
 	onTabChange: (tabIndex: number) => void;
+	avatar: IAvatar;
 }
-export default function NavTopBar({ menuItems, onTabChange }: IProps) {
+export default function NavTopBar({ menuItems, onTabChange, avatar }: IProps) {
 	return (
 		<Box
 			display={"flex"}
@@ -20,16 +23,17 @@ export default function NavTopBar({ menuItems, onTabChange }: IProps) {
 				menuItems={menuItems}
 				orientation={"horizontal"}
 			/>
-			<Avatar
-				sx={{
-					marginLeft: "auto",
-					marginRight: 2,
-					backgroundColor: "primary.main",
-					cursor: "pointer",
-				}}
-			>
-				A
-			</Avatar>
+			{avatar && (
+				<NavAvatar
+					tip={avatar.tip}
+					sx={avatar.sx}
+					menuItems={avatar.menuItems}
+					containerSx={{
+						marginLeft: "auto",
+						marginRight: 2,
+					}}
+				/>
+			)}
 		</Box>
 	);
 }
