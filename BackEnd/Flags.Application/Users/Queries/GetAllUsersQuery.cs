@@ -1,5 +1,5 @@
 using ErrorOr;
-using Flags.Domain.User.Entities;
+using Flags.Domain.UserEntity;
 using MediatR;
 
 namespace Flags.Application.Users.Queries;

@@ -5,7 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Flags.Application.Common.Interfaces.Services;
 using Microsoft.Extensions.Options;
-using Flags.Domain.User.Entities;
+using Flags.Domain.UserEntity;
 namespace Flags.Infrastructure.Authentication;
 public class JwtTokenGenerator(
     IOptions<JwtSettings> jwtOptions,
@@ -20,6 +20,8 @@ public class JwtTokenGenerator(
 
         var claims = new[]
         {
+            new Claim(CustomClaims.USER_ID, user.Id.ToString()),
+            new Claim(CustomClaims.ADMIN, "true"),
             new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
             new Claim(JwtRegisteredClaimNames.GivenName, user.FirstName),
             new Claim(JwtRegisteredClaimNames.FamilyName, user.LastName),

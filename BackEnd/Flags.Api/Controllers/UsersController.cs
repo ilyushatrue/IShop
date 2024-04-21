@@ -1,10 +1,14 @@
 using Flags.Application.Users.Queries;
+using Flags.Infrastructure.Authentication;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Flags.Api.Controllers;
 
+
 [Route("users")]
+[Authorize(Policy = CustomPolicies.ADMIN_POLICY)]
 public class UsersController(
     ISender mediatr
 ) : ApiController
@@ -22,7 +26,7 @@ public class UsersController(
     }
 
 
-// not used
+    // not used
     [HttpGet("{id}")]
     public async Task<IActionResult> GetUserById(string id)
     {

@@ -1,6 +1,6 @@
 using ErrorOr;
 using Flags.Application.Common.Interfaces.Persistance;
-using Flags.Domain.User.Entities;
+using Flags.Domain.UserEntity;
 using MediatR;
 
 namespace Flags.Application.Users.Queries;

@@ -1,4 +1,4 @@
-﻿using Flags.Domain.User.Entities;
+﻿using Flags.Domain.UserEntity;
 
 namespace Flags.Application.Common.Interfaces.Persistance;
 public interface IUserRepository

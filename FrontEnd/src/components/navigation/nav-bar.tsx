@@ -6,9 +6,11 @@ import { IAvatar } from "./nav-avatar";
 
 const menuAvatar: IAvatar = {
 	menuItems: [
-		{ icon: "edit", label: "Выйти", sx: { color: "primary.dark" } },
-		{ icon: "menu", label: "Выйти", sx: { color: "primary.dark" } },
-		{ icon: "subject", label: "Выйти", sx: { color: "primary.dark" } },
+		{
+			icon: "logout",
+			label: "Выйти",
+			sx: { color: "primary.dark", marginRight: 1 },
+		},
 	],
 	tip: "Аккаунт",
 	sx: { bgcolor: "primary.main" },

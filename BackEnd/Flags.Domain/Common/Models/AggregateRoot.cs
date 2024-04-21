@@ -1,8 +1,8 @@
 namespace Flags.Domain.Common.Models;
 
-public abstract class AggregateRoot : Entity
+public abstract class AggregateRoot<T> : Entity<T> where T : notnull
 {
-	protected AggregateRoot(Guid id) : base(id)
+	protected AggregateRoot(T id) : base(id)
 	{
 
 	}

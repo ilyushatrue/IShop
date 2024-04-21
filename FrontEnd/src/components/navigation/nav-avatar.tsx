@@ -75,8 +75,8 @@ export default function NavAvatar({
 				transformOrigin={{ horizontal: "right", vertical: "top" }}
 				anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
 			>
-				{menuItems.map((item) => (
-					<MenuItem onClick={handleMenuClose}>
+				{menuItems.map((item, index) => (
+					<MenuItem onClick={handleMenuClose} key={index}>
 						<Icon name={item.icon} sx={item.sx}/>
 						{item.label}
 					</MenuItem>

@@ -12,6 +12,10 @@ using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
 using Flags.Infrastructure.Persistance.Repositories;
+using AuthorizationOptions = Flags.Infrastructure.Authorization.AuthorizationOptions;
+using Flags.Domain.Enums;
+using Flags.Infrastructure.Authorization;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Flags.Infrastructure;
 
@@ -81,11 +85,15 @@ public static class DependencyInjection
                 };
             });
 
-        // services.AddAuthorizationBuilder()
-        //     .AddPolicy("AdminPolicy", policy =>
-        //     {
-        //         policy.RequireClaim("Admin", "true");
-        //     });
+        services.Configure<AuthorizationOptions>(configuration.GetSection(nameof(AuthorizationOptions)));
+        services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
+        services.AddAuthorizationBuilder()
+            .AddPolicy(CustomPolicies.ADMIN_POLICY, policy =>
+            {
+                policy
+                    .RequireClaim(CustomClaims.ADMIN, "true")
+                    .AddRequirements(new PermissionRequirement([PermissionEnum.Create, PermissionEnum.Read, PermissionEnum.Delete, PermissionEnum.Update]));
+            });
 
         return services;
     }

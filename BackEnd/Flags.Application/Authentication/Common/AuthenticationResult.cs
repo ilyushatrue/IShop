@@ -1,4 +1,4 @@
-using Flags.Domain.User.Entities;
+using Flags.Domain.UserEntity;
 
 namespace Flags.Application.Authentication.Common;
 

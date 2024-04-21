@@ -3,7 +3,7 @@ using Flags.Application.Authentication.Common;
 using Flags.Application.Common.Interfaces.Authentication;
 using Flags.Application.Common.Interfaces.Persistance;
 using Flags.Domain.Common.Errors;
-using Flags.Domain.User.ValueObjects;
+using Flags.Domain.UserEntity.ValueObjects;
 using MediatR;
 
 namespace Flags.Application.Authentication.Queries.Login.ByPhone;

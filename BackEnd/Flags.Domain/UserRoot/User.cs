@@ -1,14 +1,13 @@
 ﻿using Flags.Domain.Common.Models;
-using Flags.Domain.User.ValueObjects;
+using Flags.Domain.UserEntity.ValueObjects;
+using Flags.Domain.UserRoot.Entities;
 
-namespace Flags.Domain.User.Entities;
+namespace Flags.Domain.UserEntity;
 
-public class User : AggregateRoot
+public class User : AggregateRoot<Guid>
 {
-    private User() : base(Guid.NewGuid())
-    {
-
-    }
+    private readonly List<Role> _roles = [];
+    private User() : base(Guid.NewGuid()) { }
     private User(
         string firstName,
         string lastName,
@@ -42,4 +41,5 @@ public class User : AggregateRoot
     public Phone Phone { get; private set; } = null!;
     public Email Email { get; private set; } = null!;
     public Password Password { get; private set; } = null!;
+    public IReadOnlyCollection<Role> Roles => _roles.AsReadOnly();
 }

@@ -1,10 +1,10 @@
-using Flags.Domain.User.Entities;
 using ErrorOr;
 using Flags.Application.Common.Interfaces.Authentication;
 using Flags.Application.Common.Interfaces.Persistance;
 using MediatR;
 using Flags.Application.Authentication.Common;
-using Flags.Domain.User.ValueObjects;
+using Flags.Domain.UserEntity;
+using Flags.Domain.UserEntity.ValueObjects;
 
 namespace Flags.Application.Authentication.Commands.Register;
 
