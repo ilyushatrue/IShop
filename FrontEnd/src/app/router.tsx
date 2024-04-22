@@ -7,6 +7,7 @@ import Page2 from "../pages/page2";
 import NotFound from "../pages/not-found/not-found";
 import Users from "../pages/users/users";
 import NavBar from "../components/navigation/nav-bar";
+import Shop from "../pages/shop";
 
 interface IProps {
 	sm: boolean;
@@ -16,7 +17,7 @@ export default function Router({ sm }: IProps) {
 		<>
 			<NavBar sm={sm} />
 			<Routes>
-				<Route path="/page1" element={<Page1 />} />
+				<Route path="/shop" element={<Shop />} />
 				<Route path="/page2" element={<Page2 />} />
 				<Route path="/account/*" element={<Account />} />
 				<Route

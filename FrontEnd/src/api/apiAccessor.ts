@@ -1,8 +1,8 @@
-import getConst from "../infrastructure/constantProvider";
+import getConstant from "../infrastructure/constantProvider";
 
 const api = {
 	getAsync: async (url: string): Promise<any> => {
-		const fullUrl = getConst("API_URL") + url;
+		const fullUrl = getConstant("API_URL") + url;
 		console.log(fullUrl)
 		const response = await fetch(fullUrl, {
 			method: "GET",
@@ -24,7 +24,7 @@ const api = {
 		}
 	},
 	postAsync: async (url: string, data: any): Promise<any> => {
-		const fullUrl = getConst("API_URL") + url;
+		const fullUrl = getConstant("API_URL") + url;
 		const response = await fetch(fullUrl, {
 			method: "POST",
 			body: JSON.stringify(data),

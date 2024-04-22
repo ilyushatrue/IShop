@@ -17,7 +17,7 @@ const menuAvatar: IAvatar = {
 };
 
 const menuItems = [
-	{ label: "Главная", href: "/page1" },
+	{ label: "Главная", href: "/shop" },
 	{ label: "Дополнительная", href: "/page2" },
 	{ label: "Личный кабинет", href: "/account" },
 	{ label: "Пользователи", href: "/users" },
