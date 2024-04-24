@@ -4,6 +4,7 @@ import { IProduct } from "../../api/interfaces/product/product.interface";
 import { Box } from "@mui/material";
 import getConstant from "../../infrastructure/constantProvider";
 import Page from "../../components/page";
+import { useSelector } from "react-redux";
 
 const myProducts: IProduct[] = [
 	{
@@ -18,18 +19,66 @@ const myProducts: IProduct[] = [
 		imageUrl: "berries.jpg",
 		price: 2000,
 	},
-	{ name: "жевачка", description: "some banano", imageUrl: "bubblegum.jpg", price: 2000 },
-	{ name: "конфеты", description: "some banano", imageUrl: "candy.jpg", price: 2000 },
-	{ name: "кофе", description: "some banano", imageUrl: "coffee.jpeg", price: 2000 },
-	{ name: "огурец", description: "some banano", imageUrl: "cucumber.jpeg", price: 2000 },
-	{ name: "мед", description: "some banano", imageUrl: "honey.jpeg", price: 2000 },
-	{ name: "мармелад", description: "some banano", imageUrl: "marmalade.jpeg", price: 2000 },
-	{ name: "картофель", description: "some banano", imageUrl: "potato.jpeg", price: 2000 },
-	{ name: "чай", description: "some banano", imageUrl: "tea.jpeg", price: 2000 },
-	{ name: "картофель", description: "some banano", imageUrl: "tomato.jpg", price: 2000 },
+	{
+		name: "жевачка",
+		description: "some banano",
+		imageUrl: "bubblegum.jpg",
+		price: 2000,
+	},
+	{
+		name: "конфеты",
+		description: "some banano",
+		imageUrl: "candy.jpg",
+		price: 2000,
+	},
+	{
+		name: "кофе",
+		description: "some banano",
+		imageUrl: "coffee.jpeg",
+		price: 2000,
+	},
+	{
+		name: "огурец",
+		description: "some banano",
+		imageUrl: "cucumber.jpeg",
+		price: 2000,
+	},
+	{
+		name: "мед",
+		description: "some banano",
+		imageUrl: "honey.jpeg",
+		price: 2000,
+	},
+	{
+		name: "мармелад",
+		description: "some banano",
+		imageUrl: "marmalade.jpeg",
+		price: 2000,
+	},
+	{
+		name: "картофель",
+		description: "some banano",
+		imageUrl: "potato.jpeg",
+		price: 2000,
+	},
+	{
+		name: "чай",
+		description: "some banano",
+		imageUrl: "tea.jpeg",
+		price: 2000,
+	},
+	{
+		name: "картофель",
+		description: "some banano",
+		imageUrl: "tomato.jpg",
+		price: 2000,
+	},
 ];
 
 export default function Shop() {
+	const user = useSelector(x=>x);
+	console.log(user)
+
 	return (
 		<Page isLoading={false}>
 			<Products products={myProducts} />

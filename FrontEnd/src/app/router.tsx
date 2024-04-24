@@ -1,8 +1,6 @@
-import React from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import Authentication from "../pages/authentication/authentication";
 import Account from "../pages/account/account";
-import Page1 from "../pages/page1";
 import Page2 from "../pages/page2";
 import NotFound from "../pages/not-found/not-found";
 import Users from "../pages/users/users";

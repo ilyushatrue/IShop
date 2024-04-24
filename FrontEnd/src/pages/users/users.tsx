@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import api from "../../api/apiAccessor";
-import { IUser } from "../../api/interfaces/user/IUsers";
+import { IUser } from "../../api/interfaces/user/IUser";
 import { useNavigate } from "react-router-dom";
 export default function Users() {
 	const [users, setUsers] = useState<IUser[]>([]);
