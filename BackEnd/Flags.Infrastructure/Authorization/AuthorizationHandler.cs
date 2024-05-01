@@ -1,19 +1,21 @@
 using System.IdentityModel.Tokens.Jwt;
-using Flags.Infrastructure.Persistance.Repositories;
+using Flags.Application.Common.Interfaces.Persistance;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.VisualBasic;
 
 namespace Flags.Infrastructure.Authorization;
 
 public class PermissionAuthorizationHandler(
-    UserRepository userRepository
+    IServiceScopeFactory scopeFactory
     ) : AuthorizationHandler<PermissionRequirement>
 {
     protected override async Task HandleRequirementAsync(
         AuthorizationHandlerContext context,
         PermissionRequirement requirement)
     {
+        using var scope = scopeFactory.CreateScope();
+        var userRepository = scope.ServiceProvider.GetRequiredService<IUserRepository>();
+
         var userIdStr = context.User.Claims.FirstOrDefault(
             c => c.Type == JwtRegisteredClaimNames.Sub
         );

@@ -6,13 +6,15 @@ using System.Text;
 using Flags.Application.Common.Interfaces.Services;
 using Microsoft.Extensions.Options;
 using Flags.Domain.UserEntity;
+using System.Security.Cryptography;
 namespace Flags.Infrastructure.Authentication;
 public class JwtTokenGenerator(
     IOptions<JwtSettings> jwtOptions,
     IDateTimeProvider dateTimeProvider) : IJwtTokenGenerator
 {
     private readonly JwtSettings _jwtSettings = jwtOptions.Value;
-    public string GenerateToken(User user)
+
+    public string GenerateAccessToken(User user)
     {
         var signingCredentials = new SigningCredentials(
             new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Secret)),
@@ -36,5 +38,13 @@ public class JwtTokenGenerator(
             expires: dateTimeProvider.UtcNow.AddMinutes(_jwtSettings.ExpiryMinutes));
 
         return new JwtSecurityTokenHandler().WriteToken(securityToken);
+    }
+
+    public string GenerateRefreshToken()
+    {
+        var randomNumber = new byte[32];
+        using var rng = RandomNumberGenerator.Create();
+        rng.GetBytes(randomNumber);
+        return Convert.ToBase64String(randomNumber);
     }
 }

@@ -32,7 +32,8 @@ public class AuthenticationController(
                 title: authResult.FirstError.Description);
         }
 
-        HttpContext.Response.Cookies.Append("cookies", authResult.Value.Token);
+        HttpContext.Response.Cookies.Append("jwt-access-token", authResult.Value.JwtAccessToken);
+        HttpContext.Response.Cookies.Append("jwt-refresh-token", authResult.Value.JwtRefreshToken);
 
         return authResult.Match(
             authResult => Ok(mapper.Map<AuthenticationResponse>(authResult)),
@@ -46,7 +47,8 @@ public class AuthenticationController(
     {
         var authResult = await mediator.Send(query);
 
-        HttpContext.Response.Cookies.Append("cookies", authResult.Value.Token);
+        HttpContext.Response.Cookies.Append("jwt-access-token", authResult.Value.JwtAccessToken);
+        HttpContext.Response.Cookies.Append("jwt-refresh-token", authResult.Value.JwtRefreshToken);
 
         return authResult.Match(
             authResult => Ok(mapper.Map<AuthenticationResponse>(authResult)),
@@ -59,19 +61,8 @@ public class AuthenticationController(
     {
         var authResult = await mediator.Send(query);
 
-        HttpContext.Response.Cookies.Append("cookies", authResult.Value.Token);
-
-        return authResult.Match(
-            authResult => Ok(mapper.Map<AuthenticationResponse>(authResult)),
-            errors => Problem(errors)
-        );
-    }
-
-
-    [HttpGet("refresh-jwt")]
-    public async Task<IActionResult> RefreshJwt(LoginByPhoneQuery query)
-    {
-        var authResult = await mediator.Send(query);
+        HttpContext.Response.Cookies.Append("jwt-access-token", authResult.Value.JwtAccessToken);
+        HttpContext.Response.Cookies.Append("jwt-refresh-token", authResult.Value.JwtRefreshToken);
 
         return authResult.Match(
             authResult => Ok(mapper.Map<AuthenticationResponse>(authResult)),

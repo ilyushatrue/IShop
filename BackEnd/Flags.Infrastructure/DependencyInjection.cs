@@ -16,6 +16,7 @@ using AuthorizationOptions = Flags.Infrastructure.Authorization.AuthorizationOpt
 using Flags.Domain.Enums;
 using Flags.Infrastructure.Authorization;
 using Microsoft.AspNetCore.Authorization;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace Flags.Infrastructure;
 
@@ -65,7 +66,7 @@ public static class DependencyInjection
         services.AddAuthentication(defaultScheme: JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
-                options.TokenValidationParameters = new TokenValidationParameters()
+                var validationParameters = new TokenValidationParameters()
                 {
                     ValidateIssuer = true,
                     ValidateAudience = true,
@@ -75,13 +76,37 @@ public static class DependencyInjection
                     ValidAudience = jwtSettings.Audience,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret))
                 };
+                options.TokenValidationParameters = validationParameters;
                 options.Events = new JwtBearerEvents()
                 {
                     OnMessageReceived = context =>
                     {
-                        context.Token = context.Request.Cookies["cookies"];
+                        var jwtAccessToken = context.Request.Cookies["jwt-access-token"];
+                        if (jwtAccessToken != null)
+                        {
+                            SecurityToken validatedToken;
+                            try
+                            {
+                                var tokenHandler = new JwtSecurityTokenHandler();
+                                var principal = tokenHandler.ValidateToken(
+                                    jwtAccessToken, validationParameters, out validatedToken);
+                                context.Token = jwtAccessToken;
+                            }
+                            catch (Exception ex)
+                            {
+                                if (ex is SecurityTokenExpiredException)
+                                {
+                                    var jwtRefreshTokenExp = context.Request.Cookies["jwt-refresh-token-exp-datetime"]!;
+                                    var isExpired = DateTime.Parse(jwtRefreshTokenExp) < DateTime.Now;
+                                    if (!isExpired){
+                                        
+                                    }
+                                    var jwtRefreshToken = context.Request.Cookies["jwt-refresh-token"];
+                                }
+                            }
+                        }
                         return Task.CompletedTask;
-                    }
+                    },
                 };
             });
 

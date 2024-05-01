@@ -1,4 +1,5 @@
-﻿using Flags.Domain.UserEntity;
+﻿using Flags.Domain.Enums;
+using Flags.Domain.UserEntity;
 
 namespace Flags.Application.Common.Interfaces.Persistance;
 public interface IUserRepository
@@ -8,4 +9,5 @@ public interface IUserRepository
     Task AddAsync(User user);
     Task<List<User>> GetAllAsync();
     Task<User?> GetByIdAsync(Guid id);
+    Task<HashSet<PermissionEnum>> GetPermissionsAsync(Guid userId);
 }

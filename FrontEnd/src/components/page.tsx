@@ -4,12 +4,12 @@ import React, { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 
 interface IPage {
-	isLoading: boolean;
+	isLoading?: boolean;
 	children: ReactNode;
 	sx?: SxProps;
 }
 
-export default function Page({ isLoading, children, sx }: IPage) {
+export default function Page({ isLoading = false, children, sx }: IPage) {
 	const navigate = useNavigate();
 
 	return (

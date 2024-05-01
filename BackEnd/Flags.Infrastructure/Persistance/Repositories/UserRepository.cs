@@ -1,7 +1,6 @@
 ﻿using Flags.Application.Common.Interfaces.Persistance;
 using Flags.Domain.Enums;
 using Flags.Domain.UserEntity;
-using Flags.Domain.UserRoot.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Flags.Infrastructure.Persistance.Repositories;

@@ -1,8 +1,7 @@
-import React from 'react'
-import PhoneInput from '../components/input/fields/phone/input-phone'
+import Page from '../components/page'
 
 export default function Page1() {
   return (
-	<div>Page1</div>
+	<Page>Page1</Page>
   )
 }

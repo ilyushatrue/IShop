@@ -28,8 +28,9 @@ public class LoginByEmailQueryHandler(
         if (!passwordsMatch)
             return Errors.Authentication.InvalidCredentials;
 
-        var token = jwtTokenGenerator.GenerateToken(user);
+		var jwtAccessToken = jwtTokenGenerator.GenerateAccessToken(user);
+		var jwtRefreshToken = jwtTokenGenerator.GenerateRefreshToken();
 
-        return new AuthenticationResult(user, token);
+		return new AuthenticationResult(user, jwtAccessToken, jwtRefreshToken);
     }
 }

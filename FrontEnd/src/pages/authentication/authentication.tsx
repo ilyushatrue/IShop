@@ -2,6 +2,9 @@ import { useState } from "react";
 import { Box, Typography } from "@mui/material";
 import Register from "./register/register";
 import Login from "./login";
+import Page from "../../components/page";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { setUser } from "../../store/userSlice";
 
 interface IProps {
 	isRegistered?: boolean;
@@ -12,9 +15,14 @@ export default function Authentication({
 	sm = false,
 }: IProps) {
 	const [hasAccess, setHasAccess] = useState(false);
+	const user = useAppSelector((state) => state.user);
+	console.log(user)
 
 	return (
-		<>
+		<Page isLoading={false}>
+			<>
+				{user.user?.firstName ?? ""} + {user.isAuthenticated ? "true" : "false"}
+			</>
 			{!hasAccess ? (
 				<Box>
 					{isRegistered ? (
@@ -26,11 +34,9 @@ export default function Authentication({
 						/>
 					)}
 				</Box>
-			):(
-				<Typography variant="h1">
-					ЗАШЕЛ
-				</Typography>
+			) : (
+				<Typography variant="h1">ЗАШЕЛ</Typography>
 			)}
-		</>
+		</Page>
 	);
 }
