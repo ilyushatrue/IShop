@@ -81,30 +81,7 @@ public static class DependencyInjection
                 {
                     OnMessageReceived = context =>
                     {
-                        var jwtAccessToken = context.Request.Cookies["jwt-access-token"];
-                        if (jwtAccessToken != null)
-                        {
-                            SecurityToken validatedToken;
-                            try
-                            {
-                                var tokenHandler = new JwtSecurityTokenHandler();
-                                var principal = tokenHandler.ValidateToken(
-                                    jwtAccessToken, validationParameters, out validatedToken);
-                                context.Token = jwtAccessToken;
-                            }
-                            catch (Exception ex)
-                            {
-                                if (ex is SecurityTokenExpiredException)
-                                {
-                                    var jwtRefreshTokenExp = context.Request.Cookies["jwt-refresh-token-exp-datetime"]!;
-                                    var isExpired = DateTime.Parse(jwtRefreshTokenExp) < DateTime.Now;
-                                    if (!isExpired){
-                                        
-                                    }
-                                    var jwtRefreshToken = context.Request.Cookies["jwt-refresh-token"];
-                                }
-                            }
-                        }
+                        context.Token = context.Request.Cookies["jwt-access-token"];
                         return Task.CompletedTask;
                     },
                 };

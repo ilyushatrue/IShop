@@ -32,6 +32,8 @@ public class LoginByPhoneQueryHandler(
         var jwtAccessToken = jwtTokenGenerator.GenerateAccessToken(user);
         var jwtRefreshToken = jwtTokenGenerator.GenerateRefreshToken();
 
-        return new AuthenticationResult(user, jwtAccessToken, jwtRefreshToken);
+		var jwtRefreshTokenExpiryDatetime = DateTime.Now.AddMinutes(10).ToString();
+
+		return new AuthenticationResult(user, jwtAccessToken, jwtRefreshToken, jwtRefreshTokenExpiryDatetime);
     }
 }

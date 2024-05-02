@@ -30,7 +30,8 @@ public class LoginByEmailQueryHandler(
 
 		var jwtAccessToken = jwtTokenGenerator.GenerateAccessToken(user);
 		var jwtRefreshToken = jwtTokenGenerator.GenerateRefreshToken();
+		var jwtRefreshTokenExpiryDatetime = DateTime.Now.AddMinutes(10).ToString();
 
-		return new AuthenticationResult(user, jwtAccessToken, jwtRefreshToken);
+		return new AuthenticationResult(user, jwtAccessToken, jwtRefreshToken, jwtRefreshTokenExpiryDatetime);
     }
 }

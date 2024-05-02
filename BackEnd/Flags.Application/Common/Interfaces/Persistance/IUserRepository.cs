@@ -8,6 +8,7 @@ public interface IUserRepository
     Task<User?> GetUserByPhoneAsync(string phone);
     Task AddAsync(User user);
     Task<List<User>> GetAllAsync();
+    
     Task<User?> GetByIdAsync(Guid id);
     Task<HashSet<PermissionEnum>> GetPermissionsAsync(Guid userId);
 }

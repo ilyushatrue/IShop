@@ -1,5 +1,6 @@
 ﻿using ErrorOr;
 using Flags.Api.Controllers;
+using Flags.Application.Authentication.Commands.RefreshJwt;
 using Flags.Application.Authentication.Commands.Register;
 using Flags.Application.Authentication.Common;
 using Flags.Application.Authentication.Queries.Login.ByEmail;
@@ -34,11 +35,32 @@ public class AuthenticationController(
 
         HttpContext.Response.Cookies.Append("jwt-access-token", authResult.Value.JwtAccessToken);
         HttpContext.Response.Cookies.Append("jwt-refresh-token", authResult.Value.JwtRefreshToken);
+        HttpContext.Response.Cookies.Append("jwt-refresh-token-expiry-datetime", authResult.Value.JwtRefreshTokenExpiryDatetime);
 
         return authResult.Match(
             authResult => Ok(mapper.Map<AuthenticationResponse>(authResult)),
             errors => Problem(errors)
         );
+    }
+
+    [HttpPost("refresh-jwt")]
+    public async Task<IActionResult> RefreshJwt()
+    {
+        if (HttpContext.Request.Cookies.ContainsKey("jwt-refresh-token"))
+        {
+            var refreshToken = HttpContext.Request.Cookies["jwt-refresh-token"]!;
+            var command = new RefreshJwtCommand(refreshToken);
+            ErrorOr<AuthenticationResult> authResult = await mediator.Send(command);
+
+            return authResult.Match(
+                authResult => Ok(mapper.Map<AuthenticationResponse>(authResult)),
+                errors => Problem(errors)
+            );
+        }
+        else
+        {
+            return Problem(statusCode: 401);
+        }
     }
 
 
@@ -49,6 +71,7 @@ public class AuthenticationController(
 
         HttpContext.Response.Cookies.Append("jwt-access-token", authResult.Value.JwtAccessToken);
         HttpContext.Response.Cookies.Append("jwt-refresh-token", authResult.Value.JwtRefreshToken);
+        HttpContext.Response.Cookies.Append("jwt-refresh-token-expiry-datetime", authResult.Value.JwtRefreshTokenExpiryDatetime);
 
         return authResult.Match(
             authResult => Ok(mapper.Map<AuthenticationResponse>(authResult)),
@@ -63,6 +86,7 @@ public class AuthenticationController(
 
         HttpContext.Response.Cookies.Append("jwt-access-token", authResult.Value.JwtAccessToken);
         HttpContext.Response.Cookies.Append("jwt-refresh-token", authResult.Value.JwtRefreshToken);
+        HttpContext.Response.Cookies.Append("jwt-refresh-token-expiry-datetime", authResult.Value.JwtRefreshTokenExpiryDatetime);
 
         return authResult.Match(
             authResult => Ok(mapper.Map<AuthenticationResponse>(authResult)),

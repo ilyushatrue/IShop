@@ -5,6 +5,7 @@ import Login from "./login";
 import Page from "../../components/page";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { setUser } from "../../store/userSlice";
+import { IUserState } from "../../store/types";
 
 interface IProps {
 	isRegistered?: boolean;
@@ -16,12 +17,15 @@ export default function Authentication({
 }: IProps) {
 	const [hasAccess, setHasAccess] = useState(false);
 	const user = useAppSelector((state) => state.user);
-	console.log(user)
+	const dispatch = useAppDispatch;
+
+	console.log(user);
 
 	return (
 		<Page isLoading={false}>
 			<>
-				{user.user?.firstName ?? ""} + {user.isAuthenticated ? "true" : "false"}
+				{user.user?.firstName ?? ""} +{" "}
+				{user.isAuthenticated ? "true" : "false"}
 			</>
 			{!hasAccess ? (
 				<Box>

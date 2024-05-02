@@ -106,6 +106,7 @@ export default function Register({ sm = false, onRegister }: IProps) {
 			);
 			if (response.ok) {
 				const result = await response.json();
+				console.log(result)
 				onRegister();
 			} else {
 				console.error("Error while server request");
