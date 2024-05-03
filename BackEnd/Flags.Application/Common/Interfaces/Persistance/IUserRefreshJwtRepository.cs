@@ -5,4 +5,5 @@ namespace Flags.Application.Common.Interfaces.Persistance;
 public interface IUserRefreshJwtRepository
 {
 	Task<UserRefreshJwt?> GetByTokenAsync(string refreshToken);
+	Task<int> UpdateAsync(UserRefreshJwt token);
 }

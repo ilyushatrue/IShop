@@ -26,7 +26,7 @@ public class RefreshJwtCommandHandler(
 			var newJwtRefreshTokenExpiryDatetime = DateTime.Now.AddMinutes(10).ToString();
 
 			userRefreshJwt.Token = newJwtRefreshToken;
-			userRefreshJwtRepository
+			await userRefreshJwtRepository.UpdateAsync(userRefreshJwt);
 
 			return new AuthenticationResult(
                 userRefreshJwt.User,
