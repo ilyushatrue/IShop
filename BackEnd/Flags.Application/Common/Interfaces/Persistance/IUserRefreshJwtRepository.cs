@@ -1,8 +1,8 @@
-using Flags.Domain.UserEntity;
+using Flags.Domain.UserRoot.Entities;
 
 namespace Flags.Application.Common.Interfaces.Persistance;
 
 public interface IUserRefreshJwtRepository
 {
-	Task<User?> GetByToken(string refreshToken);
+	Task<UserRefreshJwt?> GetByTokenAsync(string refreshToken);
 }

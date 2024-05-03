@@ -47,6 +47,7 @@ public static class DependencyInjection
             .UseSnakeCaseNamingConvention());
 
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IUserRefreshJwtRepository, UserRefreshJwtRepository>();
 
         return services;
     }

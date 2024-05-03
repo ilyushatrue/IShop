@@ -17,16 +17,27 @@ public class RefreshJwtCommandHandler(
 {
 	public async Task<ErrorOr<AuthenticationResult>> Handle(RefreshJwtCommand command, CancellationToken cancellationToken)
 	{
-		var user = await userRefreshJwtRepository.GetByToken(command.JwtRefreshToken);
-		if (user is not null)
+		var userRefreshJwt = await userRefreshJwtRepository.GetByTokenAsync(command.JwtRefreshToken);
+		
+		if (userRefreshJwt is not null)
 		{
-			var jwtAccessToken = jwtTokenGenerator.GenerateAccessToken(user);
-			var jwtRefreshToken = jwtTokenGenerator.GenerateRefreshToken();
-			var jwtRefreshTokenExpiryDatetime = DateTime.Now.AddMinutes(10).ToString();
+			var newJwtAccessToken = jwtTokenGenerator.GenerateAccessToken(userRefreshJwt.User);
+			var newJwtRefreshToken = jwtTokenGenerator.GenerateRefreshToken();
+			var newJwtRefreshTokenExpiryDatetime = DateTime.Now.AddMinutes(10).ToString();
 
-			return new AuthenticationResult(user, jwtAccessToken, jwtRefreshToken, jwtRefreshTokenExpiryDatetime);
+			userRefreshJwt.Token = newJwtRefreshToken;
+			userRefreshJwtRepository
+
+			return new AuthenticationResult(
+                userRefreshJwt.User,
+                newJwtAccessToken,
+                newJwtRefreshToken,
+                newJwtRefreshTokenExpiryDatetime);
 
 		}
-		return Errors.Authentication.UserNotFound;
+		else
+		{
+			return Errors.Authentication.UserNotFound;
+		}
 	}
 }
