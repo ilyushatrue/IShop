@@ -4,12 +4,14 @@ using Flags.Application.Common.Interfaces.Authentication;
 using Flags.Application.Common.Interfaces.Persistance;
 using Flags.Domain.Common.Errors;
 using MediatR;
+using Microsoft.AspNetCore.Connections;
 
 namespace Flags.Application.Authentication.Queries.Login.ByEmail;
 
 public class LoginByEmailQueryHandler(
     IUserRepository userRepository,
     IJwtTokenGenerator jwtTokenGenerator,
+    IRefreshJwtRepository refreshJwtRepository,
     IPasswordHasher passwordHasher
 ) :
     IRequestHandler<LoginByEmailQuery, ErrorOr<AuthenticationResult>>
@@ -28,10 +30,9 @@ public class LoginByEmailQueryHandler(
         if (!passwordsMatch)
             return Errors.Authentication.InvalidCredentials;
 
-		var jwtAccessToken = jwtTokenGenerator.GenerateAccessToken(user);
-		var jwtRefreshToken = jwtTokenGenerator.GenerateRefreshToken();
-		var jwtRefreshTokenExpiryDatetime = DateTime.Now.AddMinutes(10).ToString();
+        var jwtAccessToken = jwtTokenGenerator.GenerateAccessToken(user);
+        await refreshJwtRepository.UpdateAsync(user.RefreshJwt);
 
-		return new AuthenticationResult(user, jwtAccessToken, jwtRefreshToken, jwtRefreshTokenExpiryDatetime);
+        return new AuthenticationResult(user, jwtAccessToken);
     }
 }

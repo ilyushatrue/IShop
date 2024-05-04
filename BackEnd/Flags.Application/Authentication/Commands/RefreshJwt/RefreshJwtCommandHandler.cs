@@ -8,32 +8,26 @@ using Flags.Domain.Common.Errors;
 namespace Flags.Application.Authentication.Commands.RefreshJwt;
 
 public class RefreshJwtCommandHandler(
-	IUserRepository userRepository,
 	IJwtTokenGenerator jwtTokenGenerator,
-	IUserRefreshJwtRepository userRefreshJwtRepository
+	IRefreshJwtRepository userRefreshJwtRepository
 
 ) :
 	IRequestHandler<RefreshJwtCommand, ErrorOr<AuthenticationResult>>
 {
 	public async Task<ErrorOr<AuthenticationResult>> Handle(RefreshJwtCommand command, CancellationToken cancellationToken)
 	{
-		var userRefreshJwt = await userRefreshJwtRepository.GetByTokenAsync(command.JwtRefreshToken);
-		
-		if (userRefreshJwt is not null)
+		var refreshJwt = await userRefreshJwtRepository.GetByIdAsync(command.UserId);
+
+		if (refreshJwt is not null)
 		{
-			var newJwtAccessToken = jwtTokenGenerator.GenerateAccessToken(userRefreshJwt.User);
-			var newJwtRefreshToken = jwtTokenGenerator.GenerateRefreshToken();
-			var newJwtRefreshTokenExpiryDatetime = DateTime.Now.AddMinutes(10).ToString();
-
-			userRefreshJwt.Token = newJwtRefreshToken;
-			await userRefreshJwtRepository.UpdateAsync(userRefreshJwt);
-
+			var newJwtAccessToken = jwtTokenGenerator.GenerateAccessToken(refreshJwt.User);
+			if (refreshJwt.ExpiryDatetime <= DateTime.Now.AddMinutes(-1))
+			{
+				await userRefreshJwtRepository.UpdateAsync(refreshJwt);
+			}
 			return new AuthenticationResult(
-                userRefreshJwt.User,
-                newJwtAccessToken,
-                newJwtRefreshToken,
-                newJwtRefreshTokenExpiryDatetime);
-
+				refreshJwt.User,
+				newJwtAccessToken);
 		}
 		else
 		{

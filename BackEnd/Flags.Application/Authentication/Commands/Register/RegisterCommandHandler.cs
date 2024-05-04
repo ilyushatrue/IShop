@@ -10,6 +10,7 @@ namespace Flags.Application.Authentication.Commands.Register;
 
 public class RegisterCommandHandler(
 	IUserRepository userRepository,
+	IRefreshJwtRepository refreshJwtRepository,
 	IJwtTokenGenerator jwtTokenGenerator,
 	IPasswordHasher passwordHasher
 ) :
@@ -38,7 +39,6 @@ public class RegisterCommandHandler(
 		if (errors.Count > 0)
 			return errors;
 
-
 		var user = User.Create(
 			firstName: command.FirstName,
 			lastName: command.LastName,
@@ -50,9 +50,8 @@ public class RegisterCommandHandler(
 		await userRepository.AddAsync(user);
 
 		var jwtAccessToken = jwtTokenGenerator.GenerateAccessToken(user);
-		var jwtRefreshToken = jwtTokenGenerator.GenerateRefreshToken();
-		var jwtRefreshTokenExpiryDatetime = DateTime.Now.AddMinutes(10).ToString();
+		await refreshJwtRepository.CreateAsync(user.Id);
 
-		return new AuthenticationResult(user, jwtAccessToken, jwtRefreshToken, jwtRefreshTokenExpiryDatetime);
+		return new AuthenticationResult(user, jwtAccessToken);
 	}
 }

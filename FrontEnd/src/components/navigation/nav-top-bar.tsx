@@ -1,8 +1,6 @@
-import React from "react";
 import NavTabs from "./tabs/nav-tabs";
-import { Avatar, Box } from "@mui/material";
+import { Box } from "@mui/material";
 import NavAvatar, { IAvatar } from "./nav-avatar";
-import { INavBar } from "./nav-bar";
 
 interface IProps {
 	menuItems: { label: string; href: string }[];

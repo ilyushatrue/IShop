@@ -39,7 +39,7 @@ export default function LoginByEmail({ sm = false, onLogin }: IProps) {
 			console.log(fetchResult);
 			onLogin();
 		} catch (error) {
-			console.log(error);
+			console.error(error);
 		}
 	}
 

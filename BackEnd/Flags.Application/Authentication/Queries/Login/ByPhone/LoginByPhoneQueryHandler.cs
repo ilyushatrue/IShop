@@ -11,6 +11,7 @@ namespace Flags.Application.Authentication.Queries.Login.ByPhone;
 public class LoginByPhoneQueryHandler(
     IUserRepository userRepository,
     IJwtTokenGenerator jwtTokenGenerator,
+    IRefreshJwtRepository refreshJwtRepository,
     IPasswordHasher passwordHasher
 ) :
     IRequestHandler<LoginByPhoneQuery, ErrorOr<AuthenticationResult>>
@@ -30,10 +31,8 @@ public class LoginByPhoneQueryHandler(
             return Errors.Authentication.InvalidCredentials;
 
         var jwtAccessToken = jwtTokenGenerator.GenerateAccessToken(user);
-        var jwtRefreshToken = jwtTokenGenerator.GenerateRefreshToken();
+        await refreshJwtRepository.UpdateAsync(user.RefreshJwt);
 
-		var jwtRefreshTokenExpiryDatetime = DateTime.Now.AddMinutes(10).ToString();
-
-		return new AuthenticationResult(user, jwtAccessToken, jwtRefreshToken, jwtRefreshTokenExpiryDatetime);
+        return new AuthenticationResult(user, jwtAccessToken);
     }
 }

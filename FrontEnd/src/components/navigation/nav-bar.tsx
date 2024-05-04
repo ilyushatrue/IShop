@@ -1,5 +1,3 @@
-import React from "react";
-
 import NavSideBar from "./nav-side-bar";
 import NavTopBar from "./nav-top-bar";
 import { IAvatar } from "./nav-avatar";

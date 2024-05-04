@@ -23,7 +23,7 @@ public class FlagDbContext(
 	}
 
 	public DbSet<User> Users { get; set; } = null!;
-	public DbSet<UserRefreshJwt> UserRefreshJwts { get; set; } = null!;
+	public DbSet<RefreshJwt> RefreshJwts { get; set; } = null!;
 	public DbSet<Role> Roles { get; set; } = null!;
 	public DbSet<Permission> Permissions { get; set; } = null!;
 

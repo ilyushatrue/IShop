@@ -42,4 +42,6 @@ public class User : AggregateRoot<Guid>
     public Email Email { get; private set; } = null!;
     public Password Password { get; private set; } = null!;
     public IReadOnlyCollection<Role> Roles => _roles.AsReadOnly();
+
+    public RefreshJwt RefreshJwt { get; }
 }

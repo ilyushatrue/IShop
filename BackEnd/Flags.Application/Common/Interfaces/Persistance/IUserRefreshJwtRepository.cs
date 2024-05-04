@@ -2,8 +2,9 @@ using Flags.Domain.UserRoot.Entities;
 
 namespace Flags.Application.Common.Interfaces.Persistance;
 
-public interface IUserRefreshJwtRepository
+public interface IRefreshJwtRepository
 {
-	Task<UserRefreshJwt?> GetByTokenAsync(string refreshToken);
-	Task<int> UpdateAsync(UserRefreshJwt token);
+	Task<RefreshJwt?> GetByIdAsync(Guid userId);
+	Task<int> UpdateAsync(RefreshJwt token);
+	Task<int> CreateAsync(Guid userId);
 }

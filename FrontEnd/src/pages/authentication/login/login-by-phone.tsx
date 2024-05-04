@@ -44,7 +44,9 @@ export default function LoginByPhone({ sm = false, onLogin }: IProps) {
 			const fetchResult = await api.postAsync(url, data);
 			console.log(fetchResult);
 			onLogin();
-		} catch (error) {}
+		} catch (error) {
+			console.error(error);
+		}
 	}
 
 	return (

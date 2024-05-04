@@ -33,9 +33,8 @@ public class AuthenticationController(
                 title: authResult.FirstError.Description);
         }
 
-        HttpContext.Response.Cookies.Append("jwt-access-token", authResult.Value.JwtAccessToken);
-        HttpContext.Response.Cookies.Append("jwt-refresh-token", authResult.Value.JwtRefreshToken);
-        HttpContext.Response.Cookies.Append("jwt-refresh-token-expiry-datetime", authResult.Value.JwtRefreshTokenExpiryDatetime);
+        if (!authResult.IsError)
+            SetCookies(authResult.Value.JwtAccessToken);
 
         return authResult.Match(
             authResult => Ok(mapper.Map<AuthenticationResponse>(authResult)),
@@ -46,10 +45,11 @@ public class AuthenticationController(
     [HttpPost("refresh-jwt")]
     public async Task<IActionResult> RefreshJwt()
     {
-        if (HttpContext.Request.Cookies.ContainsKey("jwt-refresh-token"))
+        var userId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "UserId")?.Value;
+
+        if (userId is not null)
         {
-            var refreshToken = HttpContext.Request.Cookies["jwt-refresh-token"]!;
-            var command = new RefreshJwtCommand(refreshToken);
+            var command = new RefreshJwtCommand(Guid.Parse(userId));
             ErrorOr<AuthenticationResult> authResult = await mediator.Send(command);
 
             return authResult.Match(
@@ -69,9 +69,8 @@ public class AuthenticationController(
     {
         var authResult = await mediator.Send(query);
 
-        HttpContext.Response.Cookies.Append("jwt-access-token", authResult.Value.JwtAccessToken);
-        HttpContext.Response.Cookies.Append("jwt-refresh-token", authResult.Value.JwtRefreshToken);
-        HttpContext.Response.Cookies.Append("jwt-refresh-token-expiry-datetime", authResult.Value.JwtRefreshTokenExpiryDatetime);
+        if (!authResult.IsError)
+            SetCookies(authResult.Value.JwtAccessToken);
 
         return authResult.Match(
             authResult => Ok(mapper.Map<AuthenticationResponse>(authResult)),
@@ -84,13 +83,18 @@ public class AuthenticationController(
     {
         var authResult = await mediator.Send(query);
 
-        HttpContext.Response.Cookies.Append("jwt-access-token", authResult.Value.JwtAccessToken);
-        HttpContext.Response.Cookies.Append("jwt-refresh-token", authResult.Value.JwtRefreshToken);
-        HttpContext.Response.Cookies.Append("jwt-refresh-token-expiry-datetime", authResult.Value.JwtRefreshTokenExpiryDatetime);
+        if (!authResult.IsError)
+            SetCookies(authResult.Value.JwtAccessToken);
 
         return authResult.Match(
             authResult => Ok(mapper.Map<AuthenticationResponse>(authResult)),
             errors => Problem(errors)
         );
+    }
+
+    private void SetCookies(string jwtAccessToken)
+    {
+        HttpContext.Response.Cookies.Delete("jwt-access-token");
+        HttpContext.Response.Cookies.Append("jwt-access-token", jwtAccessToken);
     }
 }

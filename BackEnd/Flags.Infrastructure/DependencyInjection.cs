@@ -16,7 +16,6 @@ using AuthorizationOptions = Flags.Infrastructure.Authorization.AuthorizationOpt
 using Flags.Domain.Enums;
 using Flags.Infrastructure.Authorization;
 using Microsoft.AspNetCore.Authorization;
-using System.IdentityModel.Tokens.Jwt;
 
 namespace Flags.Infrastructure;
 
@@ -47,7 +46,7 @@ public static class DependencyInjection
             .UseSnakeCaseNamingConvention());
 
         services.AddScoped<IUserRepository, UserRepository>();
-        services.AddScoped<IUserRefreshJwtRepository, UserRefreshJwtRepository>();
+        services.AddScoped<IRefreshJwtRepository, RefreshJwtRepository>();
 
         return services;
     }
@@ -95,7 +94,13 @@ public static class DependencyInjection
             {
                 policy
                     .RequireClaim(CustomClaims.ADMIN, "true")
-                    .AddRequirements(new PermissionRequirement([PermissionEnum.Create, PermissionEnum.Read, PermissionEnum.Delete, PermissionEnum.Update]));
+                    .AddRequirements(new PermissionRequirement(
+                    [
+                        PermissionEnum.Create,
+                        PermissionEnum.Read,
+                        PermissionEnum.Delete,
+                        PermissionEnum.Update
+                    ]));
             });
 
         return services;

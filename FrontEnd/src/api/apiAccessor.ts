@@ -1,73 +1,58 @@
 import getConstant from "../infrastructure/constantProvider";
 
-export async function tryFetch<T>(request: () => Promise<Response>) {
-	const fullUrl = getConstant("API_URL")
-	const response = await request();
-	if (response.ok) {
-		const result = await response.json() as T;
-		return result;
-	} else if (response.status === 401) {
-		await tryFetch<boolean>(async () => {
-			return await fetch(fullUrl + );
-		})
-		await tryFetch(request);
-		redirect("/login");
-	}
-	else {
-		console.error("Error");
-		return undefined;
+async function tryFetchAsync<T>(
+	request: () => Promise<Response>
+): Promise<T | undefined> {
+	const fullUrl = getConstant("API_URL");
+	const attemptsCount = 2;
+	for (let attempt = 1; attempt <= attemptsCount; attempt++) {
+		const response = await request();
+		if (response.ok) {
+			const result = (await response.json()) as T;
+			return result;
+		} else if (response.status === 401) {
+			if (attempt === 1) {
+				await api.postAsync(`${fullUrl}/refresh-jwt`);
+			} else {
+				redirect("/login");
+			}
+		} else {
+			console.error("Error");
+			return undefined;
+		}
 	}
 }
 
 const api = {
-	getAsync: async (url: string): Promise<any> => {
+	getAsync: async <TOut>(url: string): Promise<TOut | undefined> => {
 		const fullUrl = getConstant("API_URL") + url;
-		try {
-			const response = await fetch(fullUrl, {
-				method: "GET",
-				credentials: "include",
-				headers: {
-					"Content-Type": "application/json",
-				},
-			});
-			if (response.ok) {
-				console.log(1)
-				const result = await response.json();
-				console.log(result)
-				return result.value;
-			} else if (response.status === 401) {
-				redirect("/login");
-			}
-			else {
-				console.error("Error");
-				return undefined;
-			}
-		}
-		catch (error) {
-
-		}
+		return await tryFetchAsync<TOut>(
+			async () =>
+				await fetch(fullUrl, {
+					method: "GET",
+					credentials: "include",
+				})
+		);
 	},
-	postAsync: async (url: string, data: any): Promise<any> => {
+
+	postAsync: async <TIn, TOut>(
+		url: string,
+		data?: TIn
+	): Promise<TOut | undefined> => {
 		const fullUrl = getConstant("API_URL") + url;
-		const response = await fetch(fullUrl, {
-			method: "POST",
-			body: JSON.stringify(data),
-			credentials: "include",
-			headers: {
-				"Content-Type": "application/json",
-			},
-		});
-		if (response.ok) {
-			const result = await response.json();
-			console.log(result)
-			return result.value;
-		} else if (response.status === 401) {
-			redirect("/login")
-		}
-		else {
-			console.error("Error");
-			return undefined;
-		}
+		return await tryFetchAsync<TOut>(
+			async () =>
+				await fetch(fullUrl, {
+					method: "POST",
+					body: data ? JSON.stringify(data) : undefined,
+					credentials: "include",
+					headers: data
+						? {
+								"Content-Type": "application/json",
+						  }
+						: undefined,
+				})
+		);
 	},
 };
 

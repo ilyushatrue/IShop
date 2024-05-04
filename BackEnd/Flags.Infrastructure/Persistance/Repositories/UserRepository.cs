@@ -14,7 +14,9 @@ public class UserRepository(FlagDbContext dbContext) : IUserRepository
 
     public async Task<User?> GetUserByEmailAsync(string email)
     {
-        return await dbContext.Users.SingleOrDefaultAsync(u => u.Email.Value == email);
+        return await dbContext.Users
+            .Include(u => u.RefreshJwt)
+            .SingleOrDefaultAsync(u => u.Email.Value == email);
     }
 
     public async Task<List<User>> GetAllAsync()
@@ -24,7 +26,9 @@ public class UserRepository(FlagDbContext dbContext) : IUserRepository
 
     public async Task<User?> GetUserByPhoneAsync(string phone)
     {
-        return await dbContext.Users.SingleOrDefaultAsync(u => u.Phone.Value == phone);
+        return await dbContext.Users
+            .Include(u => u.RefreshJwt)
+            .SingleOrDefaultAsync(u => u.Phone.Value == phone);
     }
 
     public async Task<User?> GetByIdAsync(Guid id)

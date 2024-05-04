@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import api from "../../api/apiAccessor";
 import { IUser } from "../../api/interfaces/user/IUser";
-import { useNavigate } from "react-router-dom";
 export default function Users() {
 	const [users, setUsers] = useState<IUser[]>([]);
 	useEffect(() => {
@@ -10,8 +9,8 @@ export default function Users() {
 
 	async function loadData() {
 		try {
-			const response = await api.getAsync("users");
-			if (!!response.length) setUsers(response);
+			const response = await api.getAsync<IUser[]>("users");
+			if (response !== undefined && response.length) setUsers(response);
 			console.log(response);
 		} catch (error: any) {
 			const { cause } = error;

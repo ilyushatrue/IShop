@@ -6,6 +6,7 @@ import ValidationForm from "../../../components/input/form/validation-form";
 import { Link, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import Template from "../base/template";
+import api from "../../../api/apiAccessor";
 interface IRegisterFormField extends IRegisterRequest {
 	confirmPassword: string;
 }
@@ -88,29 +89,15 @@ export default function Register({ sm = false, onRegister }: IProps) {
 		register(data);
 	}
 
-	function redirectToLogin(){
-		navigate("../login")
+	function redirectToLogin() {
+		navigate("../login");
 	}
-	
+
 	async function register(data: IRegisterRequest) {
 		try {
-			const response = await fetch(
-				"http://localhost:5261/auth/register",
-				{
-					method: "POST",
-					body: JSON.stringify(data),
-					headers: {
-						"Content-Type": "application/json",
-					},
-				}
-			);
-			if (response.ok) {
-				const result = await response.json();
-				console.log(result)
-				onRegister();
-			} else {
-				console.error("Error while server request");
-			}
+			const url = "auth/register";
+			const result = await api.postAsync(url, data);
+			console.log(result);
 		} catch (error) {
 			console.error(error);
 		}
