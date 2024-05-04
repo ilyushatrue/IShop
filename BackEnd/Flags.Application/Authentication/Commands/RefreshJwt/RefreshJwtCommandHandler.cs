@@ -10,7 +10,6 @@ namespace Flags.Application.Authentication.Commands.RefreshJwt;
 public class RefreshJwtCommandHandler(
 	IJwtTokenGenerator jwtTokenGenerator,
 	IRefreshJwtRepository userRefreshJwtRepository
-
 ) :
 	IRequestHandler<RefreshJwtCommand, ErrorOr<AuthenticationResult>>
 {
