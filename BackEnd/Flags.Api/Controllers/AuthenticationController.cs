@@ -1,5 +1,6 @@
 ﻿using ErrorOr;
 using Flags.Api.Controllers;
+using Flags.Application.Authentication.Commands.Logout;
 using Flags.Application.Authentication.Commands.RefreshJwt;
 using Flags.Application.Authentication.Commands.Register;
 using Flags.Application.Authentication.Common;
@@ -85,11 +86,12 @@ public class AuthenticationController(
 
         if (userId is not null)
         {
-            var command = new RefreshJwtCommand(Guid.Parse(userId));
-            ErrorOr<AuthenticationResult> authResult = await mediator.Send(command);
+            var command = new LogoutCommand(Guid.Parse(userId));
+            ErrorOr<bool> authResult = await mediator.Send(command);
+            if (!authResult.IsError) DeleteJwtAccessTokenCookie();
 
             return authResult.Match(
-                authResult => Ok(mapper.Map<AuthenticationResponse>(authResult)),
+                authResult => Ok(authResult),
                 errors => Problem(errors)
             );
         }
@@ -115,7 +117,12 @@ public class AuthenticationController(
 
     private void SetCookies(string jwtAccessToken)
     {
-        HttpContext.Response.Cookies.Delete("jwt-access-token");
+        DeleteJwtAccessTokenCookie();
         HttpContext.Response.Cookies.Append("jwt-access-token", jwtAccessToken);
+    }
+
+    private void DeleteJwtAccessTokenCookie()
+    {
+        HttpContext.Response.Cookies.Delete("jwt-access-token");
     }
 }

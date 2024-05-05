@@ -1,18 +1,9 @@
 import NavSideBar from "./nav-side-bar";
 import NavTopBar from "./nav-top-bar";
 import { IAvatar } from "./nav-avatar";
+import { useMemo } from "react";
+import api, { redirect } from "../../api/apiAccessor";
 
-const menuAvatar: IAvatar = {
-	menuItems: [
-		{
-			icon: "logout",
-			label: "Выйти",
-			sx: { color: "primary.dark", marginRight: 1 },
-		},
-	],
-	tip: "Аккаунт",
-	sx: { bgcolor: "primary.main" },
-};
 
 const menuItems = [
 	{ label: "Главная", href: "/shop" },
@@ -25,6 +16,28 @@ export interface INavBar {
 	sm?: boolean;
 }
 export default function NavBar({ sm = false }: INavBar) {
+
+	const menuAvatar = useMemo<IAvatar>(()=> ({
+		menuItems: [
+			{
+				icon: "logout",
+				label: "Выйти",
+				sx: { color: "primary.dark", marginRight: 1 },
+				onClick: handleLogout
+			},
+		],
+		tip: "Аккаунт",
+		sx: { bgcolor: "primary.main" },
+	}), []);
+
+	async function handleLogout(): Promise<boolean | undefined>{
+		const result = await api.postAsync<undefined, boolean>("auth/logout")
+		if(result){
+			redirect("/login")
+		}
+		return result;
+	}
+
 	function handleTabChange(tabIndex: number) {}
 
 	return (

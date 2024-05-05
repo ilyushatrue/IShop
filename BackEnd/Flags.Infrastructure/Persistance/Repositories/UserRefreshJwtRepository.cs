@@ -14,6 +14,12 @@ public class RefreshJwtRepository(
         return await dbContext.SaveChangesAsync();
     }
 
+    public async Task<int> DeleteAsync(RefreshJwt token)
+    {
+        dbContext.Remove(token);
+        return await dbContext.SaveChangesAsync();
+    }
+
     public async Task<RefreshJwt?> GetByIdAsync(Guid userId)
     {
         return await dbContext.RefreshJwts
