@@ -31,7 +31,7 @@ export default function NavBar({ sm = false }: INavBar) {
 	}), []);
 
 	async function handleLogout(): Promise<boolean | undefined>{
-		const result = await api.postAsync<undefined, boolean>("auth/logout")
+		const result = await api.tryPostAsync<undefined, boolean>("auth/logout")
 		if(result){
 			redirect("/login")
 		}
