@@ -6,8 +6,9 @@ interface IProps {
 	menuItems: { label: string; href: string }[];
 	onTabChange: (tabIndex: number) => void;
 	avatar: IAvatar;
+	value: number | null;
 }
-export default function NavTopBar({ menuItems, onTabChange, avatar }: IProps) {
+export default function NavTopBar({ menuItems, onTabChange, avatar, value }: IProps) {
 	return (
 		<Box
 			position={"fixed"}
@@ -21,6 +22,7 @@ export default function NavTopBar({ menuItems, onTabChange, avatar }: IProps) {
 			boxShadow={"0px 0px 120px rgba(0,0,0,0.1)"}
 		>
 			<NavTabs
+				value={value}
 				onChange={onTabChange}
 				menuItems={menuItems}
 				orientation={"horizontal"}

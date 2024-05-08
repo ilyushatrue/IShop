@@ -15,8 +15,14 @@ interface IProps {
 	menuItems: { label: string; href: string }[];
 	onTabChange: (tabIndex: number) => void;
 	avatar: IAvatar;
+	value: number | null;
 }
-export default function NavSideBar({ menuItems, onTabChange, avatar }: IProps) {
+export default function NavSideBar({
+	menuItems,
+	onTabChange,
+	avatar,
+	value,
+}: IProps) {
 	const [isMenuCollapsed, setIsMenuCollapsed] = useState(true);
 
 	function toggleMenuCollapse() {
@@ -74,6 +80,7 @@ export default function NavSideBar({ menuItems, onTabChange, avatar }: IProps) {
 						<ArrowBack />
 					</Button>
 					<NavTabs
+						value={value}
 						onChange={handleTabChange}
 						menuItems={menuItems}
 						orientation={"vertical"}
