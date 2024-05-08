@@ -1,5 +1,6 @@
 ﻿using ErrorOr;
 using Flags.Api.Controllers;
+using Flags.Application.Authentication.Commands.Logout;
 using Flags.Application.Authentication.Commands.RefreshJwt;
 using Flags.Application.Authentication.Commands.Register;
 using Flags.Application.Authentication.Common;
@@ -78,6 +79,28 @@ public class AuthenticationController(
         );
     }
 
+    [HttpPost("logout")]
+    public async Task<IActionResult> Logout()
+    {
+        var userId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "UserId")?.Value;
+
+        if (userId is not null)
+        {
+            var command = new LogoutCommand(Guid.Parse(userId));
+            ErrorOr<bool> authResult = await mediator.Send(command);
+            if (!authResult.IsError) DeleteJwtAccessTokenCookie();
+
+            return authResult.Match(
+                authResult => Ok(authResult),
+                errors => Problem(errors)
+            );
+        }
+        else
+        {
+            return Problem(statusCode: 401);
+        }
+    }
+
     [HttpPost("login-by-phone")]
     public async Task<IActionResult> LoginByPhone(LoginByPhoneQuery query)
     {
@@ -94,7 +117,12 @@ public class AuthenticationController(
 
     private void SetCookies(string jwtAccessToken)
     {
-        HttpContext.Response.Cookies.Delete("jwt-access-token");
+        DeleteJwtAccessTokenCookie();
         HttpContext.Response.Cookies.Append("jwt-access-token", jwtAccessToken);
+    }
+
+    private void DeleteJwtAccessTokenCookie()
+    {
+        HttpContext.Response.Cookies.Delete("jwt-access-token");
     }
 }

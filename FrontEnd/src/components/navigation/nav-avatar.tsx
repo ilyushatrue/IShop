@@ -14,7 +14,12 @@ export interface IAvatar {
 	sx?: SxProps;
 	containerSx?: SxProps;
 	tip: string;
-	menuItems: { label: string; icon: IIcon["name"]; sx: SxProps }[];
+	menuItems: {
+		label: string;
+		icon: IIcon["name"];
+		sx: SxProps;
+		onClick: () => void;
+	}[];
 }
 export default function NavAvatar({
 	sx,
@@ -24,7 +29,8 @@ export default function NavAvatar({
 }: IAvatar) {
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const isMenuOpen = Boolean(anchorEl);
-	function handleMenuClose() {
+
+	function closeMenu() {
 		setAnchorEl(null);
 	}
 	function handleMenuClick() {
@@ -44,7 +50,7 @@ export default function NavAvatar({
 			<Menu
 				anchorEl={anchorEl}
 				open={isMenuOpen}
-				onClose={handleMenuClose}
+				onClose={closeMenu}
 				onClick={handleMenuClick}
 				PaperProps={{
 					elevation: 0,
@@ -76,8 +82,15 @@ export default function NavAvatar({
 				anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
 			>
 				{menuItems.map((item, index) => (
-					<MenuItem onClick={handleMenuClose} key={index}>
-						<Icon name={item.icon} sx={item.sx}/>
+					<MenuItem
+						onClick={() => {
+							closeMenu();
+							item.onClick();
+							return;
+						}}
+						key={index}
+					>
+						<Icon name={item.icon} sx={item.sx} />
 						{item.label}
 					</MenuItem>
 				))}

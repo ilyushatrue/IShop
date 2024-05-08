@@ -3,18 +3,7 @@ import NavTopBar from "./nav-top-bar";
 import { IAvatar } from "./nav-avatar";
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-
-const menuAvatar: IAvatar = {
-	menuItems: [
-		{
-			icon: "logout",
-			label: "Выйти",
-			sx: { color: "primary.dark", marginRight: 1 },
-		},
-	],
-	tip: "Аккаунт",
-	sx: { bgcolor: "primary.main" },
-};
+import api, { redirect } from "../../api/apiAccessor";
 
 const menuItems = [
 	{ label: "Главная", href: "/shop" },
@@ -28,7 +17,35 @@ export interface INavBar {
 export default function NavBar({ sm = false }: INavBar) {
 	const location = useLocation();
 	const navigate = useNavigate();
-	const [selectedItemIndex, setSelectedItemIndex] = useState<number | null>(null);
+	const [selectedItemIndex, setSelectedItemIndex] = useState<number | null>(
+		null
+	);
+
+	const menuAvatar = useMemo<IAvatar>(
+		() => ({
+			menuItems: [
+				{
+					icon: "logout",
+					label: "Выйти",
+					sx: { color: "primary.dark", marginRight: 1 },
+					onClick: handleLogout,
+				},
+			],
+			tip: "Аккаунт",
+			sx: { bgcolor: "primary.main" },
+		}),
+		[]
+	);
+
+	async function handleLogout(): Promise<boolean | undefined> {
+		const result = await api.tryPostAsync<undefined, boolean>(
+			"auth/logout"
+		);
+		if (result) {
+			redirect("/login");
+		}
+		return result;
+	}
 
 	const navigationMaps = useMemo(() => {
 		const map: any = {};
@@ -45,7 +62,7 @@ export default function NavBar({ sm = false }: INavBar) {
 
 	useEffect(() => {
 		Object.keys(navigationMaps).forEach((k) => {
-			console.log(k, location.pathname)
+			console.log(k, location.pathname);
 			if (location.pathname.includes(k)) {
 				setSelectedItemIndex(
 					navigationMaps[k as keyof typeof navigationMaps]

@@ -31,7 +31,11 @@ public class LoginByPhoneQueryHandler(
             return Errors.Authentication.InvalidCredentials;
 
         var jwtAccessToken = jwtTokenGenerator.GenerateAccessToken(user);
-        await refreshJwtRepository.UpdateAsync(user.RefreshJwt);
+
+        if (user.RefreshJwt is null)
+            await refreshJwtRepository.CreateAsync(user.Id);
+        else
+            await refreshJwtRepository.UpdateAsync(user.RefreshJwt);
 
         return new AuthenticationResult(user, jwtAccessToken);
     }

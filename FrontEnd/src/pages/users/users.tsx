@@ -1,30 +1,22 @@
 import { useEffect, useState } from "react";
 import api from "../../api/apiAccessor";
 import { IUser } from "../../api/interfaces/user/IUser";
+import Page from "../../components/page";
 export default function Users() {
+	console.log(123);
 	const [users, setUsers] = useState<IUser[]>([]);
 	useEffect(() => {
-		loadData();
+		api.tryGetAsync<IUser[]>("/users").then((response) => {
+			if (response !== undefined && response.length > 0)
+				setUsers(response);
+			console.log(response);
+		});
 	}, []);
 
-	async function loadData() {
-		try {
-			const response = await api.getAsync<IUser[]>("users");
-			if (response !== undefined && response.length) setUsers(response);
-			console.log(response);
-		} catch (error: any) {
-			const { cause } = error;
-			console.log(cause);
-			if (cause === 401) {
-				return;
-			}
-		}
-	}
-
 	return (
-		<div>
+		<Page>
 			{users.map((user, index) => (
-				<div key={index}>
+				<div key={index} style={{ backgroundColor: "palevioletred" }}>
 					{user.firstName +
 						" " +
 						user.lastName +
@@ -34,6 +26,6 @@ export default function Users() {
 						user.phone}
 				</div>
 			))}
-		</div>
+		</Page>
 	);
 }

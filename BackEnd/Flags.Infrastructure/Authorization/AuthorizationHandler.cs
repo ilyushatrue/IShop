@@ -1,5 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using Flags.Application.Common.Interfaces.Persistance;
+using Flags.Infrastructure.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,16 +14,17 @@ public class PermissionAuthorizationHandler(
         AuthorizationHandlerContext context,
         PermissionRequirement requirement)
     {
-        using var scope = scopeFactory.CreateScope();
-        var userRepository = scope.ServiceProvider.GetRequiredService<IUserRepository>();
-
         var userIdStr = context.User.Claims.FirstOrDefault(
-            c => c.Type == JwtRegisteredClaimNames.Sub
+            c => c.Type == CustomClaims.USER_ID
         );
         if (userIdStr is null || !Guid.TryParse(userIdStr.Value, out var userId))
         {
             return;
         }
+
+        using var scope = scopeFactory.CreateScope();
+        var userRepository = scope.ServiceProvider.GetRequiredService<IUserRepository>();
+
         var permissions = await userRepository.GetPermissionsAsync(userId);
 
         if (permissions.Intersect(requirement.Permissions).Any())

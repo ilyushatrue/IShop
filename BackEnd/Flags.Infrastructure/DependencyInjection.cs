@@ -93,7 +93,6 @@ public static class DependencyInjection
             .AddPolicy(CustomPolicies.ADMIN_POLICY, policy =>
             {
                 policy
-                    .RequireClaim(CustomClaims.ADMIN, "true")
                     .AddRequirements(new PermissionRequirement(
                     [
                         PermissionEnum.Create,

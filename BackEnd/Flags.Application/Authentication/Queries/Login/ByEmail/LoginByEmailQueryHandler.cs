@@ -4,7 +4,6 @@ using Flags.Application.Common.Interfaces.Authentication;
 using Flags.Application.Common.Interfaces.Persistance;
 using Flags.Domain.Common.Errors;
 using MediatR;
-using Microsoft.AspNetCore.Connections;
 
 namespace Flags.Application.Authentication.Queries.Login.ByEmail;
 
@@ -31,7 +30,11 @@ public class LoginByEmailQueryHandler(
             return Errors.Authentication.InvalidCredentials;
 
         var jwtAccessToken = jwtTokenGenerator.GenerateAccessToken(user);
-        await refreshJwtRepository.UpdateAsync(user.RefreshJwt);
+
+        if (user.RefreshJwt is null)
+            await refreshJwtRepository.CreateAsync(user.Id);
+        else
+            await refreshJwtRepository.UpdateAsync(user.RefreshJwt);
 
         return new AuthenticationResult(user, jwtAccessToken);
     }
