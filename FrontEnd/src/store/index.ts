@@ -1,10 +1,12 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 import userSlice from "./userSlice";
+import { api } from "../api/api";
 
 
 export const store = configureStore({
 	reducer: {
-		user: userSlice
+		user: userSlice,
+		[api.reducerPath]: api.reducer
 	}
 })
 
