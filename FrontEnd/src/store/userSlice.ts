@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { IUserState } from './types';
+import { userApi } from '../api/userApi';
 
 const initialState: IUserState = {
 	isAuthenticated: false,
@@ -11,12 +12,29 @@ const userSlice = createSlice({
 	name: "user",
 	initialState,
 	reducers: {
-		setUser(state, action) {
-			state = { ...action.payload };
+		logout: () => initialState,
+		resetUser: (state) => {
+			state.user = null
 		}
+	},
+	extraReducers: (builder) => {
+		builder
+			.addMatcher(userApi.endpoints.loginByEmail.matchFulfilled, (state, action) => {
+				state.isAuthenticated = true
+			})
+			.addMatcher(userApi.endpoints.loginByPhone.matchFulfilled, (state, action) => {
+				state.isAuthenticated = true
+			})
+			.addMatcher(userApi.endpoints.current.matchFulfilled, (state, action) => {
+				state.isAuthenticated = true
+				state.user = action.payload
+			})
+			.addMatcher(userApi.endpoints.getUserById.matchFulfilled, (state, action) => {
+				state.user = action.payload
+			})
 	}
 });
 
-export const { setUser } = userSlice.actions;
+export const { logout, resetUser } = userSlice.actions;
 
 export default userSlice.reducer;

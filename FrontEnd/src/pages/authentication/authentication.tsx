@@ -4,8 +4,6 @@ import Register from "./register/register";
 import Login from "./login";
 import Page from "../../components/page";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { setUser } from "../../store/userSlice";
-import { IUserState } from "../../store/types";
 
 interface IProps {
 	isRegistered?: boolean;

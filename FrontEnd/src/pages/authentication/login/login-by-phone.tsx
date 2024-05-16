@@ -3,6 +3,7 @@ import { IFormField } from "../../../components/input/fields/IFormField";
 import ValidationForm from "../../../components/input/form/validation-form";
 import { ILoginByPhoneRequest } from "../../../api/interfaces/authentication/ILoginByPhoneRequest";
 import api from "../../../api/apiAccessor";
+import { useLazyCurrentQuery, useLoginByEmailMutation } from "../../../api/userApi";
 
 const loginFields: IFormField[] = [
 	{
@@ -38,7 +39,19 @@ interface IProps {
 	onLogin: () => void;
 }
 export default function LoginByPhone({ sm = false, onLogin }: IProps) {
-	async function login(data: ILoginByPhoneRequest) {
+	const [loginByEmail, { isLoading }] = useLoginByEmailMutation;
+	const [triggerCurrentQuery] = useLazyCurrentQuery();
+
+
+
+	async function handleSubmit(data: ILoginByPhoneRequest){
+		try{
+			await login(data).unwrap()
+		}catch(eeror){
+
+		}
+	}
+	async function tryLogin(data: ILoginByPhoneRequest) {
 		try {
 			let url = "auth/login-by-phone";
 			const fetchResult = await api.postAsync(url, data);
@@ -52,7 +65,7 @@ export default function LoginByPhone({ sm = false, onLogin }: IProps) {
 	return (
 		<ValidationForm
 			initialValues={{ phone: "", password: "" }}
-			onSubmit={(values, props) => login(values)}
+			onSubmit={(values, props) => tryLogin(values)}
 			fields={loginFields}
 			buttonLabel="Войти"
 			validationSchema={phoneValidationSchema}

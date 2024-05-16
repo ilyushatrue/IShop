@@ -95,7 +95,7 @@ export default function Register({ sm = false, onRegister }: IProps) {
 
 	async function register(data: IRegisterRequest) {
 		try {
-			const url = "auth/register";
+			const url = "/auth/register";
 			const result = await api.postAsync(url, data);
 			console.log(result);
 		} catch (error) {
