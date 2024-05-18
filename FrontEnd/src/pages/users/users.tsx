@@ -13,6 +13,8 @@ export default function Users() {
 		});
 	}, []);
 
+	console.log("users")
+
 	return (
 		<Page>
 			{users.map((user, index) => (

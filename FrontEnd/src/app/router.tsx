@@ -6,6 +6,7 @@ import NotFound from "../pages/not-found/not-found";
 import Users from "../pages/users/users";
 import NavBar from "../components/navigation/nav-bar";
 import Shop from "../pages/shop";
+import ProtectedRoutes from "./protected-routes";
 
 interface IProps {
 	sm: boolean;
@@ -26,9 +27,11 @@ export default function Router({ sm }: IProps) {
 					path="/register"
 					element={<Authentication isRegistered={false} sm={sm} />}
 				/>
-				<Route path="/users/*" element={<Users />} />
 				<Route path="*" element={<NotFound />} />
 			</Routes>
+			<ProtectedRoutes>
+				<Route path="/users/*" element={<Users />} />
+			</ProtectedRoutes>
 		</>
 	);
 }

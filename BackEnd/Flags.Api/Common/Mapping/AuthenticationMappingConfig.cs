@@ -12,7 +12,6 @@ public class AuthenticationMappingConfig() : IRegister
 			.Map(dest => dest.Email, src => src.User.Email.Value)
 			.Map(dest => dest.Phone, src => src.User.Phone.Value)
 			.Map(dest => dest.FirstName, src => src.User.FirstName)
-			.Map(dest => dest.LastName, src => src.User.LastName)
-			.Map(dest => dest.Id, src => src.User.Id);
+			.Map(dest => dest.LastName, src => src.User.LastName);
 	}
 }

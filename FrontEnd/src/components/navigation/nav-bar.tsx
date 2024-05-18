@@ -3,7 +3,7 @@ import NavTopBar from "./nav-top-bar";
 import { IAvatar } from "./nav-avatar";
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import api, { redirect } from "../../api/apiAccessor";
+import api from "../../api/apiAccessor";
 
 const menuItems = [
 	{ label: "Главная", href: "/shop" },
@@ -41,9 +41,6 @@ export default function NavBar({ sm = false }: INavBar) {
 		const result = await api.tryPostAsync<undefined, boolean>(
 			"auth/logout"
 		);
-		if (result) {
-			redirect("/login");
-		}
 		return result;
 	}
 
@@ -62,7 +59,6 @@ export default function NavBar({ sm = false }: INavBar) {
 
 	useEffect(() => {
 		Object.keys(navigationMaps).forEach((k) => {
-			console.log(k, location.pathname);
 			if (location.pathname.includes(k)) {
 				setSelectedItemIndex(
 					navigationMaps[k as keyof typeof navigationMaps]

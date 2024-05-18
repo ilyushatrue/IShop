@@ -1,9 +1,14 @@
 import * as Yup from "yup";
 import { IFormField } from "../../../components/input/fields/IFormField";
 import ValidationForm from "../../../components/input/form/validation-form";
-import { ILoginByPhoneRequest } from "../../../api/interfaces/authentication/ILoginByPhoneRequest";
+import { ILoginByPhoneRequest } from "../../../api/interfaces/authentication/login-by-phone-request.interface";
 import api from "../../../api/apiAccessor";
-import { useLazyCurrentQuery, useLoginByEmailMutation } from "../../../api/userApi";
+import {
+	useLazyCurrentQuery,
+	useLoginByEmailMutation,
+	useLoginByPhoneMutation,
+} from "../../../api/userApi";
+import { useState } from "react";
 
 const loginFields: IFormField[] = [
 	{
@@ -39,21 +44,20 @@ interface IProps {
 	onLogin: () => void;
 }
 export default function LoginByPhone({ sm = false, onLogin }: IProps) {
-	const [loginByEmail, { isLoading }] = useLoginByEmailMutation;
+	const [login, { isLoading }] = useLoginByPhoneMutation();
 	const [triggerCurrentQuery] = useLazyCurrentQuery();
+	const [error, setError] = useState<string | null>(null);
 
-
-
-	async function handleSubmit(data: ILoginByPhoneRequest){
-		try{
-			await login(data).unwrap()
-		}catch(eeror){
-
+	async function handleSubmit(data: ILoginByPhoneRequest) {
+		try {
+			await login(data).unwrap();
+		} catch (error) {
+			console.error(error)
 		}
 	}
 	async function tryLogin(data: ILoginByPhoneRequest) {
 		try {
-			let url = "auth/login-by-phone";
+			let url = "/auth/login-by-phone";
 			const fetchResult = await api.postAsync(url, data);
 			console.log(fetchResult);
 			onLogin();
@@ -65,7 +69,7 @@ export default function LoginByPhone({ sm = false, onLogin }: IProps) {
 	return (
 		<ValidationForm
 			initialValues={{ phone: "", password: "" }}
-			onSubmit={(values, props) => tryLogin(values)}
+			onSubmit={(values, props) => handleSubmit(values)}
 			fields={loginFields}
 			buttonLabel="Войти"
 			validationSchema={phoneValidationSchema}

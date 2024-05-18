@@ -1,7 +1,9 @@
 import { SxProps } from "@mui/material";
 import { Box } from "@mui/system";
-import React, { ReactNode } from "react";
+import React, { ReactNode, useEffect } from "react";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { selectIsAuthenticated, selectUser } from "../store/userSlice";
 
 interface IPage {
 	isLoading?: boolean;
@@ -10,7 +12,15 @@ interface IPage {
 }
 
 export default function Page({ isLoading = false, children, sx }: IPage) {
+	const isAuthenticated = useSelector(selectIsAuthenticated);
+	const user = useSelector(selectUser);
 	const navigate = useNavigate();
+
+	useEffect(() => {
+		if (!isAuthenticated) {
+			navigate("/login");
+		}
+	}, [isAuthenticated, navigate]);
 
 	return (
 		<Box

@@ -1,4 +1,5 @@
 using Flags.Application.Users.Queries;
+using Flags.Contracts.Authentication;
 using Flags.Infrastructure.Authentication;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -14,7 +15,7 @@ public class UsersController(
 ) : ApiController
 {
     [HttpGet]
-    public async Task<IActionResult> GetAllUsers()
+    public async Task<IActionResult> GetAllUsersAsync()
     {
         var iss = new GetAllUsersQuery();
         var result = await mediatr.Send(iss);
@@ -28,7 +29,7 @@ public class UsersController(
 
     // not used
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetUserById(string id)
+    public async Task<IActionResult> GetUserByIdAsync(string id)
     {
         var query = new GetUserByIdQuery(id);
         var result = await mediatr.Send(query);
@@ -37,5 +38,12 @@ public class UsersController(
             authResult => Ok(result),
             errors => Problem(errors)
         );
+    }
+
+    [HttpGet("current")]
+    public async Task<IActionResult> GetCurrentAsync()
+    {
+        //HttpRequest.
+        return Ok("new AuthenticationResponse() { }");
     }
 }

@@ -1,6 +1,6 @@
 import { LockOutlined } from "@mui/icons-material";
 import * as Yup from "yup";
-import { IRegisterRequest } from "../../../api/interfaces/authentication/IRegisterRequest";
+import { IRegisterRequest } from "../../../api/interfaces/authentication/register-request.interface";
 import { IFormField } from "../../../components/input/fields/IFormField";
 import ValidationForm from "../../../components/input/form/validation-form";
 import { Link, Typography } from "@mui/material";

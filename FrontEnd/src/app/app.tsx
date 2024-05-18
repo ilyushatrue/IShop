@@ -11,9 +11,9 @@ function App() {
 		<Provider store={store}>
 			<ThemeProvider theme={theme}>
 				<CssBaseline />
-				<BrowserRouter>
-					<Router sm={sm} />
-				</BrowserRouter>
+					<BrowserRouter>
+						<Router sm={sm} />
+					</BrowserRouter>
 			</ThemeProvider>
 		</Provider>
 	);
