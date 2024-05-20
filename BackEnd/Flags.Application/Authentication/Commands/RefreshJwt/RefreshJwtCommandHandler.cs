@@ -9,23 +9,24 @@ namespace Flags.Application.Authentication.Commands.RefreshJwt;
 
 public class RefreshJwtCommandHandler(
 	IJwtTokenGenerator jwtTokenGenerator,
-	IRefreshJwtRepository userRefreshJwtRepository
+	IRefreshJwtRepository refreshJwtRepository,
+    IUserRepository userRepository
 ) :
 	IRequestHandler<RefreshJwtCommand, ErrorOr<AuthenticationResult>>
 {
 	public async Task<ErrorOr<AuthenticationResult>> Handle(RefreshJwtCommand command, CancellationToken cancellationToken)
 	{
-		var refreshJwt = await userRefreshJwtRepository.GetByIdAsync(command.UserId);
+		var user = await userRepository.GetByPhoneAsync(command.UserPhone);
 
-		if (refreshJwt is not null)
+		if (user?.RefreshJwt is not null)
 		{
-			var newJwtAccessToken = jwtTokenGenerator.GenerateAccessToken(refreshJwt.User);
-			if (refreshJwt.ExpiryDatetime <= DateTime.Now.AddMinutes(-1))
+			var newJwtAccessToken = jwtTokenGenerator.GenerateAccessToken(user);
+			if (user.RefreshJwt.ExpiryDatetime <= DateTime.Now.AddMinutes(-1))
 			{
-				await userRefreshJwtRepository.UpdateAsync(refreshJwt);
+				await refreshJwtRepository.UpdateAsync(user.RefreshJwt);
 			}
 			return new AuthenticationResult(
-				refreshJwt.User,
+				user,
 				newJwtAccessToken);
 		}
 		else

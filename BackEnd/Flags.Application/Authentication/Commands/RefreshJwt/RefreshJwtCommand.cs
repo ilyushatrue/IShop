@@ -4,4 +4,4 @@ using MediatR;
 
 namespace Flags.Application.Authentication.Commands.RefreshJwt;
 
-public record RefreshJwtCommand(Guid UserId) : IRequest<ErrorOr<AuthenticationResult>>;
+public record RefreshJwtCommand(string UserPhone) : IRequest<ErrorOr<AuthenticationResult>>;

@@ -29,7 +29,7 @@ export default function Page({ isLoading = false, children, sx }: IPage) {
 			style={{ marginTop: "78px" }}
 			sx={sx}
 		>
-			<Box maxWidth={1280}>{children}</Box>
+			<Box maxWidth={1280}><Box bgcolor={isAuthenticated ? "green" : "red"} height={5}></Box>{children}</Box>
 		</Box>
 	);
 }

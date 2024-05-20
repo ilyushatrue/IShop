@@ -13,6 +13,7 @@ public class TestController() : ApiController
 	[HttpGet]
 	public async Task<IActionResult> Test()
 	{
+		await Task.CompletedTask;
 		return Ok("test");
 	}
 }

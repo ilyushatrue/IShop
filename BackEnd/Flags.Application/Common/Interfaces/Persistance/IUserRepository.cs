@@ -4,11 +4,10 @@ using Flags.Domain.UserEntity;
 namespace Flags.Application.Common.Interfaces.Persistance;
 public interface IUserRepository
 {
-    Task<User?> GetUserByEmailAsync(string email);
-    Task<User?> GetUserByPhoneAsync(string phone);
+    Task<User?> GetByEmailAsync(string email);
+    Task<User?> GetByPhoneAsync(string phone);
+    Task<User?> GetByIdAsync(Guid id);
     Task AddAsync(User user);
     Task<List<User>> GetAllAsync();
-    
-    Task<User?> GetByIdAsync(Guid id);
     Task<HashSet<PermissionEnum>> GetPermissionsAsync(Guid userId);
 }

@@ -12,7 +12,7 @@ public class UserRepository(FlagDbContext dbContext) : IUserRepository
         await dbContext.SaveChangesAsync();
     }
 
-    public async Task<User?> GetUserByEmailAsync(string email)
+    public async Task<User?> GetByEmailAsync(string email)
     {
         return await dbContext.Users
             .Include(u => u.RefreshJwt)
@@ -24,7 +24,7 @@ public class UserRepository(FlagDbContext dbContext) : IUserRepository
         return await dbContext.Users.ToListAsync();
     }
 
-    public async Task<User?> GetUserByPhoneAsync(string phone)
+    public async Task<User?> GetByPhoneAsync(string phone)
     {
         return await dbContext.Users
             .Include(u => u.RefreshJwt)

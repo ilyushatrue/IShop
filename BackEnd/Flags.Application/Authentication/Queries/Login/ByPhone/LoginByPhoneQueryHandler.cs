@@ -20,7 +20,7 @@ public class LoginByPhoneQueryHandler(
     {
         var phone = Phone.DropSymbols(query.Phone);
 
-        var user = await userRepository.GetUserByPhoneAsync(phone);
+        var user = await userRepository.GetByPhoneAsync(phone);
 
         if (user is null)
             return Errors.Authentication.UserNotFound;

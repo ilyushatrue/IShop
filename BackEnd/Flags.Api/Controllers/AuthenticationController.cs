@@ -8,6 +8,7 @@ using Flags.Application.Authentication.Queries.Login.ByEmail;
 using Flags.Application.Authentication.Queries.Login.ByPhone;
 using Flags.Contracts.Authentication;
 using Flags.Domain.Common.Errors;
+using Flags.Domain.UserEntity;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -35,7 +36,7 @@ public class AuthenticationController(
         }
 
         if (!authResult.IsError)
-            SetCookies(authResult.Value.JwtAccessToken);
+            SetCookies(authResult.Value.User, authResult.Value.JwtAccessToken);
 
         return authResult.Match(
             authResult => Ok(mapper.Map<AuthenticationResponse>(authResult)),
@@ -43,26 +44,26 @@ public class AuthenticationController(
         );
     }
 
-    [HttpPost("refresh-jwt")]
-    public async Task<IActionResult> RefreshJwt()
-    {
-        var userId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "UserId")?.Value;
+    //[HttpPost("refresh-jwt")]
+    //public async Task<IActionResult> RefreshJwt()
+    //{
+    //    var userId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "UserId")?.Value;
 
-        if (userId is not null)
-        {
-            var command = new RefreshJwtCommand(Guid.Parse(userId));
-            ErrorOr<AuthenticationResult> authResult = await mediator.Send(command);
+    //    if (userId is not null)
+    //    {
+    //        var command = new RefreshJwtCommand(Guid.Parse(userId));
+    //        ErrorOr<AuthenticationResult> authResult = await mediator.Send(command);
 
-            return authResult.Match(
-                authResult => Ok(mapper.Map<AuthenticationResponse>(authResult)),
-                errors => Problem(errors)
-            );
-        }
-        else
-        {
-            return Problem(statusCode: 401);
-        }
-    }
+    //        return authResult.Match(
+    //            authResult => Ok(mapper.Map<AuthenticationResponse>(authResult)),
+    //            errors => Problem(errors)
+    //        );
+    //    }
+    //    else
+    //    {
+    //        return Problem(statusCode: 401);
+    //    }
+    //}
 
 
     [HttpPost("login-by-email")]
@@ -71,7 +72,7 @@ public class AuthenticationController(
         var authResult = await mediator.Send(query);
 
         if (!authResult.IsError)
-            SetCookies(authResult.Value.JwtAccessToken);
+            SetCookies(authResult.Value.User, authResult.Value.JwtAccessToken);
 
         return authResult.Match(
             authResult => Ok(mapper.Map<AuthenticationResponse>(authResult)),
@@ -107,7 +108,7 @@ public class AuthenticationController(
         var authResult = await mediator.Send(query);
 
         if (!authResult.IsError)
-            SetCookies(authResult.Value.JwtAccessToken);
+            SetCookies(authResult.Value.User, authResult.Value.JwtAccessToken);
 
         return authResult.Match(
             authResult => Ok(mapper.Map<AuthenticationResponse>(authResult)),
@@ -115,10 +116,14 @@ public class AuthenticationController(
         );
     }
 
-    private void SetCookies(string jwtAccessToken)
+    private void SetCookies(User user, string jwtAccessToken)
     {
         DeleteJwtAccessTokenCookie();
         HttpContext.Response.Cookies.Append("jwt-access-token", jwtAccessToken);
+        HttpContext.Response.Cookies.Append("user-first-name", user.FirstName);
+        HttpContext.Response.Cookies.Append("user-last-name", user.LastName);
+        HttpContext.Response.Cookies.Append("user-email", user.Email.Value);
+        HttpContext.Response.Cookies.Append("user-phone", user.Phone.Value);
     }
 
     private void DeleteJwtAccessTokenCookie()

@@ -22,7 +22,6 @@ const userSlice = createSlice({
 			.addMatcher(
 				userApi.endpoints.loginByEmail.matchFulfilled,
 				(state, action) => {
-					console.log(action.payload);
 					state.user = action.payload;
 					state.isAuthenticated = true;
 				}
@@ -30,7 +29,6 @@ const userSlice = createSlice({
 			.addMatcher(
 				userApi.endpoints.loginByPhone.matchFulfilled,
 				(state, action) => {
-					console.log(action.payload);
 					state.user = action.payload;
 					state.isAuthenticated = true;
 				}

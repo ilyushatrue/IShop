@@ -90,7 +90,7 @@ export default function Register({ sm = false, onRegister }: IProps) {
 	}
 
 	function redirectToLogin() {
-		navigate("../login");
+		navigate("/login");
 	}
 
 	async function register(data: IRegisterRequest) {
