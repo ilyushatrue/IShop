@@ -17,13 +17,18 @@ type AuthType = "phone" | "email";
 interface IProps {
 	sm?: boolean;
 	onLogin: () => void;
+	onToRegisterClick: () => void;
 }
-export default function Login({ sm = false, onLogin }: IProps) {
+export default function Login({
+	sm = false,
+	onLogin,
+	onToRegisterClick,
+}: IProps) {
 	const [authType, setAuthType] = useState<AuthType>("email");
 	const navigate = useNavigate();
 
 	function handleForgotPassword() {
-		navigate("/register");
+		//navigate("/register");
 	}
 
 	const handleAuthTypeChange = (
@@ -65,14 +70,14 @@ export default function Login({ sm = false, onLogin }: IProps) {
 
 			<Typography sx={{ cursor: "pointer" }} variant="body2">
 				Забыли пароль?
-				<Link onClick={handleForgotPassword} marginLeft={1}>
+				<Link onClick={()=>{console.log(1);onToRegisterClick();}} marginLeft={1}>
 					Восстановить
 				</Link>
 			</Typography>
 
 			<Typography sx={{ cursor: "pointer" }} variant="body2">
 				Нет аккаунта?
-				<Link onClick={handleForgotPassword} marginLeft={1}>
+				<Link onClick={()=>{console.log(1);onToRegisterClick();}} marginLeft={1}>
 					Зарегистрироваться
 				</Link>
 			</Typography>

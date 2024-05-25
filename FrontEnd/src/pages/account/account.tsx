@@ -8,7 +8,7 @@ export default function Account() {
 	const navigate = useNavigate();
 	useEffect(() => {
 		if (isLoggedIn === false) {
-			navigate("/login");
+			navigate("/auth");
 		}
 	}, [isLoggedIn, navigate]);
 	return (

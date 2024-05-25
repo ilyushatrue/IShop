@@ -20,7 +20,7 @@ async function tryFetchAsync<T>(
 							break;
 						}
 						else {
-							//redirect("/login");
+							//redirect("/auth");
 							return;
 						}
 					default:

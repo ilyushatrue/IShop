@@ -8,21 +8,21 @@ import {
 import {
 	DefaultValues,
 	FieldValues,
-	Path,
 	SubmitHandler,
 	useForm,
 } from "react-hook-form";
-import InputEmail from "./input/InputEmail";
-import InputPassword from "./input/InputPassword";
-import InputText from "./input/InputText";
-import InputPhone from "./input/InputPhone";
+import InputEmail from "./input/input-email";
+import InputPassword from "./input/input-password";
+import InputText from "./input/input-text";
+import InputPhone from "./input/input-phone";
+import { IFormField } from "./input/form-field.interface";
 
 export type TFormRef<T extends FieldValues> = {
-	addEmailInput: (name: Path<T>) => void;
-	addTextInput: (name: Path<T>) => void;
-	addPasswordInput: (name: Path<T>) => void;
-	addPhoneInput: (name: Path<T>) => void;
-	useFields: () => void;
+	addEmailInput: (props: IFormField<T>) => void;
+	addTextInput: (props: IFormField<T>) => void;
+	addPasswordInput: (props: IFormField<T>) => void;
+	addPhoneInput: (props: IFormField<T>) => void;
+	mountInputs: () => void;
 };
 
 export interface IForm<T extends FieldValues> {
@@ -49,58 +49,76 @@ function FormBuilder<T extends FieldValues>(
 		console.log(data);
 	};
 
-	function addEmailInput(name: Path<T>) {
+	const addEmailInput: TFormRef<T>["addEmailInput"] = ({
+		name,
+		label,
+	}: IFormField<T>) => {
 		fields.push(
 			<InputEmail<T>
-				key={name as string}
+				key={name}
 				control={control}
 				name={name}
+				label={label}
 				errorMessage={errors[name]?.message?.toString()}
 			/>
 		);
-	}
-
-	function addPasswordInput(name: Path<T>) {
+	};
+	
+	const addPasswordInput: TFormRef<T>["addPasswordInput"] = ({
+		name,
+		label,
+	}: IFormField<T>) => {
 		fields.push(
 			<InputPassword<T>
 				key={name as string}
 				control={control}
 				name={name}
+				label={label}
 				errorMessage={errors[name]?.message?.toString()}
 			/>
 		);
-	}
-	function addTextInput(name: Path<T>) {
+	};
+
+	const addTextInput: TFormRef<T>["addTextInput"] = ({
+		name,
+		label,
+	}: IFormField<T>) => {
 		fields.push(
 			<InputText<T>
 				key={name as string}
 				control={control}
 				name={name}
+				label={label}
 				errorMessage={errors[name]?.message?.toString()}
 			/>
 		);
-	}
+	};
 
-	function addPhoneInput(name: Path<T>) {
+	const addPhoneInput: TFormRef<T>["addPhoneInput"] = ({
+		name,
+		label,
+	}: IFormField<T>) => {
 		fields.push(
 			<InputPhone<T>
 				key={name as string}
 				control={control}
 				name={name}
+				label={label}
 				errorMessage={errors[name]?.message?.toString()}
 			/>
 		);
-	}
-	function mountFields() {
+	};
+
+	const mountInputs: TFormRef<T>["mountInputs"] = () => {
 		setFields([...fields]);
-	}
+	};
 
 	useImperativeHandle(ref, () => ({
 		addTextInput,
 		addEmailInput,
 		addPasswordInput,
 		addPhoneInput,
-		useFields: mountFields,
+		mountInputs,
 	}));
 
 	return (

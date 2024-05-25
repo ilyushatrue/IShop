@@ -1,8 +1,10 @@
-import { Control, FieldValues, Path } from "react-hook-form";
+import { TextFieldVariants } from "@mui/material";
+import { FieldValues, Path } from "react-hook-form";
 
 export interface IFormField<T extends FieldValues> {
-	control: Control<T>;
 	name: Path<T>;
-	errorMessage?: string;
 	label?: string;
+	size?: "small" | "medium";
+	variant?: TextFieldVariants;
+	margin?: "dense" | "normal" | "none";
 }

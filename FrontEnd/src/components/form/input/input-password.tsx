@@ -1,6 +1,6 @@
 import { TextField } from "@mui/material";
 import { Controller, FieldValues } from "react-hook-form";
-import { IFormField } from "./form-field.interface";
+import { IFormBuilderField } from "./form-builder-field.interface";
 
 const validation = {
 	required: "Обязательно для заполнения",
@@ -19,7 +19,10 @@ export default function InputPassword<T extends FieldValues>({
 	name,
 	label = "Пароль",
 	errorMessage,
-}: IFormField<T>) {
+	size = "medium",
+	variant = "filled",
+	margin = "dense",
+}: IFormBuilderField<T>) {
 	return (
 		<Controller
 			control={control}
@@ -28,9 +31,10 @@ export default function InputPassword<T extends FieldValues>({
 			render={({ field }) => (
 				<TextField
 					label={label}
-					size="small"
+					size={size}
+					variant={variant}
 					type="password"
-					margin="normal"
+					margin={margin}
 					fullWidth
 					onChange={field.onChange}
 					value={field.value}

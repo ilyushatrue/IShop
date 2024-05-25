@@ -7,6 +7,7 @@ import { Link, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import Template from "../base/template";
 import api from "../../../api/apiAccessor";
+import RegisterForm from "./registerForm";
 interface IRegisterFormField extends IRegisterRequest {
 	confirmPassword: string;
 }
@@ -80,17 +81,18 @@ const controlFields: IFormField[] = [
 interface IProps {
 	sm?: boolean;
 	onRegister: () => void;
+	onToLoginClick: () => void;
 }
-export default function Register({ sm = false, onRegister }: IProps) {
+export default function Register({
+	sm = false,
+	onRegister,
+	onToLoginClick,
+}: IProps) {
 	const navigate = useNavigate();
 
 	function handleSubmit(data: IRegisterFormField) {
 		data.phone = data.phone.replace(/[^\d]/g, "");
 		register(data);
-	}
-
-	function redirectToLogin() {
-		navigate("/login");
 	}
 
 	async function register(data: IRegisterRequest) {
@@ -105,17 +107,18 @@ export default function Register({ sm = false, onRegister }: IProps) {
 
 	return (
 		<Template sm={sm} avatar={<LockOutlined />} title="Регистрация">
-			<ValidationForm
+			{/* <ValidationForm
 				initialValues={initialValues}
 				onSubmit={(values, props) => handleSubmit(values)}
 				fields={controlFields}
 				buttonLabel="Зарегистрироваться"
 				validationSchema={validationSchema}
-			/>
+			/> */}
 
+			<RegisterForm />
 			<Typography sx={{ cursor: "pointer" }} variant="body2">
 				Уже есть аккант?
-				<Link onClick={redirectToLogin} marginLeft={1}>
+				<Link onClick={()=>{console.log(1);onToLoginClick();}} marginLeft={1}>
 					Войти
 				</Link>
 			</Typography>

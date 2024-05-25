@@ -6,18 +6,15 @@ import Page from "../../components/page";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 
 interface IProps {
-	isRegistered?: boolean;
 	sm?: boolean;
 }
-export default function Authentication({
-	isRegistered = true,
-	sm = false,
-}: IProps) {
+export default function Authentication({ sm = false }: IProps) {
 	const [hasAccess, setHasAccess] = useState(false);
+	const [hasAccount, setHasAccount] = useState(true);
 	const user = useAppSelector((state) => state.user);
 	const dispatch = useAppDispatch;
 
-	console.log(user);
+	console.log(hasAccount);
 
 	return (
 		<Page isLoading={false}>
@@ -27,11 +24,16 @@ export default function Authentication({
 			</>
 			{!hasAccess ? (
 				<Box>
-					{isRegistered ? (
-						<Login sm={sm} onLogin={() => setHasAccess(true)} />
+					{hasAccount ? (
+						<Login
+							sm={sm}
+							onLogin={() => setHasAccess(true)}
+							onToRegisterClick={() => setHasAccount(false)}
+						/>
 					) : (
 						<Register
 							sm={sm}
+							onToLoginClick={() => setHasAccount(true)}
 							onRegister={() => setHasAccess(true)}
 						/>
 					)}

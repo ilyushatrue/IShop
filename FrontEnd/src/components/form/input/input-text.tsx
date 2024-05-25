@@ -1,12 +1,15 @@
 import { TextField } from "@mui/material";
 import { Controller, FieldValues } from "react-hook-form";
-import { IFormField } from "./form-field.interface";
+import { IFormBuilderField } from "./form-builder-field.interface";
 
 export default function InputText<T extends FieldValues>({
 	control,
 	name,
 	label,
-}: IFormField<T>) {
+	size = "medium",
+	variant = "filled",
+	margin = "dense",
+}: IFormBuilderField<T>) {
 	return (
 		<Controller
 			control={control}
@@ -14,8 +17,9 @@ export default function InputText<T extends FieldValues>({
 			render={({ field }) => (
 				<TextField
 					label={label}
-					size="small"
-					margin="normal"
+					margin={margin}
+					size={size}
+					variant={variant}
 					fullWidth
 					onChange={field.onChange}
 					value={field.value}

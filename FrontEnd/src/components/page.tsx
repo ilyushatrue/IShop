@@ -18,7 +18,7 @@ export default function Page({ isLoading = false, children, sx }: IPage) {
 
 	useEffect(() => {
 		if (!isAuthenticated) {
-			navigate("/login");
+			navigate("/auth");
 		}
 	}, [isAuthenticated, navigate]);
 
