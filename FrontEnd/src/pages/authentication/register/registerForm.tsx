@@ -14,11 +14,19 @@ export default function RegisterForm() {
 	const form = useRef<TFormRef<IRegisterForm>>(null);
 
 	useEffect(() => {
-		form.current?.addTextInput({ name: "firstName", label: "Имя" });
-		form.current?.addTextInput({ name: "lastName", label: "Фамилия" });
-		form.current?.addPhoneInput({ name: "phone" });
-		form.current?.addEmailInput({ name: "email" });
-		form.current?.addPasswordInput({ name: "password" });
+		form.current?.addTextInput({
+			name: "firstName",
+			label: "Имя",
+			size: "small",
+		});
+		form.current?.addTextInput({
+			name: "lastName",
+			label: "Фамилия",
+			size: "small",
+		});
+		form.current?.addPhoneInput({ name: "phone", size: "small" });
+		form.current?.addEmailInput({ name: "email", size: "small" });
+		form.current?.addPasswordInput({ name: "password", size: "small" });
 		form.current?.mountInputs();
 	}, []);
 

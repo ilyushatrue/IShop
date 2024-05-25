@@ -118,7 +118,7 @@ export default function Register({
 			<RegisterForm />
 			<Typography sx={{ cursor: "pointer" }} variant="body2">
 				Уже есть аккант?
-				<Link onClick={()=>{console.log(1);onToLoginClick();}} marginLeft={1}>
+				<Link onClick={onToLoginClick} marginLeft={1}>
 					Войти
 				</Link>
 			</Typography>

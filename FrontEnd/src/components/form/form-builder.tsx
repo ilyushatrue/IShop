@@ -16,6 +16,7 @@ import InputPassword from "./input/input-password";
 import InputText from "./input/input-text";
 import InputPhone from "./input/input-phone";
 import { IFormField } from "./input/form-field.interface";
+import { Button } from "@mui/material";
 
 export type TFormRef<T extends FieldValues> = {
 	addEmailInput: (props: IFormField<T>) => void;
@@ -49,62 +50,54 @@ function FormBuilder<T extends FieldValues>(
 		console.log(data);
 	};
 
-	const addEmailInput: TFormRef<T>["addEmailInput"] = ({
-		name,
-		label,
-	}: IFormField<T>) => {
+	const addEmailInput: TFormRef<T>["addEmailInput"] = (
+		props: IFormField<T>
+	) => {
 		fields.push(
 			<InputEmail<T>
-				key={name}
+				{...props}
 				control={control}
-				name={name}
-				label={label}
-				errorMessage={errors[name]?.message?.toString()}
+				key={props.name}
+				errorMessage={errors[props.name]?.message?.toString()}
 			/>
 		);
 	};
-	
-	const addPasswordInput: TFormRef<T>["addPasswordInput"] = ({
-		name,
-		label,
-	}: IFormField<T>) => {
+
+	const addPasswordInput: TFormRef<T>["addPasswordInput"] = (
+		props: IFormField<T>
+	) => {
 		fields.push(
 			<InputPassword<T>
-				key={name as string}
+				{...props}
 				control={control}
-				name={name}
-				label={label}
-				errorMessage={errors[name]?.message?.toString()}
+				key={props.name}
+				errorMessage={errors[props.name]?.message?.toString()}
 			/>
 		);
 	};
 
-	const addTextInput: TFormRef<T>["addTextInput"] = ({
-		name,
-		label,
-	}: IFormField<T>) => {
+	const addTextInput: TFormRef<T>["addTextInput"] = (
+		props: IFormField<T>
+	) => {
 		fields.push(
 			<InputText<T>
-				key={name as string}
+				{...props}
 				control={control}
-				name={name}
-				label={label}
-				errorMessage={errors[name]?.message?.toString()}
+				key={props.name}
+				errorMessage={errors[props.name]?.message?.toString()}
 			/>
 		);
 	};
 
-	const addPhoneInput: TFormRef<T>["addPhoneInput"] = ({
-		name,
-		label,
-	}: IFormField<T>) => {
+	const addPhoneInput: TFormRef<T>["addPhoneInput"] = (
+		props: IFormField<T>
+	) => {
 		fields.push(
 			<InputPhone<T>
-				key={name as string}
+				{...props}
 				control={control}
-				name={name}
-				label={label}
-				errorMessage={errors[name]?.message?.toString()}
+				key={props.name}
+				errorMessage={errors[props.name]?.message?.toString()}
 			/>
 		);
 	};
@@ -122,9 +115,23 @@ function FormBuilder<T extends FieldValues>(
 	}));
 
 	return (
-		<form onSubmit={handleSubmit(onSubmit)}>
+		<form
+			onSubmit={handleSubmit(onSubmit)}
+			style={{
+				display: "flex",
+				flexDirection: "column",
+				justifyContent: "center",
+				alignItems: "center",
+			}}
+		>
 			{fields.map((field) => field)}
-			<button type="submit">Submit</button>
+			<Button
+				type="submit"
+				variant="contained"
+				sx={{ width: "50%", margin: "16px" }}
+			>
+				Submit
+			</Button>
 		</form>
 	);
 }

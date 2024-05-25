@@ -70,14 +70,14 @@ export default function Login({
 
 			<Typography sx={{ cursor: "pointer" }} variant="body2">
 				Забыли пароль?
-				<Link onClick={()=>{console.log(1);onToRegisterClick();}} marginLeft={1}>
+				<Link onClick={onToRegisterClick} marginLeft={1}>
 					Восстановить
 				</Link>
 			</Typography>
 
 			<Typography sx={{ cursor: "pointer" }} variant="body2">
 				Нет аккаунта?
-				<Link onClick={()=>{console.log(1);onToRegisterClick();}} marginLeft={1}>
+				<Link onClick={onToRegisterClick} marginLeft={1}>
 					Зарегистрироваться
 				</Link>
 			</Typography>
