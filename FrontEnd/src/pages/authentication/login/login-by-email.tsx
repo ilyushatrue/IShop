@@ -2,7 +2,12 @@ import { ILoginByEmailRequest } from "../../../api/interfaces/authentication/log
 import * as Yup from "yup";
 import { IFormField } from "../../../components/input/fields/IFormField";
 import ValidationForm from "../../../components/input/form/validation-form";
-import { useLazyCurrentQuery, useLoginByEmailMutation } from "../../../api/userApi";
+import {
+	useLazyCurrentQuery,
+	useLoginByEmailMutation,
+} from "../../../api/userApi";
+import { useState } from "react";
+import { Box } from "@mui/material";
 
 const emailValidationSchema = Yup.object().shape({
 	email: Yup.string().email("Некорректный email").required("Ввод обязателен"),
@@ -33,13 +38,15 @@ interface IProps {
 }
 export default function LoginByEmail({ sm = false, onLogin }: IProps) {
 	const [login, { isLoading }] = useLoginByEmailMutation();
+	const [error, setError] = useState<string | null>(null);
 	const [triggerCurrentQuery] = useLazyCurrentQuery();
 
 	async function handleSubmit(data: ILoginByEmailRequest) {
 		try {
 			await login(data).unwrap();
-		} catch (error) {
-			console.error(error)
+		} catch (error: any) {
+			setError(error.data.title);
+			console.error(error);
 		}
 	}
 	// async function login(data: ILoginByEmailRequest) {
@@ -54,12 +61,15 @@ export default function LoginByEmail({ sm = false, onLogin }: IProps) {
 	// }
 
 	return (
-		<ValidationForm
-			initialValues={{ email: "", password: "" }}
-			onSubmit={(values, props) => handleSubmit(values)}
-			fields={loginFields}
-			buttonLabel="Войти"
-			validationSchema={emailValidationSchema}
-		/>
+		<>
+			<ValidationForm
+				initialValues={{ email: "", password: "" }}
+				onSubmit={(values, props) => handleSubmit(values)}
+				fields={loginFields}
+				buttonLabel="Войти"
+				validationSchema={emailValidationSchema}
+			/>
+			{error && <Box>{error}</Box>}
+		</>
 	);
 }

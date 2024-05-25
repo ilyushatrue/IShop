@@ -20,7 +20,6 @@ interface IProps {
 }
 export default function Login({ sm = false, onLogin }: IProps) {
 	const [authType, setAuthType] = useState<AuthType>("email");
-	const [error, setError] = useState<string | null>(null);
 	const navigate = useNavigate();
 
 	function handleForgotPassword() {

@@ -10,7 +10,7 @@ export default function ProtectedRoutes({
 }) {
 	const { isLoading } = useCurrentQuery();
 
-	if (isLoading) {
+	if (!isLoading) {
 		return (
 			<>
 				<Box height={20} width={20} bgcolor={"black"} />
