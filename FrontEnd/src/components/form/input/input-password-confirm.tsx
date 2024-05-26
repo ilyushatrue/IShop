@@ -4,18 +4,20 @@ import {
 	FieldValues,
 	Path,
 	RegisterOptions,
+	UseFormWatch,
 } from "react-hook-form";
 import { IFormBuilderField } from "./form-builder-field.interface";
 import Icon2 from "../../icon";
 import { useState } from "react";
 
-const getValidateOptions = <T extends FieldValues>(): RegisterOptions<
-	T,
-	Path<T>
-> => ({
+const getValidateOptions = <T extends FieldValues>(
+	password: string
+): RegisterOptions<T, Path<T>> => ({
 	required: "Обязательно для заполнения",
-	minLength: { value: 6, message: "Длина пароля не менее 6 символов" },
 	validate: (value: string) => {
+		if (value !== password) {
+			return "Пароли не совпадают";
+		}
 		if (!/(?=.*[0-9])/.test(value)) {
 			return "Отсутствуют числа";
 		}
@@ -33,7 +35,9 @@ const getValidateOptions = <T extends FieldValues>(): RegisterOptions<
 	},
 });
 
-export default function InputPassword<T extends FieldValues>({
+export default function InputPasswordConfirm<T extends FieldValues>({
+	watch,
+	watchFor,
 	control,
 	name,
 	label = "Пароль",
@@ -41,7 +45,8 @@ export default function InputPassword<T extends FieldValues>({
 	variant = "filled",
 	margin = "dense",
 	required,
-}: IFormBuilderField<T>) {
+}: { watch: UseFormWatch<T>; watchFor: Path<T> } & IFormBuilderField<T>) {
+	const password = watch(watchFor);
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
 	const handleClickShowPassword = () => setIsPasswordVisible((show) => !show);
@@ -51,19 +56,20 @@ export default function InputPassword<T extends FieldValues>({
 	) => {
 		event.preventDefault();
 	};
+
 	return (
 		<Controller
 			control={control}
 			name={name}
-			rules={getValidateOptions()}
+			rules={getValidateOptions(password)}
 			render={({ field, fieldState: { error } }) => (
 				<TextField
 					label={label}
+					required={required}
 					size={size}
 					variant={variant}
 					type={isPasswordVisible ? "text" : "password"}
 					margin={margin}
-					required={required}
 					fullWidth
 					onChange={field.onChange}
 					value={field.value}

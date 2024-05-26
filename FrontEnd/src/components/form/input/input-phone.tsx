@@ -1,5 +1,10 @@
 import { TextField } from "@mui/material";
-import { Controller, FieldValues } from "react-hook-form";
+import {
+	Controller,
+	FieldValues,
+	Path,
+	RegisterOptions,
+} from "react-hook-form";
 import { IFormBuilderField } from "./form-builder-field.interface";
 import { forwardRef } from "react";
 import MaskedInput, { MaskedInputProps } from "react-text-mask";
@@ -15,33 +20,34 @@ const TextMaskCustom = forwardRef<HTMLElement, CustomMaskedInputProps>(
 	}
 );
 
-const validation = {
+const getValidateOptions = <T extends FieldValues>(): RegisterOptions<
+	T,
+	Path<T>
+> => ({
 	required: "Обязательно для заполнения",
 	validate: (value: string) => {
-		if (value.match(/[а-яА-Я]/)) {
-			return "Используйте только латиницу";
-		}
-		if (value.length < 6) {
-			return "Длина пароля не менее 6 символов";
+		if (value.replace(/\D/g, "").length !== 11) {
+			return "Некорректный номер";
 		}
 		return true;
 	},
-};
+});
+
 export default function InputPhone<T extends FieldValues>({
 	control,
 	name,
 	label = "Номер телефона",
-	errorMessage,
 	size = "medium",
 	variant = "filled",
 	margin = "dense",
+	required = false,
 }: IFormBuilderField<T>) {
 	return (
 		<Controller
 			control={control}
 			name={name}
-			rules={validation}
-			render={({ field }) => (
+			rules={getValidateOptions()}
+			render={({ field, fieldState: { error } }) => (
 				<TextField
 					label={label}
 					size={size}
@@ -49,10 +55,11 @@ export default function InputPhone<T extends FieldValues>({
 					type="text"
 					margin={margin}
 					fullWidth
+					required={required}
 					onChange={field.onChange}
 					value={field.value}
-					error={!!errorMessage}
-					helperText={errorMessage}
+					error={!!error}
+					helperText={error && error.message}
 					InputProps={{
 						inputComponent: TextMaskCustom as any,
 						inputProps: {

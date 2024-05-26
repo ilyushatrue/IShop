@@ -7,4 +7,5 @@ export interface IFormField<T extends FieldValues> {
 	size?: "small" | "medium";
 	variant?: TextFieldVariants;
 	margin?: "dense" | "normal" | "none";
+	required?: boolean;
 }

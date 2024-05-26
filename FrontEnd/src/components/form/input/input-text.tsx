@@ -9,6 +9,7 @@ export default function InputText<T extends FieldValues>({
 	size = "medium",
 	variant = "filled",
 	margin = "dense",
+	required,
 }: IFormBuilderField<T>) {
 	return (
 		<Controller
@@ -18,7 +19,9 @@ export default function InputText<T extends FieldValues>({
 				<TextField
 					label={label}
 					margin={margin}
+					type="text"
 					size={size}
+					required={required}
 					variant={variant}
 					fullWidth
 					onChange={field.onChange}

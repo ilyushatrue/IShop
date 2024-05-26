@@ -18,16 +18,32 @@ export default function RegisterForm() {
 			name: "firstName",
 			label: "Имя",
 			size: "small",
+			required: true,
 		});
 		form.current?.addTextInput({
 			name: "lastName",
 			label: "Фамилия",
 			size: "small",
 		});
-		form.current?.addPhoneInput({ name: "phone", size: "small" });
-		form.current?.addEmailInput({ name: "email", size: "small" });
-		form.current?.addPasswordInput({ name: "password", size: "small" });
-		form.current?.mountInputs();
+		form.current?.addPhoneInput({
+			name: "phone",
+			size: "small",
+			required: true,
+		});
+		form.current?.addEmailInput({
+			name: "email",
+			size: "small",
+			required: true,
+		});
+		form.current?.addPasswordInput({
+			name: "password",
+			size: "small",
+			required: true,
+		});
+		form.current?.addPasswordConfirmInput(
+			{ name: "confirmPassword", size: "small", required: true },
+			"password"
+		);
 	}, []);
 
 	return (

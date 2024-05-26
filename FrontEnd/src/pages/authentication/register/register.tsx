@@ -7,7 +7,7 @@ import { Link, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import Template from "../base/template";
 import api from "../../../api/apiAccessor";
-import RegisterForm from "./registerForm";
+import RegisterForm from "./register-form";
 interface IRegisterFormField extends IRegisterRequest {
 	confirmPassword: string;
 }
@@ -38,45 +38,6 @@ const validationSchema = Yup.object().shape({
 		.oneOf([Yup.ref("password")], "Пароли не совпадают")
 		.required("Ввод обязателен"),
 });
-
-const controlFields: IFormField[] = [
-	{
-		name: "firstName",
-		label: "Имя",
-		placeholder: "Введите имя",
-		isRequired: true,
-	},
-	{
-		name: "lastName",
-		label: "Фамилия",
-		placeholder: "Введите фамилию",
-	},
-	{
-		name: "phone",
-		label: "Номер телефона",
-		placeholder: "Введите номер телефона",
-		isRequired: true,
-	},
-	{
-		name: "email",
-		label: "Email",
-		placeholder: "Введите email",
-	},
-	{
-		name: "password",
-		label: "Пароль",
-		placeholder: "Введите пароль",
-		isRequired: true,
-		type: "password",
-	},
-	{
-		name: "confirmPassword",
-		label: "Подтверждение пароля",
-		placeholder: "Повторите пароль",
-		isRequired: true,
-		type: "password",
-	},
-];
 
 interface IProps {
 	sm?: boolean;

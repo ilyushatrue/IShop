@@ -8,6 +8,7 @@ import {
 import {
 	DefaultValues,
 	FieldValues,
+	Path,
 	SubmitHandler,
 	useForm,
 } from "react-hook-form";
@@ -17,13 +18,14 @@ import InputText from "./input/input-text";
 import InputPhone from "./input/input-phone";
 import { IFormField } from "./input/form-field.interface";
 import { Button } from "@mui/material";
+import InputPasswordConfirm from "./input/input-password-confirm";
 
 export type TFormRef<T extends FieldValues> = {
 	addEmailInput: (props: IFormField<T>) => void;
 	addTextInput: (props: IFormField<T>) => void;
 	addPasswordInput: (props: IFormField<T>) => void;
+	addPasswordConfirmInput: (props: IFormField<T>, watchFor: Path<T>) => void;
 	addPhoneInput: (props: IFormField<T>) => void;
-	mountInputs: () => void;
 };
 
 export interface IForm<T extends FieldValues> {
@@ -37,7 +39,7 @@ function FormBuilder<T extends FieldValues>(
 	const {
 		handleSubmit,
 		control,
-		formState: { errors },
+		watch,
 	} = useForm<T>({
 		mode: "onChange",
 		reValidateMode: "onBlur",
@@ -53,65 +55,76 @@ function FormBuilder<T extends FieldValues>(
 	const addEmailInput: TFormRef<T>["addEmailInput"] = (
 		props: IFormField<T>
 	) => {
-		fields.push(
+		setFields((prevFields) => [
+			...prevFields,
 			<InputEmail<T>
 				{...props}
 				control={control}
 				key={props.name}
-				errorMessage={errors[props.name]?.message?.toString()}
-			/>
-		);
+			/>,
+		]);
 	};
 
 	const addPasswordInput: TFormRef<T>["addPasswordInput"] = (
 		props: IFormField<T>
 	) => {
-		fields.push(
+		setFields((prevFields) => [
+			...prevFields,
 			<InputPassword<T>
 				{...props}
 				control={control}
 				key={props.name}
-				errorMessage={errors[props.name]?.message?.toString()}
-			/>
-		);
+			/>,
+		]);
+	};
+
+	const addPasswordConfirmInput: TFormRef<T>["addPasswordConfirmInput"] = (
+		props: IFormField<T>,
+		watchFor: Path<T>
+	) => {
+		setFields((prevFields) => [
+			...prevFields,
+			<InputPasswordConfirm<T>
+				{...props}
+				control={control}
+				key={props.name}
+				watch={watch}
+				watchFor={watchFor}
+			/>,
+		]);
 	};
 
 	const addTextInput: TFormRef<T>["addTextInput"] = (
 		props: IFormField<T>
 	) => {
-		fields.push(
+		setFields((prevFields) => [
+			...prevFields,
 			<InputText<T>
 				{...props}
 				control={control}
 				key={props.name}
-				errorMessage={errors[props.name]?.message?.toString()}
-			/>
-		);
+			/>,
+		]);
 	};
 
 	const addPhoneInput: TFormRef<T>["addPhoneInput"] = (
 		props: IFormField<T>
 	) => {
-		fields.push(
+		setFields((prevFields) => [
+			...prevFields,
 			<InputPhone<T>
 				{...props}
 				control={control}
 				key={props.name}
-				errorMessage={errors[props.name]?.message?.toString()}
-			/>
-		);
+			/>,
+		]);
 	};
-
-	const mountInputs: TFormRef<T>["mountInputs"] = () => {
-		setFields([...fields]);
-	};
-
 	useImperativeHandle(ref, () => ({
 		addTextInput,
 		addEmailInput,
 		addPasswordInput,
+		addPasswordConfirmInput,
 		addPhoneInput,
-		mountInputs,
 	}));
 
 	return (
@@ -124,7 +137,7 @@ function FormBuilder<T extends FieldValues>(
 				alignItems: "center",
 			}}
 		>
-			{fields.map((field) => field)}
+			{fields}
 			<Button
 				type="submit"
 				variant="contained"
