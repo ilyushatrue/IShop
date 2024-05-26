@@ -8,9 +8,9 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import LoginByEmail from "./login-by-email";
-import LoginByPhone from "./login-by-phone";
 import Template from "../base/template";
+import LoginByPhone from "./login-by-phone";
+import LoginByEmail from "./login-by-email";
 
 type AuthType = "phone" | "email";
 
@@ -63,9 +63,9 @@ export default function Login({
 			</ToggleButtonGroup>
 
 			{authType === "email" ? (
-				<LoginByEmail onLogin={onLogin} />
+				<LoginByEmail />
 			) : (
-				<LoginByPhone onLogin={onLogin} />
+				<LoginByPhone />
 			)}
 
 			<Typography sx={{ cursor: "pointer" }} variant="body2">

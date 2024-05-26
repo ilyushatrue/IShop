@@ -10,7 +10,11 @@ interface IRegisterForm {
 	confirmPassword: string;
 }
 
-export default function RegisterForm() {
+export default function RegisterForm({
+	onSubmit,
+}: {
+	onSubmit: (values: IRegisterForm) => void;
+}) {
 	const form = useRef<TFormRef<IRegisterForm>>(null);
 
 	useEffect(() => {
@@ -47,18 +51,17 @@ export default function RegisterForm() {
 	}, []);
 
 	return (
-		<>
-			<FormBuilder<IRegisterForm>
-				defaultValues={{
-					firstName: "",
-					lastName: "",
-					phone: "",
-					email: "",
-					password: "",
-					confirmPassword: "",
-				}}
-				ref={form}
-			/>
-		</>
+		<FormBuilder<IRegisterForm>
+			defaultValues={{
+				firstName: "",
+				lastName: "",
+				phone: "",
+				email: "",
+				password: "",
+				confirmPassword: "",
+			}}
+			onSubmit={onSubmit}
+			ref={form}
+		/>
 	);
 }

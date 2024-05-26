@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../../api/apiAccessor";
-import { IUser } from "../../api/interfaces/user/IUser";
+import { IUser } from "../../api/interfaces/user/user.interface";
 import Page from "../../components/page";
 export default function Users() {
 	console.log(123);

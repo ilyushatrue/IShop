@@ -30,17 +30,14 @@ export type TFormRef<T extends FieldValues> = {
 
 export interface IForm<T extends FieldValues> {
 	defaultValues: DefaultValues<T>;
+	onSubmit: (values: T) => void;
 }
 
 function FormBuilder<T extends FieldValues>(
 	{ defaultValues }: IForm<T>,
 	ref: Ref<TFormRef<T>>
 ) {
-	const {
-		handleSubmit,
-		control,
-		watch,
-	} = useForm<T>({
+	const { handleSubmit, control, watch } = useForm<T>({
 		mode: "onChange",
 		reValidateMode: "onBlur",
 		defaultValues,
@@ -49,7 +46,7 @@ function FormBuilder<T extends FieldValues>(
 	const [fields, setFields] = useState<ReactElement[]>([]);
 
 	const onSubmit: SubmitHandler<T> = (data) => {
-		console.log(data);
+		onSubmit(data);
 	};
 
 	const addEmailInput: TFormRef<T>["addEmailInput"] = (
@@ -57,11 +54,7 @@ function FormBuilder<T extends FieldValues>(
 	) => {
 		setFields((prevFields) => [
 			...prevFields,
-			<InputEmail<T>
-				{...props}
-				control={control}
-				key={props.name}
-			/>,
+			<InputEmail<T> {...props} control={control} key={props.name} />,
 		]);
 	};
 
@@ -70,11 +63,7 @@ function FormBuilder<T extends FieldValues>(
 	) => {
 		setFields((prevFields) => [
 			...prevFields,
-			<InputPassword<T>
-				{...props}
-				control={control}
-				key={props.name}
-			/>,
+			<InputPassword<T> {...props} control={control} key={props.name} />,
 		]);
 	};
 
@@ -99,11 +88,7 @@ function FormBuilder<T extends FieldValues>(
 	) => {
 		setFields((prevFields) => [
 			...prevFields,
-			<InputText<T>
-				{...props}
-				control={control}
-				key={props.name}
-			/>,
+			<InputText<T> {...props} control={control} key={props.name} />,
 		]);
 	};
 
@@ -112,11 +97,7 @@ function FormBuilder<T extends FieldValues>(
 	) => {
 		setFields((prevFields) => [
 			...prevFields,
-			<InputPhone<T>
-				{...props}
-				control={control}
-				key={props.name}
-			/>,
+			<InputPhone<T> {...props} control={control} key={props.name} />,
 		]);
 	};
 	useImperativeHandle(ref, () => ({

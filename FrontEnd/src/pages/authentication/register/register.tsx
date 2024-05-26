@@ -1,8 +1,5 @@
 import { LockOutlined } from "@mui/icons-material";
-import * as Yup from "yup";
-import { IRegisterRequest } from "../../../api/interfaces/authentication/register-request.interface";
-import { IFormField } from "../../../components/input/fields/IFormField";
-import ValidationForm from "../../../components/input/form/validation-form";
+import { IRegisterRequest } from "../../../api/contracts/authentication/register-request.interface";
 import { Link, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import Template from "../base/template";
@@ -11,33 +8,6 @@ import RegisterForm from "./register-form";
 interface IRegisterFormField extends IRegisterRequest {
 	confirmPassword: string;
 }
-
-const initialValues: IRegisterFormField = {
-	firstName: "",
-	lastName: "",
-	phone: "",
-	email: "",
-	password: "",
-	confirmPassword: "",
-};
-
-const validationSchema = Yup.object().shape({
-	firstName: Yup.string().required("Ввод обязателен"),
-	phone: Yup.string()
-		.test(
-			"maxDigits",
-			"Некорректный номер",
-			(value) => value!.replace(/\D/g, "").length === 11
-		)
-		.required("Ввод обязателен"),
-	email: Yup.string().email("Некорректный email"),
-	password: Yup.string()
-		.min(6, "Минимум 6 символов")
-		.required("Ввод обязателен"),
-	confirmPassword: Yup.string()
-		.oneOf([Yup.ref("password")], "Пароли не совпадают")
-		.required("Ввод обязателен"),
-});
 
 interface IProps {
 	sm?: boolean;
@@ -68,15 +38,8 @@ export default function Register({
 
 	return (
 		<Template sm={sm} avatar={<LockOutlined />} title="Регистрация">
-			{/* <ValidationForm
-				initialValues={initialValues}
-				onSubmit={(values, props) => handleSubmit(values)}
-				fields={controlFields}
-				buttonLabel="Зарегистрироваться"
-				validationSchema={validationSchema}
-			/> */}
 
-			<RegisterForm />
+			<RegisterForm onSubmit={handleSubmit}/>
 			<Typography sx={{ cursor: "pointer" }} variant="body2">
 				Уже есть аккант?
 				<Link onClick={onToLoginClick} marginLeft={1}>

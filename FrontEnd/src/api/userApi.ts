@@ -1,8 +1,8 @@
 import { api } from "./api";
-import { ILoginByEmailRequest } from "./interfaces/authentication/login-by-email-request.interface";
-import { ILoginByPhoneRequest } from "./interfaces/authentication/login-by-phone-request.interface";
-import { IRegisterRequest } from "./interfaces/authentication/register-request.interface";
-import { IUser } from "./interfaces/user/IUser";
+import { ILoginByEmailRequest } from "./contracts/authentication/login-by-email-request.interface";
+import { ILoginByPhoneRequest } from "./contracts/authentication/login-by-phone-request.interface";
+import { IRegisterRequest } from "./contracts/authentication/register-request.interface";
+import { IUser } from "./interfaces/user/user.interface";
 export const userApi = api.injectEndpoints({
 	endpoints: (builder) => ({
 		loginByEmail: builder.mutation<IUser, ILoginByEmailRequest>({
