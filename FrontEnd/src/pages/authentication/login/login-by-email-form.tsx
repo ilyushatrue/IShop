@@ -8,13 +8,12 @@ export default function LoginByEmailForm({ onSubmit }: IProps) {
 	const formBuilder = useRef<TFormRef<ILoginByEmailRequest>>(null);
 
 	useEffect(() => {
-		formBuilder.current?.addPhoneInput({ name: "email", required: true });
+		formBuilder.current?.addEmailInput({ name: "email", required: true });
 		formBuilder.current?.addPasswordInput({
 			name: "password",
 			required: true,
 		});
 	}, []);
-
 	return (
 		<FormBuilder<ILoginByEmailRequest>
 			defaultValues={{

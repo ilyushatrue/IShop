@@ -1,10 +1,28 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { IUserState } from "./types";
-import { userApi } from "../api/userApi";
 import { RootState } from "./store";
+import { ILoginByEmailRequest } from "../api/contracts/authentication/login-by-email-request.interface";
+import { ILoginByPhoneRequest } from "../api/contracts/authentication/login-by-phone-request.interface";
+import { userApi } from "../api/userApi";
+import apiUser from "../api/api.user";
+import api from "../api/apiAccessor";
+
+export const loginByPhone = createAsyncThunk(
+	"user/login-by-phone",
+	async (request: ILoginByPhoneRequest) => {
+		return await apiUser.loginByPhoneAsync(request);
+	}
+);
+export const loginByEmail = createAsyncThunk(
+	"user/login-by-email",
+	async (request: ILoginByEmailRequest) => {
+		return await apiUser.loginByEmailAsync(request);
+	}
+);
 
 const initialState: IUserState = {
 	isAuthenticated: false,
+	isLoading: false,
 	user: null,
 };
 
@@ -19,33 +37,14 @@ const userSlice = createSlice({
 	},
 	extraReducers: (builder) => {
 		builder
-			.addMatcher(
-				userApi.endpoints.loginByEmail.matchFulfilled,
-				(state, action) => {
-					state.user = action.payload;
-					state.isAuthenticated = true;
-				}
-			)
-			.addMatcher(
-				userApi.endpoints.loginByPhone.matchFulfilled,
-				(state, action) => {
-					state.user = action.payload;
-					state.isAuthenticated = true;
-				}
-			)
-			.addMatcher(
-				userApi.endpoints.current.matchFulfilled,
-				(state, action) => {
-					state.isAuthenticated = true;
-					state.user = action.payload;
-				}
-			)
-			.addMatcher(
-				userApi.endpoints.getUserById.matchFulfilled,
-				(state, action) => {
-					state.user = action.payload;
-				}
-			);
+			.addCase(loginByEmail.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(loginByEmail.fulfilled, (state, action) => {
+				state.isLoading = false,
+					state.user = action.payload,
+					state.isAuthenticated = !!action.payload;
+			});
 	},
 });
 

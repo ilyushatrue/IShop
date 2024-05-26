@@ -9,8 +9,12 @@ import {
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Template from "../base/template";
-import LoginByPhone from "./login-by-phone";
-import LoginByEmail from "./login-by-email";
+import LoginByEmailForm from "./login-by-email-form";
+import LoginByPhoneForm from "./login-by-phone-form";
+import { ILoginByEmailRequest } from "../../../api/contracts/authentication/login-by-email-request.interface";
+import { ILoginByPhoneRequest } from "../../../api/contracts/authentication/login-by-phone-request.interface";
+import { loginByPhone } from "../../../store/userSlice";
+import { useAppDispatch } from "../../../app/hooks";
 
 type AuthType = "phone" | "email";
 
@@ -25,6 +29,8 @@ export default function Login({
 	onToRegisterClick,
 }: IProps) {
 	const [authType, setAuthType] = useState<AuthType>("email");
+	const [error, setError] = useState<string | null>(null);
+	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 
 	function handleForgotPassword() {
@@ -37,6 +43,12 @@ export default function Login({
 	) => {
 		if (authType !== null) setAuthType(authType);
 	};
+
+	async function handleLoginByPhoneAsync(request: ILoginByPhoneRequest) {
+		dispatch(loginByPhone(request));
+	}
+
+	async function handleLoginByEmailAsync(request: ILoginByEmailRequest) {}
 
 	return (
 		<Template sm={sm} avatar={<LockOutlined />} title={"Войти"}>
@@ -63,9 +75,9 @@ export default function Login({
 			</ToggleButtonGroup>
 
 			{authType === "email" ? (
-				<LoginByEmail />
+				<LoginByEmailForm onSubmit={handleLoginByEmailAsync} />
 			) : (
-				<LoginByPhone />
+				<LoginByPhoneForm onSubmit={handleLoginByPhoneAsync} />
 			)}
 
 			<Typography sx={{ cursor: "pointer" }} variant="body2">
