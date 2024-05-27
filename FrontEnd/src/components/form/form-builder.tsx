@@ -34,7 +34,7 @@ export interface IForm<T extends FieldValues> {
 }
 
 function FormBuilder<T extends FieldValues>(
-	{ defaultValues }: IForm<T>,
+	{ defaultValues, onSubmit }: IForm<T>,
 	ref: Ref<TFormRef<T>>
 ) {
 	const { handleSubmit, control, watch } = useForm<T>({
@@ -45,7 +45,7 @@ function FormBuilder<T extends FieldValues>(
 
 	const [fields, setFields] = useState<ReactElement[]>([]);
 
-	const onSubmit: SubmitHandler<T> = (data) => {
+	const handleSubmitButtonClick: SubmitHandler<T> = (data) => {
 		onSubmit(data);
 	};
 
@@ -100,6 +100,7 @@ function FormBuilder<T extends FieldValues>(
 			<InputPhone<T> {...props} control={control} key={props.name} />,
 		]);
 	};
+
 	useImperativeHandle(ref, () => ({
 		addTextInput,
 		addEmailInput,
@@ -110,7 +111,7 @@ function FormBuilder<T extends FieldValues>(
 
 	return (
 		<form
-			onSubmit={handleSubmit(onSubmit)}
+			onSubmit={handleSubmit(handleSubmitButtonClick)}
 			style={{
 				display: "flex",
 				flexDirection: "column",

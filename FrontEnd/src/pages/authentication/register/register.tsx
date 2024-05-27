@@ -3,11 +3,9 @@ import { IRegisterRequest } from "../../../api/contracts/authentication/register
 import { Link, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import Template from "../base/template";
-import api from "../../../api/apiAccessor";
 import RegisterForm from "./register-form";
-interface IRegisterFormField extends IRegisterRequest {
-	confirmPassword: string;
-}
+import { useAppDispatch } from "../../../app/hooks";
+import { register } from "../../../store/userSlice";
 
 interface IProps {
 	sm?: boolean;
@@ -20,26 +18,19 @@ export default function Register({
 	onToLoginClick,
 }: IProps) {
 	const navigate = useNavigate();
-
-	function handleSubmit(data: IRegisterFormField) {
-		data.phone = data.phone.replace(/[^\d]/g, "");
-		register(data);
-	}
-
-	async function register(data: IRegisterRequest) {
-		try {
-			const url = "/auth/register";
-			const result = await api.postAsync(url, data);
-			console.log(result);
-		} catch (error) {
-			console.error(error);
+	const dispatch = useAppDispatch();
+	async function handleRegisterAsync(request: IRegisterRequest) {
+		request.phone = request.phone.replace(/[^\d]/g, "");
+		const result = await dispatch(register(request));
+		if (result.payload) {
+			console.log(result.payload);
+			onRegister();
 		}
 	}
 
 	return (
 		<Template sm={sm} avatar={<LockOutlined />} title="Регистрация">
-
-			<RegisterForm onSubmit={handleSubmit}/>
+			<RegisterForm onSubmit={handleRegisterAsync} />
 			<Typography sx={{ cursor: "pointer" }} variant="body2">
 				Уже есть аккант?
 				<Link onClick={onToLoginClick} marginLeft={1}>

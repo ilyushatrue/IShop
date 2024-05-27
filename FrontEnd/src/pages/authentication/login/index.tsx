@@ -13,8 +13,8 @@ import LoginByEmailForm from "./login-by-email-form";
 import LoginByPhoneForm from "./login-by-phone-form";
 import { ILoginByEmailRequest } from "../../../api/contracts/authentication/login-by-email-request.interface";
 import { ILoginByPhoneRequest } from "../../../api/contracts/authentication/login-by-phone-request.interface";
-import { loginByPhone } from "../../../store/userSlice";
-import { useAppDispatch } from "../../../app/hooks";
+import { loginByEmail, loginByPhone } from "../../../store/userSlice";
+import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 
 type AuthType = "phone" | "email";
 
@@ -29,7 +29,8 @@ export default function Login({
 	onToRegisterClick,
 }: IProps) {
 	const [authType, setAuthType] = useState<AuthType>("email");
-	const [error, setError] = useState<string | null>(null);
+	//const [error, setError] = useState<string | null>(null);
+	//const { loading, error } = useAppSelector((state) => state.user);
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 
@@ -45,10 +46,17 @@ export default function Login({
 	};
 
 	async function handleLoginByPhoneAsync(request: ILoginByPhoneRequest) {
-		dispatch(loginByPhone(request));
+		const result = await dispatch(loginByPhone(request));
+		if (result.payload) {
+			console.log(result.payload);
+		}
 	}
-
-	async function handleLoginByEmailAsync(request: ILoginByEmailRequest) {}
+	async function handleLoginByEmailAsync(request: ILoginByEmailRequest) {
+		const result = await dispatch(loginByEmail(request));
+		if (result.payload) {
+			console.log(result.payload);
+		}
+	}
 
 	return (
 		<Template sm={sm} avatar={<LockOutlined />} title={"Войти"}>

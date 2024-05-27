@@ -14,6 +14,7 @@ export default function LoginByEmailForm({ onSubmit }: IProps) {
 			required: true,
 		});
 	}, []);
+
 	return (
 		<FormBuilder<ILoginByEmailRequest>
 			defaultValues={{

@@ -88,7 +88,7 @@ public class AuthenticationController(
         if (userId is not null)
         {
             var command = new LogoutCommand(Guid.Parse(userId));
-            ErrorOr<bool> authResult = await mediator.Send(command);
+            var authResult = await mediator.Send(command);
             if (!authResult.IsError) DeleteJwtAccessTokenCookie();
 
             return authResult.Match(
