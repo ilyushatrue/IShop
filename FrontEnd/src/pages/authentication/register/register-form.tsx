@@ -1,5 +1,4 @@
-import { useEffect, useRef } from "react";
-import FormBuilder, { TFormRef } from "../../../components/form/form-builder";
+import Form from "../../../components/form/form";
 
 interface IRegisterForm {
 	firstName: string;
@@ -15,43 +14,8 @@ export default function RegisterForm({
 }: {
 	onSubmit: (values: IRegisterForm) => void;
 }) {
-	const form = useRef<TFormRef<IRegisterForm>>(null);
-
-	useEffect(() => {
-		form.current?.addTextInput({
-			name: "firstName",
-			label: "Имя",
-			size: "small",
-			required: true,
-		});
-		form.current?.addTextInput({
-			name: "lastName",
-			label: "Фамилия",
-			size: "small",
-		});
-		form.current?.addPhoneInput({
-			name: "phone",
-			size: "small",
-			required: true,
-		});
-		form.current?.addEmailInput({
-			name: "email",
-			size: "small",
-			required: true,
-		});
-		form.current?.addPasswordInput({
-			name: "password",
-			size: "small",
-			required: true,
-		});
-		form.current?.addPasswordConfirmInput(
-			{ name: "confirmPassword", size: "small", required: true },
-			"password"
-		);
-	}, []);
-
 	return (
-		<FormBuilder<IRegisterForm>
+		<Form<IRegisterForm>
 			defaultValues={{
 				firstName: "",
 				lastName: "",
@@ -61,7 +25,44 @@ export default function RegisterForm({
 				confirmPassword: "",
 			}}
 			onSubmit={onSubmit}
-			ref={form}
+			fields={(builder) =>
+				builder
+					.addTextInput({
+						name: "firstName",
+						label: "Имя",
+						size: "small",
+						required: true,
+					})!
+					.addTextInput({
+						name: "lastName",
+						label: "Фамилия",
+						size: "small",
+					})!
+					.addPhoneInput({
+						name: "phone",
+						size: "small",
+						required: true,
+					})!
+					.addEmailInput({
+						name: "email",
+						size: "small",
+						required: true,
+					})!
+					.addPasswordInput({
+						name: "password",
+						size: "small",
+						required: true,
+					})!
+					.addPasswordConfirmInput(
+						{
+							label: "Повторите пароль",
+							name: "confirmPassword",
+							size: "small",
+							required: true,
+						},
+						"password"
+					)
+			}
 		/>
 	);
 }

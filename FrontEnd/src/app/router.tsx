@@ -20,6 +20,7 @@ export default function Router({ sm }: IProps) {
 				<Route path="/page2" element={<Page2 />} />
 				<Route path="/account/*" element={<Account />} />
 				<Route path="/auth" element={<Authentication sm={sm} />} />
+				<Route path="/test" element={<></>} />
 				<Route path="*" element={<NotFound />} />
 			</Routes>
 			<ProtectedRoutes>

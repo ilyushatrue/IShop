@@ -44,26 +44,26 @@ public class AuthenticationController(
         );
     }
 
-    //[HttpPost("refresh-jwt")]
-    //public async Task<IActionResult> RefreshJwt()
-    //{
-    //    var userId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "UserId")?.Value;
+    [HttpPost("refresh-jwt")]
+    public async Task<IActionResult> RefreshJwt()
+    {
+       var userId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "UserId")?.Value;
 
-    //    if (userId is not null)
-    //    {
-    //        var command = new RefreshJwtCommand(Guid.Parse(userId));
-    //        ErrorOr<AuthenticationResult> authResult = await mediator.Send(command);
+       if (userId is not null)
+       {
+           var command = new RefreshJwtCommand(Guid.Parse(userId));
+           ErrorOr<AuthenticationResult> authResult = await mediator.Send(command);
 
-    //        return authResult.Match(
-    //            authResult => Ok(mapper.Map<AuthenticationResponse>(authResult)),
-    //            errors => Problem(errors)
-    //        );
-    //    }
-    //    else
-    //    {
-    //        return Problem(statusCode: 401);
-    //    }
-    //}
+           return authResult.Match(
+               authResult => Ok(mapper.Map<AuthenticationResponse>(authResult)),
+               errors => Problem(errors)
+           );
+       }
+       else
+       {
+           return Problem(statusCode: 401);
+       }
+    }
 
 
     [HttpPost("login-by-email")]

@@ -14,7 +14,6 @@ export default function Authentication({ sm = false }: IProps) {
 	const user = useAppSelector((state) => state.user);
 	const dispatch = useAppDispatch;
 
-	console.log(hasAccount);
 
 	return (
 		<Page isLoading={false}>

@@ -9,6 +9,7 @@ const menuItems = [
 	{ label: "Главная", href: "/shop" },
 	{ label: "Дополнительная", href: "/page2" },
 	{ label: "Пользователи", href: "/users" },
+	{ label: "Тест", href: "/test" },
 ];
 
 export interface INavBar {

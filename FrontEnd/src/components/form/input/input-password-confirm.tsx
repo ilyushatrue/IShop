@@ -3,8 +3,8 @@ import {
 	Controller,
 	FieldValues,
 	Path,
+	PathValue,
 	RegisterOptions,
-	UseFormWatch,
 } from "react-hook-form";
 import { IFormBuilderField } from "./form-builder-field.interface";
 import Icon2 from "../../icon";
@@ -36,8 +36,6 @@ const getValidateOptions = <T extends FieldValues>(
 });
 
 export default function InputPasswordConfirm<T extends FieldValues>({
-	watch,
-	watchFor,
 	control,
 	name,
 	label = "Пароль",
@@ -45,8 +43,11 @@ export default function InputPasswordConfirm<T extends FieldValues>({
 	variant = "filled",
 	margin = "dense",
 	required,
-}: { watch: UseFormWatch<T>; watchFor: Path<T> } & IFormBuilderField<T>) {
-	const password = watch(watchFor);
+	onChange,
+}: {
+	onChange: () => PathValue<T, Path<T>>;
+} & IFormBuilderField<T>) {
+	const [password, setPassword] = useState<string>("");
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
 	const handleClickShowPassword = () => setIsPasswordVisible((show) => !show);
@@ -55,6 +56,12 @@ export default function InputPasswordConfirm<T extends FieldValues>({
 		event: React.MouseEvent<HTMLButtonElement>
 	) => {
 		event.preventDefault();
+	};
+
+	const handleOnChange = () => {
+		if (onChange) {
+			setPassword(onChange());
+		}
 	};
 
 	return (
@@ -71,7 +78,10 @@ export default function InputPasswordConfirm<T extends FieldValues>({
 					type={isPasswordVisible ? "text" : "password"}
 					margin={margin}
 					fullWidth
-					onChange={field.onChange}
+					onChange={(e) => {
+						field.onChange(e);
+						handleOnChange();
+					}}
 					value={field.value}
 					error={!!error}
 					helperText={error && error.message}

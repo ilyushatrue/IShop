@@ -1,10 +1,10 @@
-import { ReactNode, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Box } from "@mui/material";
-import { Routes } from "react-router-dom";
+import { Routes, RoutesProps } from "react-router-dom";
 import { useAppDispatch } from "./hooks";
 import { getCurrent } from "../store/userSlice";
 
-export default function ProtectedRoutes({ children }: { children: ReactNode }) {
+export default function ProtectedRoutes({ children }: RoutesProps) {
 	const dispatch = useAppDispatch();
 	const [isLoading, setIsLoading] = useState(false);
 
@@ -20,7 +20,8 @@ export default function ProtectedRoutes({ children }: { children: ReactNode }) {
 	}, []);
 
 	if (!isLoading) {
-		return <Box height={20} width={20} bgcolor={"black"} />;
+		console.log("protected-routes", "isLoading: ", isLoading)
+		return <Box display={"inline"} height={20} bgcolor={"black"} color={"white"}>loaded</Box>;
 	}
 
 	return <Routes>{children}</Routes>;

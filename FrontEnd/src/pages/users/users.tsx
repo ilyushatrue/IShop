@@ -3,7 +3,6 @@ import api from "../../api/apiAccessor";
 import { IUser } from "../../api/interfaces/user/user.interface";
 import Page from "../../components/page";
 export default function Users() {
-	console.log(123);
 	const [users, setUsers] = useState<IUser[]>([]);
 	useEffect(() => {
 		api.tryGetAsync<IUser[]>("/users").then((response) => {
@@ -13,7 +12,6 @@ export default function Users() {
 		});
 	}, []);
 
-	console.log("users")
 
 	return (
 		<Page>
