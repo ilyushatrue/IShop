@@ -13,8 +13,8 @@ import LoginByEmailForm from "./login-by-email-form";
 import LoginByPhoneForm from "./login-by-phone-form";
 import { ILoginByEmailRequest } from "../../../api/contracts/authentication/login-by-email-request.interface";
 import { ILoginByPhoneRequest } from "../../../api/contracts/authentication/login-by-phone-request.interface";
-import { loginByEmail, loginByPhone } from "../../../store/userSlice";
-import { useAppDispatch, useAppSelector } from "../../../app/hooks";
+import { loginByEmail, loginByPhone } from "../../../store/user.slice";
+import { useAppDispatch } from "../../../app/hooks";
 
 type AuthType = "phone" | "email";
 

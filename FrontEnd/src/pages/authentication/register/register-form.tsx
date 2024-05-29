@@ -24,6 +24,7 @@ export default function RegisterForm({
 				password: "",
 				confirmPassword: "",
 			}}
+			minHeight={430}
 			onSubmit={onSubmit}
 			fields={(builder) =>
 				builder

@@ -11,6 +11,7 @@ export default function LoginByEmailForm({ onSubmit }: IProps) {
 				password: "",
 				email: "",
 			}}
+			minHeight={210}
 			onSubmit={onSubmit}
 			fields={(builder) =>
 				builder

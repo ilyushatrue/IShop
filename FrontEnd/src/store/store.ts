@@ -1,5 +1,5 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
-import user from "./userSlice";
+import user from "./user.slice";
 import { api } from "../api/api";
 
 export const store = configureStore({

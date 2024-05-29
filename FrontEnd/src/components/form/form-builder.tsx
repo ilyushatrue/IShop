@@ -1,9 +1,10 @@
 import {
+	CSSProperties,
 	ReactElement,
 	Ref,
-	RefObject,
 	forwardRef,
 	useImperativeHandle,
+	useMemo,
 	useState,
 } from "react";
 import {
@@ -21,6 +22,13 @@ import { IFormField } from "./input/form-field.interface";
 import { Button } from "@mui/material";
 import InputPasswordConfirm from "./input/input-password-confirm";
 
+const formStyles: CSSProperties = {
+	display: "flex",
+	flexDirection: "column",
+	justifyContent: "end",
+	alignItems: "center",
+};
+
 export type TFormBuilderRef<T extends FieldValues> = {
 	addEmailInput: (props: IFormField<T>) => TFormBuilderRef<T> | null;
 	addTextInput: (props: IFormField<T>) => TFormBuilderRef<T> | null;
@@ -36,10 +44,11 @@ export interface IForm<T extends FieldValues> {
 	defaultValues: DefaultValues<T>;
 	onSubmit: (values: T) => void;
 	submitButtonText: string;
+	minHeight: number | string;
 }
 
 function FormBuilder<T extends FieldValues>(
-	{ defaultValues, onSubmit, submitButtonText }: IForm<T>,
+	{ defaultValues, onSubmit, submitButtonText, minHeight: height }: IForm<T>,
 	ref: Ref<TFormBuilderRef<T>>
 ) {
 	const { handleSubmit, control, watch } = useForm<T>({
@@ -47,105 +56,99 @@ function FormBuilder<T extends FieldValues>(
 		reValidateMode: "onBlur",
 		defaultValues,
 	});
-
-	const [fields, setFields] = useState<ReactElement[]>([]);
+	const [inputsMap, setInputsMap] = useState<Map<string, ReactElement>>(
+		new Map()
+	);
+	const inputs = useMemo(() => Array.from(inputsMap.values()), [inputsMap]);
 
 	const handleSubmitButtonClick: SubmitHandler<T> = (data) => {
 		onSubmit(data);
 	};
 
-	const inputExists: (key: Path<T>) => boolean = (key: Path<T>) => {
-		return fields.map((f) => f.key).includes(key);
+	const addInput = (key: string, field: ReactElement) => {
+		setInputsMap((map) => {
+			if (!map.has(key)) {
+				const newMap = new Map(map);
+				newMap.set(key, field);
+				return newMap;
+			}
+			return map;
+		});
 	};
 
-	const addEmailInput: TFormBuilderRef<T>["addEmailInput"] = (
-		props: IFormField<T>
-	) => {
-		if (!inputExists(props.name)) {
-			setFields((prevFields) => [
-				...prevFields,
-				<InputEmail<T> {...props} control={control} key={props.name} />,
-			]);
-		}
-		return (ref as RefObject<TFormBuilderRef<T>>).current;
-	};
-
-	const addPasswordInput: TFormBuilderRef<T>["addPasswordInput"] = (
-		props: IFormField<T>
-	) => {
-		if (!inputExists(props.name)) {
-			setFields((prevFields) => [
-				...prevFields,
-				<InputPassword<T>
-					{...props}
-					control={control}
-					key={props.name}
-				/>,
-			]);
-		}
-		return (ref as RefObject<TFormBuilderRef<T>>).current;
-	};
-
-	const addPasswordConfirmInput: TFormBuilderRef<T>["addPasswordConfirmInput"] =
-		(props: IFormField<T>, watchFor: Path<T>) => {
-			if (!inputExists(props.name)) {
-				setFields((prevFields) => [
-					...prevFields,
+	const inputBuilder: TFormBuilderRef<T> = useMemo<TFormBuilderRef<T>>(
+		() => ({
+			addEmailInput: (props: IFormField<T>) => {
+				addInput(
+					props.name,
+					<InputEmail<T>
+						{...props}
+						control={control}
+						key={props.name}
+					/>
+				);
+				return inputBuilder;
+			},
+			addPasswordInput: (props: IFormField<T>) => {
+				addInput(
+					props.name,
+					<InputPassword<T>
+						{...props}
+						control={control}
+						key={props.name}
+					/>
+				);
+				return inputBuilder;
+			},
+			addPasswordConfirmInput: (
+				props: IFormField<T>,
+				watchFor: Path<T>
+			) => {
+				addInput(
+					props.name,
 					<InputPasswordConfirm<T>
 						{...props}
 						control={control}
 						key={props.name}
 						onChange={() => watch(watchFor)}
-					/>,
-				]);
-			}
-			return (ref as RefObject<TFormBuilderRef<T>>).current;
-		};
+					/>
+				);
+				return inputBuilder;
+			},
+			addTextInput: (props: IFormField<T>) => {
+				addInput(
+					props.name,
+					<InputText<T>
+						{...props}
+						control={control}
+						key={props.name}
+					/>
+				);
+				return inputBuilder;
+			},
+			addPhoneInput: (props: IFormField<T>) => {
+				addInput(
+					props.name,
+					<InputPhone<T>
+						{...props}
+						control={control}
+						key={props.name}
+					/>
+				);
+				return inputBuilder;
+			},
+		}),
+		[control, watch]
+	);
 
-	const addTextInput: TFormBuilderRef<T>["addTextInput"] = (
-		props: IFormField<T>
-	) => {
-		if (!inputExists(props.name)) {
-			setFields((prevFields) => [
-				...prevFields,
-				<InputText<T> {...props} control={control} key={props.name} />,
-			]);
-		}
-		return (ref as RefObject<TFormBuilderRef<T>>).current;
-	};
+	useImperativeHandle(ref, () => inputBuilder, [inputBuilder]);
 
-	const addPhoneInput: TFormBuilderRef<T>["addPhoneInput"] = (
-		props: IFormField<T>
-	) => {
-		if (!inputExists(props.name)) {
-			setFields((prevFields) => [
-				...prevFields,
-				<InputPhone<T> {...props} control={control} key={props.name} />,
-			]);
-		}
-		return (ref as RefObject<TFormBuilderRef<T>>).current;
-	};
-
-	useImperativeHandle(ref, () => ({
-		addTextInput,
-		addEmailInput,
-		addPasswordInput,
-		addPasswordConfirmInput,
-		addPhoneInput,
-	}));
-
-	console.log(fields);
 	return (
 		<form
 			onSubmit={handleSubmit(handleSubmitButtonClick)}
-			style={{
-				display: "flex",
-				flexDirection: "column",
-				justifyContent: "center",
-				alignItems: "center",
-			}}
+			style={{ ...formStyles, minHeight: height }}
 		>
-			{fields}
+			{inputs}
 			<Button
 				type="submit"
 				variant="contained"

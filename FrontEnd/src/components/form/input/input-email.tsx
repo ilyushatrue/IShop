@@ -7,11 +7,10 @@ import {
 } from "react-hook-form";
 import { IFormBuilderField } from "./form-builder-field.interface";
 
-const getValidateOptions = <T extends FieldValues>(): RegisterOptions<
-	T,
-	Path<T>
-> => ({
-	required: "Обязательно для заполнения",
+const getValidateOptions = <T extends FieldValues>(
+	required: boolean
+): RegisterOptions<T, Path<T>> => ({
+	required: { value: required, message: "Обязательно для заполнения" },
 	pattern: { value: /(?=.*[@])/, message: "Некорректный email" },
 });
 
@@ -22,20 +21,19 @@ export default function InputEmail<T extends FieldValues>({
 	size = "medium",
 	variant = "filled",
 	margin = "dense",
-	required,
+	required = false,
 }: IFormBuilderField<T>) {
 	return (
 		<Controller
 			control={control}
 			name={name}
-			rules={getValidateOptions()}
+			rules={getValidateOptions(required)}
 			render={({ field, fieldState: { error } }) => (
 				<TextField
-					label={label}
+					label={label + (required ? " *" : "")}
 					size={size}
 					type="email"
 					variant={variant}
-					required={required}
 					margin={margin}
 					fullWidth
 					onChange={field.onChange}

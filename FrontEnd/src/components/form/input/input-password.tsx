@@ -9,11 +9,10 @@ import { IFormBuilderField } from "./form-builder-field.interface";
 import Icon2 from "../../icon";
 import { useState } from "react";
 
-const getValidateOptions = <T extends FieldValues>(): RegisterOptions<
-	T,
-	Path<T>
-> => ({
-	required: "Обязательно для заполнения",
+const getValidateOptions = <T extends FieldValues>(
+	required: boolean
+): RegisterOptions<T, Path<T>> => ({
+	required: { value: required, message: "Обязательно для заполнения" },
 	minLength: { value: 6, message: "Длина пароля не менее 6 символов" },
 	validate: (value: string) => {
 		if (!/(?=.*[0-9])/.test(value)) {
@@ -40,7 +39,7 @@ export default function InputPassword<T extends FieldValues>({
 	size = "medium",
 	variant = "filled",
 	margin = "dense",
-	required,
+	required = true,
 }: IFormBuilderField<T>) {
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
@@ -55,15 +54,14 @@ export default function InputPassword<T extends FieldValues>({
 		<Controller
 			control={control}
 			name={name}
-			rules={getValidateOptions()}
+			rules={getValidateOptions(required)}
 			render={({ field, fieldState: { error } }) => (
 				<TextField
-					label={label}
+					label={label + (required ? " *" : "")}
 					size={size}
 					variant={variant}
 					type={isPasswordVisible ? "text" : "password"}
 					margin={margin}
-					required={required}
 					fullWidth
 					onChange={field.onChange}
 					value={field.value}

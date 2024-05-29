@@ -11,9 +11,10 @@ import Icon2 from "../../icon";
 import { useState } from "react";
 
 const getValidateOptions = <T extends FieldValues>(
+	required: boolean,
 	password: string
 ): RegisterOptions<T, Path<T>> => ({
-	required: "Обязательно для заполнения",
+	required: { value: required, message: "Обязательно для заполнения" },
 	validate: (value: string) => {
 		if (value !== password) {
 			return "Пароли не совпадают";
@@ -42,7 +43,7 @@ export default function InputPasswordConfirm<T extends FieldValues>({
 	size = "medium",
 	variant = "filled",
 	margin = "dense",
-	required,
+	required = true,
 	onChange,
 }: {
 	onChange: () => PathValue<T, Path<T>>;
@@ -68,11 +69,10 @@ export default function InputPasswordConfirm<T extends FieldValues>({
 		<Controller
 			control={control}
 			name={name}
-			rules={getValidateOptions(password)}
+			rules={getValidateOptions(required, password)}
 			render={({ field, fieldState: { error } }) => (
 				<TextField
-					label={label}
-					required={required}
+					label={label + (required ? " *" : "")}
 					size={size}
 					variant={variant}
 					type={isPasswordVisible ? "text" : "password"}

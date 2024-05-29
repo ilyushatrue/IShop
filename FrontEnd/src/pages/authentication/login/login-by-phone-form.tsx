@@ -13,6 +13,7 @@ export default function LoginByPhoneForm({ sm = false, onSubmit }: IProps) {
 				phone: "",
 			}}
 			onSubmit={onSubmit}
+			minHeight={210}
 			fields={(builder) =>
 				builder
 					.addPhoneInput({

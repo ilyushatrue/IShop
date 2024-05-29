@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import Template from "../base/template";
 import RegisterForm from "./register-form";
 import { useAppDispatch } from "../../../app/hooks";
-import { register } from "../../../store/userSlice";
+import { register } from "../../../store/user.slice";
 
 interface IProps {
 	sm?: boolean;

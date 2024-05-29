@@ -20,11 +20,10 @@ const TextMaskCustom = forwardRef<HTMLElement, CustomMaskedInputProps>(
 	}
 );
 
-const getValidateOptions = <T extends FieldValues>(): RegisterOptions<
-	T,
-	Path<T>
-> => ({
-	required: "Обязательно для заполнения",
+const getValidateOptions = <T extends FieldValues>(
+	required: boolean
+): RegisterOptions<T, Path<T>> => ({
+	required: { value: required, message: "Обязательно для заполнения" },
 	validate: (value: string) => {
 		if (value.replace(/\D/g, "").length !== 11) {
 			return "Некорректный номер";
@@ -40,22 +39,21 @@ export default function InputPhone<T extends FieldValues>({
 	size = "medium",
 	variant = "filled",
 	margin = "dense",
-	required = false,
+	required = true,
 }: IFormBuilderField<T>) {
 	return (
 		<Controller
 			control={control}
 			name={name}
-			rules={getValidateOptions()}
+			rules={getValidateOptions(required)}
 			render={({ field, fieldState: { error } }) => (
 				<TextField
-					label={label}
+					label={label + (required ? " *" : "")}
 					size={size}
 					variant={variant}
 					type="text"
 					margin={margin}
 					fullWidth
-					required={required}
 					onChange={field.onChange}
 					value={field.value}
 					error={!!error}

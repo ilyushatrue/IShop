@@ -9,23 +9,30 @@ export default function InputText<T extends FieldValues>({
 	size = "medium",
 	variant = "filled",
 	margin = "dense",
-	required,
+	required = false,
 }: IFormBuilderField<T>) {
 	return (
 		<Controller
 			control={control}
 			name={name}
-			render={({ field }) => (
+			rules={{
+				required: {
+					value: required,
+					message: "Обязательно для заполнения",
+				},
+			}}
+			render={({ field, fieldState: { error } }) => (
 				<TextField
-					label={label}
+					label={label + (required ? " *" : "")}
 					margin={margin}
 					type="text"
 					size={size}
-					required={required}
 					variant={variant}
 					fullWidth
 					onChange={field.onChange}
 					value={field.value}
+					error={!!error}
+					helperText={error ? error.message : ""}
 				/>
 			)}
 		/>
