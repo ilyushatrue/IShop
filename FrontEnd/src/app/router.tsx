@@ -21,11 +21,10 @@ export default function Router({ sm }: IProps) {
 				<Route path="/account/*" element={<Account />} />
 				<Route path="/auth" element={<Authentication sm={sm} />} />
 				<Route path="/test" element={<></>} />
-				<Route path="*" element={<NotFound />} />
+				<Route path="/not-found" element={<NotFound />} />
+				<Route path="/no-access" element={<NotFound />} />
+				<Route path="*" element={<ProtectedRoutes />} />
 			</Routes>
-			<ProtectedRoutes>
-				<Route path="/users/*" element={<Users />} />
-			</ProtectedRoutes>
 		</>
 	);
 }

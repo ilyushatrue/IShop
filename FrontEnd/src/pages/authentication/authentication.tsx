@@ -3,7 +3,8 @@ import { Box, Typography } from "@mui/material";
 import Register from "./register/register";
 import Login from "./login";
 import Page from "../../components/page";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { useAppSelector } from "../../app/hooks/redux/use-app-selector";
+import { useAppDispatch } from "../../app/hooks/redux/use-app-dispatch";
 
 interface IProps {
 	sm?: boolean;

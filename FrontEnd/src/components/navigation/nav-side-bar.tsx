@@ -33,7 +33,7 @@ export default function NavSideBar({
 		toggleMenuCollapse();
 		onTabChange(tabIndex);
 	}
-
+	
 	return (
 		<>
 			<Box

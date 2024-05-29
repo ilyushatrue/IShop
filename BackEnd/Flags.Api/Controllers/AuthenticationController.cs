@@ -47,22 +47,34 @@ public class AuthenticationController(
     [HttpPost("refresh-jwt")]
     public async Task<IActionResult> RefreshJwt()
     {
-       var userId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "UserId")?.Value;
+        var phone = Request.Cookies["user-phone"];
 
-       if (userId is not null)
-       {
-           var command = new RefreshJwtCommand(Guid.Parse(userId));
-           ErrorOr<AuthenticationResult> authResult = await mediator.Send(command);
+        if (phone is not null)
+        {
+            var command = new RefreshJwtCommand(phone);
+            ErrorOr<AuthenticationResult> authResult = await mediator.Send(command);
 
-           return authResult.Match(
-               authResult => Ok(mapper.Map<AuthenticationResponse>(authResult)),
-               errors => Problem(errors)
-           );
-       }
-       else
-       {
-           return Problem(statusCode: 401);
-       }
+            if (authResult.IsError)
+            {
+                return authResult.Match(
+                    authResult => Problem(statusCode: 401),
+                    errors => Problem(errors)
+                );
+            }
+            else
+            {
+                SetCookies(authResult.Value.User, authResult.Value.JwtAccessToken);
+
+                return authResult.Match(
+                    authResult => Ok(),
+                    errors => Problem(errors)
+                );
+            }
+        }
+        else
+        {
+            return Problem(statusCode: 401);
+        }
     }
 
 

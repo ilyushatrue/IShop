@@ -76,9 +76,6 @@ const myProducts: IProduct[] = [
 ];
 
 export default function Shop() {
-	const user = useSelector(x=>x);
-	console.log(user)
-
 	return (
 		<Page isLoading={false}>
 			<Products products={myProducts} />

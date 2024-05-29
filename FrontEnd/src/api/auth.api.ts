@@ -1,4 +1,4 @@
-import api from "./apiAccessor";
+import api from "./api";
 import { ILoginByEmailRequest } from "./contracts/authentication/login-by-email-request.interface";
 import { ILoginByPhoneRequest } from "./contracts/authentication/login-by-phone-request.interface";
 import { IRegisterRequest } from "./contracts/authentication/register-request.interface";

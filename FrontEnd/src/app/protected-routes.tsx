@@ -1,28 +1,25 @@
-import { useEffect, useState } from "react";
-import { Box } from "@mui/material";
-import { Routes, RoutesProps } from "react-router-dom";
-import { useAppDispatch } from "./hooks";
-import { getCurrent } from "../store/user.slice";
+import { Route, Routes, RoutesProps, useNavigate } from "react-router-dom";
+import { useAppSelector } from "./hooks/redux/use-app-selector";
+import Users from "../pages/users/users";
+import NotFound from "../pages/not-found/not-found";
+import NoAccess from "../pages/no-access/no-access.page";
 
 export default function ProtectedRoutes({ children }: RoutesProps) {
-	const dispatch = useAppDispatch();
-	const [isLoading, setIsLoading] = useState(false);
+	const isAuthenticated = useAppSelector(
+		(state) => state.user.isAuthenticated
+	);
 
-	useEffect(() => {
-		setIsLoading(true);
-		dispatch(getCurrent())
-			.then((result) => {
-				console.log(result);
-			})
-			.finally(() => {
-				setIsLoading(false);
-			});
-	}, []);
-
-	if (isLoading) {
-		console.log("protected-routes", "isLoading: ", isLoading)
-		return <Box display={"inline"} height={20} bgcolor={"black"} color={"white"}>isLoading</Box>;
+	if (!isAuthenticated) {
+		return (
+		<Routes>
+			<Route path="*" element={<NoAccess />} />
+		</Routes>);
+	} else {
+		return (
+			<Routes>
+				<Route path="/users/*" element={<Users />} />
+				<Route path="*" element={<NotFound />} />
+			</Routes>
+		);
 	}
-
-	return <Routes>{children}</Routes>;
 }

@@ -14,7 +14,7 @@ import LoginByPhoneForm from "./login-by-phone-form";
 import { ILoginByEmailRequest } from "../../../api/contracts/authentication/login-by-email-request.interface";
 import { ILoginByPhoneRequest } from "../../../api/contracts/authentication/login-by-phone-request.interface";
 import { loginByEmail, loginByPhone } from "../../../store/user.slice";
-import { useAppDispatch } from "../../../app/hooks";
+import { useAppDispatch } from "../../../app/hooks/redux/use-app-dispatch";
 
 type AuthType = "phone" | "email";
 
@@ -29,8 +29,6 @@ export default function Login({
 	onToRegisterClick,
 }: IProps) {
 	const [authType, setAuthType] = useState<AuthType>("email");
-	//const [error, setError] = useState<string | null>(null);
-	//const { loading, error } = useAppSelector((state) => state.user);
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 
@@ -47,14 +45,14 @@ export default function Login({
 
 	async function handleLoginByPhoneAsync(request: ILoginByPhoneRequest) {
 		const result = await dispatch(loginByPhone(request));
-		if (result.payload) {
-			console.log(result.payload);
+		if (result) {
+			window.location.reload();
 		}
 	}
 	async function handleLoginByEmailAsync(request: ILoginByEmailRequest) {
 		const result = await dispatch(loginByEmail(request));
-		if (result.payload) {
-			console.log(result.payload);
+		if (result) {
+			window.location.reload();
 		}
 	}
 

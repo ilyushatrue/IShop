@@ -3,7 +3,10 @@ import NavTopBar from "./nav-top-bar";
 import { IAvatar } from "./nav-avatar";
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import api from "../../api/apiAccessor";
+import useApi from "../../api/hooks/use-api.hook";
+import { useAppDispatch } from "../../app/hooks/redux/use-app-dispatch";
+import { logout } from "../../store/user.slice";
+import { useAppSelector } from "../../app/hooks/redux/use-app-selector";
 
 const menuItems = [
 	{ label: "Главная", href: "/shop" },
@@ -18,20 +21,31 @@ export interface INavBar {
 export default function NavBar({ sm = false }: INavBar) {
 	const location = useLocation();
 	const navigate = useNavigate();
+	const dispatch = useAppDispatch();
+	const { tryPostAsync, isFetching } = useApi();
+	const { isAuthenticated, user } = useAppSelector((state) => state.user);
 	const [selectedItemIndex, setSelectedItemIndex] = useState<number | null>(
 		null
 	);
-
 	const menuAvatar = useMemo<IAvatar>(
 		() => ({
-			menuItems: [
-				{
-					icon: "logout",
-					label: "Выйти",
-					sx: { color: "primary.dark", marginRight: 1 },
-					onClick: handleLogout,
-				},
-			],
+			menuItems: isAuthenticated
+				? [
+						{
+							icon: "logout",
+							label: "Выйти",
+							sx: { color: "primary.dark", marginRight: 1 },
+							onClick: handleLogout,
+						},
+				  ]
+				: [
+						{
+							icon: "login",
+							label: "Войти",
+							sx: { color: "primary.dark", marginRight: 1 },
+							onClick: () => navigate("/auth"),
+						},
+				  ],
 			tip: "Аккаунт",
 			sx: { bgcolor: "primary.main" },
 		}),
@@ -39,9 +53,11 @@ export default function NavBar({ sm = false }: INavBar) {
 	);
 
 	async function handleLogout(): Promise<boolean | undefined> {
-		const result = await api.tryPostAsync<undefined, boolean>(
-			"auth/logout"
-		);
+		const result = await tryPostAsync<boolean>("/auth/logout");
+		if (result) {
+			dispatch(logout());
+		}
+		window.location.reload();
 		return result;
 	}
 

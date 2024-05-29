@@ -4,7 +4,6 @@ interface IProps {
 	onSubmit: (values: ILoginByEmailRequest) => void;
 }
 export default function LoginByEmailForm({ onSubmit }: IProps) {
-	console.log("loginform");
 	return (
 		<Form<ILoginByEmailRequest>
 			defaultValues={{

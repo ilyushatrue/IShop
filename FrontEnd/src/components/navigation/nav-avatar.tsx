@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import Icon, { IIcon } from "../icon";
+import { useAppSelector } from "../../app/hooks/redux/use-app-selector";
 
 export interface IAvatar {
 	sx?: SxProps;
@@ -29,6 +30,7 @@ export default function NavAvatar({
 }: IAvatar) {
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const isMenuOpen = Boolean(anchorEl);
+	const { isAuthenticated, user } = useAppSelector((state) => state.user);
 
 	function closeMenu() {
 		setAnchorEl(null);

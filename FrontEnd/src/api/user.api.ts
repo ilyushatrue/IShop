@@ -1,10 +1,10 @@
-import api from "./apiAccessor";
+import api from "./api";
 import { IUser } from "./interfaces/user/user.interface";
 
-const apiUsers = {
+const UsersApi = {
 	getCurrentAsync: async (): Promise<IUser | undefined> => {
 		return await api.tryGetAsync("/users/current");
 	},
 };
 
-export default apiUsers;
+export default UsersApi;

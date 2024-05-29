@@ -1,11 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { IUserState } from "./types";
-import { RootState } from "./store";
 import { ILoginByEmailRequest } from "../api/contracts/authentication/login-by-email-request.interface";
 import { ILoginByPhoneRequest } from "../api/contracts/authentication/login-by-phone-request.interface";
 import { IRegisterRequest } from "../api/contracts/authentication/register-request.interface";
-import apiAuth from "../api/api.auth";
-import apiUsers from "../api/api.user";
+import apiAuth from "../api/auth.api";
+import UsersApi from "../api/user.api";
 
 export const loginByPhone = createAsyncThunk(
 	"auth/login-by-phone",
@@ -20,7 +19,7 @@ export const register = createAsyncThunk(
 
 export const getCurrent = createAsyncThunk(
 	"users/current",
-	async () => await apiUsers.getCurrentAsync());
+	UsersApi.getCurrentAsync);
 
 const initialState: IUserState = {
 	isAuthenticated: false,
@@ -45,7 +44,7 @@ const userSlice = createSlice({
 			.addCase(loginByEmail.fulfilled, (state, action) => {
 				state.isLoading = false;
 				state.user = action.payload ?? null;
-				state.isAuthenticated = true;
+				state.isAuthenticated = !!action.payload;
 			})
 			.addCase(loginByEmail.rejected, (state, action) => {
 				state.isLoading = false;
@@ -59,7 +58,7 @@ const userSlice = createSlice({
 			.addCase(loginByPhone.fulfilled, (state, action) => {
 				state.isLoading = false;
 				state.user = action.payload ?? null;
-				state.isAuthenticated = true;
+				state.isAuthenticated = !!action.payload;
 			})
 			.addCase(loginByPhone.rejected, (state, action) => {
 				state.isLoading = false;
@@ -73,7 +72,7 @@ const userSlice = createSlice({
 			.addCase(register.fulfilled, (state, action) => {
 				state.isLoading = false;
 				state.user = action.payload ?? null;
-				state.isAuthenticated = true;
+				state.isAuthenticated = !!action.payload;
 			})
 			.addCase(register.rejected, (state, action) => {
 				state.isLoading = false;
@@ -87,7 +86,7 @@ const userSlice = createSlice({
 			.addCase(getCurrent.fulfilled, (state, action) => {
 				state.isLoading = false;
 				state.user = action.payload ?? null;
-				state.isAuthenticated = true;
+				state.isAuthenticated = !!action.payload;
 			})
 			.addCase(getCurrent.rejected, (state, action) => {
 				state.isLoading = false;
@@ -101,15 +100,3 @@ const userSlice = createSlice({
 export const { logout, resetUser } = userSlice.actions;
 
 export default userSlice.reducer;
-
-export function selectIsAuthenticated(state: RootState) {
-	return state.user.isAuthenticated;
-}
-
-export function selectCurrent(state: RootState) {
-	return state.user.user;
-}
-
-export function selectUser(state: RootState) {
-	return state.user.user;
-}

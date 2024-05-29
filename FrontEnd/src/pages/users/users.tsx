@@ -1,31 +1,41 @@
 import { useEffect, useState } from "react";
-import api from "../../api/apiAccessor";
 import { IUser } from "../../api/interfaces/user/user.interface";
 import Page from "../../components/page";
+import useApi from "../../api/hooks/use-api.hook";
+import { Box } from "@mui/material";
 export default function Users() {
 	const [users, setUsers] = useState<IUser[]>([]);
+	const { isFetching, tryGetAsync } = useApi();
 	useEffect(() => {
-		api.tryGetAsync<IUser[]>("/users").then((response) => {
-			if (response !== undefined && response.length > 0)
-				setUsers(response);
-			console.log(response);
+		tryGetAsync<IUser[]>("/users").then((result) => {
+			if (result) {
+				setUsers(result);
+			}
 		});
 	}, []);
 
-
 	return (
 		<Page>
-			{users.map((user, index) => (
-				<div key={index} style={{ backgroundColor: "palevioletred" }}>
-					{user.firstName +
-						" " +
-						user.lastName +
-						" " +
-						user.email +
-						" " +
-						user.phone}
-				</div>
-			))}
+			{isFetching ? (
+				<Box>isFetching</Box>
+			) : (
+				<>
+					{users.map((user, index) => (
+						<div
+							key={index}
+							style={{ backgroundColor: "palevioletred" }}
+						>
+							{user.firstName +
+								" " +
+								user.lastName +
+								" " +
+								user.email +
+								" " +
+								user.phone}
+						</div>
+					))}
+				</>
+			)}
 		</Page>
 	);
 }

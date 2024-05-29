@@ -1,6 +1,4 @@
 using ErrorOr;
-using Flags.Application.Authentication.Commands.RefreshJwt;
-using Flags.Application.Authentication.Common;
 using Flags.Application.Users.Queries;
 using Flags.Contracts.Authentication;
 using Flags.Infrastructure.Authentication;
@@ -70,26 +68,18 @@ public class UsersController(
             }
             else
             {
-                return Ok(new AuthenticationResponse(firstName!, lastName!, email!, phone!));
+                var response = new ErrorOr<AuthenticationResponse>();
+
+                return response.Match(
+                    authResult => Ok(new AuthenticationResponse(firstName!, lastName!, email!, phone!)),
+                    errors => Problem(errors));
             }
         }
         else
         {
-            var phone = Request.Cookies["user-phone"];
-
-            if (phone is not null)
-            {
-                var command = new RefreshJwtCommand(phone);
-                ErrorOr<AuthenticationResult> authResult = await mediatr.Send(command);
-
-                return authResult.Match(
-                    authResult => Ok(mapper.Map<AuthenticationResponse>(authResult)),
-                    errors => Problem(errors));
-            }
-            else
-            {
-                return Problem(statusCode: 401);
-            }
+            return new ErrorOr<AuthenticationResponse>().Match(
+                authResult => Problem(statusCode: 401),
+                errors => Problem(errors));
         }
     }
 }

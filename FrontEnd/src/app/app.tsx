@@ -4,6 +4,7 @@ import Router from "./router";
 import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "../store/store";
+import Identity from "./identity";
 
 function App() {
 	const sm = useMediaQuery("(min-width:600px)");
@@ -11,9 +12,11 @@ function App() {
 		<Provider store={store}>
 			<ThemeProvider theme={theme}>
 				<CssBaseline />
+				<Identity>
 					<BrowserRouter>
 						<Router sm={sm} />
 					</BrowserRouter>
+				</Identity>
 			</ThemeProvider>
 		</Provider>
 	);

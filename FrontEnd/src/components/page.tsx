@@ -1,9 +1,8 @@
 import { SxProps } from "@mui/material";
 import { Box } from "@mui/system";
-import React, { ReactNode, useEffect } from "react";
-import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { selectIsAuthenticated, selectUser } from "../store/user.slice";
+import { ReactNode } from "react";
+
+import { useAppSelector } from "../app/hooks/redux/use-app-selector";
 
 interface IPage {
 	isLoading?: boolean;
@@ -12,15 +11,10 @@ interface IPage {
 }
 
 export default function Page({ isLoading = false, children, sx }: IPage) {
-	const isAuthenticated = useSelector(selectIsAuthenticated);
-	const user = useSelector(selectUser);
-	const navigate = useNavigate();
+	const isAuthenticated = useAppSelector(
+		(state) => state.user.isAuthenticated
+	);
 
-	useEffect(() => {
-		if (!isAuthenticated) {
-			navigate("/auth");
-		}
-	}, [isAuthenticated, navigate]);
 
 	return (
 		<Box
@@ -29,7 +23,13 @@ export default function Page({ isLoading = false, children, sx }: IPage) {
 			style={{ marginTop: "78px" }}
 			sx={sx}
 		>
-			<Box maxWidth={1280}><Box bgcolor={isAuthenticated ? "green" : "red"} height={5}></Box>{children}</Box>
+			<Box maxWidth={1280}>
+				<Box
+					bgcolor={isAuthenticated ? "green" : "red"}
+					height={5}
+				></Box>
+				{children}
+			</Box>
 		</Box>
 	);
 }
