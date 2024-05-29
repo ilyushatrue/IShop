@@ -2,23 +2,32 @@ import api from "./api";
 import { ILoginByEmailRequest } from "./contracts/authentication/login-by-email-request.interface";
 import { ILoginByPhoneRequest } from "./contracts/authentication/login-by-phone-request.interface";
 import { IRegisterRequest } from "./contracts/authentication/register-request.interface";
-import { IUser } from "./interfaces/user/user.interface";
+import { IErrorOr } from "./interfaces/api/error-or.interface";
 
 const apiAuth = {
 	loginByEmailAsync: async (
 		request: ILoginByEmailRequest
-	): Promise<IUser | undefined> => {
-		return await api.tryPostAsync("/auth/login-by-email", request);
+	): Promise<IErrorOr<undefined>> => {
+		const response = await api.postAsync("/auth/login-by-email", request);
+		const result = (await response.json()) as IErrorOr<undefined>;
+		console.log(result)
+		return result;
 	},
 	loginByPhoneAsync: async (
 		request: ILoginByPhoneRequest
-	): Promise<IUser | undefined> => {
-		return await api.tryPostAsync("/auth/login-by-phone", request);
+	): Promise<IErrorOr<undefined>> => {
+		const response = await api.postAsync("/auth/login-by-phone", request);
+		const result = (await response.json()) as IErrorOr<undefined>;
+		console.log(result)
+		return result;
 	},
 	registerAsync: async (
 		request: IRegisterRequest
-	): Promise<IUser | undefined> => {
-		return await api.tryPostAsync("/auth/register", request);
+	): Promise<IErrorOr<undefined>> => {
+		const response = await api.postAsync("/auth/register", request);
+		const result = (await response.json()) as IErrorOr<undefined>;
+		console.log(result)
+		return result;
 	},
 };
 

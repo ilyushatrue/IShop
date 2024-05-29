@@ -4,7 +4,9 @@ import { ILoginByEmailRequest } from "../api/contracts/authentication/login-by-e
 import { ILoginByPhoneRequest } from "../api/contracts/authentication/login-by-phone-request.interface";
 import { IRegisterRequest } from "../api/contracts/authentication/register-request.interface";
 import apiAuth from "../api/auth.api";
-import UsersApi from "../api/user.api";
+import usersApi from "../api/users.api";
+import api from "../api/api";
+import { IErrorOr } from "../api/interfaces/api/error-or.interface";
 
 export const loginByPhone = createAsyncThunk(
 	"auth/login-by-phone",
@@ -18,8 +20,13 @@ export const register = createAsyncThunk(
 	async (request: IRegisterRequest) => await apiAuth.registerAsync(request));
 
 export const getCurrent = createAsyncThunk(
-	"users/current",
-	UsersApi.getCurrentAsync);
+	"users/current", async()=>{
+		const response = await usersApi.getCurrentAsync();
+		const result = (await response.json()) as IErrorOr<undefined>;
+		console.log(result)
+		return result;
+
+	});
 
 const initialState: IUserState = {
 	isAuthenticated: false,
@@ -41,51 +48,18 @@ const userSlice = createSlice({
 			.addCase(loginByEmail.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(loginByEmail.fulfilled, (state, action) => {
-				state.isLoading = false;
-				state.user = action.payload ?? null;
-				state.isAuthenticated = !!action.payload;
-			})
-			.addCase(loginByEmail.rejected, (state, action) => {
-				state.isLoading = false;
-				state.user = null;
-				state.isAuthenticated = false;
-				console.error(action.error.message)
-			})
 			.addCase(loginByPhone.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(loginByPhone.fulfilled, (state, action) => {
-				state.isLoading = false;
-				state.user = action.payload ?? null;
-				state.isAuthenticated = !!action.payload;
-			})
-			.addCase(loginByPhone.rejected, (state, action) => {
-				state.isLoading = false;
-				state.user = null;
-				state.isAuthenticated = false;
-				console.error(action.error.message)
-			})
 			.addCase(register.pending, (state) => {
 				state.isLoading = true;
-			})
-			.addCase(register.fulfilled, (state, action) => {
-				state.isLoading = false;
-				state.user = action.payload ?? null;
-				state.isAuthenticated = !!action.payload;
-			})
-			.addCase(register.rejected, (state, action) => {
-				state.isLoading = false;
-				state.user = null;
-				state.isAuthenticated = false;
-				console.error(action.error.message)
 			})
 			.addCase(getCurrent.pending, (state) => {
 				state.isLoading = true;
 			})
 			.addCase(getCurrent.fulfilled, (state, action) => {
 				state.isLoading = false;
-				state.user = action.payload ?? null;
+				state.user = action.payload.value ?? null;
 				state.isAuthenticated = !!action.payload;
 			})
 			.addCase(getCurrent.rejected, (state, action) => {

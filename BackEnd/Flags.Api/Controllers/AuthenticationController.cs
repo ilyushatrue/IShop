@@ -39,7 +39,7 @@ public class AuthenticationController(
             SetCookies(authResult.Value.User, authResult.Value.JwtAccessToken);
 
         return authResult.Match(
-            authResult => Ok(mapper.Map<AuthenticationResponse>(authResult)),
+            authResult => Ok(),
             errors => Problem(errors)
         );
     }
@@ -87,7 +87,7 @@ public class AuthenticationController(
             SetCookies(authResult.Value.User, authResult.Value.JwtAccessToken);
 
         return authResult.Match(
-            authResult => Ok(mapper.Map<AuthenticationResponse>(authResult)),
+            authResult => Ok(),
             errors => Problem(errors)
         );
     }
@@ -123,7 +123,7 @@ public class AuthenticationController(
             SetCookies(authResult.Value.User, authResult.Value.JwtAccessToken);
 
         return authResult.Match(
-            authResult => Ok(mapper.Map<AuthenticationResponse>(authResult)),
+            authResult => Ok(),
             errors => Problem(errors)
         );
     }

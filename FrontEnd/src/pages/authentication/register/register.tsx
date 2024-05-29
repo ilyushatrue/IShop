@@ -22,7 +22,7 @@ export default function Register({
 	async function handleRegisterAsync(request: IRegisterRequest) {
 		request.phone = request.phone.replace(/[^\d]/g, "");
 		const result = await dispatch(register(request));
-		if (result.payload) {
+		if (result.meta.requestStatus==="fulfilled") {
 			window.location.reload();
 			onRegister();
 		}

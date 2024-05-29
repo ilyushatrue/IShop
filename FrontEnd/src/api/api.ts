@@ -1,42 +1,46 @@
 import getConstant from "../infrastructure/constantProvider";
+import { IErrorOr } from "./interfaces/api/error-or.interface";
 
-async function tryFetchAsync<T>(
-	request: () => Promise<Response>,
-): Promise<T | undefined> {
-	const attemptsCount = 2;
-	try {
-		for (let attempt = 1; attempt <= attemptsCount; attempt++) {
-			console.log(attempt)
-			const response = await request();
-			if (response.ok) {
-				const result = (await response.json()) as T;
-				return result;
-			} else {
-				switch (response.status) {
-					case 401:
-						if (attempt === 1) {
-							await api.postAsync("/auth/refresh-jwt");
-							break;
-						}
-						else {
-							//redirect("/auth");
-							return;
-						}
-					default:
-						console.error("Error");
-						return undefined;
+export type TTryFetch = {
+	request: () => Promise<Response>;
+	onError?: { message?: string; func?: () => void };
+	onSuccess?: { message?: string; func?: () => void };
+};
+
+
+const api = {
+	tryFetchAsync: async <T>({ request, onError, onSuccess }: TTryFetch): Promise<IErrorOr<T> | undefined> => {
+		const attemptsCount = 2;
+		try {
+			for (let attempt = 1; attempt <= attemptsCount; attempt++) {
+				const response = await request();
+				if (response.ok) {
+					const result = (await response.json()) as IErrorOr<T>;
+					console.log(result)
+					return result;
+				} else {
+					switch (response.status) {
+						case 401:
+							if (attempt === 1) {
+								const jwtResponse = await api.postAsync("/auth/refresh-jwt");
+								if (!jwtResponse.ok) return;
+								break;
+							}
+							else {
+								//redirect("/auth");
+								return;
+							}
+						default:
+							console.error("Error");
+							return undefined;
+					}
 				}
 			}
 		}
-	}
-	catch (error) {
-		console.error(error)
-	}
-}
-
-const api = {
-	tryGetAsync: async <TOut>(url: string): Promise<TOut | undefined> =>
-		await tryFetchAsync<TOut>(async () => await api.getAsync(url)),
+		catch (error) {
+			console.error(error)
+		}
+	},
 
 	getAsync: async (url: string): Promise<Response> => {
 		const fullUrl = getConstant("API_URL") + url;
@@ -46,12 +50,6 @@ const api = {
 		})
 	},
 
-	tryPostAsync: async <TIn, TOut>(
-		url: string,
-		data?: TIn
-	): Promise<TOut | undefined> => {
-		return await tryFetchAsync<TOut>(async () => await api.postAsync<TIn>(url, data));
-	},
 
 	postAsync: async <TIn>(
 		url: string,
@@ -71,11 +69,4 @@ const api = {
 	}
 }
 
-export function redirect(url: string, newTab: boolean = false) {
-	if (newTab) {
-		window?.open(url, "_blank")?.focus();
-	} else {
-		window.location.href = url;
-	}
-}
 export default api;

@@ -7,9 +7,12 @@ export default function Users() {
 	const [users, setUsers] = useState<IUser[]>([]);
 	const { isFetching, tryGetAsync } = useApi();
 	useEffect(() => {
-		tryGetAsync<IUser[]>("/users").then((result) => {
+		tryGetAsync<IUser[]>({ url: "/users" }).then((result) => {
 			if (result) {
-				setUsers(result);
+				console.log(result);
+				if (!result.isError) {
+					setUsers(result.value ?? []);
+				}
 			}
 		});
 	}, []);

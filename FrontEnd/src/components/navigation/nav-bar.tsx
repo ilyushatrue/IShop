@@ -54,11 +54,16 @@ export default function NavBar({ sm = false }: INavBar) {
 
 	async function handleLogout(): Promise<boolean | undefined> {
 		const result = await tryPostAsync<boolean>("/auth/logout");
-		if (result) {
+		if (
+			result?.isError !== undefined &&
+			result?.isError !== null &&
+			result.isError === false
+		) {
 			dispatch(logout());
+			return false;
 		}
 		window.location.reload();
-		return result;
+		return true;
 	}
 
 	const navigationMaps = useMemo(() => {
