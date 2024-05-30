@@ -10,9 +10,7 @@ export default function Users() {
 		tryGetAsync<IUser[]>({ url: "/users" }).then((result) => {
 			if (result) {
 				console.log(result);
-				if (!result.isError) {
-					setUsers(result.value ?? []);
-				}
+				setUsers(result ?? []);
 			}
 		});
 	}, []);

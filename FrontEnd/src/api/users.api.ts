@@ -1,9 +1,10 @@
 import api from "./api";
+import { IUser } from "./interfaces/user/user.interface";
 
 const usersApi = {
-	getCurrentAsync: async (): Promise<Response> => {
-		return await api.getAsync("/users/current");
-	},
+	getCurrentAsync: async () => api.tryFetchAsync<IUser>({
+		request: async () => api.getAsync("/users/current")
+	}),
 };
 
 export default usersApi;

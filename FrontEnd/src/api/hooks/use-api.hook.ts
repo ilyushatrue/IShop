@@ -2,7 +2,6 @@ import { useState } from 'react'
 import getConstant from '../../infrastructure/constantProvider';
 import { IApiError } from '../interfaces/api/api-error.interface';
 import api, { TTryFetch } from '../api';
-import { IErrorOr } from '../interfaces/api/error-or.interface';
 
 
 export default function useApi() {
@@ -10,7 +9,7 @@ export default function useApi() {
 	const [isFetching, setIsFetching] = useState(false);
 	const [errors, setErrors] = useState<IApiError[]>([])
 
-	async function tryGetAsync<TOut>({ url, onError, onSuccess }: { url: string, onError?: TTryFetch["onError"], onSuccess?: TTryFetch["onSuccess"] }): Promise<IErrorOr<TOut> | undefined> {
+	async function tryGetAsync<TOut>({ url, onError, onSuccess }: { url: string, onError?: TTryFetch["onError"], onSuccess?: TTryFetch["onSuccess"] }): Promise<TOut | undefined> {
 		setIsFetching(true)
 		const result = await api.tryFetchAsync<TOut>({ request: async () => await getAsync(url), onError, onSuccess });
 		setIsFetching(false)
@@ -27,7 +26,7 @@ export default function useApi() {
 	}
 
 	async function tryPostAsync<TOut>(url: string,
-		data?: any, onError?: TTryFetch["onError"], onSuccess?: TTryFetch["onSuccess"]): Promise<IErrorOr<TOut> | undefined> {
+		data?: any, onError?: TTryFetch["onError"], onSuccess?: TTryFetch["onSuccess"]): Promise<TOut | undefined> {
 		setIsFetching(true);
 		const result = await api.tryFetchAsync<TOut>({ request: async () => await postAsync(url, data), onError, onSuccess });
 		setIsFetching(false);

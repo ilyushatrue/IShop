@@ -5,11 +5,11 @@ import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import useApi from "../../api/hooks/use-api.hook";
 import { useAppDispatch } from "../../app/hooks/redux/use-app-dispatch";
-import { logout } from "../../store/user.slice";
+import { logoutAsync } from "../../store/user.slice";
 import { useAppSelector } from "../../app/hooks/redux/use-app-selector";
 
 const menuItems = [
-	{ label: "Главная", href: "/shop" },
+	{ label: "Главная", href: "/" },
 	{ label: "Дополнительная", href: "/page2" },
 	{ label: "Пользователи", href: "/users" },
 	{ label: "Тест", href: "/test" },
@@ -22,8 +22,7 @@ export default function NavBar({ sm = false }: INavBar) {
 	const location = useLocation();
 	const navigate = useNavigate();
 	const dispatch = useAppDispatch();
-	const { tryPostAsync, isFetching } = useApi();
-	const { isAuthenticated, user } = useAppSelector((state) => state.user);
+	const { isAuthenticated } = useAppSelector((state) => state.user);
 	const [selectedItemIndex, setSelectedItemIndex] = useState<number | null>(
 		null
 	);
@@ -53,15 +52,7 @@ export default function NavBar({ sm = false }: INavBar) {
 	);
 
 	async function handleLogout(): Promise<boolean | undefined> {
-		const result = await tryPostAsync<boolean>("/auth/logout");
-		if (
-			result?.isError !== undefined &&
-			result?.isError !== null &&
-			result.isError === false
-		) {
-			dispatch(logout());
-			return false;
-		}
+		const result = await dispatch(logoutAsync());
 		window.location.reload();
 		return true;
 	}

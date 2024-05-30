@@ -1,5 +1,5 @@
 import { ReactElement, useEffect, useState } from "react";
-import { getCurrent } from "../store/user.slice";
+import { getCurrentAsync } from "../store/user.slice";
 import { useAppDispatch } from "./hooks/redux/use-app-dispatch";
 import { Box } from "@mui/material";
 
@@ -13,10 +13,10 @@ export default function Identity({
 
 	useEffect(() => {
 		setIsLoading(true);
-		dispatch(getCurrent()).finally(() => {
+		dispatch(getCurrentAsync()).finally(() => {
 			setIsLoading(false);
 		});
-	}, []);
+	}, [dispatch]);
 
 	if (isLoading) {
 		return <Box fontSize={200}>isLoading</Box>;

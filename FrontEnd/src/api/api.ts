@@ -1,5 +1,4 @@
 import getConstant from "../infrastructure/constantProvider";
-import { IErrorOr } from "./interfaces/api/error-or.interface";
 
 export type TTryFetch = {
 	request: () => Promise<Response>;
@@ -9,31 +8,26 @@ export type TTryFetch = {
 
 
 const api = {
-	tryFetchAsync: async <T>({ request, onError, onSuccess }: TTryFetch): Promise<IErrorOr<T> | undefined> => {
+	tryFetchAsync: async <TOut>({ request, onError, onSuccess }: TTryFetch): Promise<TOut | undefined> => {
 		const attemptsCount = 2;
 		try {
 			for (let attempt = 1; attempt <= attemptsCount; attempt++) {
 				const response = await request();
-				if (response.ok) {
-					const result = (await response.json()) as IErrorOr<T>;
-					console.log(result)
-					return result;
-				} else {
-					switch (response.status) {
-						case 401:
-							if (attempt === 1) {
-								const jwtResponse = await api.postAsync("/auth/refresh-jwt");
-								if (!jwtResponse.ok) return;
-								break;
-							}
-							else {
-								//redirect("/auth");
-								return;
-							}
-						default:
-							console.error("Error");
-							return undefined;
-					}
+				switch (response.status) {
+					case 200:
+						const result = response.bodyUsed ? (await response.json()) as TOut : undefined
+						return result;
+					case 401:
+						if (attempt === 1) {
+							const jwtResponse = await api.postAsync("/auth/refresh-jwt");
+							if (!jwtResponse.ok) throw new Error(`401. Требуется аутентификация.`);
+							break;
+						}
+						else {
+							throw new Error(`Требуется аутентификация.`);
+						}
+					default:
+						throw new Error(`${response.status}. Не удалось обработать запрос.`);;
 				}
 			}
 		}

@@ -6,7 +6,6 @@ using Flags.Application.Authentication.Commands.Register;
 using Flags.Application.Authentication.Common;
 using Flags.Application.Authentication.Queries.Login.ByEmail;
 using Flags.Application.Authentication.Queries.Login.ByPhone;
-using Flags.Contracts.Authentication;
 using Flags.Domain.Common.Errors;
 using Flags.Domain.UserEntity;
 using MapsterMapper;
@@ -104,7 +103,7 @@ public class AuthenticationController(
             if (!authResult.IsError) DeleteJwtAccessTokenCookie();
 
             return authResult.Match(
-                authResult => Ok(authResult),
+                authResult => Ok(),
                 errors => Problem(errors)
             );
         }

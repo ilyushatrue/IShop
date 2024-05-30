@@ -5,72 +5,79 @@ import { ILoginByPhoneRequest } from "../api/contracts/authentication/login-by-p
 import { IRegisterRequest } from "../api/contracts/authentication/register-request.interface";
 import apiAuth from "../api/auth.api";
 import usersApi from "../api/users.api";
-import api from "../api/api";
-import { IErrorOr } from "../api/interfaces/api/error-or.interface";
 
-export const loginByPhone = createAsyncThunk(
-	"auth/login-by-phone",
+export const loginByPhoneAsync = createAsyncThunk(
+	"/auth/login-by-phone",
 	async (request: ILoginByPhoneRequest) => await apiAuth.loginByPhoneAsync(request));
-export const loginByEmail = createAsyncThunk(
-	"auth/login-by-email",
+export const loginByEmailAsync = createAsyncThunk(
+	"/auth/login-by-email",
 	async (request: ILoginByEmailRequest) => await apiAuth.loginByEmailAsync(request));
 
-export const register = createAsyncThunk(
-	"auth/register",
+export const registerAsync = createAsyncThunk(
+	"/auth/register",
 	async (request: IRegisterRequest) => await apiAuth.registerAsync(request));
 
-export const getCurrent = createAsyncThunk(
-	"users/current", async()=>{
-		const response = await usersApi.getCurrentAsync();
-		const result = (await response.json()) as IErrorOr<undefined>;
-		console.log(result)
-		return result;
+export const logoutAsync = createAsyncThunk(
+	"/auth/logout",
+	async () => await apiAuth.logoutAsync());
 
-	});
+export const getCurrentAsync = createAsyncThunk(
+	"/users/current", async () => await usersApi.getCurrentAsync());
 
 const initialState: IUserState = {
 	isAuthenticated: false,
 	isLoading: false,
 	user: null,
+	error: ""
 };
 
 const userSlice = createSlice({
 	name: "user",
 	initialState,
-	reducers: {
-		logout: () => initialState,
-		resetUser: (state) => {
-			state.user = null;
-		},
-	},
+	reducers: {},
 	extraReducers: (builder) => {
 		builder
-			.addCase(loginByEmail.pending, (state) => {
+			.addCase(loginByEmailAsync.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(loginByPhone.pending, (state) => {
-				state.isLoading = true;
-			})
-			.addCase(register.pending, (state) => {
-				state.isLoading = true;
-			})
-			.addCase(getCurrent.pending, (state) => {
-				state.isLoading = true;
-			})
-			.addCase(getCurrent.fulfilled, (state, action) => {
+			.addCase(loginByEmailAsync.fulfilled, (state) => {
 				state.isLoading = false;
-				state.user = action.payload.value ?? null;
+			})
+			.addCase(loginByEmailAsync.rejected, () => initialState)
+			.addCase(loginByPhoneAsync.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(loginByPhoneAsync.fulfilled, (state) => {
+				state.isLoading = false;
+			})
+			.addCase(loginByPhoneAsync.rejected, () => initialState)
+			.addCase(registerAsync.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(getCurrentAsync.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(getCurrentAsync.fulfilled, (state, action) => {
+				console.log(action)
+				state.isLoading = false;
+				state.user = action.payload ?? null;
 				state.isAuthenticated = !!action.payload;
 			})
-			.addCase(getCurrent.rejected, (state, action) => {
+			.addCase(getCurrentAsync.rejected, (state, action) => {
 				state.isLoading = false;
 				state.user = null;
 				state.isAuthenticated = false;
 				console.error(action.error.message)
 			})
+			.addCase(logoutAsync.pending, (state) => { state.isLoading = true })
+			.addCase(logoutAsync.fulfilled, (state, action) => {
+				state = initialState
+			})
+			.addCase(logoutAsync.rejected, (state, action) => {
+				state.isLoading = false;
+				console.error(action.error.message)
+			})
 	},
 });
-
-export const { logout, resetUser } = userSlice.actions;
 
 export default userSlice.reducer;

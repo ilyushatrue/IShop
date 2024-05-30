@@ -4,8 +4,8 @@ import { Link, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import Template from "../base/template";
 import RegisterForm from "./register-form";
-import { register } from "../../../store/user.slice";
 import { useAppDispatch } from "../../../app/hooks/redux/use-app-dispatch";
+import { registerAsync } from "../../../store/user.slice";
 
 interface IProps {
 	sm?: boolean;
@@ -21,7 +21,7 @@ export default function Register({
 	const dispatch = useAppDispatch();
 	async function handleRegisterAsync(request: IRegisterRequest) {
 		request.phone = request.phone.replace(/[^\d]/g, "");
-		const result = await dispatch(register(request));
+		const result = await dispatch(registerAsync(request));
 		if (result.meta.requestStatus==="fulfilled") {
 			window.location.reload();
 			onRegister();

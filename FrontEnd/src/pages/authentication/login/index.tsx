@@ -1,5 +1,5 @@
 import React from "react";
-import { LockOutlined } from "@mui/icons-material";
+import { ConstructionOutlined, LockOutlined } from "@mui/icons-material";
 import {
 	Link,
 	ToggleButton,
@@ -13,7 +13,7 @@ import LoginByEmailForm from "./login-by-email-form";
 import LoginByPhoneForm from "./login-by-phone-form";
 import { ILoginByEmailRequest } from "../../../api/contracts/authentication/login-by-email-request.interface";
 import { ILoginByPhoneRequest } from "../../../api/contracts/authentication/login-by-phone-request.interface";
-import { loginByEmail, loginByPhone } from "../../../store/user.slice";
+import { loginByEmailAsync, loginByPhoneAsync } from "../../../store/user.slice";
 import { useAppDispatch } from "../../../app/hooks/redux/use-app-dispatch";
 
 type AuthType = "phone" | "email";
@@ -44,15 +44,16 @@ export default function Login({
 	};
 
 	async function handleLoginByPhoneAsync(request: ILoginByPhoneRequest) {
-		const result = await dispatch(loginByPhone(request));
+		const result = await dispatch(loginByPhoneAsync(request));
 		if (result) {
 			window.location.reload();
 		}
 	}
 	async function handleLoginByEmailAsync(request: ILoginByEmailRequest) {
-		const result = await dispatch(loginByEmail(request));
-		if (result) {
-			window.location.reload();
+		const result = await dispatch(loginByEmailAsync(request));
+		console.log(result)
+		if (result.meta.requestStatus==="fulfilled") {
+			//window.location.reload();
 		}
 	}
 
