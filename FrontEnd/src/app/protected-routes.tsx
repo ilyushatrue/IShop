@@ -1,8 +1,7 @@
-import { Route, Routes, RoutesProps, useNavigate } from "react-router-dom";
+import { Route, Routes, RoutesProps } from "react-router-dom";
 import { useAppSelector } from "./hooks/redux/use-app-selector";
 import Users from "../pages/users/users";
 import NotFound from "../pages/not-found/not-found";
-import NoAccess from "../pages/no-access/no-access.page";
 
 export default function ProtectedRoutes({ children }: RoutesProps) {
 	const isAuthenticated = useAppSelector(
@@ -11,9 +10,10 @@ export default function ProtectedRoutes({ children }: RoutesProps) {
 
 	if (!isAuthenticated) {
 		return (
-		<Routes>
-			<Route path="*" element={<NoAccess />} />
-		</Routes>);
+			<Routes>
+				<Route path="*" element={<NotFound />} />
+			</Routes>
+		);
 	} else {
 		return (
 			<Routes>

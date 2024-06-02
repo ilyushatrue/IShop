@@ -6,6 +6,7 @@ import NotFound from "../pages/not-found/not-found";
 import NavBar from "../components/navigation/nav-bar";
 import Shop from "../pages/shop";
 import ProtectedRoutes from "./protected-routes";
+import NavBar2 from "../components/navigation/nav-bar-2";
 
 interface IProps {
 	sm: boolean;
@@ -13,7 +14,7 @@ interface IProps {
 export default function Router({ sm }: IProps) {
 	return (
 		<>
-			<NavBar sm={sm} />
+			<NavBar2 sm={sm} />
 			<Routes>
 				<Route path="/" element={<Shop />} />
 				<Route path="/page2" element={<Page2 />} />

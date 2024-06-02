@@ -17,10 +17,9 @@ const menuItems = [
 export interface INavBar {
 	sm?: boolean;
 }
-export default function NavBar({ sm = false }: INavBar) {
+export default function NavBar2({ sm = false }: INavBar) {
 	const location = useLocation();
 	const navigate = useNavigate();
-	const activeTab = useAppSelector((state)=> state.page.activeTab)
 	const dispatch = useAppDispatch();
 	const { isAuthenticated } = useAppSelector((state) => state.user);
 	const [selectedItemIndex, setSelectedItemIndex] = useState<number | null>(
@@ -57,31 +56,12 @@ export default function NavBar({ sm = false }: INavBar) {
 		return true;
 	}
 
-	const navigationMaps = useMemo(() => {
-		const map: any = {};
-		menuItems.forEach((tab, index) => {
-			map[tab.href] = index;
-			map[index] = tab.href;
-		});
-		return map;
-	}, []);
 
 	function handleItemSelect(tabIndex: number) {
 		navigate(navigationMaps[tabIndex as keyof typeof navigationMaps]);
 	}
 
-	useEffect(() => {
-		const navKeys = Object.keys(navigationMaps);
-		for (var i = 0; i < navKeys.length; i++) {
-			const navKey = navKeys[i];
-			console.log(location.pathname, navKey);
-			if (location.pathname.includes(navKey)) {
-				setSelectedItemIndex(navigationMaps[navKey]);
-				//return;
-			}
-		}
-		//setSelectedItemIndex(null);
-	}, [location.pathname, navigationMaps]);
+
 
 	return (
 		<>
