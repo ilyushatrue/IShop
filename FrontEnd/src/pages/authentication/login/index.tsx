@@ -13,8 +13,12 @@ import LoginByEmailForm from "./login-by-email-form";
 import LoginByPhoneForm from "./login-by-phone-form";
 import { ILoginByEmailRequest } from "../../../api/contracts/authentication/login-by-email-request.interface";
 import { ILoginByPhoneRequest } from "../../../api/contracts/authentication/login-by-phone-request.interface";
-import { loginByEmailAsync, loginByPhoneAsync } from "../../../store/user.slice";
+import {
+	loginByEmailAsync,
+	loginByPhoneAsync,
+} from "../../../store/user.slice";
 import { useAppDispatch } from "../../../app/hooks/redux/use-app-dispatch";
+import { useAppSelector } from "../../../app/hooks/redux/use-app-selector";
 
 type AuthType = "phone" | "email";
 
@@ -31,6 +35,8 @@ export default function Login({
 	const [authType, setAuthType] = useState<AuthType>("email");
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
+	const [error, setError] = useState("");
+	const loginError = useAppSelector((state) => state.user.error);
 
 	function handleForgotPassword() {
 		//navigate("/register");
@@ -44,16 +50,19 @@ export default function Login({
 	};
 
 	async function handleLoginByPhoneAsync(request: ILoginByPhoneRequest) {
-		const result = await dispatch(loginByPhoneAsync(request));
-		if (result) {
+		await dispatch(loginByPhoneAsync(request));
+		if (loginError) {
+			setError(loginError);
+		} else {
 			window.location.reload();
 		}
 	}
 	async function handleLoginByEmailAsync(request: ILoginByEmailRequest) {
-		const result = await dispatch(loginByEmailAsync(request));
-		console.log(result)
-		if (result.meta.requestStatus==="fulfilled") {
-			//window.location.reload();
+		await dispatch(loginByEmailAsync(request));
+		if (loginError) {
+			setError(loginError);
+		} else {
+			window.location.reload();
 		}
 	}
 
@@ -86,7 +95,7 @@ export default function Login({
 			) : (
 				<LoginByPhoneForm onSubmit={handleLoginByPhoneAsync} />
 			)}
-
+			{error}
 			<Typography sx={{ cursor: "pointer" }} variant="body2">
 				Забыли пароль?
 				<Link onClick={onToRegisterClick} marginLeft={1}>

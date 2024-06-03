@@ -6,33 +6,39 @@ export type TTryFetch = {
 	onSuccess?: { message?: string; func?: () => void };
 };
 
-
 const api = {
-	tryFetchAsync: async <TOut>({ request, onError, onSuccess }: TTryFetch): Promise<TOut | undefined> => {
+	tryFetchAsync: async <TOut = any>({
+		request,
+		onError,
+		onSuccess,
+	}: TTryFetch): Promise<TOut | undefined> => {
 		const attemptsCount = 2;
 		try {
 			for (let attempt = 1; attempt <= attemptsCount; attempt++) {
 				const response = await request();
 				switch (response.status) {
 					case 200:
-						const result = response.bodyUsed ? (await response.json()) as TOut : undefined
+						const result = (await response.json()) as TOut;
 						return result;
 					case 401:
 						if (attempt === 1) {
-							const jwtResponse = await api.postAsync("/auth/refresh-jwt");
-							if (!jwtResponse.ok) throw new Error(`401. Требуется аутентификация.`);
+							const jwtResponse = await api.postAsync(
+								"/auth/refresh-jwt"
+							);
+							if (!jwtResponse.ok)
+								throw new Error(`401. Не аутентифицирован.`);
 							break;
-						}
-						else {
+						} else {
 							throw new Error(`Требуется аутентификация.`);
 						}
 					default:
-						throw new Error(`${response.status}. Не удалось обработать запрос.`);;
+						throw new Error(
+							`${response.status}. Не удалось обработать запрос.`
+						);
 				}
 			}
-		}
-		catch (error) {
-			console.error(error)
+		} catch (error) {
+			console.error(error);
 		}
 	},
 
@@ -41,14 +47,10 @@ const api = {
 		return await fetch(fullUrl, {
 			method: "GET",
 			credentials: "include",
-		})
+		});
 	},
 
-
-	postAsync: async <TIn>(
-		url: string,
-		data?: TIn
-	): Promise<Response> => {
+	postAsync: async (url: string, data?: any): Promise<Response> => {
 		const fullUrl = getConstant("API_URL") + url;
 		return await fetch(fullUrl, {
 			method: "POST",
@@ -56,11 +58,11 @@ const api = {
 			credentials: "include",
 			headers: data
 				? {
-					"Content-Type": "application/json",
-				}
+						"Content-Type": "application/json",
+				  }
 				: undefined,
-		})
-	}
-}
+		});
+	},
+};
 
 export default api;

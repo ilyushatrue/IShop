@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { IUser } from "../../api/interfaces/user/user.interface";
-import Page from "../../components/page";
+import Page, { IPage } from "../../components/page";
 import useApi from "../../api/hooks/use-api.hook";
 import { Box } from "@mui/material";
-export default function Users() {
+export default function Users({ tabName }: IPage) {
 	const [users, setUsers] = useState<IUser[]>([]);
+	
 	const { isFetching, tryGetAsync } = useApi();
 	useEffect(() => {
 		tryGetAsync<IUser[]>({ url: "/users" }).then((result) => {
@@ -16,7 +17,7 @@ export default function Users() {
 	}, []);
 
 	return (
-		<Page>
+		<Page tabName={tabName}>
 			{isFetching ? (
 				<Box>isFetching</Box>
 			) : (

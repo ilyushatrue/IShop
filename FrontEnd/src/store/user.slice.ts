@@ -8,27 +8,35 @@ import usersApi from "../api/users.api";
 
 export const loginByPhoneAsync = createAsyncThunk(
 	"/auth/login-by-phone",
-	async (request: ILoginByPhoneRequest) => await apiAuth.loginByPhoneAsync(request));
+	async (request: ILoginByPhoneRequest) =>
+		await apiAuth.loginByPhoneAsync(request)
+);
 export const loginByEmailAsync = createAsyncThunk(
 	"/auth/login-by-email",
-	async (request: ILoginByEmailRequest) => await apiAuth.loginByEmailAsync(request));
+	async (request: ILoginByEmailRequest) =>
+		await apiAuth.loginByEmailAsync(request)
+);
 
 export const registerAsync = createAsyncThunk(
 	"/auth/register",
-	async (request: IRegisterRequest) => await apiAuth.registerAsync(request));
+	async (request: IRegisterRequest) => await apiAuth.registerAsync(request)
+);
 
 export const logoutAsync = createAsyncThunk(
 	"/auth/logout",
-	async () => await apiAuth.logoutAsync());
+	apiAuth.logoutAsync
+);
 
 export const getCurrentAsync = createAsyncThunk(
-	"/users/current", async () => await usersApi.getCurrentAsync());
+	"/users/current",
+	usersApi.getCurrentAsync
+);
 
 const initialState: IUserState = {
 	isAuthenticated: false,
 	isLoading: false,
 	user: null,
-	error: ""
+	error: "",
 };
 
 const userSlice = createSlice({
@@ -40,17 +48,21 @@ const userSlice = createSlice({
 			.addCase(loginByEmailAsync.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(loginByEmailAsync.fulfilled, (state) => {
+			.addCase(loginByEmailAsync.fulfilled, (state, action) => {
 				state.isLoading = false;
 			})
-			.addCase(loginByEmailAsync.rejected, () => initialState)
+			.addCase(loginByEmailAsync.rejected, (state) => {
+				state.error = "Ошибка";
+			})
 			.addCase(loginByPhoneAsync.pending, (state) => {
 				state.isLoading = true;
 			})
 			.addCase(loginByPhoneAsync.fulfilled, (state) => {
 				state.isLoading = false;
 			})
-			.addCase(loginByPhoneAsync.rejected, () => initialState)
+			.addCase(loginByPhoneAsync.rejected, (state) => {
+				state.error = "Ошибка";
+			})
 			.addCase(registerAsync.pending, (state) => {
 				state.isLoading = true;
 			})
@@ -58,7 +70,7 @@ const userSlice = createSlice({
 				state.isLoading = true;
 			})
 			.addCase(getCurrentAsync.fulfilled, (state, action) => {
-				console.log(action)
+				console.log(action);
 				state.isLoading = false;
 				state.user = action.payload ?? null;
 				state.isAuthenticated = !!action.payload;
@@ -67,16 +79,17 @@ const userSlice = createSlice({
 				state.isLoading = false;
 				state.user = null;
 				state.isAuthenticated = false;
-				console.error(action.error.message)
+				state.error = "Owibka";
+				console.error(action.error.message);
 			})
-			.addCase(logoutAsync.pending, (state) => { state.isLoading = true })
-			.addCase(logoutAsync.fulfilled, (state, action) => {
-				state = initialState
+			.addCase(logoutAsync.pending, (state) => {
+				state.isLoading = true;
 			})
+			.addCase(logoutAsync.fulfilled, () => initialState)
 			.addCase(logoutAsync.rejected, (state, action) => {
 				state.isLoading = false;
-				console.error(action.error.message)
-			})
+				console.error(action.error.message);
+			});
 	},
 });
 

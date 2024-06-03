@@ -1,8 +1,5 @@
-export default function Page2() {
+import Page from "../components/page";
 
-	return (
-		<>
-			Page2
-		</>
-	);
+export default function Page2() {
+	return <Page>Page2</Page>;
 }

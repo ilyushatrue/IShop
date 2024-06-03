@@ -1,10 +1,6 @@
-import React from "react";
 import Products from "./products";
 import { IProduct } from "../../api/interfaces/product/product.interface";
-import { Box } from "@mui/material";
-import getConstant from "../../infrastructure/constantProvider";
 import Page from "../../components/page";
-import { useSelector } from "react-redux";
 
 const myProducts: IProduct[] = [
 	{
@@ -77,7 +73,7 @@ const myProducts: IProduct[] = [
 
 export default function Shop() {
 	return (
-		<Page isLoading={false}>
+		<Page isLoading={false} >
 			<Products products={myProducts} />
 		</Page>
 	);

@@ -1,20 +1,25 @@
 import { SxProps } from "@mui/material";
 import { Box } from "@mui/system";
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 
 import { useAppSelector } from "../app/hooks/redux/use-app-selector";
 import { useAppDispatch } from "../app/hooks/redux/use-app-dispatch";
-import pageSlice, { setActiveTab } from "../store/page.slice";
-interface IPage {
+import { setActiveTab } from "../store/page.slice";
+import { useLocation } from "react-router-dom";
+export interface IPage {
 	isLoading?: boolean;
-	children: ReactNode;
+	children?: ReactNode;
 	sx?: SxProps;
+	tabName?: string;
 }
 
 export default function Page({ isLoading = false, children, sx }: IPage) {
 	const dispatch = useAppDispatch();
-	const tab = "/users";
-	dispatch(setActiveTab({ activeTab: tab }));
+	const { pathname } = useLocation();
+
+	useEffect(() => {
+		dispatch(setActiveTab(pathname));
+	}, [dispatch, pathname]);
 	const isAuthenticated = useAppSelector(
 		(state) => state.user.isAuthenticated
 	);
@@ -27,10 +32,7 @@ export default function Page({ isLoading = false, children, sx }: IPage) {
 			sx={sx}
 		>
 			<Box maxWidth={1280}>
-				<Box
-					bgcolor={isAuthenticated ? "green" : "red"}
-					height={5}
-				></Box>
+				<Box bgcolor={isAuthenticated ? "green" : "red"} height={5} />
 				{children}
 			</Box>
 		</Box>
