@@ -28,41 +28,39 @@ export default function RegisterForm({
 			onSubmit={onSubmit}
 			fields={(builder) =>
 				builder
-					.addTextInput({
+					.text({
 						name: "firstName",
 						label: "Имя",
 						size: "small",
 						required: true,
 					})!
-					.addTextInput({
+					.text({
 						name: "lastName",
 						label: "Фамилия",
 						size: "small",
 					})!
-					.addPhoneInput({
+					.phone({
 						name: "phone",
 						size: "small",
 						required: true,
 					})!
-					.addEmailInput({
+					.email({
 						name: "email",
 						size: "small",
 						required: true,
 					})!
-					.addPasswordInput({
+					.password({
 						name: "password",
 						size: "small",
 						required: true,
 					})!
-					.addPasswordConfirmInput(
-						{
-							label: "Повторите пароль",
-							name: "confirmPassword",
-							size: "small",
-							required: true,
-						},
-						"password"
-					)
+					.passwordConfirm({
+						label: "Повторите пароль",
+						name: "confirmPassword",
+						size: "small",
+						required: true,
+						password: "password",
+					})
 			}
 		/>
 	);

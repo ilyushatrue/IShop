@@ -30,14 +30,13 @@ const formStyles: CSSProperties = {
 };
 
 export type TFormBuilderRef<T extends FieldValues> = {
-	addEmailInput: (props: IFormField<T>) => TFormBuilderRef<T> | null;
-	addTextInput: (props: IFormField<T>) => TFormBuilderRef<T> | null;
-	addPasswordInput: (props: IFormField<T>) => TFormBuilderRef<T> | null;
-	addPasswordConfirmInput: (
-		props: IFormField<T>,
-		watchFor: Path<T>
+	email: (props: IFormField<T>) => TFormBuilderRef<T> | null;
+	text: (props: IFormField<T>) => TFormBuilderRef<T> | null;
+	password: (props: IFormField<T>) => TFormBuilderRef<T> | null;
+	passwordConfirm: (
+		props: IFormField<T> & { password: Path<T> }
 	) => TFormBuilderRef<T> | null;
-	addPhoneInput: (props: IFormField<T>) => TFormBuilderRef<T> | null;
+	phone: (props: IFormField<T>) => TFormBuilderRef<T> | null;
 };
 
 export interface IForm<T extends FieldValues> {
@@ -78,7 +77,7 @@ function FormBuilder<T extends FieldValues>(
 
 	const inputBuilder: TFormBuilderRef<T> = useMemo<TFormBuilderRef<T>>(
 		() => ({
-			addEmailInput: (props: IFormField<T>) => {
+			email: (props: IFormField<T>) => {
 				addInput(
 					props.name,
 					<InputEmail<T>
@@ -89,7 +88,7 @@ function FormBuilder<T extends FieldValues>(
 				);
 				return inputBuilder;
 			},
-			addPasswordInput: (props: IFormField<T>) => {
+			password: (props: IFormField<T>) => {
 				addInput(
 					props.name,
 					<InputPassword<T>
@@ -100,22 +99,19 @@ function FormBuilder<T extends FieldValues>(
 				);
 				return inputBuilder;
 			},
-			addPasswordConfirmInput: (
-				props: IFormField<T>,
-				watchFor: Path<T>
-			) => {
+			passwordConfirm: (props: IFormField<T> & { password: Path<T> }) => {
 				addInput(
 					props.name,
 					<InputPasswordConfirm<T>
 						{...props}
 						control={control}
 						key={props.name}
-						onChange={() => watch(watchFor)}
+						onChange={() => watch(props.password)}
 					/>
 				);
 				return inputBuilder;
 			},
-			addTextInput: (props: IFormField<T>) => {
+			text: (props: IFormField<T>) => {
 				addInput(
 					props.name,
 					<InputText<T>
@@ -126,7 +122,7 @@ function FormBuilder<T extends FieldValues>(
 				);
 				return inputBuilder;
 			},
-			addPhoneInput: (props: IFormField<T>) => {
+			phone: (props: IFormField<T>) => {
 				addInput(
 					props.name,
 					<InputPhone<T>

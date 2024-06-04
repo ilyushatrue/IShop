@@ -6,6 +6,7 @@ import { useAppSelector } from "../app/hooks/redux/use-app-selector";
 import { useAppDispatch } from "../app/hooks/redux/use-app-dispatch";
 import { setActiveTab } from "../store/page.slice";
 import { useLocation } from "react-router-dom";
+
 export interface IPage {
 	isLoading?: boolean;
 	children?: ReactNode;

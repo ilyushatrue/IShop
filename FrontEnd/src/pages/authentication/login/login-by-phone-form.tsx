@@ -16,11 +16,11 @@ export default function LoginByPhoneForm({ sm = false, onSubmit }: IProps) {
 			minHeight={210}
 			fields={(builder) =>
 				builder
-					.addPhoneInput({
+					.phone({
 						name: "phone",
 						required: true,
 					})!
-					.addPasswordInput({
+					.password({
 						name: "password",
 						required: true,
 					})

@@ -14,8 +14,8 @@ export default function LoginByEmailForm({ onSubmit }: IProps) {
 			onSubmit={onSubmit}
 			fields={(builder) =>
 				builder
-					.addEmailInput({ name: "email", required: true })!
-					.addPasswordInput({
+					.email({ name: "email", required: true })!
+					.password({
 						name: "password",
 						required: true,
 					})
