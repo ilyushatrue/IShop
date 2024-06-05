@@ -72,8 +72,10 @@ const userSlice = createSlice({
 			.addCase(getCurrentAsync.fulfilled, (state, action) => {
 				console.log(action);
 				state.isLoading = false;
-				state.user = action.payload ?? null;
-				state.isAuthenticated = !!action.payload;
+				state.user = action.payload.ok
+					? action.payload.body ?? null
+					: null;
+				state.isAuthenticated = !!action.payload.ok;
 			})
 			.addCase(getCurrentAsync.rejected, (state, action) => {
 				state.isLoading = false;

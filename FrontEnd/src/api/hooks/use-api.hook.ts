@@ -1,53 +1,118 @@
-import { useState } from 'react'
-import getConstant from '../../infrastructure/constantProvider';
-import { IApiError } from '../interfaces/api/api-error.interface';
-import api, { TTryFetch } from '../api';
+import { useState } from "react";
+import { ApiResponse } from "../api";
+import apiAuth from "../auth.api";
 
+type TApiErrorHandler<T> = {
+	log: () => TApiErrorHandler<T>;
+	popup: (message?: string) => TApiErrorHandler<T>;
+	do: (action: (error: any) => void) => TApiErrorHandler<T>;
+};
+
+type TApiSuccessHandler<T> = {
+	popup: (message: string) => TApiSuccessHandler<T>;
+	validate: (
+		predicate: (result: T) => boolean,
+		message?: string
+	) => TApiSuccessHandler<T>;
+	do: (action: (result: T) => void) => TApiSuccessHandler<T>;
+};
+
+type TTryFetch<TOut> = {
+	request: () => Promise<ApiResponse<TOut | undefined>>;
+	onSuccess?: (
+		handler: TApiSuccessHandler<ApiResponse<TOut | undefined>>
+	) => void;
+	onError?: (
+		handler: TApiErrorHandler<ApiResponse<TOut | undefined>>
+	) => void;
+};
 
 export default function useApi() {
-
 	const [isFetching, setIsFetching] = useState(false);
-	const [errors, setErrors] = useState<IApiError[]>([])
 
-	async function tryGetAsync<TOut>({ url, onError, onSuccess }: { url: string, onError?: TTryFetch["onError"], onSuccess?: TTryFetch["onSuccess"] }): Promise<TOut | undefined> {
-		setIsFetching(true)
-		const result = await api.tryFetchAsync<TOut>({ request: async () => await getAsync(url), onError, onSuccess });
-		setIsFetching(false)
-		return result;
-	}
+	const tryFetchAsync = async <TOut>({
+		request,
+		onError,
+		onSuccess,
+	}: TTryFetch<TOut>): Promise<void> => {
+		const attemptsCount = 2;
+		let errorHandler: TApiErrorHandler<TOut>;
+		try {
+			setIsFetching(true);
+			for (let attempt = 1; attempt <= attemptsCount; attempt++) {
+				const response = await request();
 
-	async function getAsync(url: string): Promise<Response> {
-		setIsFetching(true)
-		const fullUrl = getConstant("API_URL") + url;
-		return await fetch(fullUrl, {
-			method: "GET",
-			credentials: "include",
-		}).finally(() => setIsFetching(false))
-	}
-
-	async function tryPostAsync<TOut>(url: string,
-		data?: any, onError?: TTryFetch["onError"], onSuccess?: TTryFetch["onSuccess"]): Promise<TOut | undefined> {
-		setIsFetching(true);
-		const result = await api.tryFetchAsync<TOut>({ request: async () => await postAsync(url, data), onError, onSuccess });
-		setIsFetching(false);
-		return result;
-	}
-
-	async function postAsync(url: string,
-		data?: any): Promise<Response> {
-		setIsFetching(true)
-		const fullUrl = getConstant("API_URL") + url;
-		return await fetch(fullUrl, {
-			method: "POST",
-			body: data ? JSON.stringify(data) : undefined,
-			credentials: "include",
-			headers: data
-				? {
-					"Content-Type": "application/json",
+				if (response.ok) {
+					const successHandler = getSuccessHandler(response);
+					onSuccess?.(successHandler);
+					break;
 				}
-				: undefined,
-		}).finally(() => setIsFetching(false))
+				if (response.status === 401 && attempt === 1) {
+					const jwtResponse = await apiAuth.refreshJwtAsync();
+					if (jwtResponse.ok) continue;
+				}
+
+				errorHandler = getErrorHandler(response);
+				onError?.(errorHandler);
+				break;
+			}
+		} catch (error) {
+			console.warn("Не удалось выполнить запрос: ", error);
+		} finally {
+			setIsFetching(false);
+		}
+		errorHandler = getErrorHandler({
+			status: 500,
+			ok: false,
+			body: undefined,
+		});
+		onError?.(errorHandler);
+	};
+
+	function getSuccessHandler<TOut>(
+		apiResult: TOut
+	): TApiSuccessHandler<TOut> {
+		const successHandler: TApiSuccessHandler<TOut> = {
+			popup: (message) => {
+				//showSuccess(message);
+				return successHandler;
+			},
+			validate: (predicate, message) => {
+				if (apiResult !== null && !predicate(apiResult))
+					throw new Error(message);
+				return successHandler;
+			},
+			do: (action) => {
+				apiResult !== null && action(apiResult);
+				return successHandler;
+			},
+		};
+		return successHandler;
 	}
 
-	return { tryGetAsync, tryPostAsync, isFetching, errors };
+	function getErrorHandler<TOut>(apiResult: TOut): TApiErrorHandler<TOut> {
+		const errorHandler: TApiErrorHandler<TOut> = {
+			log: () => {
+				console.error(apiResult);
+				return errorHandler;
+			},
+			popup: (message) => {
+				// showError(
+				// 	message
+				// 		? message
+				// 		: error.message
+				// 		? error.message
+				// 		: lang.error
+				// );
+				return errorHandler;
+			},
+			do: (action) => {
+				action(apiResult);
+				return errorHandler;
+			},
+		};
+		return errorHandler;
+	}
+
+	return { tryFetchAsync, isFetching };
 }

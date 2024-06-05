@@ -1,6 +1,7 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 interface IPageState {
+	isLoading: boolean;
 	tabs: {
 		label: string;
 		href: string;
@@ -8,6 +9,7 @@ interface IPageState {
 	}[];
 }
 const menuItems: IPageState = {
+	isLoading: false,
 	tabs: [
 		{ label: "Главная", href: "/", active: true },
 		{ label: "Дополнительная", href: "/page2", active: false },
@@ -20,6 +22,9 @@ const pageSlice = createSlice({
 	initialState: menuItems,
 	name: "page",
 	reducers: {
+		setIsLoading(state, action: PayloadAction<boolean>) {
+			state.isLoading = action.payload;
+		},
 		setActiveTab(state, action: PayloadAction<string | undefined>) {
 			const item = state.tabs.find((x) => x.href === action?.payload);
 			state.tabs.map((x) => {

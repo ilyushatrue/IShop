@@ -49,6 +49,7 @@ export default function NavBar({ sm = false }: INavBar) {
 
 	async function handleLogout(): Promise<boolean | undefined> {
 		await dispatch(logoutAsync());
+		navigate('/auth')
 		window.location.reload();
 		return true;
 	}

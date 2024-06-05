@@ -3,16 +3,16 @@ import { IUser } from "../../api/interfaces/user/user.interface";
 import Page, { IPage } from "../../components/page";
 import useApi from "../../api/hooks/use-api.hook";
 import { Box } from "@mui/material";
+import usersApi from "../../api/users.api";
 export default function Users({ tabName }: IPage) {
 	const [users, setUsers] = useState<IUser[]>([]);
-	
-	const { isFetching, tryGetAsync } = useApi();
+
+	const { isFetching, tryFetchAsync } = useApi();
 	useEffect(() => {
-		tryGetAsync<IUser[]>({ url: "/users" }).then((result) => {
-			if (result) {
-				console.log(result);
-				setUsers(result ?? []);
-			}
+		tryFetchAsync<IUser[]>({
+			request: usersApi.getListAsync,
+			onSuccess: (handler) => handler.popup("sdklj").do(console.log),
+			onError: (handler) => handler.log().popup(),
 		});
 	}, []);
 

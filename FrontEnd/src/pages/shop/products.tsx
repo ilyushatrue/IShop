@@ -7,7 +7,7 @@ interface IProps {
 	products: IProduct[];
 }
 export default function Products({ products }: IProps) {
-	const imagesPath = getConstant("IMAGES_PATH") + "shop/";
+	const imagesPath = getConstant("IMAGES_PATH") + "/shop/";
 	return (
 		<Box display={"flex"} justifyContent={"center"}>
 			<Grid container spacing={3} width={"100%"} height={"100%"}>

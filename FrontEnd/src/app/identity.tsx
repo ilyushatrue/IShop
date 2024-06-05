@@ -1,7 +1,7 @@
 import { ReactElement, useEffect, useState } from "react";
 import { getCurrentAsync } from "../store/user.slice";
 import { useAppDispatch } from "./hooks/redux/use-app-dispatch";
-import { Box } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 
 export default function Identity({
 	children,
@@ -13,13 +13,30 @@ export default function Identity({
 
 	useEffect(() => {
 		setIsLoading(true);
-		dispatch(getCurrentAsync()).finally(() => {
-			setIsLoading(false);
-		});
+		setTimeout(() => {
+			dispatch(getCurrentAsync()).finally(() => {
+				setIsLoading(false);
+			});
+		}, 1000);
 	}, [dispatch]);
 
 	if (isLoading) {
-		return <Box fontSize={200}>isLoading</Box>;
+		return (
+			<div
+				style={{
+					position: "absolute",
+					top: 0,
+					bottom: 0,
+					left: 0,
+					right: 0,
+					display: "flex",
+					justifyContent: "center",
+					alignItems: "center",
+				}}
+			>
+				<CircularProgress size={60} />
+			</div>
+		);
 	}
 	return children;
 }
