@@ -6,6 +6,7 @@ import RegisterForm from "./register-form";
 import { useAppDispatch } from "../../../app/hooks/redux/use-app-dispatch";
 import { registerAsync } from "../../../store/user.slice";
 import { useState } from "react";
+import { ApiResponse } from "../../../api/api";
 
 interface IProps {
 	sm?: boolean;
@@ -17,10 +18,22 @@ export default function Register({ sm = false, onToLoginClick }: IProps) {
 	async function handleRegisterAsync(request: IRegisterRequest) {
 		request.phone = request.phone.replace(/[^\d]/g, "");
 		const result = await dispatch(registerAsync(request));
-		if (result.meta.requestStatus === "fulfilled") {
+		const payload = result.payload as ApiResponse<undefined>;
+		if (payload.ok) {
 			window.location.reload();
 		} else {
-			setError("authError");
+			switch (payload.status) {
+				case 500:
+					setError(
+						"Ошибка подключения. Обратитесь к администратору."
+					);
+					break;
+				case 404:
+					setError("Неверный логин или пароль.");
+					break;
+				default:
+					setError("Неверный логин или пароль.");
+			}
 		}
 	}
 

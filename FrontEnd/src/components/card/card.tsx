@@ -1,6 +1,4 @@
-import { Box, Grid } from "@mui/material";
-import React, { ReactNode } from "react";
-import getConstant from "../../infrastructure/constantProvider";
+import { ReactNode } from "react";
 
 interface IProps {
 	src: string;

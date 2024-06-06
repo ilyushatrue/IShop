@@ -50,18 +50,16 @@ const userSlice = createSlice({
 			})
 			.addCase(loginByEmailAsync.fulfilled, (state, action) => {
 				state.isLoading = false;
-			})
-			.addCase(loginByEmailAsync.rejected, (state) => {
-				state.error = "Неверный логин или пароль";
+				if (action.payload.ok) {
+					state.user = action.payload.body ?? null;
+					state.isAuthenticated = true;
+				}
 			})
 			.addCase(loginByPhoneAsync.pending, (state) => {
 				state.isLoading = true;
 			})
 			.addCase(loginByPhoneAsync.fulfilled, (state) => {
 				state.isLoading = false;
-			})
-			.addCase(loginByPhoneAsync.rejected, (state) => {
-				state.error = "Неверный логин или пароль";
 			})
 			.addCase(registerAsync.pending, (state) => {
 				state.isLoading = true;
@@ -70,28 +68,16 @@ const userSlice = createSlice({
 				state.isLoading = true;
 			})
 			.addCase(getCurrentAsync.fulfilled, (state, action) => {
-				console.log(action);
 				state.isLoading = false;
-				state.user = action.payload.ok
-					? action.payload.body ?? null
-					: null;
-				state.isAuthenticated = !!action.payload.ok;
-			})
-			.addCase(getCurrentAsync.rejected, (state, action) => {
-				state.isLoading = false;
-				state.user = null;
-				state.isAuthenticated = false;
-				state.error = "Не аутентифицирован";
-				console.error(action.error.message);
+				if (action.payload.ok) {
+					state.user = action.payload.body ?? null;
+					state.isAuthenticated = true;
+				}
 			})
 			.addCase(logoutAsync.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(logoutAsync.fulfilled, () => initialState)
-			.addCase(logoutAsync.rejected, (state, action) => {
-				state.isLoading = false;
-				console.error(action.error.message);
-			});
+			.addCase(logoutAsync.fulfilled, () => initialState);
 	},
 });
 

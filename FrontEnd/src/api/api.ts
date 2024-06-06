@@ -10,18 +10,27 @@ export type ApiResponse<T> = {
 const fetchPipe = async <TOut = any>(
 	request: TTryFetch
 ): Promise<ApiResponse<TOut | undefined>> => {
-	const response = await request();
-	let body;
+	let body = undefined;
+	let ok = false;
+	let status = 500;
 	try {
-		body = await response.json();
-	} catch (error) {
-		body = undefined;
+		const response = await request();
+		ok = response.ok;
+		status = response.status;
+		if (ok) {
+			try {
+				body = await response.json();
+			} catch {
+				body = undefined;
+			}
+		}
+	} catch {
+		console.error("500. Internal server error");
 	}
-
 	return {
-		body,
-		ok: response.ok,
-		status: response.status,
+		body: body,
+		ok: ok,
+		status: status,
 	};
 };
 

@@ -17,6 +17,7 @@ import {
 	loginByPhoneAsync,
 } from "../../../store/user.slice";
 import { useAppDispatch } from "../../../app/hooks/redux/use-app-dispatch";
+import { ApiResponse } from "../../../api/api";
 
 type AuthType = "phone" | "email";
 
@@ -34,23 +35,47 @@ export default function Login({ sm = false, onToRegisterClick }: IProps) {
 		authType: AuthType
 	) => {
 		setError("");
-		setAuthType(authType);
+		if (!!authType) setAuthType(authType);
 	};
 
 	async function handleLoginByPhoneAsync(request: ILoginByPhoneRequest) {
 		const result = await dispatch(loginByPhoneAsync(request));
-		if (result.meta.requestStatus === "fulfilled") {
+		const payload = result.payload as ApiResponse<undefined>;
+		if (payload.ok) {
 			window.location.reload();
 		} else {
-			setError("Неверный логин или пароль");
+			switch (payload.status) {
+				case 500:
+					setError(
+						"Ошибка подключения. Обратитесь к администратору."
+					);
+					break;
+				case 404:
+					setError("Неверный логин или пароль.");
+					break;
+				default:
+					setError("Неверный логин или пароль.");
+			}
 		}
 	}
 	async function handleLoginByEmailAsync(request: ILoginByEmailRequest) {
 		const result = await dispatch(loginByEmailAsync(request));
-		if (result.meta.requestStatus === "fulfilled") {
+		const payload = result.payload as ApiResponse<undefined>;
+		if (payload.ok) {
 			window.location.reload();
 		} else {
-			setError("Неверный логин или пароль");
+			switch (payload.status) {
+				case 500:
+					setError(
+						"Ошибка подключения. Обратитесь к администратору."
+					);
+					break;
+				case 404:
+					setError("Неверный логин или пароль.");
+					break;
+				default:
+					setError("Неверный логин или пароль.");
+			}
 		}
 	}
 
