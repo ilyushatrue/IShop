@@ -1,36 +1,32 @@
 import { LockOutlined } from "@mui/icons-material";
 import { IRegisterRequest } from "../../../api/contracts/authentication/register-request.interface";
 import { Link, Typography } from "@mui/material";
-import { useNavigate } from "react-router-dom";
 import Template from "../base/template";
 import RegisterForm from "./register-form";
 import { useAppDispatch } from "../../../app/hooks/redux/use-app-dispatch";
 import { registerAsync } from "../../../store/user.slice";
+import { useState } from "react";
 
 interface IProps {
 	sm?: boolean;
-	onRegister: () => void;
 	onToLoginClick: () => void;
 }
-export default function Register({
-	sm = false,
-	onRegister,
-	onToLoginClick,
-}: IProps) {
-	const navigate = useNavigate();
+export default function Register({ sm = false, onToLoginClick }: IProps) {
 	const dispatch = useAppDispatch();
+	const [error, setError] = useState("");
 	async function handleRegisterAsync(request: IRegisterRequest) {
 		request.phone = request.phone.replace(/[^\d]/g, "");
 		const result = await dispatch(registerAsync(request));
-		if (result.meta.requestStatus==="fulfilled") {
+		if (result.meta.requestStatus === "fulfilled") {
 			window.location.reload();
-			onRegister();
+		} else {
+			setError("authError");
 		}
 	}
 
 	return (
 		<Template sm={sm} avatar={<LockOutlined />} title="Регистрация">
-			<RegisterForm onSubmit={handleRegisterAsync} />
+			<RegisterForm onSubmitAsync={handleRegisterAsync} error={error} />
 			<Typography sx={{ cursor: "pointer" }} variant="body2">
 				Уже есть аккант?
 				<Link onClick={onToLoginClick} marginLeft={1}>

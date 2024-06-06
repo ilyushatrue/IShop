@@ -10,9 +10,11 @@ interface IRegisterForm {
 }
 
 export default function RegisterForm({
-	onSubmit,
+	error,
+	onSubmitAsync,
 }: {
-	onSubmit: (values: IRegisterForm) => void;
+	error: string;
+	onSubmitAsync: (values: IRegisterForm) => Promise<void>;
 }) {
 	return (
 		<Form<IRegisterForm>
@@ -25,7 +27,8 @@ export default function RegisterForm({
 				confirmPassword: "",
 			}}
 			minHeight={430}
-			onSubmit={onSubmit}
+			error={error}
+			onSubmitAsync={onSubmitAsync}
 			fields={(builder) =>
 				builder
 					.text({
@@ -52,13 +55,11 @@ export default function RegisterForm({
 					.password({
 						name: "password",
 						size: "small",
-						required: true,
 					})!
 					.passwordConfirm({
 						label: "Повторите пароль",
 						name: "confirmPassword",
 						size: "small",
-						required: true,
 						password: "password",
 					})
 			}

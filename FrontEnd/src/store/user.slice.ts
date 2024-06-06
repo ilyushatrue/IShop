@@ -52,7 +52,7 @@ const userSlice = createSlice({
 				state.isLoading = false;
 			})
 			.addCase(loginByEmailAsync.rejected, (state) => {
-				state.error = "Ошибка";
+				state.error = "Неверный логин или пароль";
 			})
 			.addCase(loginByPhoneAsync.pending, (state) => {
 				state.isLoading = true;
@@ -61,7 +61,7 @@ const userSlice = createSlice({
 				state.isLoading = false;
 			})
 			.addCase(loginByPhoneAsync.rejected, (state) => {
-				state.error = "Ошибка";
+				state.error = "Неверный логин или пароль";
 			})
 			.addCase(registerAsync.pending, (state) => {
 				state.isLoading = true;
@@ -81,7 +81,7 @@ const userSlice = createSlice({
 				state.isLoading = false;
 				state.user = null;
 				state.isAuthenticated = false;
-				state.error = "Owibka";
+				state.error = "Не аутентифицирован";
 				console.error(action.error.message);
 			})
 			.addCase(logoutAsync.pending, (state) => {

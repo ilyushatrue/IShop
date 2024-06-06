@@ -2,27 +2,26 @@ import { ILoginByPhoneRequest } from "../../../api/contracts/authentication/logi
 import Form from "../../../components/form/form";
 
 interface IProps {
-	sm?: boolean;
-	onSubmit: (values: ILoginByPhoneRequest) => void;
+	onSubmitAsync: (values: ILoginByPhoneRequest) => Promise<void>;
+	error: string;
 }
-export default function LoginByPhoneForm({ sm = false, onSubmit }: IProps) {
+export default function LoginByPhoneForm({ onSubmitAsync, error }: IProps) {
 	return (
 		<Form<ILoginByPhoneRequest>
 			defaultValues={{
 				password: "",
 				phone: "",
 			}}
-			onSubmit={onSubmit}
+			onSubmitAsync={onSubmitAsync}
 			minHeight={210}
+			error={error}
 			fields={(builder) =>
 				builder
 					.phone({
 						name: "phone",
-						required: true,
 					})!
 					.password({
 						name: "password",
-						required: true,
 					})
 			}
 		/>

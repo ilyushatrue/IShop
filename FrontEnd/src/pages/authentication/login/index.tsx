@@ -1,5 +1,5 @@
 import React from "react";
-import { ConstructionOutlined, LockOutlined } from "@mui/icons-material";
+import { LockOutlined } from "@mui/icons-material";
 import {
 	Link,
 	ToggleButton,
@@ -7,7 +7,6 @@ import {
 	Typography,
 } from "@mui/material";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import Template from "../base/template";
 import LoginByEmailForm from "./login-by-email-form";
 import LoginByPhoneForm from "./login-by-phone-form";
@@ -18,51 +17,40 @@ import {
 	loginByPhoneAsync,
 } from "../../../store/user.slice";
 import { useAppDispatch } from "../../../app/hooks/redux/use-app-dispatch";
-import { useAppSelector } from "../../../app/hooks/redux/use-app-selector";
 
 type AuthType = "phone" | "email";
 
 interface IProps {
 	sm?: boolean;
-	onLogin: () => void;
 	onToRegisterClick: () => void;
 }
-export default function Login({
-	sm = false,
-	onLogin,
-	onToRegisterClick,
-}: IProps) {
+export default function Login({ sm = false, onToRegisterClick }: IProps) {
 	const [authType, setAuthType] = useState<AuthType>("email");
 	const dispatch = useAppDispatch();
-	const navigate = useNavigate();
 	const [error, setError] = useState("");
-	const loginError = useAppSelector((state) => state.user.error);
-
-	function handleForgotPassword() {
-		//navigate("/register");
-	}
 
 	const handleAuthTypeChange = (
 		event: React.MouseEvent<HTMLElement>,
 		authType: AuthType
 	) => {
-		if (authType !== null) setAuthType(authType);
+		setError("");
+		setAuthType(authType);
 	};
 
 	async function handleLoginByPhoneAsync(request: ILoginByPhoneRequest) {
-		await dispatch(loginByPhoneAsync(request));
-		if (loginError) {
-			setError(loginError);
-		} else {
+		const result = await dispatch(loginByPhoneAsync(request));
+		if (result.meta.requestStatus === "fulfilled") {
 			window.location.reload();
+		} else {
+			setError("Неверный логин или пароль");
 		}
 	}
 	async function handleLoginByEmailAsync(request: ILoginByEmailRequest) {
-		await dispatch(loginByEmailAsync(request));
-		if (loginError) {
-			setError(loginError);
-		} else {
+		const result = await dispatch(loginByEmailAsync(request));
+		if (result.meta.requestStatus === "fulfilled") {
 			window.location.reload();
+		} else {
+			setError("Неверный логин или пароль");
 		}
 	}
 
@@ -91,11 +79,16 @@ export default function Login({
 			</ToggleButtonGroup>
 
 			{authType === "email" ? (
-				<LoginByEmailForm onSubmit={handleLoginByEmailAsync} />
+				<LoginByEmailForm
+					onSubmitAsync={handleLoginByEmailAsync}
+					error={error}
+				/>
 			) : (
-				<LoginByPhoneForm onSubmit={handleLoginByPhoneAsync} />
+				<LoginByPhoneForm
+					onSubmitAsync={handleLoginByPhoneAsync}
+					error={error}
+				/>
 			)}
-			{error}
 			<Typography sx={{ cursor: "pointer" }} variant="body2">
 				Забыли пароль?
 				<Link onClick={onToRegisterClick} marginLeft={1}>

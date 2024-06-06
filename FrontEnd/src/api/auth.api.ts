@@ -13,7 +13,7 @@ const apiAuth = {
 	registerAsync: async (request: IRegisterRequest) =>
 		await api.postAsync("/auth/register", request),
 
-	logoutAsync: async () => await api.postAsync("/auth/logout", undefined),
+	logoutAsync: async () => await api.postAsync("/auth/logout"),
 
 	refreshJwtAsync: async () => await api.postAsync("/auth/refresh-jwt"),
 };

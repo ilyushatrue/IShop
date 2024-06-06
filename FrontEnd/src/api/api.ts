@@ -7,7 +7,7 @@ export type ApiResponse<T> = {
 	body?: T;
 };
 
-const fetchAsync = async <TOut = any>(
+const fetchPipe = async <TOut = any>(
 	request: TTryFetch
 ): Promise<ApiResponse<TOut | undefined>> => {
 	const response = await request();
@@ -25,7 +25,7 @@ const fetchAsync = async <TOut = any>(
 	};
 };
 
-const fetchGet = async (url: string): Promise<Response> => {
+const get = async (url: string): Promise<Response> => {
 	const fullUrl = getConstant("API_URL") + url;
 	return await fetch(fullUrl, {
 		method: "GET",
@@ -33,7 +33,7 @@ const fetchGet = async (url: string): Promise<Response> => {
 	});
 };
 
-const fetchPost = async (url: string, data?: any): Promise<Response> => {
+const post = async (url: string, data?: any): Promise<Response> => {
 	const fullUrl = getConstant("API_URL") + url;
 	return await fetch(fullUrl, {
 		method: "POST",
@@ -51,13 +51,13 @@ const api = {
 	getAsync: async <TOut>(
 		url: string
 	): Promise<ApiResponse<TOut | undefined>> =>
-		await fetchAsync(async () => await fetchGet(url)),
+		await fetchPipe(async () => await get(url)),
 
 	postAsync: async <TIn, TOut = undefined>(
 		url: string,
 		data?: TIn
 	): Promise<ApiResponse<TOut | undefined>> =>
-		await fetchAsync(async () => await fetchPost(url, data)),
+		await fetchPipe(async () => await post(url, data)),
 };
 
 export default api;

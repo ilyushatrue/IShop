@@ -5,15 +5,17 @@ import { DefaultValues, FieldValues } from "react-hook-form";
 export default function Form<T extends FieldValues>({
 	defaultValues,
 	fields,
-	onSubmit,
+	onSubmitAsync,
 	submitButtonText = "Отправить",
-	minHeight
+	minHeight,
+	error,
 }: {
 	defaultValues: DefaultValues<T>;
-	onSubmit: (values: T) => void;
+	onSubmitAsync: (values: T) => Promise<void>;
 	fields: (builder: TFormBuilderRef<T>) => void;
 	submitButtonText?: string;
 	minHeight: number | string;
+	error: string;
 }) {
 	const builderRef = useRef<TFormBuilderRef<T>>(null);
 
@@ -23,9 +25,10 @@ export default function Form<T extends FieldValues>({
 
 	return (
 		<FormBuilder<T>
+			error={error}
 			submitButtonText={submitButtonText}
 			defaultValues={defaultValues}
-			onSubmit={onSubmit}
+			onSubmitAsync={onSubmitAsync}
 			minHeight={minHeight}
 			ref={builderRef}
 		/>

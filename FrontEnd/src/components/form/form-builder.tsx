@@ -19,7 +19,7 @@ import InputPassword from "./input/input-password";
 import InputText from "./input/input-text";
 import InputPhone from "./input/input-phone";
 import { IFormField } from "./input/form-field.interface";
-import { Button } from "@mui/material";
+import { Button, CircularProgress, Typography } from "@mui/material";
 import InputPasswordConfirm from "./input/input-password-confirm";
 
 const formStyles: CSSProperties = {
@@ -41,15 +41,23 @@ export type TFormBuilderRef<T extends FieldValues> = {
 
 export interface IForm<T extends FieldValues> {
 	defaultValues: DefaultValues<T>;
-	onSubmit: (values: T) => void;
+	onSubmitAsync: (values: T) => Promise<void>;
 	submitButtonText: string;
 	minHeight: number | string;
+	error: string;
 }
 
 function FormBuilder<T extends FieldValues>(
-	{ defaultValues, onSubmit, submitButtonText, minHeight: height }: IForm<T>,
+	{
+		defaultValues,
+		onSubmitAsync,
+		submitButtonText,
+		minHeight,
+		error,
+	}: IForm<T>,
 	ref: Ref<TFormBuilderRef<T>>
 ) {
+	const [isLoading, setIsLoading] = useState(false);
 	const { handleSubmit, control, watch } = useForm<T>({
 		mode: "onChange",
 		reValidateMode: "onBlur",
@@ -60,8 +68,12 @@ function FormBuilder<T extends FieldValues>(
 	);
 	const inputs = useMemo(() => Array.from(inputsMap.values()), [inputsMap]);
 
-	const handleSubmitButtonClick: SubmitHandler<T> = (data) => {
-		onSubmit(data);
+	const handleSubmitButtonClick: SubmitHandler<T> = async (
+		data
+	): Promise<void> => {
+		setIsLoading(true);
+		await onSubmitAsync(data);
+		setIsLoading(false);
 	};
 
 	const addInput = (key: string, field: ReactElement) => {
@@ -142,15 +154,23 @@ function FormBuilder<T extends FieldValues>(
 	return (
 		<form
 			onSubmit={handleSubmit(handleSubmitButtonClick)}
-			style={{ ...formStyles, minHeight: height }}
+			style={{ ...formStyles, minHeight: minHeight }}
 		>
 			{inputs}
+			<Typography
+				visibility={isLoading ? "hidden" : "visible"}
+				variant="caption"
+				color={"red"}
+			>
+				{error}
+			</Typography>
 			<Button
 				type="submit"
+				disabled={isLoading}
 				variant="contained"
 				sx={{ width: "50%", margin: "16px" }}
 			>
-				{submitButtonText}
+				{isLoading ? <CircularProgress size={24} /> : submitButtonText}
 			</Button>
 		</form>
 	);

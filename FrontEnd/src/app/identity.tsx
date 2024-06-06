@@ -13,11 +13,9 @@ export default function Identity({
 
 	useEffect(() => {
 		setIsLoading(true);
-		setTimeout(() => {
-			dispatch(getCurrentAsync()).finally(() => {
-				setIsLoading(false);
-			});
-		}, 1000);
+		dispatch(getCurrentAsync()).finally(() => {
+			setIsLoading(false);
+		});
 	}, [dispatch]);
 
 	if (isLoading) {

@@ -1,9 +1,9 @@
-import { Route, Routes, RoutesProps } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { useAppSelector } from "./hooks/redux/use-app-selector";
 import Users from "../pages/users/users";
 import NotFound from "../pages/not-found/not-found";
 
-export default function ProtectedRoutes({ children }: RoutesProps) {
+export default function ProtectedRoutes() {
 	const isAuthenticated = useAppSelector(
 		(state) => state.user.isAuthenticated
 	);
