@@ -18,6 +18,7 @@ import {
 } from "../../../store/user.slice";
 import { useAppDispatch } from "../../../app/hooks/redux/use-app-dispatch";
 import { ApiResponse } from "../../../api/api";
+import { redirect } from "../../../app/helpers/redirect";
 
 type AuthType = "phone" | "email";
 
@@ -42,7 +43,7 @@ export default function Login({ sm = false, onToRegisterClick }: IProps) {
 		const result = await dispatch(loginByPhoneAsync(request));
 		const payload = result.payload as ApiResponse<undefined>;
 		if (payload.ok) {
-			window.location.reload();
+			redirect("/account")
 		} else {
 			switch (payload.status) {
 				case 500:
@@ -62,7 +63,7 @@ export default function Login({ sm = false, onToRegisterClick }: IProps) {
 		const result = await dispatch(loginByEmailAsync(request));
 		const payload = result.payload as ApiResponse<undefined>;
 		if (payload.ok) {
-			window.location.reload();
+			redirect("/account")
 		} else {
 			switch (payload.status) {
 				case 500:

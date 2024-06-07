@@ -13,6 +13,11 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.Id).ValueGeneratedNever();
 
         builder
+            .HasOne(u => u.Avatar)
+            .WithOne(a => a.User)
+            .HasForeignKey<User>(x => x.AvatarId);
+
+        builder
             .HasMany(u => u.Roles)
             .WithMany(r => r.Users)
             .UsingEntity<UserRole>(

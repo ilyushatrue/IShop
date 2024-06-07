@@ -1,10 +1,9 @@
 import { IconOwnProps, SxProps } from "@mui/material";
 import Icon from "@mui/material/Icon";
 
-export type IconType = "edit" | "menu" | "subject" | "logout" | "login" | "visibility" | "visibility_off";
 
 export interface IIcon {
-	name: IconType;
+	name: string;
 	fontSize?: IconOwnProps["fontSize"];
 	sx?: SxProps;
 }

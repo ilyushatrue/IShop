@@ -29,10 +29,10 @@ export default function Page({ isLoading = false, children, sx }: IPage) {
 		<Box
 			display={"flex"}
 			justifyContent={"center"}
-			style={{ marginTop: "78px" }}
+			style={{ marginTop: "72px" }}
 			sx={sx}
 		>
-			<Box maxWidth={1280}>
+			<Box maxWidth={1280}  >
 				<Box bgcolor={isAuthenticated ? "green" : "red"} height={5} />
 				{children}
 			</Box>

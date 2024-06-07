@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ApiResponse } from "../api";
 import apiAuth from "../auth.api";
+import { usePopup } from "../../app/hooks/use-popup.hook";
 
 type TApiErrorHandler<T> = {
 	log: () => TApiErrorHandler<T>;
@@ -29,44 +30,43 @@ type TTryFetch<TOut> = {
 
 export default function useApi() {
 	const [isFetching, setIsFetching] = useState(false);
+	const { popupError, popupSuccess } = usePopup();
 
 	const tryFetchAsync = async <TOut>({
 		request,
 		onError,
 		onSuccess,
 	}: TTryFetch<TOut>): Promise<void> => {
+		setIsFetching(true);
 		const attemptsCount = 2;
 		let errorHandler: TApiErrorHandler<TOut>;
 		try {
-			setIsFetching(true);
 			for (let attempt = 1; attempt <= attemptsCount; attempt++) {
 				const response = await request();
-
 				if (response.ok) {
 					const successHandler = getSuccessHandler(response);
 					onSuccess?.(successHandler);
-					break;
+					return;
 				}
 				if (response.status === 401 && attempt === 1) {
 					const jwtResponse = await apiAuth.refreshJwtAsync();
 					if (jwtResponse.ok) continue;
 				}
-
+				if (response.status === 500) {
+				}
 				errorHandler = getErrorHandler(response);
 				onError?.(errorHandler);
-				break;
+				return;
 			}
-		} catch (error) {
-			console.warn("Не удалось выполнить запрос: ", error);
+			errorHandler = getErrorHandler({
+				status: 500,
+				ok: false,
+				body: undefined,
+			});
+			onError?.(errorHandler);
 		} finally {
 			setIsFetching(false);
 		}
-		errorHandler = getErrorHandler({
-			status: 500,
-			ok: false,
-			body: undefined,
-		});
-		onError?.(errorHandler);
 	};
 
 	function getSuccessHandler<TOut>(
@@ -74,7 +74,7 @@ export default function useApi() {
 	): TApiSuccessHandler<TOut> {
 		const successHandler: TApiSuccessHandler<TOut> = {
 			popup: (message) => {
-				//showSuccess(message);
+				popupSuccess(message);
 				return successHandler;
 			},
 			validate: (predicate, message) => {
@@ -97,13 +97,7 @@ export default function useApi() {
 				return errorHandler;
 			},
 			popup: (message) => {
-				// showError(
-				// 	message
-				// 		? message
-				// 		: error.message
-				// 		? error.message
-				// 		: lang.error
-				// );
+				popupError(message ?? "Ошибка hook");
 				return errorHandler;
 			},
 			do: (action) => {

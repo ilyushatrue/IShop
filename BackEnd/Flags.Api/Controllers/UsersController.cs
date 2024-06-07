@@ -29,7 +29,6 @@ public class UsersController(
         );
     }
 
-
     // not used
     [HttpGet("{id}")]
     public async Task<IActionResult> GetUserByIdAsync(string id)

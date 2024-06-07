@@ -1,6 +1,6 @@
 import { Box, SxProps, Typography, styled } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import Icon, { IconType } from "../icon";
+import Icon from "../icon";
 
 const ExpandMore = styled((props: { className?: string }) => (
 	<ExpandMoreIcon className={props.className} />
@@ -66,7 +66,7 @@ export default function RecursiveTreeBranch<T>({
 				{icon && (
 					<Icon
 						fontSize={iconSize}
-						name={icon as IconType}
+						name={icon}
 						sx={{ color: "primary.light" }}
 					/>
 				)}

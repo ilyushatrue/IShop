@@ -1,4 +1,5 @@
 ﻿using Flags.Domain.Common.Models;
+using Flags.Domain.MediaEntity;
 using Flags.Domain.UserEntity.ValueObjects;
 using Flags.Domain.UserRoot.Entities;
 
@@ -13,13 +14,15 @@ public class User : AggregateRoot<Guid>
         string lastName,
         Phone phone,
         Email email,
-        Password password) : this()
+        Password password,
+        Guid? avatarId = null) : this()
     {
         FirstName = firstName;
         LastName = lastName;
         Phone = phone;
         Email = email;
         Password = password;
+        AvatarId = avatarId;
     }
 
     public static User Create(
@@ -27,22 +30,24 @@ public class User : AggregateRoot<Guid>
         string lastName,
         Phone phone,
         Email email,
-        Password password)
+        Password password,
+        Guid avatarId)
     {
         return new User(
             firstName,
             lastName,
             phone,
             email,
-            password);
+            password,
+            avatarId);
     }
     public string FirstName { get; private set; } = null!;
     public string LastName { get; private set; } = null!;
     public Phone Phone { get; private set; } = null!;
     public Email Email { get; private set; } = null!;
     public Password Password { get; private set; } = null!;
+    public Guid? AvatarId { get; private set; }
     public IReadOnlyCollection<Role> Roles => _roles.AsReadOnly();
-
-//todo: migration
     public RefreshJwt? RefreshJwt { get; }
+    public Media? Avatar { get; }
 }

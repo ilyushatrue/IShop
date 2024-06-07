@@ -27,6 +27,12 @@ export default function NavBar({ sm = false }: INavBar) {
 			menuItems: isAuthenticated
 				? [
 						{
+							icon: "person",
+							label: "Личный кабинет",
+							sx: { color: "primary.dark", marginRight: 1 },
+							onClick: () => navigate("/account"),
+						},
+						{
 							icon: "logout",
 							label: "Выйти",
 							sx: { color: "primary.dark", marginRight: 1 },
@@ -49,7 +55,7 @@ export default function NavBar({ sm = false }: INavBar) {
 
 	async function handleLogout(): Promise<boolean | undefined> {
 		await dispatch(logoutAsync());
-		navigate('/auth')
+		navigate("/auth");
 		window.location.reload();
 		return true;
 	}

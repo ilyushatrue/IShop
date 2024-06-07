@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import Authentication from "../pages/authentication/authentication";
-import Account from "../pages/account/account";
+import AccountRoutes from "../pages/account/account";
 import Page2 from "../pages/page2";
 import NotFound from "../pages/not-found/not-found";
 import Shop from "../pages/shop";
@@ -18,7 +18,7 @@ export default function Router({ sm }: IProps) {
 			<Routes>
 				<Route path="/" element={<Shop />} />
 				<Route path="/page2" element={<Page2 />} />
-				<Route path="/account/*" element={<Account />} />
+				<Route path="/account/*" element={<AccountRoutes />} />
 				<Route path="/auth" element={<Authentication sm={sm} />} />
 				<Route path="/test" element={<Test></Test>} />
 				<Route path="/not-found" element={<NotFound />} />

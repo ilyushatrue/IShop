@@ -5,6 +5,7 @@ import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "../store/store";
 import Identity from "./identity";
+import { PopupProvider } from "../components/popup";
 
 function App() {
 	const sm = useMediaQuery("(min-width:600px)");
@@ -13,9 +14,11 @@ function App() {
 			<ThemeProvider theme={theme}>
 				<CssBaseline />
 				<Identity>
-					<BrowserRouter>
-						<Router sm={sm} />
-					</BrowserRouter>
+					<PopupProvider>
+						<BrowserRouter>
+							<Router sm={sm} />
+						</BrowserRouter>
+					</PopupProvider>
 				</Identity>
 			</ThemeProvider>
 		</Provider>
