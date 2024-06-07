@@ -44,7 +44,8 @@ public class RegisterCommandHandler(
 			lastName: command.LastName,
 			email: email.Value,
 			phone: phone.Value,
-			password: password.Value
+			password: password.Value,
+			avatarId: command.AvatarId
 		);
 
 		await userRepository.AddAsync(user);

@@ -31,7 +31,7 @@ public class User : AggregateRoot<Guid>
         Phone phone,
         Email email,
         Password password,
-        Guid avatarId)
+        Guid? avatarId)
     {
         return new User(
             firstName,

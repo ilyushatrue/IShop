@@ -4,4 +4,4 @@ public record AuthenticationResponse(
     string LastName,
     string Email,
     string Phone,
-    Guid AvatarId);
+    Guid? AvatarId = null);

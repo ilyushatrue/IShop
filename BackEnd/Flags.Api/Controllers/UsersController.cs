@@ -52,6 +52,7 @@ public class UsersController(
             var lastName = Request.Cookies["user-last-name"];
             var phone = Request.Cookies["user-phone"];
             var email = Request.Cookies["user-email"];
+            var avatarId = Request.Cookies["user-avatar"];
 
             var requiredCredentials = new string?[]
             {
@@ -70,7 +71,7 @@ public class UsersController(
                 var response = new ErrorOr<AuthenticationResponse>();
 
                 return response.Match(
-                    authResult => Ok(new AuthenticationResponse(firstName!, lastName!, email!, phone!)),
+                    authResult => Ok(new AuthenticationResponse(firstName!, lastName!, email!, phone!, avatarId != null ? Guid.Parse(avatarId) : null)),
                     errors => Problem(errors));
             }
         }
