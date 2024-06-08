@@ -1,6 +1,7 @@
 import React from "react";
 import { LockOutlined } from "@mui/icons-material";
 import {
+	Box,
 	Link,
 	ToggleButton,
 	ToggleButtonGroup,
@@ -27,6 +28,10 @@ interface IProps {
 	sm?: boolean;
 	onToRegisterClick: () => void;
 }
+
+const MemoizedLoginByEmailForm = React.memo(LoginByEmailForm);
+const MemoizedLoginByPhoneForm = React.memo(LoginByPhoneForm);
+
 export default function Login({ sm = false, onToRegisterClick }: IProps) {
 	const [authType, setAuthType] = useState<AuthType>("email");
 	const dispatch = useAppDispatch();
@@ -43,7 +48,7 @@ export default function Login({ sm = false, onToRegisterClick }: IProps) {
 		const result = await dispatch(loginByPhoneAsync(request));
 		const payload = result.payload as ApiResponse<undefined>;
 		if (payload.ok) {
-			redirect("/account")
+			redirect("/account");
 		} else {
 			switch (payload.status) {
 				case 500:
@@ -59,11 +64,12 @@ export default function Login({ sm = false, onToRegisterClick }: IProps) {
 			}
 		}
 	}
+
 	async function handleLoginByEmailAsync(request: ILoginByEmailRequest) {
 		const result = await dispatch(loginByEmailAsync(request));
 		const payload = result.payload as ApiResponse<undefined>;
 		if (payload.ok) {
-			redirect("/account")
+			redirect("/account");
 		} else {
 			switch (payload.status) {
 				case 500:
@@ -104,15 +110,16 @@ export default function Login({ sm = false, onToRegisterClick }: IProps) {
 				</ToggleButton>
 			</ToggleButtonGroup>
 
-			{authType === "email" ? (
-				<LoginByEmailForm
+			<Box sx={{ display: authType === "email" ? "block" : "none" }}>
+				<MemoizedLoginByEmailForm
 					onSubmitAsync={handleLoginByEmailAsync}
 				/>
-			) : (
-				<LoginByPhoneForm
+			</Box>
+			<Box sx={{ display: authType === "phone" ? "block" : "none" }}>
+				<MemoizedLoginByPhoneForm
 					onSubmitAsync={handleLoginByPhoneAsync}
 				/>
-			)}
+			</Box>
 			<Typography sx={{ cursor: "pointer" }} variant="body2">
 				Забыли пароль?
 				<Link onClick={onToRegisterClick} marginLeft={1}>
