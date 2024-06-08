@@ -10,10 +10,8 @@ interface IRegisterForm {
 }
 
 export default function RegisterForm({
-	error,
 	onSubmitAsync,
 }: {
-	error: string;
 	onSubmitAsync: (values: IRegisterForm) => Promise<void>;
 }) {
 	return (
@@ -27,7 +25,6 @@ export default function RegisterForm({
 				confirmPassword: "",
 			}}
 			minHeight={430}
-			error={error}
 			onSubmitAsync={onSubmitAsync}
 			fields={(builder) =>
 				builder

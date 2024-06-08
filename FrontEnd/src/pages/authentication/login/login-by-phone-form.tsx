@@ -3,9 +3,8 @@ import Form from "../../../components/form/form";
 
 interface IProps {
 	onSubmitAsync: (values: ILoginByPhoneRequest) => Promise<void>;
-	error: string;
 }
-export default function LoginByPhoneForm({ onSubmitAsync, error }: IProps) {
+export default function LoginByPhoneForm({ onSubmitAsync }: IProps) {
 	return (
 		<Form<ILoginByPhoneRequest>
 			defaultValues={{
@@ -14,7 +13,6 @@ export default function LoginByPhoneForm({ onSubmitAsync, error }: IProps) {
 			}}
 			onSubmitAsync={onSubmitAsync}
 			minHeight={210}
-			error={error}
 			fields={(builder) =>
 				builder
 					.phone({

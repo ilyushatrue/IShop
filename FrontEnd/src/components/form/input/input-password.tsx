@@ -40,6 +40,8 @@ export default function InputPassword<T extends FieldValues>({
 	variant = "filled",
 	margin = "dense",
 	required = true,
+	disabled,
+	readonly,
 }: IFormBuilderField<T>) {
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
@@ -67,7 +69,9 @@ export default function InputPassword<T extends FieldValues>({
 					value={field.value}
 					error={!!error}
 					helperText={error && error.message}
+					disabled={disabled}
 					InputProps={{
+						readOnly: readonly,
 						endAdornment: (
 							<IconButton
 								onClick={handleClickShowPassword}

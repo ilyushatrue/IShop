@@ -19,6 +19,7 @@ import {
 import { useAppDispatch } from "../../../app/hooks/redux/use-app-dispatch";
 import { ApiResponse } from "../../../api/api";
 import { redirect } from "../../../app/helpers/redirect";
+import { usePopup } from "../../../app/hooks/use-popup.hook";
 
 type AuthType = "phone" | "email";
 
@@ -29,13 +30,12 @@ interface IProps {
 export default function Login({ sm = false, onToRegisterClick }: IProps) {
 	const [authType, setAuthType] = useState<AuthType>("email");
 	const dispatch = useAppDispatch();
-	const [error, setError] = useState("");
+	const { popupError } = usePopup();
 
 	const handleAuthTypeChange = (
 		event: React.MouseEvent<HTMLElement>,
 		authType: AuthType
 	) => {
-		setError("");
 		if (!!authType) setAuthType(authType);
 	};
 
@@ -47,15 +47,15 @@ export default function Login({ sm = false, onToRegisterClick }: IProps) {
 		} else {
 			switch (payload.status) {
 				case 500:
-					setError(
+					popupError(
 						"Ошибка подключения. Обратитесь к администратору."
 					);
 					break;
 				case 404:
-					setError("Неверный логин или пароль.");
+					popupError("Неверный логин или пароль.");
 					break;
 				default:
-					setError("Неверный логин или пароль.");
+					popupError("Неверный логин или пароль.");
 			}
 		}
 	}
@@ -67,15 +67,15 @@ export default function Login({ sm = false, onToRegisterClick }: IProps) {
 		} else {
 			switch (payload.status) {
 				case 500:
-					setError(
+					popupError(
 						"Ошибка подключения. Обратитесь к администратору."
 					);
 					break;
 				case 404:
-					setError("Неверный логин или пароль.");
+					popupError("Неверный логин или пароль.");
 					break;
 				default:
-					setError("Неверный логин или пароль.");
+					popupError("Неверный логин или пароль.");
 			}
 		}
 	}
@@ -107,12 +107,10 @@ export default function Login({ sm = false, onToRegisterClick }: IProps) {
 			{authType === "email" ? (
 				<LoginByEmailForm
 					onSubmitAsync={handleLoginByEmailAsync}
-					error={error}
 				/>
 			) : (
 				<LoginByPhoneForm
 					onSubmitAsync={handleLoginByPhoneAsync}
-					error={error}
 				/>
 			)}
 			<Typography sx={{ cursor: "pointer" }} variant="body2">

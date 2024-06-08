@@ -13,8 +13,6 @@ export const PopupContext = React.createContext<PopupContextType | undefined>(
 	undefined
 );
 
-
-
 export const PopupProvider: React.FC<{ children: React.ReactNode }> = ({
 	children,
 }) => {
@@ -56,14 +54,14 @@ export const PopupProvider: React.FC<{ children: React.ReactNode }> = ({
 				open={open}
 				autoHideDuration={6000}
 				onClose={handleClose}
-				anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+				anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
 			>
 				<SnackbarContent
 					message={message}
 					action={action}
 					style={{
 						backgroundColor:
-							type === "error" ? "#f44336" : "#4caf50",
+							type === "error" ? "#8c2626" : "#176e2b",
 					}}
 				/>
 			</Snackbar>

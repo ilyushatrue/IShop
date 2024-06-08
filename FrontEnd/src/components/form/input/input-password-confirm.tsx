@@ -45,6 +45,8 @@ export default function InputPasswordConfirm<T extends FieldValues>({
 	margin = "dense",
 	required = true,
 	onChange,
+	readonly,
+	disabled
 }: {
 	onChange: () => PathValue<T, Path<T>>;
 } & IFormBuilderField<T>) {
@@ -85,7 +87,9 @@ export default function InputPasswordConfirm<T extends FieldValues>({
 					value={field.value}
 					error={!!error}
 					helperText={error && error.message}
+					disabled={disabled}
 					InputProps={{
+						readOnly: readonly,
 						endAdornment: (
 							<IconButton
 								onClick={handleClickShowPassword}

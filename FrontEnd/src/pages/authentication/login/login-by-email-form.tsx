@@ -2,9 +2,8 @@ import { ILoginByEmailRequest } from "../../../api/contracts/authentication/logi
 import Form from "../../../components/form/form";
 interface IProps {
 	onSubmitAsync: (values: ILoginByEmailRequest) => Promise<void>;
-	error: string
 }
-export default function LoginByEmailForm({ onSubmitAsync, error }: IProps) {
+export default function LoginByEmailForm({ onSubmitAsync }: IProps) {
 	return (
 		<Form<ILoginByEmailRequest>
 			defaultValues={{
@@ -13,7 +12,6 @@ export default function LoginByEmailForm({ onSubmitAsync, error }: IProps) {
 			}}
 			minHeight={210}
 			onSubmitAsync={onSubmitAsync}
-			error={error}
 			fields={(builder) =>
 				builder
 					.email({ name: "email", required: true })!

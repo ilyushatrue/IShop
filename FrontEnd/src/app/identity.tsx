@@ -44,35 +44,35 @@ export default function Identity({
 			</div>
 		);
 	}
-	if (serverIsDead)
-		return (
-			<div
-				style={{
-					position: "absolute",
-					top: 0,
-					bottom: 0,
-					left: 0,
-					right: 0,
-					display: "flex",
-					justifyContent: "center",
-					alignItems: "center",
-				}}
-			>
-				<div style={{ display: "flex", flexDirection: "column", justifyContent:"center", alignItems:"center" }}>
-					<h1>{"Сайт не доступен :("}</h1>
-					<img
-						src={imagesPath + "/server-is-dead.png"}
-						alt="logo"
-						style={{
-							margin: "auto",
-							objectFit: "contain",
-							maxHeight: "20%",
-							maxWidth: "20%",
-						}}
-					/>
-				</div>
-			</div>
-		);
+	// if (serverIsDead)
+	// 	return (
+	// 		<div
+	// 			style={{
+	// 				position: "absolute",
+	// 				top: 0,
+	// 				bottom: 0,
+	// 				left: 0,
+	// 				right: 0,
+	// 				display: "flex",
+	// 				justifyContent: "center",
+	// 				alignItems: "center",
+	// 			}}
+	// 		>
+	// 			<div style={{ display: "flex", flexDirection: "column", justifyContent:"center", alignItems:"center" }}>
+	// 				<h1>{"Сайт не доступен :("}</h1>
+	// 				<img
+	// 					src={imagesPath + "/server-is-dead.png"}
+	// 					alt="logo"
+	// 					style={{
+	// 						margin: "auto",
+	// 						objectFit: "contain",
+	// 						maxHeight: "20%",
+	// 						maxWidth: "20%",
+	// 					}}
+	// 				/>
+	// 			</div>
+	// 		</div>
+	// 	);
 
 	return children;
 }

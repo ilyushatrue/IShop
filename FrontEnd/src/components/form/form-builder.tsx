@@ -2,6 +2,7 @@ import {
 	CSSProperties,
 	ReactElement,
 	Ref,
+	cloneElement,
 	forwardRef,
 	useImperativeHandle,
 	useMemo,
@@ -19,7 +20,7 @@ import InputPassword from "./input/input-password";
 import InputText from "./input/input-text";
 import InputPhone from "./input/input-phone";
 import { IFormField } from "./input/form-field.interface";
-import { Button, CircularProgress, Typography } from "@mui/material";
+import { Box, Button, CircularProgress, Typography } from "@mui/material";
 import InputPasswordConfirm from "./input/input-password-confirm";
 
 const formStyles: CSSProperties = {
@@ -44,17 +45,10 @@ export interface IForm<T extends FieldValues> {
 	onSubmitAsync: (values: T) => Promise<void>;
 	submitButtonText: string;
 	minHeight: number | string;
-	error: string;
 }
 
 function FormBuilder<T extends FieldValues>(
-	{
-		defaultValues,
-		onSubmitAsync,
-		submitButtonText,
-		minHeight,
-		error,
-	}: IForm<T>,
+	{ defaultValues, onSubmitAsync, submitButtonText, minHeight }: IForm<T>,
 	ref: Ref<TFormBuilderRef<T>>
 ) {
 	const [isLoading, setIsLoading] = useState(false);
@@ -156,14 +150,9 @@ function FormBuilder<T extends FieldValues>(
 			onSubmit={handleSubmit(handleSubmitButtonClick)}
 			style={{ ...formStyles, minHeight: minHeight }}
 		>
-			{inputs}
-			<Typography
-				visibility={isLoading ? "hidden" : "visible"}
-				variant="caption"
-				color={"red"}
-			>
-				{error}
-			</Typography>
+			{inputs.map((input) =>
+				cloneElement(input, { disabled: isLoading })
+			)}
 			<Button
 				type="submit"
 				disabled={isLoading}

@@ -10,6 +10,8 @@ export default function InputText<T extends FieldValues>({
 	variant = "filled",
 	margin = "dense",
 	required = false,
+	disabled,
+	readonly,
 }: IFormBuilderField<T>) {
 	return (
 		<Controller
@@ -28,6 +30,8 @@ export default function InputText<T extends FieldValues>({
 					type="text"
 					size={size}
 					variant={variant}
+					disabled={disabled}
+					InputProps={{ readOnly: readonly }}
 					fullWidth
 					onChange={field.onChange}
 					value={field.value}

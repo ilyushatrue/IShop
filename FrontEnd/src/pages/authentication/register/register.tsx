@@ -5,8 +5,8 @@ import Template from "../base/template";
 import RegisterForm from "./register-form";
 import { useAppDispatch } from "../../../app/hooks/redux/use-app-dispatch";
 import { registerAsync } from "../../../store/user.slice";
-import { useState } from "react";
 import { ApiResponse } from "../../../api/api";
+import { usePopup } from "../../../app/hooks/use-popup.hook";
 
 interface IProps {
 	sm?: boolean;
@@ -14,7 +14,8 @@ interface IProps {
 }
 export default function Register({ sm = false, onToLoginClick }: IProps) {
 	const dispatch = useAppDispatch();
-	const [error, setError] = useState("");
+	const { popupError } = usePopup();
+
 	async function handleRegisterAsync(request: IRegisterRequest) {
 		request.phone = request.phone.replace(/[^\d]/g, "");
 		const result = await dispatch(registerAsync(request));
@@ -24,22 +25,22 @@ export default function Register({ sm = false, onToLoginClick }: IProps) {
 		} else {
 			switch (payload.status) {
 				case 500:
-					setError(
+					popupError(
 						"Ошибка подключения. Обратитесь к администратору."
 					);
 					break;
 				case 404:
-					setError("Неверный логин или пароль.");
+					popupError("Неверный логин или пароль.");
 					break;
 				default:
-					setError("Неверный логин или пароль.");
+					popupError("Неверный логин или пароль.");
 			}
 		}
 	}
 
 	return (
 		<Template sm={sm} avatar={<LockOutlined />} title="Регистрация">
-			<RegisterForm onSubmitAsync={handleRegisterAsync} error={error} />
+			<RegisterForm onSubmitAsync={handleRegisterAsync}  />
 			<Typography sx={{ cursor: "pointer" }} variant="body2">
 				Уже есть аккант?
 				<Link onClick={onToLoginClick} marginLeft={1}>
