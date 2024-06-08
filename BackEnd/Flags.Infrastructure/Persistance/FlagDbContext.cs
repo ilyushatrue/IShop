@@ -1,7 +1,7 @@
+using Flags.Application.AppSettings;
 using Flags.Domain.MediaEntity;
 using Flags.Domain.UserEntity;
 using Flags.Domain.UserRoot.Entities;
-using Flags.Infrastructure.Authorization;
 using Flags.Infrastructure.Persistance.Configurations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -10,7 +10,7 @@ namespace Flags.Infrastructure.Persistance;
 
 public class FlagDbContext(
     DbContextOptions<FlagDbContext> options,
-    IOptions<AuthorizationOptions> authorizationOptions) : DbContext(options)
+    IOptions<AuthorizationSettings> authorizationOptions) : DbContext(options)
 {
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

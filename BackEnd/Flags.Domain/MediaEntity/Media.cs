@@ -2,6 +2,7 @@
 using Flags.Domain.UserEntity;
 
 namespace Flags.Domain.MediaEntity;
+
 public class Media : AggregateRoot<Guid>
 {
     private Media() : base(new Guid()) { }

@@ -1,4 +1,3 @@
-using System.IdentityModel.Tokens.Jwt;
 using Flags.Application.Common.Interfaces.Persistance;
 using Flags.Infrastructure.Authentication;
 using Microsoft.AspNetCore.Authorization;

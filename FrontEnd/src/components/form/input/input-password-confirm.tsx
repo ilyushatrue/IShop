@@ -7,7 +7,7 @@ import {
 	RegisterOptions,
 } from "react-hook-form";
 import { IFormBuilderField } from "./form-builder-field.interface";
-import Icon2 from "../../icon";
+import Icon from "../../icon";
 import { useState } from "react";
 
 const getValidateOptions = <T extends FieldValues>(
@@ -98,15 +98,15 @@ export default function InputPasswordConfirm<T extends FieldValues>({
 								size="small"
 							>
 								{isPasswordVisible ? (
-									<Icon2 name="visibility_off" />
+									<Icon name="visibility_off" />
 								) : (
-									<Icon2 name="visibility" />
+									<Icon name="visibility" />
 								)}
 							</IconButton>
 						),
 					}}
 				>
-					<Icon2 name="visibility" sx={{ height: 50, width: 50 }} />
+					<Icon name="visibility" sx={{ height: 50, width: 50 }} />
 				</TextField>
 			)}
 		/>

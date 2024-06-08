@@ -1,4 +1,3 @@
-using Flags.Application.Users.Queries;
 using Flags.Infrastructure.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

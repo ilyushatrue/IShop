@@ -2,14 +2,14 @@
 
 using Flags.Domain.Enums;
 using Flags.Domain.UserRoot.Entities;
-using Flags.Infrastructure.Authorization;
+using Flags.Application.AppSettings;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Flags.Infrastructure.Persistance.Configurations;
 
 public class RolePermissionConfiguration(
-    AuthorizationOptions authorization
+    AuthorizationSettings authorization
     ) : IEntityTypeConfiguration<RolePermission>
 {
     public void Configure(EntityTypeBuilder<RolePermission> builder)

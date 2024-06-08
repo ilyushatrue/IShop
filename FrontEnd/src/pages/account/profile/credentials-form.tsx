@@ -11,7 +11,7 @@ export default function CredentialsForm({
 	return (
 		<Form
 			defaultValues={defaultValues}
-			minHeight={430}
+			minHeight={330}
 			submitButtonText="Изменить"
 			onSubmitAsync={onSubmitAsync}
 			fields={(builder) =>

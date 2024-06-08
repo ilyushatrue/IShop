@@ -20,8 +20,7 @@ public class UsersController(
     [HttpGet]
     public async Task<IActionResult> GetAllUsersAsync()
     {
-        var iss = new GetAllUsersQuery();
-        var result = await mediatr.Send(iss);
+        var result = await mediatr.Send(new GetAllUsersQuery());
 
         return result.Match(
             authResult => Ok(result),

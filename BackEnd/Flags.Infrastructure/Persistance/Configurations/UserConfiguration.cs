@@ -1,4 +1,3 @@
-using System.Runtime.CompilerServices;
 using Flags.Domain.UserEntity;
 using Flags.Domain.UserRoot.Entities;
 using Microsoft.EntityFrameworkCore;

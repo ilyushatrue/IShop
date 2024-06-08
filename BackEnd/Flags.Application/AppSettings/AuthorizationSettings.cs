@@ -1,6 +1,6 @@
-namespace Flags.Infrastructure.Authorization;
+namespace Flags.Application.AppSettings;
 
-public class AuthorizationOptions()
+public class AuthorizationSettings()
 {
     public RolePermissions[] RolePermissions { get; set; } = [];
 }

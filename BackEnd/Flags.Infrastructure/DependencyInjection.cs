@@ -12,10 +12,10 @@ using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
 using Flags.Infrastructure.Persistance.Repositories;
-using AuthorizationOptions = Flags.Infrastructure.Authorization.AuthorizationOptions;
 using Flags.Domain.Enums;
 using Flags.Infrastructure.Authorization;
 using Microsoft.AspNetCore.Authorization;
+using Flags.Application.AppSettings;
 
 namespace Flags.Infrastructure;
 
@@ -47,6 +47,7 @@ public static class DependencyInjection
 
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IRefreshJwtRepository, RefreshJwtRepository>();
+        services.AddScoped<IMediaRepository, MediaRepository>();
 
         return services;
     }
@@ -87,7 +88,8 @@ public static class DependencyInjection
                 };
             });
 
-        services.Configure<AuthorizationOptions>(configuration.GetSection(nameof(AuthorizationOptions)));
+        services.Configure<AuthorizationSettings>(configuration.GetSection(nameof(AuthorizationSettings)));
+        services.Configure<FileSettings>(configuration.GetSection(nameof(FileSettings)));
         services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
         services.AddAuthorizationBuilder()
             .AddPolicy(CustomPolicies.ADMIN_POLICY, policy =>

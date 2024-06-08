@@ -28,7 +28,7 @@ public class RegisterCommandHandler(
 		var phone = Phone.Create(command.Phone, existingPhones);
 
 		var passwordHash = passwordHasher.Generate(command.Password);
-		var password = Password.Create(passwordHash);
+		var password = Password.Create(passwordHash); 
 
 		if (email.IsError)
 			errors.AddRange(email.Errors);

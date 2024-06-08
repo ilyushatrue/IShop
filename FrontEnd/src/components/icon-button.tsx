@@ -1,17 +1,25 @@
 import { MouseEventHandler } from "react";
 import Icon, { IIcon } from "./icon";
-import { Button, Tooltip, TooltipProps } from "@mui/material";
+import { Button, SxProps, Tooltip, TooltipProps } from "@mui/material";
 
 interface IProps {
 	iconName: IIcon["name"];
 	tip: TooltipProps["title"];
 	onClick: MouseEventHandler<HTMLAnchorElement>;
+	iconSx: SxProps;
+	buttonSx: SxProps;
 }
-export default function IconButton({ tip, iconName, onClick }: IProps) {
+export default function IconButton({
+	tip,
+	iconName,
+	onClick,
+	iconSx,
+	buttonSx,
+}: IProps) {
 	return (
 		<Tooltip title={tip}>
-			<Button onClick={onClick} href="#outlined-buttons">
-				<Icon name={iconName} />;
+			<Button className="editIcon" onClick={onClick} href="#outlined-buttons" sx={buttonSx}>
+				<Icon name={iconName} sx={iconSx} />
 			</Button>
 		</Tooltip>
 	);

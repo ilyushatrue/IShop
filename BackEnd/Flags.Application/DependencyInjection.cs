@@ -1,5 +1,7 @@
 ﻿using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+
+
 namespace Flags.Application;
 
 public static class DependencyInjection

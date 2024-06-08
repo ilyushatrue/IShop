@@ -1,16 +1,10 @@
-import { IconOwnProps, SxProps } from "@mui/material";
-import Icon from "@mui/material/Icon";
-
+import { SxProps, Icon as MuiIcon } from "@mui/material";
 
 export interface IIcon {
 	name: string;
-	fontSize?: IconOwnProps["fontSize"];
+	fontSize?: string;
 	sx?: SxProps;
 }
-export default function Icon2({ name, fontSize, sx }: IIcon) {
-	return (
-		<Icon sx={sx} fontSize={fontSize}>
-			{name}
-		</Icon>
-	);
+export default function Icon2({ name, sx, fontSize }: IIcon) {
+	return <MuiIcon sx={{ ...sx, fontSize: fontSize }}>{name}</MuiIcon>;
 }
