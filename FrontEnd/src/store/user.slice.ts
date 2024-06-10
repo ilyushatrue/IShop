@@ -48,21 +48,20 @@ const userSlice = createSlice({
 			.addCase(loginByEmailAsync.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(loginByEmailAsync.fulfilled, (state, action) => {
+			.addCase(loginByEmailAsync.rejected, (state) => {
 				state.isLoading = false;
-				if (action.payload.ok) {
-					state.user = action.payload.body ?? null;
-					state.isAuthenticated = true;
-				}
 			})
 			.addCase(loginByPhoneAsync.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(loginByPhoneAsync.fulfilled, (state) => {
+			.addCase(loginByPhoneAsync.rejected, (state) => {
 				state.isLoading = false;
 			})
 			.addCase(registerAsync.pending, (state) => {
 				state.isLoading = true;
+			})
+			.addCase(registerAsync.rejected, (state) => {
+				state.isLoading = false;
 			})
 			.addCase(getCurrentAsync.pending, (state) => {
 				state.isLoading = true;
@@ -77,7 +76,10 @@ const userSlice = createSlice({
 			.addCase(logoutAsync.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(logoutAsync.fulfilled, () => initialState);
+			.addCase(logoutAsync.fulfilled, () => initialState)
+			.addCase(logoutAsync.rejected, (state) => {
+				state.isLoading = true;
+			});
 	},
 });
 

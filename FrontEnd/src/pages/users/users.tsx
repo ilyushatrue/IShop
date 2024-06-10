@@ -7,9 +7,9 @@ import usersApi from "../../api/users.api";
 export default function Users({ tabName }: IPage) {
 	const [users, setUsers] = useState<IUser[]>([]);
 
-	const { isFetching, tryFetchAsync } = useApi();
+	const { isFetching, fetchAsync } = useApi();
 	useEffect(() => {
-		tryFetchAsync<IUser[]>({
+		fetchAsync<IUser[]>({
 			request: usersApi.getListAsync,
 			onSuccess: (handler) => handler.popup("sdklj").do(console.log),
 			onError: (handler) => handler.log().popup(),

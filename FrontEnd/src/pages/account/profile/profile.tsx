@@ -24,17 +24,18 @@ export default function Profile() {
 	// 	})
 	// }, []);
 
-	async function handleSubmitAsync(values: IUserCredentialsRequest) {}
+	async function handleSubmitAsync(values: IUserCredentialsRequest) {
+
+	}
 
 	return (
 		<Page>
-			<IconButton buttonSx={{}} iconName="edit" iconSx={{}} onClick={console.log} tip={"tip"}/>
 			<Box
 				display={"flex"}
 				justifyContent={"center"}
 				alignItems={"center"}
 			>
-				<AvatarPlus imageId={user?.avatarId} />
+				<AvatarPlus imageId={user?.avatarId} onChange={console.log} />
 			</Box>
 			<CredentialsForm
 				onSubmitAsync={handleSubmitAsync}

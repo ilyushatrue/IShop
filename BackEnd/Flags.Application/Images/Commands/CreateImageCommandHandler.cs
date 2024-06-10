@@ -10,7 +10,7 @@ public class CreateImageCommandHandler(
     IOptions<FileSettings> fileSettings,
     IMediaRepository mediaRepository) : IRequestHandler<CreateImageCommand, ErrorOr<string>>
 {
-    private readonly string _uploadPath = fileSettings.Value.UpdloadPath;
+    private readonly string _uploadPath = fileSettings.Value.UploadPath;
     public async Task<ErrorOr<string>> Handle(CreateImageCommand request, CancellationToken cancellationToken)
     {
         var file = request.File;

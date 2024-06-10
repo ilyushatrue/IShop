@@ -5,17 +5,24 @@ import { IRegisterRequest } from "./contracts/authentication/register-request.in
 
 const apiAuth = {
 	loginByEmailAsync: async (request: ILoginByEmailRequest) =>
-		await api.postAsync("/auth/login-by-email", request),
+		await api.postAsync({
+			url: "/auth/login-by-email",
+			body: request,
+		}),
 
 	loginByPhoneAsync: async (request: ILoginByPhoneRequest) =>
-		await api.postAsync("/auth/login-by-phone", request),
+		await api.postAsync({
+			url: "/auth/login-by-phone",
+			body: request,
+		}),
 
 	registerAsync: async (request: IRegisterRequest) =>
-		await api.postAsync("/auth/register", request),
+		await api.postAsync({
+			url: "/auth/register",
+			body: request,
+		}),
 
-	logoutAsync: async () => await api.postAsync("/auth/logout"),
-
-	refreshJwtAsync: async () => await api.postAsync("/auth/refresh-jwt"),
+	logoutAsync: async () => await api.postAsync({ url: "/auth/logout" }),
 };
 
 export default apiAuth;

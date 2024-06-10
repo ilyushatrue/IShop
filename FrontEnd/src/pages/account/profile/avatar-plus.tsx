@@ -8,10 +8,12 @@ import { usePopup } from "../../../app/hooks/use-popup.hook";
 
 export default function AvatarPlus({
 	imageId = null,
+	onChange,
 }: {
+	onChange: (id: string) => void;
 	imageId?: string | null;
 }) {
-	const { isFetching, tryFetchAsync } = useApi();
+	const { isFetching, fetchAsync } = useApi();
 	const { popupError } = usePopup();
 	const [selectedFile, setSelectedFile] = useState<File | null>(null);
 	const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -27,10 +29,10 @@ export default function AvatarPlus({
 
 	useEffect(() => {
 		if (!imageId) return;
-		tryFetchAsync({
+		fetchAsync({
 			request: async () => await mediaApi.getImageById(imageId),
 		});
-	}, [imageId, tryFetchAsync]);
+	}, [imageId, fetchAsync]);
 
 	const handleIconClick = () => {
 		fileInputRef.current?.click();
@@ -41,13 +43,19 @@ export default function AvatarPlus({
 	) {
 		const file = event.target.files?.[0];
 		if (file) {
-			setSelectedFile(file);
-			tryFetchAsync({
-				request: async () => await mediaApi.uploadFile(file),
+			const formData = new FormData();
+			formData.append("file", file);
+
+			fetchAsync({
+				request: async () => await mediaApi.uploadFile(formData),
 				onSuccess: (handler) =>
 					handler
 						.validate((res) => !!res.body)
-						.do((res) => setImageUrl(res.body!)),
+						.do((res) => {
+							console.log(res.body)
+							setImageUrl(res.body!);
+							onChange(res.body!);
+						}),
 				onError: (handler) => handler.log().popup(),
 			});
 		} else {

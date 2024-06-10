@@ -1,6 +1,7 @@
 using ErrorOr;
 using Flags.Application.Users.Queries;
 using Flags.Contracts.Authentication;
+using Flags.Domain.Common.Errors;
 using Flags.Infrastructure.Authentication;
 using MapsterMapper;
 using MediatR;
@@ -43,42 +44,49 @@ public class UsersController(
 
     [AllowAnonymous]
     [HttpGet("current")]
-    public async Task<IActionResult> GetCurrentAsync()
+    public IActionResult GetCurrent()
     {
-        if (User.Identity?.IsAuthenticated == true)
+        ErrorOr<AuthenticationResponse> GetUserData()
         {
-            var firstName = Request.Cookies["user-first-name"];
-            var lastName = Request.Cookies["user-last-name"];
-            var phone = Request.Cookies["user-phone"];
-            var email = Request.Cookies["user-email"];
-            var avatarId = Request.Cookies["user-avatar"];
-
-            var requiredCredentials = new string?[]
+            if (User.Identity?.IsAuthenticated == true)
             {
-                firstName,
-                lastName,
-                phone,
-                email,
-            };
+                var firstName = Request.Cookies["user-first-name"];
+                var lastName = Request.Cookies["user-last-name"];
+                var phone = Request.Cookies["user-phone"];
+                var email = Request.Cookies["user-email"];
+                var avatarId = Request.Cookies["user-avatar"];
 
-            if (requiredCredentials.Any(x => x is null))
-            {
-                return Problem(statusCode: 401);
+                var requiredCredentials = new string?[]
+                {
+                    firstName,
+                    lastName,
+                    phone,
+                    email,
+                };
+
+                if (requiredCredentials.Any(x => x is null))
+                {
+                    return Errors.User.UserNotAuthenticated;
+                }
+                else
+                {
+                    return new AuthenticationResponse(
+                        firstName!,
+                        lastName!,
+                        email!,
+                        phone!,
+                        avatarId != null ? Guid.Parse(avatarId) : null);
+                }
             }
             else
             {
-                var response = new ErrorOr<AuthenticationResponse>();
-
-                return response.Match(
-                    authResult => Ok(new AuthenticationResponse(firstName!, lastName!, email!, phone!, avatarId != null ? Guid.Parse(avatarId) : null)),
-                    errors => Problem(errors));
+                return Errors.User.UserNotAuthenticated;
             }
         }
-        else
-        {
-            return new ErrorOr<AuthenticationResponse>().Match(
-                authResult => Problem(statusCode: 401),
-                errors => Problem(errors));
-        }
+        var result = GetUserData();
+        return result.Match(
+            authResult => Ok(result),
+            errors => Problem(errors)
+        );
     }
 }

@@ -6,13 +6,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Flags.Api.Controllers;
 
-[Route("[controller]")]
+[Route("media")]
 public class MediaController(
     ISender mediatr,
     IMapper mapper) : ApiController
 {
     [HttpPost("image")]
-    public async Task<IActionResult> CreateImage([FromBody] IFormFile file)
+    public async Task<IActionResult> CreateImage([FromForm] IFormFile file)
     {
         var result = await mediatr.Send(new CreateImageCommand(file));
 

@@ -15,7 +15,7 @@ public class GetImageByIdQueryHandler(
 {
     public async Task<ErrorOr<(string, byte[])>> Handle(GetImageByIdQuery request, CancellationToken cancellationToken)
     {
-        var folderPath = fileSettings.Value.UpdloadPath;
+        var folderPath = fileSettings.Value.UploadPath;
         var image = await mediaRepository.GetByIdAsync(request.Id);
 
         if (image is null)

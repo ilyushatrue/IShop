@@ -1,6 +1,13 @@
 import getConstant from "../infrastructure/constantProvider";
 
 export type TTryFetch = () => Promise<Response>;
+
+type TPost = {
+	url: string;
+	body?: any;
+	props?: (requestInit: RequestInit) => RequestInit;
+};
+
 export type ApiResponse<T> = {
 	status: Response["status"];
 	ok: Response["ok"];
@@ -10,22 +17,31 @@ export type ApiResponse<T> = {
 const fetchPipe = async <TOut = any>(
 	request: TTryFetch
 ): Promise<ApiResponse<TOut | undefined>> => {
+	const attemptsCount = 2;
 	let body = undefined;
 	let ok = false;
 	let status = 500;
+
 	try {
-		const response = await request();
-		ok = response.ok;
-		status = response.status;
-		if (ok) {
-			try {
-				body = await response.json();
-			} catch {
-				body = undefined;
+		for (let attempt = 1; attempt <= attemptsCount; attempt++) {
+			const response = await request();
+			ok = response.ok;
+			status = response.status;
+			if (ok) {
+				try {
+					body = await response.json();
+				} catch {
+					body = undefined;
+				}
+			} else if (response.status === 401 && attempt === 1) {
+				const jwtResponse = await post({ url: "/auth/refresh-jwt" });
+				if (jwtResponse.ok) continue;
+				else break;
 			}
+			throw new Error("500. Internal server error", { cause: 500 });
 		}
-	} catch {
-		console.error("500. Internal server error");
+	} catch (error) {
+		console.error(error);
 	}
 	return {
 		body: body,
@@ -34,7 +50,7 @@ const fetchPipe = async <TOut = any>(
 	};
 };
 
-const get = async (url: string): Promise<Response> => {
+const get = async ({ url }: { url: string }): Promise<Response> => {
 	const fullUrl = getConstant("API_URL") + url;
 	return await fetch(fullUrl, {
 		method: "GET",
@@ -42,31 +58,35 @@ const get = async (url: string): Promise<Response> => {
 	});
 };
 
-const post = async (url: string, data?: any): Promise<Response> => {
+const post = async ({ url, body, props }: TPost): Promise<Response> => {
 	const fullUrl = getConstant("API_URL") + url;
-	return await fetch(fullUrl, {
+	const defaultRequestInit: RequestInit = {
 		method: "POST",
-		body: data ? JSON.stringify(data) : undefined,
+		body: JSON.stringify(body),
 		credentials: "include",
-		headers: data
-			? {
-					"Content-Type": "application/json",
-			  }
-			: undefined,
-	});
+		headers: {
+			"Content-Type": "application/json",
+		},
+	};
+	const requestInit = props?.(defaultRequestInit);
+
+	return await fetch(fullUrl, requestInit || defaultRequestInit);
 };
 
 const api = {
-	getAsync: async <TOut>(
-		url: string
-	): Promise<ApiResponse<TOut | undefined>> =>
-		await fetchPipe(async () => await get(url)),
+	getAsync: async <TOut>({
+		url,
+	}: {
+		url: string;
+	}): Promise<ApiResponse<TOut | undefined>> =>
+		await fetchPipe(async () => await get({ url })),
 
-	postAsync: async <TIn, TOut = undefined>(
-		url: string,
-		data?: TIn
-	): Promise<ApiResponse<TOut | undefined>> =>
-		await fetchPipe(async () => await post(url, data)),
+	postAsync: async <TOut = undefined>({
+		url,
+		body,
+		props,
+	}: TPost): Promise<ApiResponse<TOut | undefined>> =>
+		await fetchPipe(async () => await post({ url, body, props })),
 };
 
 export default api;
