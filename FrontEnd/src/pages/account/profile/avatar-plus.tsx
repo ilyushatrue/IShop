@@ -17,11 +17,12 @@ export default function AvatarPlus({
 	const { popupError } = usePopup();
 	const [selectedFile, setSelectedFile] = useState<File | null>(null);
 	const fileInputRef = useRef<HTMLInputElement | null>(null);
-	const [imageUrl, setImageUrl] = useState<string>();
+	const [imageUrl, setImageUrl] = useState<string | null>(imageId);
 
 	function getImageSrc() {
-		if (imageId) {
-			return getConstant("API_URL") + "/media/image/" + imageId;
+		console.log(imageUrl)
+		if (imageUrl) {
+			return getConstant("API_URL") + "/media/image/" + imageUrl;
 		} else {
 			return getConstant("IMAGES_PATH") + "no-avatar.jpg";
 		}
@@ -45,16 +46,14 @@ export default function AvatarPlus({
 		if (file) {
 			const formData = new FormData();
 			formData.append("file", file);
-
 			fetchAsync({
 				request: async () => await mediaApi.uploadFile(formData),
 				onSuccess: (handler) =>
 					handler
 						.validate((res) => !!res.body)
 						.do((res) => {
-							console.log(res.body)
-							setImageUrl(res.body!);
-							onChange(res.body!);
+							setImageUrl(res.body?.value!);
+							onChange(res.body?.value!);
 						}),
 				onError: (handler) => handler.log().popup(),
 			});

@@ -5,6 +5,7 @@ export const mediaApi = {
 	uploadFile: (file: FormData) =>
 		api.postAsync<string>({
 			url: `${baseUrl}/image/`,
+			expectedOutput: "json",
 			props: (def) => ({
 				...def,
 				body: file,
@@ -12,5 +13,8 @@ export const mediaApi = {
 			}),
 		}),
 	getImageById: (id: string) =>
-		api.getAsync<File>({ url: `${baseUrl}/image/${id}` }),
+		api.getAsync<File>({
+			url: `${baseUrl}/image/${id}`,
+			expectedOutput: "blob",
+		}),
 };

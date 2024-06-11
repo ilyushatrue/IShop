@@ -5,6 +5,11 @@ import CredentialsForm from "./credentials-form";
 import { usePopup } from "../../../app/hooks/use-popup.hook";
 import AvatarPlus from "./avatar-plus";
 import IconButton from "../../../components/icon-button";
+import useApi from "../../../api/hooks/use-api.hook";
+import usersApi from "../../../api/users.api";
+import { IUser } from "../../../api/interfaces/user/user.interface";
+import { useAppDispatch } from "../../../app/hooks/redux/use-app-dispatch";
+import { updateData } from "../../../store/user.slice";
 
 export interface IUserCredentialsRequest {
 	firstName: string;
@@ -15,8 +20,9 @@ export interface IUserCredentialsRequest {
 
 export default function Profile() {
 	const user = useAppSelector((state) => state.user.user);
+	const dispatch = useAppDispatch();
 	//const { popupError, popupSuccess } = usePopup();
-	//const { isFetching, tryFetchAsync } = useApi();
+	const { isFetching, fetchAsync } = useApi();
 
 	// useEffect(() => {
 	// 	tryFetchAsync({
@@ -24,7 +30,19 @@ export default function Profile() {
 	// 	})
 	// }, []);
 
-	async function handleSubmitAsync(values: IUserCredentialsRequest) {
+	async function handleSubmitAsync(avatarId: string) {
+		console.log("avatarId: " + avatarId)
+		const newUserData = { ...user };
+		newUserData.avatarId = avatarId;
+		await fetchAsync({
+			request: async () =>
+				await usersApi.updateUserData(newUserData as IUser),
+			onSuccess: (handler) =>
+				handler.do(() => dispatch(updateData(newUserData as IUser))),
+		});
+	}
+
+	async function handleFormSubmitAsync(avatarId: IUserCredentialsRequest) {
 
 	}
 
@@ -35,13 +53,15 @@ export default function Profile() {
 				justifyContent={"center"}
 				alignItems={"center"}
 			>
-				<AvatarPlus imageId={user?.avatarId} onChange={console.log} />
+				<AvatarPlus
+					imageId={user?.avatarId}
+					onChange={handleSubmitAsync}
+				/>
 			</Box>
 			<CredentialsForm
-				onSubmitAsync={handleSubmitAsync}
+				onSubmitAsync={handleFormSubmitAsync}
 				defaultValues={user!}
 			/>
 		</Page>
 	);
 }
-

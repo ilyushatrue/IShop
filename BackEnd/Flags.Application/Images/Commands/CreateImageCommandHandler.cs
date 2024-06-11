@@ -34,6 +34,6 @@ public class CreateImageCommandHandler(
         }
         await mediaRepository.CreateAsync(imageId, newFileName, extension, (int)file.Length);
 
-        return newFileName;
+        return imageId.ToString();
     }
 }

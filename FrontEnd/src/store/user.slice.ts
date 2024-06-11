@@ -1,10 +1,11 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { IUserState } from "./types";
 import { ILoginByEmailRequest } from "../api/contracts/authentication/login-by-email-request.interface";
 import { ILoginByPhoneRequest } from "../api/contracts/authentication/login-by-phone-request.interface";
 import { IRegisterRequest } from "../api/contracts/authentication/register-request.interface";
 import apiAuth from "../api/auth.api";
 import usersApi from "../api/users.api";
+import { IUser } from "../api/interfaces/user/user.interface";
 
 export const loginByPhoneAsync = createAsyncThunk(
 	"/auth/login-by-phone",
@@ -42,7 +43,11 @@ const initialState: IUserState = {
 const userSlice = createSlice({
 	name: "user",
 	initialState,
-	reducers: {},
+	reducers: {
+		updateData: (state, action: PayloadAction<IUser>) => {
+			state.user = action.payload;
+		},
+	},
 	extraReducers: (builder) => {
 		builder
 			.addCase(loginByEmailAsync.pending, (state) => {
@@ -69,7 +74,7 @@ const userSlice = createSlice({
 			.addCase(getCurrentAsync.fulfilled, (state, action) => {
 				state.isLoading = false;
 				if (action.payload.ok) {
-					state.user = action.payload.body ?? null;
+					state.user = action.payload.body?.value ?? null;
 					state.isAuthenticated = true;
 				}
 			})
@@ -83,4 +88,5 @@ const userSlice = createSlice({
 	},
 });
 
+export const { updateData } = userSlice.actions;
 export default userSlice.reducer;

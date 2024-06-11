@@ -1,12 +1,15 @@
 using ErrorOr;
+using Flags.Application.Users.Command;
 using Flags.Application.Users.Queries;
 using Flags.Contracts.Authentication;
 using Flags.Domain.Common.Errors;
+using Flags.Domain.UserEntity;
 using Flags.Infrastructure.Authentication;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Flags.Api.Controllers;
 
@@ -89,4 +92,17 @@ public class UsersController(
             errors => Problem(errors)
         );
     }
+
+    [HttpPost]
+    public async Task<IActionResult> EditUserData([FromBody] User user)
+    {
+        var result = await mediatr.Send(new EditUserDataCommand(user));
+
+        return result.Match(
+            ok => Ok(result),
+            errors => Problem(errors)
+        );
+    }
+
+    
 }

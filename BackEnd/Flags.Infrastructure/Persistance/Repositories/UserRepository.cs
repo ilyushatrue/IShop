@@ -1,6 +1,7 @@
 ﻿using Flags.Application.Common.Interfaces.Persistance;
 using Flags.Domain.Enums;
 using Flags.Domain.UserEntity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Flags.Infrastructure.Persistance.Repositories;
@@ -51,5 +52,11 @@ public class UserRepository(FlagDbContext dbContext) : IUserRepository
             .SelectMany(u => u.Permissions)
             .Select(p => (PermissionEnum)p.Id)
             .ToHashSet();
+    }
+
+    public async Task UpdateAsync(User user)
+    {
+        dbContext.Update(user);
+        await dbContext.SaveChangesAsync();
     }
 }

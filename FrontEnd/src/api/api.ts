@@ -1,22 +1,29 @@
 import getConstant from "../infrastructure/constantProvider";
 
-export type TTryFetch = () => Promise<Response>;
-
 type TPost = {
 	url: string;
 	body?: any;
+	expectedOutput?: "text" | "json" | "blob" | "none";
 	props?: (requestInit: RequestInit) => RequestInit;
 };
 
 export type ApiResponse<T> = {
 	status: Response["status"];
 	ok: Response["ok"];
-	body?: T;
+	body?: {
+		errors: { description: string }[];
+		isError: boolean;
+		value: T;
+	};
 };
 
-const fetchPipe = async <TOut = any>(
-	request: TTryFetch
-): Promise<ApiResponse<TOut | undefined>> => {
+const fetchPipe = async <TOut = any>({
+	request,
+	expectedOutput = "none",
+}: {
+	request: () => Promise<Response>;
+	expectedOutput: "text" | "json" | "blob" | "none";
+}): Promise<ApiResponse<TOut | undefined>> => {
 	const attemptsCount = 2;
 	let body = undefined;
 	let ok = false;
@@ -28,17 +35,35 @@ const fetchPipe = async <TOut = any>(
 			ok = response.ok;
 			status = response.status;
 			if (ok) {
+				if (expectedOutput === "none") break;
 				try {
-					body = await response.json();
+					switch (expectedOutput) {
+						case "blob":
+							body = await response.blob();
+							break;
+						case "json":
+							body = await response.json();
+							break;
+						case "text":
+							body = await response.text();
+							break;
+					}
 				} catch {
 					body = undefined;
 				}
-			} else if (response.status === 401 && attempt === 1) {
-				const jwtResponse = await post({ url: "/auth/refresh-jwt" });
-				if (jwtResponse.ok) continue;
-				else break;
+				break;
+			} else {
+				if (status === 401 && attempt === 1) {
+					const jwtResponse = await post({
+						url: "/auth/refresh-jwt",
+					});
+					if (jwtResponse.ok) continue;
+					else break;
+				}
+				throw new Error(`${status}. ${response.statusText}`, {
+					cause: status,
+				});
 			}
-			throw new Error("500. Internal server error", { cause: 500 });
 		}
 	} catch (error) {
 		console.error(error);
@@ -73,20 +98,58 @@ const post = async ({ url, body, props }: TPost): Promise<Response> => {
 	return await fetch(fullUrl, requestInit || defaultRequestInit);
 };
 
+const put = async ({ url, body, props }: TPost): Promise<Response> => {
+	console.log(body);
+	const fullUrl = getConstant("API_URL") + url;
+	const defaultRequestInit: RequestInit = {
+		method: "PUT",
+		body: JSON.stringify(body),
+		credentials: "include",
+		headers: {
+			"Content-Type": "application/json",
+		},
+	};
+	const requestInit = props?.(defaultRequestInit);
+
+	return await fetch(fullUrl, requestInit || defaultRequestInit);
+};
+
 const api = {
 	getAsync: async <TOut>({
 		url,
+		expectedOutput = "json",
 	}: {
 		url: string;
+		expectedOutput?: "text" | "json" | "blob" | "none";
 	}): Promise<ApiResponse<TOut | undefined>> =>
-		await fetchPipe(async () => await get({ url })),
+		await fetchPipe({
+			request: async () => await get({ url }),
+			expectedOutput: expectedOutput,
+		}),
 
 	postAsync: async <TOut = undefined>({
 		url,
 		body,
+		expectedOutput = "none",
 		props,
 	}: TPost): Promise<ApiResponse<TOut | undefined>> =>
-		await fetchPipe(async () => await post({ url, body, props })),
+		await fetchPipe({
+			request: async () =>
+				await post({ url, body, expectedOutput, props }),
+			expectedOutput: expectedOutput,
+		}),
+
+	putAsync: async <TOut = undefined>({
+		url,
+		body,
+		expectedOutput = "none",
+		props,
+	}: TPost): Promise<ApiResponse<TOut | undefined>> =>
+		await fetchPipe({
+			request: async () =>
+				await put({ url, body, expectedOutput, props }),
+			expectedOutput: expectedOutput,
+		}),
 };
 
 export default api;

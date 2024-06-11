@@ -16,10 +16,7 @@ public class MediaController(
     {
         var result = await mediatr.Send(new CreateImageCommand(file));
 
-        return result.Match(
-            authResult => Ok(result),
-            errors => Problem(errors)
-        );
+        return result.Match(response => Ok(result), Problem);
     }
 
     [HttpGet("image/{id}")]
