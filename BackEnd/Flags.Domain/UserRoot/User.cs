@@ -10,6 +10,7 @@ public class User : AggregateRoot<Guid>
     private readonly List<Role> _roles = [];
     private User() : base(Guid.NewGuid()) { }
     private User(
+        Guid id,
         string firstName,
         string lastName,
         Phone phone,
@@ -17,6 +18,7 @@ public class User : AggregateRoot<Guid>
         Password password,
         Guid? avatarId = null) : this()
     {
+        Id = id;
         FirstName = firstName;
         LastName = lastName;
         Phone = phone;
@@ -26,6 +28,7 @@ public class User : AggregateRoot<Guid>
     }
 
     public static User Create(
+        Guid id,
         string firstName,
         string lastName,
         Phone phone,
@@ -34,6 +37,7 @@ public class User : AggregateRoot<Guid>
         Guid? avatarId)
     {
         return new User(
+            id,
             firstName,
             lastName,
             phone,

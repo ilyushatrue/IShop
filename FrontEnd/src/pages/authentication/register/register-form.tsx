@@ -33,26 +33,26 @@ export default function RegisterForm({
 						label: "Имя",
 						size: "small",
 						required: true,
-					})!
+					})
 					.text({
 						name: "lastName",
 						label: "Фамилия",
 						size: "small",
-					})!
+					})
 					.phone({
 						name: "phone",
 						size: "small",
 						required: true,
-					})!
+					})
 					.email({
 						name: "email",
 						size: "small",
 						required: true,
-					})!
+					})
 					.password({
 						name: "password",
 						size: "small",
-					})!
+					})
 					.passwordConfirm({
 						label: "Повторите пароль",
 						name: "confirmPassword",

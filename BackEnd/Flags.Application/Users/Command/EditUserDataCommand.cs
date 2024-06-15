@@ -5,4 +5,8 @@ using MediatR;
 namespace Flags.Application.Users.Command;
 
 public record EditUserDataCommand(
-    User User) : IRequest<ErrorOr<bool>>;
+    string FirstName,
+    string LastName,
+    string Email,
+    string Phone,
+    Guid? AvatarId) : IRequest<ErrorOr<User>>;

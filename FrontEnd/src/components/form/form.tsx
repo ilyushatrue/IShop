@@ -8,12 +8,14 @@ export default function Form<T extends FieldValues>({
 	onSubmitAsync,
 	submitButtonText = "Отправить",
 	minHeight,
+	fullwidth = true,
 }: {
 	defaultValues: DefaultValues<T>;
 	onSubmitAsync: (values: T) => Promise<void>;
 	fields: (builder: TFormBuilderRef<T>) => void;
 	submitButtonText?: string;
 	minHeight: number | string;
+	fullwidth?: boolean;
 }) {
 	const builderRef = useRef<TFormBuilderRef<T>>(null);
 
@@ -23,6 +25,7 @@ export default function Form<T extends FieldValues>({
 
 	return (
 		<FormBuilder<T>
+			fullwidth={fullwidth}
 			submitButtonText={submitButtonText}
 			defaultValues={defaultValues}
 			onSubmitAsync={onSubmitAsync}

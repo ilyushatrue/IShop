@@ -3,13 +3,11 @@ using Flags.Application.Users.Command;
 using Flags.Application.Users.Queries;
 using Flags.Contracts.Authentication;
 using Flags.Domain.Common.Errors;
-using Flags.Domain.UserEntity;
 using Flags.Infrastructure.Authentication;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Flags.Api.Controllers;
 
@@ -93,16 +91,23 @@ public class UsersController(
         );
     }
 
-    [HttpPost]
-    public async Task<IActionResult> EditUserData([FromBody] User user)
+    [HttpPut]
+    public async Task<IActionResult> EditUserData([FromBody] EditUserDataCommand user)
     {
-        var result = await mediatr.Send(new EditUserDataCommand(user));
+        var result = await mediatr.Send(user);
+        var updatedUser = result.Value;
+        if (!result.IsError)
+        {
+            HttpContext.Response.Cookies.Append("user-first-name", updatedUser.FirstName);
+            HttpContext.Response.Cookies.Append("user-last-name", updatedUser.LastName);
+            HttpContext.Response.Cookies.Append("user-email", updatedUser.Email.Value);
+            HttpContext.Response.Cookies.Append("user-phone", updatedUser.Phone.Value);
+            HttpContext.Response.Cookies.Append("user-avatar", updatedUser.AvatarId.ToString() ?? "");
+        }
 
         return result.Match(
-            ok => Ok(result),
+            ok => Ok(),
             errors => Problem(errors)
         );
     }
-
-    
 }

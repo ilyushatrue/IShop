@@ -1,4 +1,3 @@
-import * as React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@mui/material";
 
@@ -7,7 +6,7 @@ export interface ILinkTab {
 	isActive?: boolean;
 	label?: string;
 	href: string;
-	onClick: (activeIndex: number) => void;
+	onClick?: (activeIndex: number) => void;
 }
 export default function LinkTab({
 	index,
@@ -24,8 +23,7 @@ export default function LinkTab({
 					justifyContent: "start",
 					bgcolor: isActive ? "rgb(240, 245, 255)" : undefined,
 				}}
-				onClick={() => onClick(index)}
-				fullWidth
+				onClick={() => onClick?.(index)}
 			>
 				{label}
 			</Button>

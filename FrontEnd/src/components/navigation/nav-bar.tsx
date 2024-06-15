@@ -60,10 +60,6 @@ export default function NavBar({ sm = false }: INavBar) {
 		return true;
 	}
 
-	function handleTabChange(index: number) {
-		navigate(tabs[index].href);
-	}
-
 	return (
 		<>
 			{sm ? (
@@ -71,14 +67,12 @@ export default function NavBar({ sm = false }: INavBar) {
 					value={selectedItemIndex}
 					menuItems={tabs}
 					avatar={menuAvatar}
-					onTabChange={handleTabChange}
 				/>
 			) : (
 				<NavSideBar
 					value={selectedItemIndex}
 					avatar={menuAvatar}
 					menuItems={tabs}
-					onTabChange={handleTabChange}
 				/>
 			)}
 		</>

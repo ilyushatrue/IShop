@@ -1,15 +1,8 @@
-import {
-	Avatar,
-	Box,
-	IconButton,
-	Menu,
-	MenuItem,
-	SxProps,
-	Tooltip,
-} from "@mui/material";
+import { IconButton, Menu, MenuItem, SxProps, Tooltip } from "@mui/material";
 import { useState } from "react";
 import Icon, { IIcon } from "../icon";
 import { useAppSelector } from "../../app/hooks/redux/use-app-selector";
+import Avatar from "../avatar";
 
 export interface IAvatar {
 	sx?: SxProps;
@@ -22,15 +15,10 @@ export interface IAvatar {
 		onClick: () => void;
 	}[];
 }
-export default function NavAvatar({
-	sx,
-	tip,
-	menuItems,
-	containerSx,
-}: IAvatar) {
+export default function NavAvatar({ tip, menuItems }: IAvatar) {
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const isMenuOpen = Boolean(anchorEl);
-	const { isAuthenticated, user } = useAppSelector((state) => state.user);
+	const { user } = useAppSelector((state) => state.user);
 
 	function closeMenu() {
 		setAnchorEl(null);
@@ -43,10 +31,10 @@ export default function NavAvatar({
 	};
 
 	return (
-		<Box sx={containerSx}>
+		<>
 			<Tooltip title={tip}>
 				<IconButton onClick={handleAvatarClick} size="small">
-					<Avatar sx={{ ...sx, width: 32, height: 32 }}>M</Avatar>
+					<Avatar imageId={user?.avatarId} />
 				</IconButton>
 			</Tooltip>
 			<Menu
@@ -54,29 +42,31 @@ export default function NavAvatar({
 				open={isMenuOpen}
 				onClose={closeMenu}
 				onClick={handleMenuClick}
-				PaperProps={{
-					elevation: 0,
-					sx: {
-						overflow: "visible",
-						filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.1))",
-						mt: 1.5,
-						"& .MuiAvatar-root": {
-							width: 32,
-							height: 32,
-							ml: -0.5,
-							mr: 1,
-						},
-						"&::before": {
-							content: '""',
-							display: "block",
-							position: "absolute",
-							top: 0,
-							right: 14,
-							width: 10,
-							height: 10,
-							bgcolor: "background.paper",
-							transform: "translateY(-50%) rotate(45deg)",
-							zIndex: 0,
+				slotProps={{
+					paper: {
+						elevation: 0,
+						sx: {
+							overflow: "visible",
+							filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.1))",
+							mt: 1.5,
+							"& .MuiAvatar-root": {
+								width: 32,
+								height: 32,
+								ml: -0.5,
+								mr: 1,
+							},
+							"&::before": {
+								content: '""',
+								display: "block",
+								position: "absolute",
+								top: 0,
+								right: 14,
+								width: 10,
+								height: 10,
+								bgcolor: "background.paper",
+								transform: "translateY(-50%) rotate(45deg)",
+								zIndex: 0,
+							},
 						},
 					},
 				}}
@@ -97,6 +87,6 @@ export default function NavAvatar({
 					</MenuItem>
 				))}
 			</Menu>
-		</Box>
+		</>
 	);
 }

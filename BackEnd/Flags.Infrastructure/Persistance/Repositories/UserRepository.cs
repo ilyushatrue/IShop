@@ -1,7 +1,6 @@
 ﻿using Flags.Application.Common.Interfaces.Persistance;
 using Flags.Domain.Enums;
 using Flags.Domain.UserEntity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Flags.Infrastructure.Persistance.Repositories;
@@ -28,6 +27,7 @@ public class UserRepository(FlagDbContext dbContext) : IUserRepository
     public async Task<User?> GetByPhoneAsync(string phone)
     {
         return await dbContext.Users
+            .AsNoTracking()
             .Include(u => u.RefreshJwt)
             .SingleOrDefaultAsync(u => u.Phone.Value == phone);
     }

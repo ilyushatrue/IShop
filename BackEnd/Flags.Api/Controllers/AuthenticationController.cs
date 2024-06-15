@@ -135,6 +135,7 @@ public class AuthenticationController(
         HttpContext.Response.Cookies.Append("user-last-name", user.LastName);
         HttpContext.Response.Cookies.Append("user-email", user.Email.Value);
         HttpContext.Response.Cookies.Append("user-phone", user.Phone.Value);
+        HttpContext.Response.Cookies.Append("user-avatar", user.AvatarId.ToString() ?? "");
     }
 
     private void DeleteJwtAccessTokenCookie()

@@ -14,7 +14,7 @@ export default function LoginByEmailForm({ onSubmitAsync }: IProps) {
 			onSubmitAsync={onSubmitAsync}
 			fields={(builder) =>
 				builder
-					.email({ name: "email", required: true })!
+					.email({ name: "email", required: true })
 					.password({
 						name: "password",
 						required: true,

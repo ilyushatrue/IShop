@@ -18,7 +18,7 @@ export default function IconButton({
 }: IProps) {
 	return (
 		<Tooltip title={tip}>
-			<Button className="editIcon" onClick={onClick} href="#outlined-buttons" sx={buttonSx}>
+			<Button className="editIcon" onClick={onClick} href="" sx={buttonSx}>
 				<Icon name={iconName} sx={iconSx} />
 			</Button>
 		</Tooltip>

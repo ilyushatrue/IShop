@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from "react";
-import { Avatar, Box } from "@mui/material";
+import { Box } from "@mui/material";
 import useApi from "../../../api/hooks/use-api.hook";
 import { mediaApi } from "../../../api/media.api";
 import getConstant from "../../../infrastructure/constantProvider";
 import IconButton from "../../../components/icon-button";
 import { usePopup } from "../../../app/hooks/use-popup.hook";
+import Avatar from "../../../components/avatar";
 
 export default function AvatarPlus({
 	imageId = null,
@@ -13,27 +14,17 @@ export default function AvatarPlus({
 	onChange: (id: string) => void;
 	imageId?: string | null;
 }) {
-	const { isFetching, fetchAsync } = useApi();
+	const { fetchAsync } = useApi();
 	const { popupError } = usePopup();
-	const [selectedFile, setSelectedFile] = useState<File | null>(null);
 	const fileInputRef = useRef<HTMLInputElement | null>(null);
 	const [imageUrl, setImageUrl] = useState<string | null>(imageId);
-
-	function getImageSrc() {
-		console.log(imageUrl)
-		if (imageUrl) {
-			return getConstant("API_URL") + "/media/image/" + imageUrl;
-		} else {
-			return getConstant("IMAGES_PATH") + "no-avatar.jpg";
-		}
-	}
 
 	useEffect(() => {
 		if (!imageId) return;
 		fetchAsync({
 			request: async () => await mediaApi.getImageById(imageId),
 		});
-	}, [imageId, fetchAsync]);
+	}, []);
 
 	const handleIconClick = () => {
 		fileInputRef.current?.click();
@@ -74,13 +65,7 @@ export default function AvatarPlus({
 				"&:hover .editIcon": { opacity: 1 },
 			}} // Установим эффекты hover
 		>
-			<Avatar
-				src={getImageSrc()}
-				sx={{
-					height: "100%",
-					width: "100%",
-				}}
-			/>
+			<Avatar imageId={imageUrl} size={"100%"} />
 
 			<Box
 				className="overlay"

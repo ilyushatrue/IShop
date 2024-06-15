@@ -2,6 +2,9 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 interface IPageState {
 	isLoading: boolean;
+	navbar: {
+		height: number;
+	};
 	tabs: {
 		label: string;
 		href: string;
@@ -10,11 +13,21 @@ interface IPageState {
 }
 const menuItems: IPageState = {
 	isLoading: false,
+	navbar: {
+		height: 54,
+	},
 	tabs: [
 		{ label: "Главная", href: "/", active: true },
-		{ label: "Дополнительная", href: "/page2", active: false },
-		{ label: "Пользователи", href: "/users", active: false },
-		{ label: "Тест", href: "/test", active: false },
+		{
+			label: "Пользователи",
+			href: "/users",
+			active: false,
+		},
+		{
+			label: "Тест",
+			href: "/test",
+			active: false,
+		},
 	],
 };
 

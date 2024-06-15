@@ -20,7 +20,7 @@ import InputPassword from "./input/input-password";
 import InputText from "./input/input-text";
 import InputPhone from "./input/input-phone";
 import { IFormField } from "./input/form-field.interface";
-import { Box, Button, CircularProgress, Typography } from "@mui/material";
+import { Button, CircularProgress } from "@mui/material";
 import InputPasswordConfirm from "./input/input-password-confirm";
 
 const formStyles: CSSProperties = {
@@ -31,13 +31,13 @@ const formStyles: CSSProperties = {
 };
 
 export type TFormBuilderRef<T extends FieldValues> = {
-	email: (props: IFormField<T>) => TFormBuilderRef<T> | null;
-	text: (props: IFormField<T>) => TFormBuilderRef<T> | null;
-	password: (props: IFormField<T>) => TFormBuilderRef<T> | null;
+	email: (props: IFormField<T>) => TFormBuilderRef<T>;
+	text: (props: IFormField<T>) => TFormBuilderRef<T>;
+	password: (props: IFormField<T>) => TFormBuilderRef<T>;
 	passwordConfirm: (
 		props: IFormField<T> & { password: Path<T> }
-	) => TFormBuilderRef<T> | null;
-	phone: (props: IFormField<T>) => TFormBuilderRef<T> | null;
+	) => TFormBuilderRef<T>;
+	phone: (props: IFormField<T>) => TFormBuilderRef<T>;
 };
 
 export interface IForm<T extends FieldValues> {
@@ -45,10 +45,17 @@ export interface IForm<T extends FieldValues> {
 	onSubmitAsync: (values: T) => Promise<void>;
 	submitButtonText: string;
 	minHeight: number | string;
+	fullwidth: boolean;
 }
 
 function FormBuilder<T extends FieldValues>(
-	{ defaultValues, onSubmitAsync, submitButtonText, minHeight }: IForm<T>,
+	{
+		defaultValues,
+		onSubmitAsync,
+		submitButtonText,
+		minHeight,
+		fullwidth,
+	}: IForm<T>,
 	ref: Ref<TFormBuilderRef<T>>
 ) {
 	const [isLoading, setIsLoading] = useState(false);
@@ -148,7 +155,11 @@ function FormBuilder<T extends FieldValues>(
 	return (
 		<form
 			onSubmit={handleSubmit(handleSubmitButtonClick)}
-			style={{ ...formStyles, minHeight: minHeight }}
+			style={{
+				...formStyles,
+				minHeight: minHeight,
+				width: fullwidth ? "100%" : undefined,
+			}}
 		>
 			{inputs.map((input) =>
 				cloneElement(input, { disabled: isLoading })

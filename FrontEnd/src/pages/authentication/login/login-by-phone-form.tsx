@@ -17,7 +17,7 @@ export default function LoginByPhoneForm({ onSubmitAsync }: IProps) {
 				builder
 					.phone({
 						name: "phone",
-					})!
+					})
 					.password({
 						name: "password",
 					})

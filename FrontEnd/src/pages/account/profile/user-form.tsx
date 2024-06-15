@@ -1,7 +1,7 @@
 import Form from "../../../components/form/form";
 import { IUserCredentialsRequest } from "./profile";
 
-export default function CredentialsForm({
+export default function UserForm({
 	onSubmitAsync,
 	defaultValues,
 }: {
@@ -12,31 +12,26 @@ export default function CredentialsForm({
 		<Form
 			defaultValues={defaultValues}
 			minHeight={330}
-			submitButtonText="Изменить"
+			submitButtonText="Сохранить"
 			onSubmitAsync={onSubmitAsync}
 			fields={(builder) =>
 				builder
 					.text({
 						name: "firstName",
 						label: "Имя",
-						size: "small",
 						required: true,
-					})!
+					})
 					.text({
 						name: "lastName",
 						label: "Фамилия",
-						size: "small",
-					})!
+					})
 					.phone({
 						name: "phone",
-						size: "small",
-						required: true,
-					})!
+					})
 					.email({
 						name: "email",
-						size: "small",
 						required: true,
-					})!
+					})
 			}
 		/>
 	);

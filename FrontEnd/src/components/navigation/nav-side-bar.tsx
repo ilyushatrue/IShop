@@ -3,6 +3,7 @@ import { ArrowBack, Menu } from "@mui/icons-material";
 import { Box, Button, Collapse, SxProps } from "@mui/material";
 import NavTabs from "./tabs/nav-tabs";
 import NavAvatar, { IAvatar } from "./nav-avatar";
+import { useAppSelector } from "../../app/hooks/redux/use-app-selector";
 
 const collapseSx: SxProps = {
 	position: "fixed",
@@ -12,17 +13,15 @@ const collapseSx: SxProps = {
 };
 
 interface IProps {
-	menuItems: { label: string; href: string }[];
-	onTabChange: (tabIndex: number) => void;
+	menuItems: {
+		label: string;
+		href: string;
+	}[];
 	avatar: IAvatar;
 	value: number | null;
 }
-export default function NavSideBar({
-	menuItems,
-	onTabChange,
-	avatar,
-	value,
-}: IProps) {
+export default function NavSideBar({ menuItems, avatar, value }: IProps) {
+	const height = useAppSelector((state) => state.page.navbar.height);
 	const [isMenuCollapsed, setIsMenuCollapsed] = useState(true);
 
 	function toggleMenuCollapse() {
@@ -31,20 +30,23 @@ export default function NavSideBar({
 
 	function handleTabChange(tabIndex: number) {
 		toggleMenuCollapse();
-		onTabChange(tabIndex);
 	}
-	
+
 	return (
 		<>
 			<Box
+				position={"fixed"}
+				top={0}
+				left={0}
+				right={0}
 				display={"flex"}
 				justifyContent={"space-between"}
 				alignItems={"center"}
-				height={54}
+				height={height}
 				bgcolor={"white"}
 				boxShadow={"0px 0px 120px rgba(0,0,0,0.1)"}
 			>
-				<Button sx={{ height: 54 }} onClick={toggleMenuCollapse}>
+				<Button sx={{ height: height }} onClick={toggleMenuCollapse}>
 					<Menu />
 				</Button>
 				{avatar && (
@@ -74,7 +76,7 @@ export default function NavSideBar({
 					justifyContent={"start"}
 				>
 					<Button
-						sx={{ height: 54, marginLeft: "auto" }}
+						sx={{ height: height, marginLeft: "auto" }}
 						onClick={toggleMenuCollapse}
 					>
 						<ArrowBack />

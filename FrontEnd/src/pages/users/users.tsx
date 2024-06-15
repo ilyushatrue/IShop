@@ -5,13 +5,14 @@ import useApi from "../../api/hooks/use-api.hook";
 import { Box } from "@mui/material";
 import usersApi from "../../api/users.api";
 export default function Users({ tabName }: IPage) {
-	const [users, setUsers] = useState<IUser[]>([]);
+	const [users, setUsers] = useState<any[]>([]);
 
 	const { isFetching, fetchAsync } = useApi();
 	useEffect(() => {
 		fetchAsync<IUser[]>({
 			request: usersApi.getListAsync,
-			onSuccess: (handler) => handler.popup("sdklj").do(console.log),
+			onSuccess: (handler) =>
+				handler.do((result) => setUsers(result.body!.value!)),
 			onError: (handler) => handler.log().popup(),
 		});
 	}, []);
@@ -31,9 +32,9 @@ export default function Users({ tabName }: IPage) {
 								" " +
 								user.lastName +
 								" " +
-								user.email +
+								user.email.value +
 								" " +
-								user.phone}
+								user.phone.value}
 						</div>
 					))}
 				</>
