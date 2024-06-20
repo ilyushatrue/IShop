@@ -47,7 +47,6 @@ public class UsersController(
     [HttpGet("current")]
     public IActionResult GetCurrent(CancellationToken cancellationToken)
     {
-        throw new Exception("ςϋ υσι");
         ErrorOr<AuthenticationResponse> GetUserData()
         {
             if (User.Identity?.IsAuthenticated == true)

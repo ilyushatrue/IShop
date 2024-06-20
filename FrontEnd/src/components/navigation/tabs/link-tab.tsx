@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Button } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 
 export interface ILinkTab {
 	index: number;
@@ -21,11 +21,19 @@ export default function LinkTab({
 				sx={{
 					padding: 2,
 					justifyContent: "start",
-					bgcolor: isActive ? "rgb(240, 245, 255)" : undefined,
 				}}
 				onClick={() => onClick?.(index)}
 			>
-				{label}
+				<Typography
+					variant="body2"
+					sx={{
+						textTransform: "capitalize",
+						fontWeight: "500", // Делает первую букву каждого слова заглавной
+						color:"black"
+					}}
+				>
+					{label}
+				</Typography>
 			</Button>
 		</Link>
 	);

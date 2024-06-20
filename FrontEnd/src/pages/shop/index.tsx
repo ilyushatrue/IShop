@@ -73,7 +73,7 @@ const myProducts: IProduct[] = [
 
 export default function Shop() {
 	return (
-		<Page isLoading={false} >
+		<Page isLoading={false} sx={{mt:2, bgcolor:"white", borderRadius: "24px", padding: 2}}>
 			<Products products={myProducts} />
 		</Page>
 	);

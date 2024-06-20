@@ -10,7 +10,6 @@ import { useAppDispatch } from "../../../app/hooks/redux/use-app-dispatch";
 import { getCurrentAsync } from "../../../store/user.slice";
 import { ApiResponse } from "../../../api/api";
 import { useState } from "react";
-import { relative } from "path";
 
 export interface IUserCredentialsRequest {
 	firstName: string;
@@ -20,6 +19,7 @@ export interface IUserCredentialsRequest {
 }
 
 export default function Profile() {
+	const navbarHeight = useAppSelector((state) => state.page.navbar.height);
 	const [user, setUser] = useState(
 		useAppSelector((state) => state.user.user)
 	);
@@ -47,32 +47,23 @@ export default function Profile() {
 	async function handleFormSubmitAsync(avatarId: IUserCredentialsRequest) {}
 
 	return (
-		<Page isLoading={isFetching} >
-			<Box position={"relative"} width={"100%"}>
+		<Page isLoading={isFetching} sx={{ maxWidth: "100vw" }}>
+			<Box display={"flex"} height={`calc(100vh - ${navbarHeight}px)`} >
 				<Box
-					position={"absolute"}
 					display={"flex"}
 					flexDirection={"column"}
 					width={200}
+					height={"100%"}
 					bgcolor={"#dedede"}
 					top={0}
-					bottom={0}
 					left={0}
 				>
-					<Button >
-						Мой профиль
-					</Button>
-					<Button>
-						Покупки
-					</Button>
-					<Button>
-						Корзина
-					</Button>
-					<Button>
-						Реквизиты
-					</Button>
+					<Button>Мой профиль</Button>
+					<Button>Покупки</Button>
+					<Button>Корзина</Button>
+					<Button>Реквизиты</Button>
 				</Box>
-				<Box display={"flex"} justifyContent={"center"} paddingTop={5}>
+				<Box display={"flex"} flex={1} justifyContent={"center"}  paddingTop={5} overflow={"scroll"} >
 					<Box
 						width={400}
 						display={"flex"}

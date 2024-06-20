@@ -32,10 +32,13 @@ export default function NavTabs({
 			value={value ?? false}
 			orientation={orientation}
 			TabIndicatorProps={{
-				style:
-					orientation === "vertical"
+				style:{
+					...orientation === "vertical"
 						? { left: "0px", width: "4px" }
 						: {},
+					color:"black",
+					backgroundColor:"black"
+				}
 			}}
 		>
 			{tabs.map((tab) => (

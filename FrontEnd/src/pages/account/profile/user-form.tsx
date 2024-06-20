@@ -4,14 +4,16 @@ import { IUserCredentialsRequest } from "./profile";
 export default function UserForm({
 	onSubmitAsync,
 	defaultValues,
+	minHeight =330,
 }: {
 	defaultValues: IUserCredentialsRequest;
 	onSubmitAsync: (values: IUserCredentialsRequest) => Promise<void>;
+	minHeight?: number;
 }) {
 	return (
 		<Form
 			defaultValues={defaultValues}
-			minHeight={330}
+			minHeight={minHeight}
 			submitButtonText="Сохранить"
 			onSubmitAsync={onSubmitAsync}
 			fields={(builder) =>

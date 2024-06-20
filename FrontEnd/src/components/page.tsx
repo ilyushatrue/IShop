@@ -17,6 +17,7 @@ export interface IPage {
 export default function Page({ isLoading = false, children, sx }: IPage) {
 	const dispatch = useAppDispatch();
 	const navbarHeight = useAppSelector((state) => state.page.navbar.height);
+	const displayWidth = useAppSelector((state) => state.page.displayWidth);
 	const { pathname } = useLocation();
 
 	useEffect(() => {
@@ -35,7 +36,7 @@ export default function Page({ isLoading = false, children, sx }: IPage) {
 					<LinearProgress />
 				</Box>
 			)}
-			<Box maxWidth={1280} width={"100%"} sx={sx}>
+			<Box maxWidth={displayWidth} width={"100%"} sx={sx}>
 				{children}
 			</Box>
 		</Box>
