@@ -1,4 +1,5 @@
-﻿using Flags.Api.Common.Mapping;
+﻿using Flags.Api.Common.Errors;
+using Flags.Api.Common.Mapping;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace Flags.Api;

@@ -5,7 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Flags.Application.Common.Interfaces.Services;
 using Microsoft.Extensions.Options;
-using Flags.Domain.UserEntity;
+using Flags.Domain.UserRoot;
 namespace Flags.Infrastructure.Authentication;
 public class JwtTokenGenerator(
     IOptions<JwtSettings> jwtOptions,

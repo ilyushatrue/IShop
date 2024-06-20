@@ -1,5 +1,3 @@
-using Flags.Domain.UserEntity;
-
 namespace Flags.Domain.UserRoot.Entities;
 
 public class UserRole

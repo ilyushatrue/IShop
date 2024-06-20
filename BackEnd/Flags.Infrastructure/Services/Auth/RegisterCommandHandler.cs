@@ -1,20 +1,20 @@
 using ErrorOr;
 using Flags.Application.Common.Interfaces.Authentication;
 using Flags.Application.Common.Interfaces.Persistance;
-using MediatR;
 using Flags.Application.Authentication.Common;
-using Flags.Domain.UserEntity;
-using Flags.Domain.UserEntity.ValueObjects;
+using Flags.Application.Common.Interfaces.Services.Auth;
+using Flags.Domain.UserRoot.ValueObjects;
+using Flags.Domain.UserRoot;
+using Flags.Application.Authentication.Commands;
 
-namespace Flags.Application.Authentication.Commands.Register;
+namespace Flags.Infrastructure.Services.Auth;
 
 public class RegisterCommandHandler(
     IUserRepository userRepository,
     IRefreshJwtRepository refreshJwtRepository,
     IJwtTokenGenerator jwtTokenGenerator,
     IPasswordHasher passwordHasher
-) :
-    IRequestHandler<RegisterCommand, ErrorOr<AuthenticationResult>>
+) : IRegisterCommandHandler
 {
     public async Task<ErrorOr<AuthenticationResult>> Handle(RegisterCommand command, CancellationToken cancellationToken)
     {

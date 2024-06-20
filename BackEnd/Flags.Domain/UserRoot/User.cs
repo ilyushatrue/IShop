@@ -1,9 +1,9 @@
 ﻿using Flags.Domain.Common.Models;
 using Flags.Domain.MediaEntity;
-using Flags.Domain.UserEntity.ValueObjects;
 using Flags.Domain.UserRoot.Entities;
+using Flags.Domain.UserRoot.ValueObjects;
 
-namespace Flags.Domain.UserEntity;
+namespace Flags.Domain.UserRoot;
 
 public class User : AggregateRoot<Guid>
 {

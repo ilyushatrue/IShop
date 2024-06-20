@@ -1,11 +1,10 @@
 using ErrorOr;
+using Flags.Application.Common.Interfaces.Services.Users;
 using Flags.Application.Users.Command;
-using Flags.Application.Users.Queries;
 using Flags.Contracts.Authentication;
 using Flags.Domain.Common.Errors;
 using Flags.Infrastructure.Authentication;
 using MapsterMapper;
-using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,14 +14,16 @@ namespace Flags.Api.Controllers;
 [Route("users")]
 [Authorize(Policy = CustomPolicies.ADMIN_POLICY)]
 public class UsersController(
-    ISender mediatr,
-    IMapper mapper
+    IMapper mapper,
+    IGetAllUsersQueryHandler getAllUsersQueryHandler,
+    IGetUserByIdQueryHandler getUserByIdQueryHandler,
+    IEditUserDataCommandHandler editUserDataCommandHandler
 ) : ApiController
 {
     [HttpGet]
-    public async Task<IActionResult> GetAllUsersAsync()
+    public async Task<IActionResult> GetAllUsersAsync(CancellationToken cancellationToken)
     {
-        var result = await mediatr.Send(new GetAllUsersQuery());
+        var result = await getAllUsersQueryHandler.Handle(cancellationToken);
 
         return result.Match(
             authResult => Ok(result),
@@ -32,10 +33,9 @@ public class UsersController(
 
     // not used
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetUserByIdAsync(string id)
+    public async Task<IActionResult> GetUserByIdAsync(string id, CancellationToken cancellationToken)
     {
-        var query = new GetUserByIdQuery(id);
-        var result = await mediatr.Send(query);
+        var result = await getUserByIdQueryHandler.Handle(new(id), cancellationToken);
 
         return result.Match(
             authResult => Ok(result),
@@ -45,8 +45,9 @@ public class UsersController(
 
     [AllowAnonymous]
     [HttpGet("current")]
-    public IActionResult GetCurrent()
+    public IActionResult GetCurrent(CancellationToken cancellationToken)
     {
+        throw new Exception("ςϋ υσι");
         ErrorOr<AuthenticationResponse> GetUserData()
         {
             if (User.Identity?.IsAuthenticated == true)
@@ -92,9 +93,9 @@ public class UsersController(
     }
 
     [HttpPut]
-    public async Task<IActionResult> EditUserData([FromBody] EditUserDataCommand user)
+    public async Task<IActionResult> EditUserData([FromBody] EditUserDataCommand user, CancellationToken cancellationToken)
     {
-        var result = await mediatr.Send(user);
+        var result = await editUserDataCommandHandler.Handle(user, cancellationToken);
         var updatedUser = result.Value;
         if (!result.IsError)
         {

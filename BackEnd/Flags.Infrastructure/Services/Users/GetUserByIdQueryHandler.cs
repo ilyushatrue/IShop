@@ -1,14 +1,15 @@
 using ErrorOr;
 using Flags.Application.Common.Interfaces.Persistance;
+using Flags.Application.Common.Interfaces.Services.Users;
+using Flags.Application.Users.Queries;
 using Flags.Domain.Common.Errors;
-using Flags.Domain.UserEntity;
-using MediatR;
+using Flags.Domain.UserRoot;
 
-namespace Flags.Application.Users.Queries;
+namespace Flags.Infrastructure.Services.Users;
 
 public class GetUserByIdQueryHandler(
     IUserRepository userRepository
-) : IRequestHandler<GetUserByIdQuery, ErrorOr<User?>>
+) : IGetUserByIdQueryHandler
 {
     public async Task<ErrorOr<User?>> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
     {

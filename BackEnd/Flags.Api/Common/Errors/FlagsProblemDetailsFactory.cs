@@ -1,10 +1,12 @@
 ﻿using System.Diagnostics;
 using ErrorOr;
 using Flags.Api.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Options;
 
-namespace Microsoft.AspNetCore.Mvc.Infrastructure;
+namespace Flags.Api.Common.Errors;
 
 public class FlagsProblemDetailsFactory(
     IOptions<ApiBehaviorOptions> options) : ProblemDetailsFactory

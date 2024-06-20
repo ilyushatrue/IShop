@@ -3,7 +3,7 @@ using ErrorOr;
 using Flags.Domain.Common.Errors;
 using Flags.Domain.Common.Models;
 
-namespace Flags.Domain.UserEntity.ValueObjects;
+namespace Flags.Domain.UserRoot.ValueObjects;
 
 public class Email : ValueObject
 {

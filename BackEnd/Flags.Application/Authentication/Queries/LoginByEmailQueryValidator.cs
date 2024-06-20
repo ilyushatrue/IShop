@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace Flags.Application.Authentication.Queries.Login.ByEmail;
+namespace Flags.Application.Authentication.Queries;
 
 public class LoginByEmailQueryValidator : AbstractValidator<LoginByEmailQuery>
 {

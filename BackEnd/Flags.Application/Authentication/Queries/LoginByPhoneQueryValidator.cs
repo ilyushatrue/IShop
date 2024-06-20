@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace Flags.Application.Authentication.Queries.Login.ByPhone;
+namespace Flags.Application.Authentication.Queries;
 
 public class LoginByPhoneQueryValidator : AbstractValidator<LoginByPhoneQuery>
 {

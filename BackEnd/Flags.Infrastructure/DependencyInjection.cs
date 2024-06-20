@@ -16,6 +16,12 @@ using Flags.Domain.Enums;
 using Flags.Infrastructure.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Flags.Application.AppSettings;
+using Flags.Application.Common.Interfaces.Services.Auth;
+using Flags.Infrastructure.Services.Auth;
+using Flags.Application.Common.Interfaces.Services.Images;
+using Flags.Infrastructure.Services.Images;
+using Flags.Application.Common.Interfaces.Services.Users;
+using Flags.Infrastructure.Services.Users;
 
 namespace Flags.Infrastructure;
 
@@ -27,7 +33,8 @@ public static class DependencyInjection
     {
         services
             .AddAuth(configuration)
-            .AddPersistance();
+            .AddPersistance()
+            .AddServices();
 
         services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
 
@@ -48,6 +55,23 @@ public static class DependencyInjection
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IRefreshJwtRepository, RefreshJwtRepository>();
         services.AddScoped<IMediaRepository, MediaRepository>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddServices(
+    this IServiceCollection services)
+    {
+        services.AddScoped<ILoginByEmailQueryHandler, LoginByEmailQueryHandler>();
+        services.AddScoped<ILoginByPhoneQueryHandler, LoginByPhoneQueryHandler>();
+        services.AddScoped<ILogoutCommandHandler, LogoutCommandHandler>();
+        services.AddScoped<IRefreshJwtCommandHandler, RefreshJwtCommandHandler>();
+        services.AddScoped<IRegisterCommandHandler, RegisterCommandHandler>();
+        services.AddScoped<ICreateImageCommandHandler, CreateImageCommandHandler>();
+        services.AddScoped<IGetImageByIdQueryHandler, GetImageByIdQueryHandler>();
+        services.AddScoped<IEditUserDataCommandHandler, EditUserDataCommandHandler>();
+        services.AddScoped<IGetAllUsersQueryHandler, GetAllUsersQueryHandler>();
+        services.AddScoped<IGetUserByIdQueryHandler, GetUserByIdQueryHandler>();
 
         return services;
     }

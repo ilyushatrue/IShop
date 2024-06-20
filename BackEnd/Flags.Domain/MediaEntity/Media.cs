@@ -1,5 +1,5 @@
 ﻿using Flags.Domain.Common.Models;
-using Flags.Domain.UserEntity;
+using Flags.Domain.UserRoot;
 
 namespace Flags.Domain.MediaEntity;
 

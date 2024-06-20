@@ -1,6 +1,6 @@
 using Flags.Application.AppSettings;
 using Flags.Domain.MediaEntity;
-using Flags.Domain.UserEntity;
+using Flags.Domain.UserRoot;
 using Flags.Domain.UserRoot.Entities;
 using Flags.Infrastructure.Persistance.Configurations;
 using Microsoft.EntityFrameworkCore;

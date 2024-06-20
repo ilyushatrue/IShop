@@ -1,17 +1,17 @@
 ﻿using ErrorOr;
 using Flags.Application.AppSettings;
 using Flags.Application.Common.Interfaces.Persistance;
+using Flags.Application.Common.Interfaces.Services.Images;
+using Flags.Application.Images.Queries;
 using Flags.Domain.Common.Errors;
-using MediatR;
 using Microsoft.Extensions.Options;
 using System.Drawing;
 
-namespace Flags.Application.Images.Queries;
+namespace Flags.Infrastructure.Services.Images;
 
 public class GetImageByIdQueryHandler(
     IOptions<FileSettings> fileSettings,
-    IMediaRepository mediaRepository)
-    : IRequestHandler<GetImageByIdQuery, ErrorOr<(string, byte[])>>
+    IMediaRepository mediaRepository) : IGetImageByIdQueryHandler
 {
     public async Task<ErrorOr<(string, byte[])>> Handle(GetImageByIdQuery request, CancellationToken cancellationToken)
     {
@@ -39,7 +39,6 @@ public class GetImageByIdQueryHandler(
         }
         catch (Exception)
         {
-            // Здесь можно добавить логирование и специализированные ошибки
             return Errors.Media.ImageNotFound;
         }
     }

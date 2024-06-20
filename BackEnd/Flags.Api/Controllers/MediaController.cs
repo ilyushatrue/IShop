@@ -1,28 +1,27 @@
-﻿using Flags.Application.Images.Commands;
-using Flags.Application.Images.Queries;
+﻿using Flags.Application.Common.Interfaces.Services.Images;
 using MapsterMapper;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Flags.Api.Controllers;
 
 [Route("media")]
 public class MediaController(
-    ISender mediatr,
-    IMapper mapper) : ApiController
+    IMapper mapper,
+    ICreateImageCommandHandler createImageCommand,
+    IGetImageByIdQueryHandler getImageByIdQuery) : ApiController
 {
     [HttpPost("image")]
-    public async Task<IActionResult> CreateImage([FromForm] IFormFile file)
+    public async Task<IActionResult> CreateImage([FromForm] IFormFile file, CancellationToken cancellationToken)
     {
-        var result = await mediatr.Send(new CreateImageCommand(file));
+        var result = await createImageCommand.Handle(new(file), cancellationToken);
 
         return result.Match(response => Ok(result), Problem);
     }
 
     [HttpGet("image/{id}")]
-    public async Task<IActionResult> GetImageById(Guid id)
+    public async Task<IActionResult> GetImageById(Guid id, CancellationToken cancellationToken)
     {
-        var result = await mediatr.Send(new GetImageByIdQuery(id));
+        var result = await getImageByIdQuery.Handle(new(id), cancellationToken);
 
         if (result.IsError)
         {

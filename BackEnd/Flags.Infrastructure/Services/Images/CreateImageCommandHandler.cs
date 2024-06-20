@@ -1,14 +1,15 @@
 ﻿using ErrorOr;
-using MediatR;
 using Flags.Application.AppSettings;
 using Flags.Application.Common.Interfaces.Persistance;
+using Flags.Application.Common.Interfaces.Services.Images;
+using Flags.Application.Images.Commands;
 using Microsoft.Extensions.Options;
 
-namespace Flags.Application.Images.Commands;
+namespace Flags.Infrastructure.Services.Images;
 
 public class CreateImageCommandHandler(
     IOptions<FileSettings> fileSettings,
-    IMediaRepository mediaRepository) : IRequestHandler<CreateImageCommand, ErrorOr<string>>
+    IMediaRepository mediaRepository) : ICreateImageCommandHandler
 {
     private readonly string _uploadPath = fileSettings.Value.UploadPath;
     public async Task<ErrorOr<string>> Handle(CreateImageCommand request, CancellationToken cancellationToken)

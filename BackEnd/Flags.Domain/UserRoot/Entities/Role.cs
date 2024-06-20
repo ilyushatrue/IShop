@@ -1,5 +1,4 @@
 using Flags.Domain.Common.Models;
-using Flags.Domain.UserEntity;
 
 namespace Flags.Domain.UserRoot.Entities;
 

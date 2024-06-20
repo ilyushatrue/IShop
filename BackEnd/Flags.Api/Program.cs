@@ -1,4 +1,3 @@
-using Flags.Application;
 using Flags.Infrastructure;
 using Microsoft.AspNetCore.CookiePolicy;
 
@@ -19,7 +18,6 @@ public class Program
                     .AllowAnyHeader();
             }))
             .AddPresentation()
-            .AddServices()
             .AddInfrastructure(builder.Configuration);
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

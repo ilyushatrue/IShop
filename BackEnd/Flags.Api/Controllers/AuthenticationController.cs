@@ -1,31 +1,27 @@
-﻿using ErrorOr;
-using Flags.Api.Controllers;
-using Flags.Application.Authentication.Commands.Logout;
-using Flags.Application.Authentication.Commands.RefreshJwt;
-using Flags.Application.Authentication.Commands.Register;
-using Flags.Application.Authentication.Common;
-using Flags.Application.Authentication.Queries.Login.ByEmail;
-using Flags.Application.Authentication.Queries.Login.ByPhone;
+﻿using Flags.Application.Authentication.Commands;
+using Flags.Application.Authentication.Queries;
+using Flags.Application.Common.Interfaces.Services.Auth;
 using Flags.Domain.Common.Errors;
-using Flags.Domain.UserEntity;
-using MapsterMapper;
-using MediatR;
+using Flags.Domain.UserRoot;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Flags.Api.Controller;
+namespace Flags.Api.Controllers;
 
 [Route("auth")]
 [AllowAnonymous]
 public class AuthenticationController(
-    ISender mediator,
-    IMapper mapper
+    IRegisterCommandHandler registerCommandHandler,
+    IRefreshJwtCommandHandler refreshJwtCommandHandler,
+    ILoginByPhoneQueryHandler loginByPhoneQueryHandler,
+    ILoginByEmailQueryHandler loginByEmailQueryHandler,
+    ILogoutCommandHandler logoutCommandHandler
     ) : ApiController
 {
     [HttpPost("register")]
-    public async Task<IActionResult> Register(RegisterCommand command)
+    public async Task<IActionResult> Register(RegisterCommand command, CancellationToken cancellationToken)
     {
-        ErrorOr<AuthenticationResult> authResult = await mediator.Send(command);
+        var authResult = await registerCommandHandler.Handle(command, cancellationToken);
 
         if (authResult.IsError && authResult.FirstError == Errors.Authentication.InvalidCredentials)
         {
@@ -44,14 +40,14 @@ public class AuthenticationController(
     }
 
     [HttpPost("refresh-jwt")]
-    public async Task<IActionResult> RefreshJwt()
+    public async Task<IActionResult> RefreshJwt(CancellationToken cancellationToken)
     {
         var phone = Request.Cookies["user-phone"];
 
         if (phone is not null)
         {
             var command = new RefreshJwtCommand(phone);
-            ErrorOr<AuthenticationResult> authResult = await mediator.Send(command);
+            var authResult = await refreshJwtCommandHandler.Handle(command, cancellationToken);
 
             if (authResult.IsError)
             {
@@ -78,9 +74,9 @@ public class AuthenticationController(
 
 
     [HttpPost("login-by-email")]
-    public async Task<IActionResult> LoginByEmail(LoginByEmailQuery query)
+    public async Task<IActionResult> LoginByEmail(LoginByEmailQuery query, CancellationToken cancellationToken)
     {
-        var authResult = await mediator.Send(query);
+        var authResult = await loginByEmailQueryHandler.Handle(query, cancellationToken);
 
         if (!authResult.IsError)
             SetCookies(authResult.Value.User, authResult.Value.JwtAccessToken);
@@ -92,14 +88,14 @@ public class AuthenticationController(
     }
 
     [HttpPost("logout")]
-    public async Task<IActionResult> Logout()
+    public async Task<IActionResult> Logout(CancellationToken cancellationToken)
     {
         var userId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "UserId")?.Value;
 
         if (userId is not null)
         {
             var command = new LogoutCommand(Guid.Parse(userId));
-            var authResult = await mediator.Send(command);
+            var authResult = await logoutCommandHandler.Handle(command, cancellationToken);
             if (!authResult.IsError) DeleteJwtAccessTokenCookie();
 
             return authResult.Match(
@@ -114,9 +110,9 @@ public class AuthenticationController(
     }
 
     [HttpPost("login-by-phone")]
-    public async Task<IActionResult> LoginByPhone(LoginByPhoneQuery query)
+    public async Task<IActionResult> LoginByPhone(LoginByPhoneQuery query, CancellationToken cancellationToken)
     {
-        var authResult = await mediator.Send(query);
+        var authResult = await loginByPhoneQueryHandler.Handle(query, cancellationToken);
 
         if (!authResult.IsError)
             SetCookies(authResult.Value.User, authResult.Value.JwtAccessToken);

@@ -1,5 +1,5 @@
 ﻿using Flags.Domain.Enums;
-using Flags.Domain.UserEntity;
+using Flags.Domain.UserRoot;
 
 namespace Flags.Application.Common.Interfaces.Persistance;
 public interface IUserRepository

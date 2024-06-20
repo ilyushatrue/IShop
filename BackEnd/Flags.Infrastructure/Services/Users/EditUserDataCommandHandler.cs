@@ -1,12 +1,13 @@
 ﻿using ErrorOr;
 using Flags.Application.Common.Interfaces.Persistance;
-using Flags.Domain.UserEntity;
 using Flags.Domain.Common.Errors;
-using MediatR;
+using Flags.Application.Common.Interfaces.Services.Users;
+using Flags.Application.Users.Command;
+using Flags.Domain.UserRoot;
 
-namespace Flags.Application.Users.Command;
+namespace Flags.Infrastructure.Services.Users;
 public class EditUserDataCommandHandler(
-    IUserRepository userRepository) : IRequestHandler<EditUserDataCommand, ErrorOr<User>>
+    IUserRepository userRepository) : IEditUserDataCommandHandler
 {
     public async Task<ErrorOr<User>> Handle(EditUserDataCommand command, CancellationToken cancellationToken)
     {

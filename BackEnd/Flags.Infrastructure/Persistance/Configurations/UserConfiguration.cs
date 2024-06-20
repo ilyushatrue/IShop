@@ -1,4 +1,4 @@
-using Flags.Domain.UserEntity;
+using Flags.Domain.UserRoot;
 using Flags.Domain.UserRoot.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

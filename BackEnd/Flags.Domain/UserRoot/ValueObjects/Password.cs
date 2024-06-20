@@ -1,7 +1,7 @@
 using ErrorOr;
 using Flags.Domain.Common.Errors;
 
-namespace Flags.Domain.UserEntity.ValueObjects;
+namespace Flags.Domain.UserRoot.ValueObjects;
 
 public class Password
 {

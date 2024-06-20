@@ -1,20 +1,20 @@
 using ErrorOr;
 using Flags.Application.Authentication.Common;
+using Flags.Application.Authentication.Queries;
 using Flags.Application.Common.Interfaces.Authentication;
 using Flags.Application.Common.Interfaces.Persistance;
+using Flags.Application.Common.Interfaces.Services.Auth;
 using Flags.Domain.Common.Errors;
-using Flags.Domain.UserEntity.ValueObjects;
-using MediatR;
+using Flags.Domain.UserRoot.ValueObjects;
 
-namespace Flags.Application.Authentication.Queries.Login.ByPhone;
+namespace Flags.Infrastructure.Services.Auth;
 
 public class LoginByPhoneQueryHandler(
     IUserRepository userRepository,
     IJwtTokenGenerator jwtTokenGenerator,
     IRefreshJwtRepository refreshJwtRepository,
     IPasswordHasher passwordHasher
-) :
-    IRequestHandler<LoginByPhoneQuery, ErrorOr<AuthenticationResult>>
+) : ILoginByPhoneQueryHandler
 {
     public async Task<ErrorOr<AuthenticationResult>> Handle(LoginByPhoneQuery query, CancellationToken cancellationToken)
     {

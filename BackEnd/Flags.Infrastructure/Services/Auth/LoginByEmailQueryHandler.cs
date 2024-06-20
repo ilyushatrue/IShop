@@ -1,19 +1,19 @@
 using ErrorOr;
 using Flags.Application.Authentication.Common;
+using Flags.Application.Authentication.Queries;
 using Flags.Application.Common.Interfaces.Authentication;
 using Flags.Application.Common.Interfaces.Persistance;
+using Flags.Application.Common.Interfaces.Services.Auth;
 using Flags.Domain.Common.Errors;
-using MediatR;
 
-namespace Flags.Application.Authentication.Queries.Login.ByEmail;
+namespace Flags.Infrastructure.Services.Auth;
 
 public class LoginByEmailQueryHandler(
     IUserRepository userRepository,
     IJwtTokenGenerator jwtTokenGenerator,
     IRefreshJwtRepository refreshJwtRepository,
     IPasswordHasher passwordHasher
-) :
-    IRequestHandler<LoginByEmailQuery, ErrorOr<AuthenticationResult>>
+) : ILoginByEmailQueryHandler
 {
     public async Task<ErrorOr<AuthenticationResult>> Handle(
         LoginByEmailQuery query,
