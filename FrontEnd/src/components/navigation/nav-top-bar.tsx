@@ -1,10 +1,10 @@
 import NavTabs from "./tabs/nav-tabs";
 import { Box, Button, Typography } from "@mui/material";
 import NavAvatar, { IAvatar } from "./nav-avatar";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../app/hooks/redux/use-app-selector";
 import IconButton from "../icon-button";
-import Icon2 from "../icon";
+import Icon from "../icon";
 
 interface IProps {
 	menuItems: {
@@ -17,6 +17,7 @@ interface IProps {
 export default function NavTopBar({ menuItems, avatar, value }: IProps) {
 	const navbarHeight = useAppSelector((state) => state.page.navbar);
 	const displayWidth = useAppSelector((state) => state.page.displayWidth);
+	const navigate = useNavigate();
 	const isAuthenticated = useAppSelector(
 		(state) => state.user.isAuthenticated
 	);
@@ -40,26 +41,9 @@ export default function NavTopBar({ menuItems, avatar, value }: IProps) {
 						display={"flex"}
 						justifyContent={"end"}
 						gap={2}
+						marginY={0.5}
 						alignItems={"center"}
 					>
-						<IconButton
-							orientation="vertical"
-							iconName="star"
-							iconSx={{ color: "black" }}
-							onClick={console.log}
-						/>
-						<IconButton
-							orientation="vertical"
-							iconName="star"
-							iconSx={{ color: "black" }}
-							onClick={console.log}
-						/>
-						<IconButton
-							orientation="vertical"
-							iconName="star"
-							iconSx={{ color: "black" }}
-							onClick={console.log}
-						/>
 						<Box
 							display={"flex"}
 							justifyContent={"end"}
@@ -69,28 +53,31 @@ export default function NavTopBar({ menuItems, avatar, value }: IProps) {
 							borderRadius={"24px"}
 							width={600}
 						>
-							<Icon2 name="search" sx={{ mr: 2 }} />
+							<Icon name="search" sx={{ mr: 2 }} />
 						</Box>
 						<IconButton
 							orientation="vertical"
 							caption="Заказы"
 							iconName="local_shipping"
 							iconSx={{ color: "black" }}
-							onClick={console.log}
+							onClick={()=>navigate("/purchases")}
+							fontSize="large"
 						/>
 						<IconButton
 							orientation="vertical"
 							caption="Избранное"
 							iconName="favorite_border"
 							iconSx={{ color: "black" }}
-							onClick={console.log}
+							onClick={() => navigate("/goods")}
+							fontSize="large"
 						/>
 						<IconButton
 							orientation="vertical"
 							caption="Корзина"
 							iconName="shopping_bag"
 							iconSx={{ color: "black" }}
-							onClick={console.log}
+							onClick={() => navigate("/cart")}
+							fontSize="large"
 						/>
 						{/* <Box
 							display={"flex"}

@@ -14,7 +14,7 @@ interface IPageState {
 }
 const menuItems: IPageState = {
 	isLoading: false,
-	displayWidth: 1280,
+	displayWidth: 1440,
 	navbar: {
 		height: 112,
 	},

@@ -27,7 +27,7 @@ export default function LinkTab({
 				<Typography
 					variant="body2"
 					sx={{
-						textTransform: "capitalize",
+						textTransform: "none",
 						fontWeight: "500", // Делает первую букву каждого слова заглавной
 						color:"black"
 					}}

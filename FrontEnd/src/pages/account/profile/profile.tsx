@@ -1,4 +1,4 @@
-import { Box, Button } from "@mui/material";
+import { Box } from "@mui/material";
 import Page from "../../../components/page";
 import { useAppSelector } from "../../../app/hooks/redux/use-app-selector";
 import UserForm from "./user-form";
@@ -10,6 +10,9 @@ import { useAppDispatch } from "../../../app/hooks/redux/use-app-dispatch";
 import { getCurrentAsync } from "../../../store/user.slice";
 import { ApiResponse } from "../../../api/api";
 import { useState } from "react";
+import IconButton from "../../../components/icon-button";
+import { useNavigate } from "react-router-dom";
+import ProfilePage from "../../profile-page";
 
 export interface IUserCredentialsRequest {
 	firstName: string;
@@ -20,6 +23,8 @@ export interface IUserCredentialsRequest {
 
 export default function Profile() {
 	const navbarHeight = useAppSelector((state) => state.page.navbar.height);
+	const displayWidth = useAppSelector((state) => state.page.displayWidth);
+	const navigate = useNavigate();
 	const [user, setUser] = useState(
 		useAppSelector((state) => state.user.user)
 	);
@@ -47,40 +52,22 @@ export default function Profile() {
 	async function handleFormSubmitAsync(avatarId: IUserCredentialsRequest) {}
 
 	return (
-		<Page isLoading={isFetching} sx={{ maxWidth: "100vw" }}>
-			<Box display={"flex"} height={`calc(100vh - ${navbarHeight}px)`} >
-				<Box
-					display={"flex"}
-					flexDirection={"column"}
-					width={200}
-					height={"100%"}
-					bgcolor={"#dedede"}
-					top={0}
-					left={0}
-				>
-					<Button>Мой профиль</Button>
-					<Button>Покупки</Button>
-					<Button>Корзина</Button>
-					<Button>Реквизиты</Button>
-				</Box>
-				<Box display={"flex"} flex={1} justifyContent={"center"}  paddingTop={5} overflow={"scroll"} >
-					<Box
-						width={400}
-						display={"flex"}
-						flexDirection={"column"}
-						alignItems={"center"}
-					>
-						<AvatarPlus
-							imageId={user?.avatarId}
-							onChange={handleSubmitAsync}
-						/>
-						<UserForm
-							onSubmitAsync={handleFormSubmitAsync}
-							defaultValues={user!}
-						/>
-					</Box>
-				</Box>
+		<ProfilePage>
+			<Box
+				width={400}
+				display={"flex"}
+				flexDirection={"column"}
+				alignItems={"center"}
+			>
+				<AvatarPlus
+					imageId={user?.avatarId}
+					onChange={handleSubmitAsync}
+				/>
+				<UserForm
+					onSubmitAsync={handleFormSubmitAsync}
+					defaultValues={user!}
+				/>
 			</Box>
-		</Page>
+		</ProfilePage>
 	);
 }
