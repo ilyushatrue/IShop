@@ -2,5 +2,5 @@ export interface IProduct {
 	name: string;
 	price: number;
 	description: string;
-	imageUrl: string;
+	imageId: string;
 }

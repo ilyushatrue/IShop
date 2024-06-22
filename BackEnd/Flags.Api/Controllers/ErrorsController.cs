@@ -5,7 +5,7 @@ namespace Flags.Api.Controllers;
 
 public class ErrorsController : ApiController
 {
-    [Route("/error")]
+    [HttpGet("error")]
     public IActionResult Error()
     {
         var exception = HttpContext.Features.Get<IExceptionHandlerFeature>()?.Error;

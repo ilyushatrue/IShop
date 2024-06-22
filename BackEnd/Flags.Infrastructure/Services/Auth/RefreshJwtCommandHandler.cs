@@ -1,10 +1,8 @@
 using ErrorOr;
-using Flags.Application.Common.Interfaces.Authentication;
-using Flags.Application.Common.Interfaces.Persistance;
 using Flags.Application.Authentication.Common;
 using Flags.Domain.Common.Errors;
-using Flags.Application.Common.Interfaces.Services.Auth;
-using Flags.Application.Authentication.Commands;
+using Flags.Application.Authentication.Commands.RefreshJwt;
+using Flags.Application.Common.Persistance;
 
 namespace Flags.Infrastructure.Services.Auth;
 

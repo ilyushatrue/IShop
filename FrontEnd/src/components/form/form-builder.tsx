@@ -22,6 +22,7 @@ import InputPhone from "./input/input-phone";
 import { IFormField } from "./input/form-field.interface";
 import { Button, CircularProgress } from "@mui/material";
 import InputPasswordConfirm from "./input/input-password-confirm";
+import InputImage from "./input/input-image";
 
 const formStyles: CSSProperties = {
 	display: "flex",
@@ -37,6 +38,7 @@ export type TFormBuilderRef<T extends FieldValues> = {
 	passwordConfirm: (
 		props: IFormField<T> & { password: Path<T> }
 	) => TFormBuilderRef<T>;
+	image: (props: IFormField<T> & { id?: string }) => TFormBuilderRef<T>;
 	phone: (props: IFormField<T>) => TFormBuilderRef<T>;
 };
 
@@ -120,6 +122,17 @@ function FormBuilder<T extends FieldValues>(
 						control={control}
 						key={props.name}
 						onChange={() => watch(props.password)}
+					/>
+				);
+				return inputBuilder;
+			},
+			image: (props: IFormField<T> & { id?: string }) => {
+				addInput(
+					props.name,
+					<InputImage<T>
+						{...props}
+						control={control}
+						key={props.name}
 					/>
 				);
 				return inputBuilder;

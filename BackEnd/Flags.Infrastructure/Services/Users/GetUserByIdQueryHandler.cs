@@ -1,6 +1,5 @@
 using ErrorOr;
-using Flags.Application.Common.Interfaces.Persistance;
-using Flags.Application.Common.Interfaces.Services.Users;
+using Flags.Application.Common.Persistance;
 using Flags.Application.Users.Queries;
 using Flags.Domain.Common.Errors;
 using Flags.Domain.UserRoot;

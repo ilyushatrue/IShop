@@ -1,9 +1,8 @@
 ﻿using ErrorOr;
-using Flags.Application.Common.Interfaces.Persistance;
 using Flags.Domain.Common.Errors;
-using Flags.Application.Common.Interfaces.Services.Users;
 using Flags.Application.Users.Command;
 using Flags.Domain.UserRoot;
+using Flags.Application.Common.Persistance;
 
 namespace Flags.Infrastructure.Services.Users;
 public class EditUserDataCommandHandler(

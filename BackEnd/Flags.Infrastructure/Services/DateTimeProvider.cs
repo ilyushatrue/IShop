@@ -1,4 +1,4 @@
-﻿using Flags.Application.Common.Interfaces.Services;
+﻿using Flags.Application.Common;
 
 namespace Flags.Infrastructure.Services;
 public class DateTimeProvider : IDateTimeProvider

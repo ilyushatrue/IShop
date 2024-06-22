@@ -67,7 +67,7 @@ export default function ProfilePage({children, ...props}:BoxProps) {
 						/>
 						<IconButton
 							iconName="add_circle"
-							onClick={() => navigate("/goods")}
+							onClick={() => navigate("/products/menu")}
 							caption="Добавить товар"
 							variant="squared"
 							fontSize="large"

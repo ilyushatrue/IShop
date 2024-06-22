@@ -1,6 +1,8 @@
-﻿using Flags.Application.Authentication.Commands;
+﻿using Flags.Application.Authentication.Commands.Login;
+using Flags.Application.Authentication.Commands.Logout;
+using Flags.Application.Authentication.Commands.RefreshJwt;
+using Flags.Application.Authentication.Commands.Register;
 using Flags.Application.Authentication.Queries;
-using Flags.Application.Common.Interfaces.Services.Auth;
 using Flags.Domain.Common.Errors;
 using Flags.Domain.UserRoot;
 using Microsoft.AspNetCore.Authorization;

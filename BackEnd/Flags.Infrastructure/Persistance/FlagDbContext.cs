@@ -1,5 +1,6 @@
 using Flags.Application.AppSettings;
 using Flags.Domain.MediaEntity;
+using Flags.Domain.ProductRoot;
 using Flags.Domain.UserRoot;
 using Flags.Domain.UserRoot.Entities;
 using Flags.Infrastructure.Persistance.Configurations;
@@ -28,5 +29,6 @@ public class FlagDbContext(
     public DbSet<Role> Roles { get; set; } = null!;
     public DbSet<Permission> Permissions { get; set; } = null!;
     public DbSet<Media> Media { get; set; } = null!;
+    public DbSet<Product> Products { get; set; } = null!;
 
 }

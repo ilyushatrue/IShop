@@ -1,4 +1,4 @@
-using Flags.Application.Common.Interfaces.Persistance;
+using Flags.Application.Common.Persistance;
 using Flags.Infrastructure.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;

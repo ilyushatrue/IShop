@@ -1,5 +1,8 @@
 import { Avatar as MuiAvatar } from "@mui/material";
 import getConstant from "../infrastructure/constantProvider";
+import { useEffect } from "react";
+import useApi from "../api/hooks/use-api.hook";
+import { mediaApi } from "../api/media.api";
 
 export default function Avatar({
 	imageId,
@@ -8,6 +11,7 @@ export default function Avatar({
 	imageId?: string | null;
 	size?: number | string;
 }) {
+	const { fetchAsync } = useApi();
 	function getImageSrc() {
 		if (imageId) {
 			return getConstant("API_URL") + "/media/image/" + imageId;
@@ -15,6 +19,12 @@ export default function Avatar({
 			return getConstant("IMAGES_PATH") + "no-avatar.jpg";
 		}
 	}
+	// useEffect(() => {
+	// 	if (!imageId) return;
+	// 	fetchAsync({
+	// 		request: async () => await mediaApi.getImageById(imageId),
+	// 	});
+	// }, []);
 
 	return (
 		<MuiAvatar

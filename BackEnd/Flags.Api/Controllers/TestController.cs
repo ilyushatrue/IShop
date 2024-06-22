@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Flags.Api.Controllers;
 
-
 [Route("test")]
 [Authorize(Policy = CustomPolicies.ADMIN_POLICY)]
 public class TestController() : ApiController

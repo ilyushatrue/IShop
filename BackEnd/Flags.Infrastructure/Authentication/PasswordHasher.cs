@@ -1,5 +1,5 @@
 
-using Flags.Application.Common.Interfaces.Authentication;
+using Flags.Application.Authentication.Common;
 
 namespace Flags.Infrastructure.Authentication;
 

@@ -1,7 +1,6 @@
 using ErrorOr;
-using Flags.Application.Authentication.Commands;
-using Flags.Application.Common.Interfaces.Persistance;
-using Flags.Application.Common.Interfaces.Services.Auth;
+using Flags.Application.Authentication.Commands.Logout;
+using Flags.Application.Common.Persistance;
 using Flags.Domain.Common.Errors;
 
 namespace Flags.Infrastructure.Services.Auth;

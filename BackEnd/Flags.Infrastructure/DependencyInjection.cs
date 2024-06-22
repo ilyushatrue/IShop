@@ -1,10 +1,7 @@
-﻿using Flags.Application.Common.Interfaces.Authentication;
-using Flags.Application.Common.Interfaces.Services;
-using Flags.Infrastructure.Authentication;
+﻿using Flags.Infrastructure.Authentication;
 using Flags.Infrastructure.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
-using Flags.Application.Common.Interfaces.Persistance;
 using Flags.Infrastructure.Persistance;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -16,12 +13,23 @@ using Flags.Domain.Enums;
 using Flags.Infrastructure.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Flags.Application.AppSettings;
-using Flags.Application.Common.Interfaces.Services.Auth;
 using Flags.Infrastructure.Services.Auth;
-using Flags.Application.Common.Interfaces.Services.Images;
 using Flags.Infrastructure.Services.Images;
-using Flags.Application.Common.Interfaces.Services.Users;
 using Flags.Infrastructure.Services.Users;
+using Flags.Application.Authentication.Common;
+using Flags.Application.Authentication.Commands.Logout;
+using Flags.Application.Authentication.Commands.RefreshJwt;
+using Flags.Application.Authentication.Commands.Register;
+using Flags.Application.Authentication.Commands.Login;
+using Flags.Application.Users.Queries;
+using Flags.Application.Users.Command;
+using Flags.Application.Images.Queries;
+using Flags.Application.Images.Commands;
+using Flags.Application.Common.Persistance;
+using Flags.Application.Common;
+using Flags.Application.Products.Queries;
+using Flags.Infrastructure.Services.Products;
+using Flags.Application.Products.Commands;
 
 namespace Flags.Infrastructure;
 
@@ -55,6 +63,7 @@ public static class DependencyInjection
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IRefreshJwtRepository, RefreshJwtRepository>();
         services.AddScoped<IMediaRepository, MediaRepository>();
+        services.AddScoped<IProductRepository, ProductRepository>();
 
         return services;
     }
@@ -72,6 +81,8 @@ public static class DependencyInjection
         services.AddScoped<IEditUserDataCommandHandler, EditUserDataCommandHandler>();
         services.AddScoped<IGetAllUsersQueryHandler, GetAllUsersQueryHandler>();
         services.AddScoped<IGetUserByIdQueryHandler, GetUserByIdQueryHandler>();
+        services.AddScoped<IGetAllProductsQueryHandler, GetAllProductsQueryHandler>();
+        services.AddScoped<ICreateProductCommandHandler, CreateProductCommandHandler>();
 
         return services;
     }

@@ -3,7 +3,7 @@ import { useAppSelector } from "./hooks/redux/use-app-selector";
 import Users from "../pages/users/users";
 import NotFound from "../pages/not-found/not-found";
 import AccountRoutes from "../pages/account/account";
-import Goods from "../pages/goods";
+import ProductRouter from "../pages/products";
 import Cart from "../pages/cart";
 import Purchases from "../pages/purchases";
 
@@ -22,7 +22,7 @@ export default function ProtectedRoutes() {
 		return (
 			<Routes>
 				<Route path="/users/*" element={<Users />} />
-				<Route path="/goods/*" element={<Goods />} />
+				<Route path="/products/*" element={<ProductRouter />} />
 				<Route path="/purchases/*" element={<Purchases />} />
 				<Route path="/cart/*" element={<Cart />} />
 				<Route path="*" element={<NotFound />} />

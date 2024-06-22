@@ -1,7 +1,6 @@
 ﻿using ErrorOr;
 using Flags.Application.AppSettings;
-using Flags.Application.Common.Interfaces.Persistance;
-using Flags.Application.Common.Interfaces.Services.Images;
+using Flags.Application.Common.Persistance;
 using Flags.Application.Images.Commands;
 using Microsoft.Extensions.Options;
 

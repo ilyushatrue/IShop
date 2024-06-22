@@ -44,64 +44,36 @@ namespace Flags.Infrastructure.Migrations
                     b.ToTable("media", (string)null);
                 });
 
-            modelBuilder.Entity("Flags.Domain.UserEntity.User", b =>
+            modelBuilder.Entity("Flags.Domain.ProductRoot.Product", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("TEXT")
                         .HasColumnName("id");
 
-                    b.Property<Guid?>("AvatarId")
+                    b.Property<string>("Description")
                         .HasColumnType("TEXT")
-                        .HasColumnName("avatar_id");
+                        .HasColumnName("description");
 
-                    b.Property<string>("FirstName")
+                    b.Property<Guid>("ImageId")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("image_id");
+
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("TEXT")
-                        .HasColumnName("first_name");
+                        .HasColumnName("name");
 
-                    b.Property<string>("LastName")
-                        .IsRequired()
+                    b.Property<decimal>("Price")
                         .HasColumnType("TEXT")
-                        .HasColumnName("last_name");
-
-                    b.ComplexProperty<Dictionary<string, object>>("Email", "Flags.Domain.UserEntity.User.Email#Email", b1 =>
-                        {
-                            b1.IsRequired();
-
-                            b1.Property<string>("Value")
-                                .IsRequired()
-                                .HasColumnType("TEXT")
-                                .HasColumnName("email");
-                        });
-
-                    b.ComplexProperty<Dictionary<string, object>>("Password", "Flags.Domain.UserEntity.User.Password#Password", b1 =>
-                        {
-                            b1.IsRequired();
-
-                            b1.Property<string>("Value")
-                                .IsRequired()
-                                .HasColumnType("TEXT")
-                                .HasColumnName("password");
-                        });
-
-                    b.ComplexProperty<Dictionary<string, object>>("Phone", "Flags.Domain.UserEntity.User.Phone#Phone", b1 =>
-                        {
-                            b1.IsRequired();
-
-                            b1.Property<string>("Value")
-                                .IsRequired()
-                                .HasColumnType("TEXT")
-                                .HasColumnName("phone");
-                        });
+                        .HasColumnName("price");
 
                     b.HasKey("Id")
-                        .HasName("pk_users");
+                        .HasName("pk_products");
 
-                    b.HasIndex("AvatarId")
-                        .IsUnique()
-                        .HasDatabaseName("ix_users_avatar_id");
+                    b.HasIndex("ImageId")
+                        .HasDatabaseName("ix_products_image_id");
 
-                    b.ToTable("users", (string)null);
+                    b.ToTable("products", (string)null);
                 });
 
             modelBuilder.Entity("Flags.Domain.UserRoot.Entities.Permission", b =>
@@ -231,19 +203,81 @@ namespace Flags.Infrastructure.Migrations
                     b.ToTable("user_roles", (string)null);
                 });
 
-            modelBuilder.Entity("Flags.Domain.UserEntity.User", b =>
+            modelBuilder.Entity("Flags.Domain.UserRoot.User", b =>
                 {
-                    b.HasOne("Flags.Domain.MediaEntity.Media", "Avatar")
-                        .WithOne("User")
-                        .HasForeignKey("Flags.Domain.UserEntity.User", "AvatarId")
-                        .HasConstraintName("fk_users_media_avatar_id");
+                    b.Property<Guid>("Id")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("id");
 
-                    b.Navigation("Avatar");
+                    b.Property<Guid?>("AvatarId")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("avatar_id");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("TEXT")
+                        .HasColumnName("first_name");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("TEXT")
+                        .HasColumnName("last_name");
+
+                    b.ComplexProperty<Dictionary<string, object>>("Email", "Flags.Domain.UserRoot.User.Email#Email", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasColumnType("TEXT")
+                                .HasColumnName("email");
+                        });
+
+                    b.ComplexProperty<Dictionary<string, object>>("Password", "Flags.Domain.UserRoot.User.Password#Password", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasColumnType("TEXT")
+                                .HasColumnName("password");
+                        });
+
+                    b.ComplexProperty<Dictionary<string, object>>("Phone", "Flags.Domain.UserRoot.User.Phone#Phone", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasColumnType("TEXT")
+                                .HasColumnName("phone");
+                        });
+
+                    b.HasKey("Id")
+                        .HasName("pk_users");
+
+                    b.HasIndex("AvatarId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_users_avatar_id");
+
+                    b.ToTable("users", (string)null);
+                });
+
+            modelBuilder.Entity("Flags.Domain.ProductRoot.Product", b =>
+                {
+                    b.HasOne("Flags.Domain.MediaEntity.Media", "Image")
+                        .WithMany()
+                        .HasForeignKey("ImageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_products_media_image_id");
+
+                    b.Navigation("Image");
                 });
 
             modelBuilder.Entity("Flags.Domain.UserRoot.Entities.RefreshJwt", b =>
                 {
-                    b.HasOne("Flags.Domain.UserEntity.User", "User")
+                    b.HasOne("Flags.Domain.UserRoot.User", "User")
                         .WithOne("RefreshJwt")
                         .HasForeignKey("Flags.Domain.UserRoot.Entities.RefreshJwt", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -279,7 +313,7 @@ namespace Flags.Infrastructure.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_user_roles_roles_role_id");
 
-                    b.HasOne("Flags.Domain.UserEntity.User", "User")
+                    b.HasOne("Flags.Domain.UserRoot.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -291,12 +325,22 @@ namespace Flags.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Flags.Domain.UserRoot.User", b =>
+                {
+                    b.HasOne("Flags.Domain.MediaEntity.Media", "Avatar")
+                        .WithOne("User")
+                        .HasForeignKey("Flags.Domain.UserRoot.User", "AvatarId")
+                        .HasConstraintName("fk_users_media_avatar_id");
+
+                    b.Navigation("Avatar");
+                });
+
             modelBuilder.Entity("Flags.Domain.MediaEntity.Media", b =>
                 {
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Flags.Domain.UserEntity.User", b =>
+            modelBuilder.Entity("Flags.Domain.UserRoot.User", b =>
                 {
                     b.Navigation("RefreshJwt");
                 });

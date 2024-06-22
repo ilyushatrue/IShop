@@ -1,6 +1,6 @@
 using ErrorOr;
-using Flags.Application.Common.Interfaces.Services.Users;
 using Flags.Application.Users.Command;
+using Flags.Application.Users.Queries;
 using Flags.Contracts.Authentication;
 using Flags.Domain.Common.Errors;
 using Flags.Infrastructure.Authentication;
@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Flags.Api.Controllers;
-
 
 [Route("users")]
 [Authorize(Policy = CustomPolicies.ADMIN_POLICY)]

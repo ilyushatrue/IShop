@@ -1,11 +1,9 @@
 using ErrorOr;
-using Flags.Application.Common.Interfaces.Authentication;
-using Flags.Application.Common.Interfaces.Persistance;
 using Flags.Application.Authentication.Common;
-using Flags.Application.Common.Interfaces.Services.Auth;
 using Flags.Domain.UserRoot.ValueObjects;
 using Flags.Domain.UserRoot;
-using Flags.Application.Authentication.Commands;
+using Flags.Application.Authentication.Commands.Register;
+using Flags.Application.Common.Persistance;
 
 namespace Flags.Infrastructure.Services.Auth;
 

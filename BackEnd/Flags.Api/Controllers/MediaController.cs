@@ -1,4 +1,5 @@
-﻿using Flags.Application.Common.Interfaces.Services.Images;
+﻿using Flags.Application.Images.Commands;
+using Flags.Application.Images.Queries;
 using MapsterMapper;
 using Microsoft.AspNetCore.Mvc;
 

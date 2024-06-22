@@ -1,9 +1,8 @@
 using ErrorOr;
+using Flags.Application.Authentication.Commands.Login;
 using Flags.Application.Authentication.Common;
 using Flags.Application.Authentication.Queries;
-using Flags.Application.Common.Interfaces.Authentication;
-using Flags.Application.Common.Interfaces.Persistance;
-using Flags.Application.Common.Interfaces.Services.Auth;
+using Flags.Application.Common.Persistance;
 using Flags.Domain.Common.Errors;
 using Flags.Domain.UserRoot.ValueObjects;
 

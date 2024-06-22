@@ -1,11 +1,11 @@
-﻿using Flags.Application.Common.Interfaces.Authentication;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Flags.Application.Common.Interfaces.Services;
 using Microsoft.Extensions.Options;
 using Flags.Domain.UserRoot;
+using Flags.Application.Authentication.Common;
+using Flags.Application.Common;
 namespace Flags.Infrastructure.Authentication;
 public class JwtTokenGenerator(
     IOptions<JwtSettings> jwtOptions,
