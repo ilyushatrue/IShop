@@ -1,6 +1,10 @@
 import Products from "./products";
 import { IProduct } from "../../api/interfaces/product/product.interface";
 import Page from "../../components/page";
+import useApi from "../../api/hooks/use-api.hook";
+import { useEffect, useState } from "react";
+import productsApi from "../../api/products.api";
+import { useNavigate } from "react-router-dom";
 
 const myProducts: IProduct[] = [
 	{
@@ -72,9 +76,27 @@ const myProducts: IProduct[] = [
 ];
 
 export default function Shop() {
+	const { fetchAsync, isFetching } = useApi();
+	const navigate = useNavigate();
+	const [products, setProducts] = useState<IProduct[]>();
+
+	useEffect(() => {
+		fetchAsync({
+			request: productsApi.getAllAsync,
+			onSuccess: (handler) =>
+				handler.do((res) => setProducts(res.body?.value)),
+			onError: (handler) => handler.do(() => navigate("/not-found")),
+		});
+	}, []);
+
+	if (!products) return null;
+
 	return (
-		<Page isLoading={false} sx={{mt:2, bgcolor:"white", borderRadius: "24px", padding: 2}}>
-			<Products products={myProducts} />
+		<Page
+			isLoading={isFetching}
+			sx={{ mt: 2, bgcolor: "white", borderRadius: "24px", padding: 2 }}
+		>
+			<Products products={products!} />
 		</Page>
 	);
 }

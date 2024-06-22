@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 export default function ProductMenu() {
 	const { fetchAsync, isFetching } = useApi();
 	const [products, setProducts] = useState<IProduct[]>();
-	const navigate = useNavigate()
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		fetchAsync({
@@ -25,10 +25,13 @@ export default function ProductMenu() {
 	return (
 		<ProfilePage>
 			<Box>Добавить товар</Box>
-			<IconButton iconName="add" onClick={()=>navigate("/products/add")}/>
+			<IconButton
+				iconName="add"
+				onClick={() => navigate("/products/add")}
+			/>
 			<Box>
-				{products?.map((product) => (
-					<Box>{product.name}</Box>
+				{products?.map((product, index) => (
+					<Box key={index}>{product.name}</Box>
 				))}
 			</Box>
 		</ProfilePage>

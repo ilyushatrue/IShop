@@ -4,7 +4,7 @@ const getConstant = (name: TConstant): any => {
 		case "API_URL":
 			return process.env.REACT_APP_API_URL;
 		case "IMAGES_PATH":
-			return "./assets/images";
+			return "/assets/images";
 	}
 };
 export default getConstant;

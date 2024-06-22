@@ -7,22 +7,22 @@ public class Product : AggregateRoot<Guid>
     private Product() : base(new Guid()) { }
     private Product(Guid id) : base(id) { }
 
-    private Product(Guid id, string name, decimal price, Guid imageId) : this(id)
+    private Product(Guid id, string name, decimal price, Guid imageId, string? description) : this(id)
     {
         Name = name;
         Price = price;
         ImageId = imageId;
+        Description = description;
     }
-    public static Product Create(Guid id, string name, decimal price, Guid imageId)
+    public static Product Create(Guid id, string name, decimal price, Guid imageId, string? description)
     {
-        return new Product(id, name, price, imageId);
+        return new Product(id, name, price, imageId, description);
     }
 
+    public string Name { get; private set; } = null!;
+    public string? Description { get; private set; }
+    public decimal Price { get; private set; }
+    public Guid ImageId { get; private set; }
 
-    public string Name { get; } = null!;
-    public string? Description { get; } = null!;
-    public decimal Price { get; }
-    public Guid ImageId { get; }
-
-    public Media? Image { get; }
+    public Media? Image { get; private set; }
 }

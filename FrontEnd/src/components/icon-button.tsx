@@ -8,6 +8,7 @@ interface IProps {
 	onClick: MouseEventHandler<HTMLAnchorElement>;
 	iconSx?: SxProps;
 	buttonSx?: SxProps;
+	centered?: boolean;
 	caption?: string;
 	orientation?: "vertical" | "horizontal";
 	variant?: "rounded" | "squared" | "circled";
@@ -23,6 +24,7 @@ export default function IconButton({
 	buttonSx,
 	orientation = "horizontal",
 	variant = "rounded",
+	centered,
 	fullwidth,
 	fontSize = "medium",
 }: IProps) {
@@ -36,8 +38,8 @@ export default function IconButton({
 				sx={{
 					...buttonSx,
 					display: "flex",
-					justifyContent:"start",
-					paddingX:2,
+					justifyContent: "start",
+					paddingX: 2,
 					typography: {
 						textTransform: "none",
 						fontWeight: 500,
@@ -55,6 +57,8 @@ export default function IconButton({
 				<Box
 					display={"flex"}
 					alignItems={"center"}
+					justifyContent={centered ? "center" : undefined}
+					width={"100%"}
 					columnGap={1}
 					flexDirection={
 						orientation === "horizontal" ? "row" : "column"
@@ -62,10 +66,10 @@ export default function IconButton({
 				>
 					<Icon
 						name={iconName}
-						sx={{ ...iconSx, color: "black",  }}
+						sx={{ ...iconSx, color: "black" }}
 						fontSize={fontSize}
 					/>
-					<Box color={"black"}>{caption}</Box>
+					{caption && <Box color={"black"}>{caption}</Box>}
 				</Box>
 			</Button>
 		</Tooltip>

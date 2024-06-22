@@ -38,7 +38,12 @@ export type TFormBuilderRef<T extends FieldValues> = {
 	passwordConfirm: (
 		props: IFormField<T> & { password: Path<T> }
 	) => TFormBuilderRef<T>;
-	image: (props: IFormField<T> & { id?: string }) => TFormBuilderRef<T>;
+	image: (
+		props: IFormField<T> & {
+			id?: string;
+			shape?: "circled" | "rounded" | "squared";
+		}
+	) => TFormBuilderRef<T>;
 	phone: (props: IFormField<T>) => TFormBuilderRef<T>;
 };
 
@@ -126,7 +131,12 @@ function FormBuilder<T extends FieldValues>(
 				);
 				return inputBuilder;
 			},
-			image: (props: IFormField<T> & { id?: string }) => {
+			image: (
+				props: IFormField<T> & {
+					id?: string;
+					shape?: "circled" | "rounded" | "squared";
+				}
+			) => {
 				addInput(
 					props.name,
 					<InputImage<T>
