@@ -1,6 +1,7 @@
 ﻿using Flags.Application.Images.Commands;
 using Flags.Application.Images.Queries;
 using MapsterMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Flags.Api.Controllers;
@@ -19,6 +20,7 @@ public class MediaController(
         return result.Match(response => Ok(result), Problem);
     }
 
+    [AllowAnonymous]
     [HttpGet("image/{id}")]
     public async Task<IActionResult> GetImageById(Guid id, CancellationToken cancellationToken)
     {

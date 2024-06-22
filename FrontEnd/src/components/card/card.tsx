@@ -1,18 +1,18 @@
 import { ReactNode } from "react";
+import IconButton, { IIconButton } from "../icon-button";
 
 interface IProps {
 	src: string;
 	children: ReactNode;
+	height: number | string;
+	actions: IIconButton[];
 }
-export default function Card({ children, src }: IProps) {
+export default function Card({ children, src, height, actions }: IProps) {
 	return (
 		<div
 			style={{
-				height: "220px",
-				backgroundColor: "white",
-				borderRadius: 20,
-				overflow: "hidden",
-				boxShadow: "0px 0px 10px rgba(0,0,0,0.1)",
+				height: height,
+				width: 250,
 			}}
 		>
 			<div
@@ -20,10 +20,12 @@ export default function Card({ children, src }: IProps) {
 					display: "flex",
 					alignItems: "center",
 					justifyContent: "center",
-					minWidth: "180px",
-					height: "180px",
-					backgroundColor: "white",
+					position: "relative",
+					width: 250,
+					height: 250,
+					borderRadius: 20,
 					overflow: "hidden",
+					boxShadow: "0px 0px 10px rgba(0,0,0,0.1)",
 				}}
 			>
 				<img
@@ -36,6 +38,18 @@ export default function Card({ children, src }: IProps) {
 						maxWidth: "100%",
 					}}
 				/>
+				<div
+					style={{
+						position: "absolute",
+						display: "flex",
+						top: 6,
+						right: 6,
+					}}
+				>
+					{actions.map((action) => (
+						<IconButton {...action} />
+					))}
+				</div>
 			</div>
 			<div style={{ padding: "0px 12px 12px 12px" }}>{children}</div>
 		</div>

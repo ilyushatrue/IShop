@@ -83,6 +83,8 @@ public static class DependencyInjection
         services.AddScoped<IGetUserByIdQueryHandler, GetUserByIdQueryHandler>();
         services.AddScoped<IGetAllProductsQueryHandler, GetAllProductsQueryHandler>();
         services.AddScoped<ICreateProductCommandHandler, CreateProductCommandHandler>();
+        services.AddScoped<IDeleteProductByIdCommandHandler, DeleteProductByIdCommandHandler>();
+        services.AddScoped<IUpdateProductCommandHandler, UpdateProductCommandHandler>();
 
         return services;
     }

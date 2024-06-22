@@ -13,8 +13,25 @@ public class ProductRepository(FlagDbContext dbContext) : IProductRepository
         return affected > 0;
     }
 
+    public async Task<bool> DeleteByIdAsync(Guid id)
+    {
+        var entity = await dbContext.Products.FirstOrDefaultAsync(p => p.Id == id);
+        if (entity is not null)
+        {
+            dbContext.Products.Remove(entity);
+        }
+        return true;
+    }
+
     public async Task<List<Product>> GetAllAsync()
     {
         return await dbContext.Products.ToListAsync();
+    }
+
+    public async Task<bool> UpdateAsync(Product product)
+    {
+        dbContext.Update(product);
+        await dbContext.SaveChangesAsync(); 
+        return true;
     }
 }

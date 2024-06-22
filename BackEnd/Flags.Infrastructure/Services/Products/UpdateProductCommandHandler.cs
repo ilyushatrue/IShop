@@ -1,0 +1,13 @@
+﻿using ErrorOr;
+using Flags.Application.Common.Persistance;
+using Flags.Application.Products.Commands;
+using Flags.Domain.ProductRoot;
+
+namespace Flags.Infrastructure.Services.Products;
+public class UpdateProductCommandHandler(IProductRepository productRepository) : IUpdateProductCommandHandler
+{
+    public async Task<ErrorOr<bool>> Handle(Product product, CancellationToken cancellationToken)
+    {
+        return await productRepository.UpdateAsync(product);
+    }
+}

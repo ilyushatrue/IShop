@@ -2,7 +2,7 @@ import { MouseEventHandler } from "react";
 import Icon, { IIcon } from "./icon";
 import { Box, Button, SxProps, Tooltip, TooltipProps } from "@mui/material";
 
-interface IProps {
+export interface IIconButton {
 	iconName: IIcon["name"];
 	tip?: TooltipProps["title"];
 	onClick: MouseEventHandler<HTMLAnchorElement>;
@@ -13,7 +13,7 @@ interface IProps {
 	orientation?: "vertical" | "horizontal";
 	variant?: "rounded" | "squared" | "circled";
 	fullwidth?: boolean;
-	fontSize?: "inherit" | "large" | "medium" | "small";
+	fontSize?: number;
 }
 export default function IconButton({
 	tip,
@@ -26,20 +26,23 @@ export default function IconButton({
 	variant = "rounded",
 	centered,
 	fullwidth,
-	fontSize = "medium",
-}: IProps) {
+	fontSize = 26,
+}: IIconButton) {
+	const isCircled = variant === "circled";
+	console.log(fontSize);
 	return (
 		<Tooltip title={tip}>
 			<Button
 				className="editIcon"
 				onClick={onClick}
 				href=""
-				fullWidth={fullwidth}
+				fullWidth={fullwidth && !isCircled}
 				sx={{
 					...buttonSx,
+					
 					display: "flex",
-					justifyContent: "start",
-					paddingX: 2,
+					minWidth: fontSize,
+					justifyContent: centered? "center" :"start",
 					typography: {
 						textTransform: "none",
 						fontWeight: 500,
@@ -47,18 +50,19 @@ export default function IconButton({
 					borderRadius:
 						variant === "rounded"
 							? "16px"
-							: variant === "circled"
+							: isCircled
 							? "50%"
 							: variant === "squared"
 							? "0"
 							: 0,
+					width: isCircled ? `calc(${fontSize}px + 8px)` : undefined, // fixed width for circular button
+					height: isCircled ? `calc(${fontSize}px + 8px)` : undefined, // fixed height for circular button
 				}}
 			>
 				<Box
 					display={"flex"}
 					alignItems={"center"}
 					justifyContent={centered ? "center" : undefined}
-					width={"100%"}
 					columnGap={1}
 					flexDirection={
 						orientation === "horizontal" ? "row" : "column"

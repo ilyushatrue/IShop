@@ -1,7 +1,7 @@
 import NavTabs from "./tabs/nav-tabs";
-import { Box, Button, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import NavAvatar, { IAvatar } from "./nav-avatar";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../app/hooks/redux/use-app-selector";
 import IconButton from "../icon-button";
 import Icon from "../icon";
@@ -28,6 +28,7 @@ export default function NavTopBar({ menuItems, avatar, value }: IProps) {
 			top={0}
 			left={0}
 			right={0}
+			zIndex={1}
 			display={"flex"}
 			alignItems={"start"}
 			justifyContent={"center"}
@@ -60,8 +61,8 @@ export default function NavTopBar({ menuItems, avatar, value }: IProps) {
 							caption="Заказы"
 							iconName="local_shipping"
 							iconSx={{ color: "black" }}
-							onClick={()=>navigate("/purchases")}
-							fontSize="large"
+							onClick={() => navigate("/purchases")}
+							fontSize={26}
 						/>
 						<IconButton
 							orientation="vertical"
@@ -69,7 +70,7 @@ export default function NavTopBar({ menuItems, avatar, value }: IProps) {
 							iconName="favorite_border"
 							iconSx={{ color: "black" }}
 							onClick={() => navigate("/goods")}
-							fontSize="large"
+							fontSize={26}
 						/>
 						<IconButton
 							orientation="vertical"
@@ -77,7 +78,7 @@ export default function NavTopBar({ menuItems, avatar, value }: IProps) {
 							iconName="shopping_bag"
 							iconSx={{ color: "black" }}
 							onClick={() => navigate("/cart")}
-							fontSize="large"
+							fontSize={26}
 						/>
 						{/* <Box
 							display={"flex"}

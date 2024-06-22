@@ -24,15 +24,17 @@ export default function ProductMenu() {
 	if (!products || isFetching) return null;
 	return (
 		<ProfilePage>
-			<Box>Добавить товар</Box>
-			<IconButton
-				iconName="add"
-				onClick={() => navigate("/products/add")}
-			/>
-			<Box>
-				{products?.map((product, index) => (
-					<Box key={index}>{product.name}</Box>
-				))}
+			<Box display={"flex"}>
+				<Box>Добавить товар</Box>
+				<IconButton
+					iconName="add"
+					onClick={() => navigate("/products/add")}
+				/>
+				<Box>
+					{products?.map((product, index) => (
+						<Box key={index}>{product.name}</Box>
+					))}
+				</Box>
 			</Box>
 		</ProfilePage>
 	);

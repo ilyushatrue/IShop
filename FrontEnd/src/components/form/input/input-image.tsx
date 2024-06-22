@@ -25,7 +25,7 @@ export default function InputImage<T extends FieldValues>({
 	control,
 	name,
 	id,
-	label = "skldjfal;k",
+	label = "Изображение",
 	size = "medium",
 	variant = "filled",
 	margin = "dense",
@@ -148,7 +148,7 @@ export default function InputImage<T extends FieldValues>({
 									transition: "opacity 0.3s",
 								}}
 								centered
-								fontSize="large"
+								fontSize={28}
 								iconName="edit"
 								onClick={handleIconClick}
 								tip="Edit Avatar"
@@ -167,7 +167,7 @@ export default function InputImage<T extends FieldValues>({
 									opacity: 1,
 								}}
 								centered
-								fontSize="large"
+								fontSize={28}
 								iconName="add"
 								onClick={handleIconClick}
 								tip="Edit Avatar"

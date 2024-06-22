@@ -12,6 +12,7 @@ export default function LoginByEmailForm({ onSubmitAsync }: IProps) {
 			}}
 			minHeight={210}
 			onSubmitAsync={onSubmitAsync}
+			submitButtonText="Войти"
 			fields={(builder) =>
 				builder
 					.email({ name: "email", required: true })

@@ -18,6 +18,10 @@ export default function UserForm({
 			onSubmitAsync={onSubmitAsync}
 			fields={(builder) =>
 				builder
+					.image({
+						name:"avatarId",
+						shape:"circled"
+					})
 					.text({
 						name: "firstName",
 						label: "Имя",
