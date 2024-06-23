@@ -23,6 +23,7 @@ import { IFormField } from "./input/form-field.interface";
 import { Button, CircularProgress } from "@mui/material";
 import InputPasswordConfirm from "./input/input-password-confirm";
 import InputImage from "./input/input-image";
+import InputNumber from "./input/input-number";
 
 const formStyles: CSSProperties = {
 	display: "flex",
@@ -34,6 +35,9 @@ const formStyles: CSSProperties = {
 export type TFormBuilderRef<T extends FieldValues> = {
 	email: (props: IFormField<T>) => TFormBuilderRef<T>;
 	text: (props: IFormField<T>) => TFormBuilderRef<T>;
+	number: (
+		props: IFormField<T> & { min?: number; max?: number }
+	) => TFormBuilderRef<T>;
 	password: (props: IFormField<T>) => TFormBuilderRef<T>;
 	passwordConfirm: (
 		props: IFormField<T> & { password: Path<T> }
@@ -133,6 +137,13 @@ function FormBuilder<T extends FieldValues>(
 				addInput(
 					props.name,
 					<InputText<T> {...props} control={control} />
+				);
+				return inputBuilder;
+			},
+			number: (props) => {
+				addInput(
+					props.name,
+					<InputNumber<T> {...props} control={control} />
 				);
 				return inputBuilder;
 			},

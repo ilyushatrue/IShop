@@ -44,11 +44,33 @@ namespace Flags.Infrastructure.Migrations
                     b.ToTable("media", (string)null);
                 });
 
+            modelBuilder.Entity("Flags.Domain.ProductRoot.Entities.ProductCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT")
+                        .HasColumnName("name");
+
+                    b.HasKey("Id")
+                        .HasName("pk_product_categories");
+
+                    b.ToTable("product_categories", (string)null);
+                });
+
             modelBuilder.Entity("Flags.Domain.ProductRoot.Product", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("TEXT")
                         .HasColumnName("id");
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("category_id");
 
                     b.Property<string>("Description")
                         .HasColumnType("TEXT")
@@ -69,6 +91,9 @@ namespace Flags.Infrastructure.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_products");
+
+                    b.HasIndex("CategoryId")
+                        .HasDatabaseName("ix_products_category_id");
 
                     b.HasIndex("ImageId")
                         .HasDatabaseName("ix_products_image_id");
@@ -265,12 +290,21 @@ namespace Flags.Infrastructure.Migrations
 
             modelBuilder.Entity("Flags.Domain.ProductRoot.Product", b =>
                 {
+                    b.HasOne("Flags.Domain.ProductRoot.Entities.ProductCategory", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_products_product_categories_category_id");
+
                     b.HasOne("Flags.Domain.MediaEntity.Media", "Image")
                         .WithMany()
                         .HasForeignKey("ImageId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_products_media_image_id");
+
+                    b.Navigation("Category");
 
                     b.Navigation("Image");
                 });

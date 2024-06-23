@@ -11,8 +11,11 @@ export default function ProductAdd() {
 	async function handleSubmitAsync(values: IProduct) {
 		await fetchAsync({
 			request: async () => await productsApi.createAsync(values),
-			onSuccess: handler => handler.popup("Новый товар добавлен.").do(()=> navigate("/products/menu")),
-			onError: handler => handler.log().popup()
+			onSuccess: (handler) =>
+				handler
+					.popup("Новый товар добавлен.")
+					.do(() => navigate("/products/menu")),
+			onError: (handler) => handler.log().popup(),
 		});
 	}
 
@@ -41,6 +44,12 @@ export default function ProductAdd() {
 							name: "description",
 							label: "Описание",
 							required: true,
+						})
+						.number({
+							name: "price",
+							label: "Цена",
+							required: true,
+							min: 0,
 						})
 				}
 				minHeight={500}
