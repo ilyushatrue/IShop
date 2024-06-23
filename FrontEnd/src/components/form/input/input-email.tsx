@@ -27,6 +27,7 @@ export default function InputEmail<T extends FieldValues>({
 }: IFormBuilderField<T>) {
 	return (
 		<Controller
+			key={name}
 			control={control}
 			name={name}
 			rules={getValidateOptions(required)}

@@ -46,8 +46,8 @@ export default function Card({ children, src, height, actions }: IProps) {
 						right: 6,
 					}}
 				>
-					{actions.map((action) => (
-						<IconButton {...action} />
+					{actions.map((action, index) => (
+						<IconButton key={index} {...action} />
 					))}
 				</div>
 			</div>

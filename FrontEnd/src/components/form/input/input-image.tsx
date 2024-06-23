@@ -67,6 +67,7 @@ export default function InputImage<T extends FieldValues>({
 	}
 	return (
 		<Controller
+			key={name}
 			control={control}
 			name={name}
 			rules={{

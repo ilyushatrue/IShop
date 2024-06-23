@@ -98,6 +98,21 @@ const post = async ({ url, body, props }: TPost): Promise<Response> => {
 	return await fetch(fullUrl, requestInit || defaultRequestInit);
 };
 
+const remove = async ({ url, body, props }: TPost): Promise<Response> => {
+	const fullUrl = getConstant("API_URL") + url;
+	const defaultRequestInit: RequestInit = {
+		method: "DELETE",
+		body: JSON.stringify(body),
+		credentials: "include",
+		headers: {
+			"Content-Type": "application/json",
+		},
+	};
+	const requestInit = props?.(defaultRequestInit);
+
+	return await fetch(fullUrl, requestInit || defaultRequestInit);
+};
+
 const put = async ({ url, body, props }: TPost): Promise<Response> => {
 	console.log(body);
 	const fullUrl = getConstant("API_URL") + url;
@@ -136,6 +151,18 @@ const api = {
 		await fetchPipe({
 			request: async () =>
 				await post({ url, body, expectedOutput, props }),
+			expectedOutput: expectedOutput,
+		}),
+
+	deleteAsync: async <TOut = undefined>({
+		url,
+		body,
+		expectedOutput = "none",
+		props,
+	}: TPost): Promise<ApiResponse<TOut | undefined>> =>
+		await fetchPipe({
+			request: async () =>
+				await remove({ url, body, expectedOutput, props }),
 			expectedOutput: expectedOutput,
 		}),
 

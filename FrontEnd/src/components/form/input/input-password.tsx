@@ -54,6 +54,7 @@ export default function InputPassword<T extends FieldValues>({
 	};
 	return (
 		<Controller
+			key={name}
 			control={control}
 			name={name}
 			rules={getValidateOptions(required)}

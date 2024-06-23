@@ -97,75 +97,49 @@ function FormBuilder<T extends FieldValues>(
 
 	const inputBuilder: TFormBuilderRef<T> = useMemo<TFormBuilderRef<T>>(
 		() => ({
-			email: (props: IFormField<T>) => {
+			email: (props) => {
 				addInput(
 					props.name,
-					<InputEmail<T>
-						{...props}
-						control={control}
-						key={props.name}
-					/>
+					<InputEmail<T> {...props} control={control} />
 				);
 				return inputBuilder;
 			},
-			password: (props: IFormField<T>) => {
+			password: (props) => {
 				addInput(
 					props.name,
-					<InputPassword<T>
-						{...props}
-						control={control}
-						key={props.name}
-					/>
+					<InputPassword<T> {...props} control={control} />
 				);
 				return inputBuilder;
 			},
-			passwordConfirm: (props: IFormField<T> & { password: Path<T> }) => {
+			passwordConfirm: ({ password, ...props }) => {
 				addInput(
 					props.name,
 					<InputPasswordConfirm<T>
 						{...props}
 						control={control}
-						key={props.name}
-						onChange={() => watch(props.password)}
+						onChange={() => watch(password)}
 					/>
 				);
 				return inputBuilder;
 			},
-			image: (
-				props: IFormField<T> & {
-					id?: string;
-					shape?: "circled" | "rounded" | "squared";
-				}
-			) => {
+			image: (props) => {
 				addInput(
 					props.name,
-					<InputImage<T>
-						{...props}
-						control={control}
-						key={props.name}
-					/>
+					<InputImage<T> {...props} control={control} />
 				);
 				return inputBuilder;
 			},
-			text: (props: IFormField<T>) => {
+			text: (props) => {
 				addInput(
 					props.name,
-					<InputText<T>
-						{...props}
-						control={control}
-						key={props.name}
-					/>
+					<InputText<T> {...props} control={control} />
 				);
 				return inputBuilder;
 			},
-			phone: (props: IFormField<T>) => {
+			phone: (props) => {
 				addInput(
 					props.name,
-					<InputPhone<T>
-						{...props}
-						control={control}
-						key={props.name}
-					/>
+					<InputPhone<T> {...props} control={control} />
 				);
 				return inputBuilder;
 			},
@@ -185,7 +159,10 @@ function FormBuilder<T extends FieldValues>(
 			}}
 		>
 			{inputs.map((input) =>
-				cloneElement(input, { disabled: isLoading })
+				cloneElement(input, {
+					key: input.props.name,
+					disabled: isLoading,
+				})
 			)}
 			<Button
 				type="submit"
@@ -200,5 +177,5 @@ function FormBuilder<T extends FieldValues>(
 }
 
 export default forwardRef(FormBuilder) as <T extends FieldValues>(
-	props: IForm<T> & { ref?: Ref<TFormBuilderRef<T>> }
+	props: IForm<T> & { ref: Ref<TFormBuilderRef<T>> }
 ) => ReactElement;

@@ -33,7 +33,7 @@ public class ProductController(
             errors => Problem(errors));
     }
 
-    [HttpDelete]
+    [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteProductAsync(Guid id, CancellationToken cancellationToken)
     {
         var result = await deleteProductByIdCommandHandler.Handle(id, cancellationToken);

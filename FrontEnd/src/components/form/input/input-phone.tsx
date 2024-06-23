@@ -41,10 +41,11 @@ export default function InputPhone<T extends FieldValues>({
 	margin = "dense",
 	required = true,
 	disabled,
-	readonly
+	readonly,
 }: IFormBuilderField<T>) {
 	return (
 		<Controller
+			key={name}
 			control={control}
 			name={name}
 			rules={getValidateOptions(required)}
@@ -62,7 +63,7 @@ export default function InputPhone<T extends FieldValues>({
 					helperText={error && error.message}
 					disabled={disabled}
 					InputProps={{
-						readOnly: readonly ,
+						readOnly: readonly,
 						inputComponent: TextMaskCustom as any,
 						inputProps: {
 							mask: [

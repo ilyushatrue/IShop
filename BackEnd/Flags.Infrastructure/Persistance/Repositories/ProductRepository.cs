@@ -19,6 +19,7 @@ public class ProductRepository(FlagDbContext dbContext) : IProductRepository
         if (entity is not null)
         {
             dbContext.Products.Remove(entity);
+            await dbContext.SaveChangesAsync();
         }
         return true;
     }
@@ -31,7 +32,7 @@ public class ProductRepository(FlagDbContext dbContext) : IProductRepository
     public async Task<bool> UpdateAsync(Product product)
     {
         dbContext.Update(product);
-        await dbContext.SaveChangesAsync(); 
+        await dbContext.SaveChangesAsync();
         return true;
     }
 }

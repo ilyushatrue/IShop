@@ -15,6 +15,7 @@ export default function InputText<T extends FieldValues>({
 }: IFormBuilderField<T>) {
 	return (
 		<Controller
+			key={name}
 			control={control}
 			name={name}
 			rules={{
