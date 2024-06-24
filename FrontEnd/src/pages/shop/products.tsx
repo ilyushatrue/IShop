@@ -37,7 +37,7 @@ export default function Products({ products, ...props }: IProps) {
 		}
 		return actions;
 	}, [isAuth]);
-
+	console.log(products)
 	return (
 		<Box {...props} display={"flex"} justifyContent={"center"}>
 			<Grid container rowSpacing={4} width={"100%"} height={"100%"}>

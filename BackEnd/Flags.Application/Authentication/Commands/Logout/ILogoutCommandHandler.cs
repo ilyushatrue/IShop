@@ -3,5 +3,5 @@
 namespace Flags.Application.Authentication.Commands.Logout;
 public interface ILogoutCommandHandler
 {
-    Task<ErrorOr<bool>> Handle(LogoutCommand command, CancellationToken cancellationToken);
+    Task<ErrorOr<bool>> Handle(Guid id, CancellationToken cancellationToken);
 }

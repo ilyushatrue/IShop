@@ -1,4 +1,5 @@
-﻿using Flags.Application.Authentication.Commands.Login;
+﻿using ErrorOr;
+using Flags.Application.Authentication.Commands.Login;
 using Flags.Application.Authentication.Commands.Logout;
 using Flags.Application.Authentication.Commands.RefreshJwt;
 using Flags.Application.Authentication.Commands.Register;
@@ -7,6 +8,7 @@ using Flags.Domain.Common.Errors;
 using Flags.Domain.UserRoot;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Flags.Api.Controllers;
 
@@ -46,47 +48,28 @@ public class AuthenticationController(
     {
         var phone = Request.Cookies["user-phone"];
 
-        if (phone is not null)
-        {
-            var command = new RefreshJwtCommand(phone);
-            var authResult = await refreshJwtCommandHandler.Handle(command, cancellationToken);
+        if (string.IsNullOrWhiteSpace(phone))
+            return Problem(statusCode: StatusCodes.Status401Unauthorized);
 
-            if (authResult.IsError)
-            {
-                return authResult.Match(
-                    authResult => Problem(statusCode: 401),
-                    errors => Problem(errors)
-                );
-            }
-            else
-            {
-                SetCookies(authResult.Value.User, authResult.Value.JwtAccessToken);
-
-                return authResult.Match(
-                    authResult => Ok(),
-                    errors => Problem(errors)
-                );
-            }
-        }
-        else
-        {
-            return Problem(statusCode: 401);
-        }
+        return await refreshJwtCommandHandler
+            .Handle(phone, cancellationToken)
+            .Then(value => SetCookies(value.User, value.JwtAccessToken))
+            .Match(
+                value => Ok(),
+                errors => Problem(errors));
     }
 
 
     [HttpPost("login-by-email")]
     public async Task<IActionResult> LoginByEmail(LoginByEmailQuery query, CancellationToken cancellationToken)
     {
-        var authResult = await loginByEmailQueryHandler.Handle(query, cancellationToken);
-
-        if (!authResult.IsError)
-            SetCookies(authResult.Value.User, authResult.Value.JwtAccessToken);
-
-        return authResult.Match(
-            authResult => Ok(),
-            errors => Problem(errors)
-        );
+        return await loginByEmailQueryHandler
+            .Handle(query, cancellationToken)
+            .Then(value => SetCookies(value.User, value.JwtAccessToken))
+            .Match(
+                authResult => Ok(),
+                errors => Problem(errors)
+            );
     }
 
     [HttpPost("logout")]
@@ -94,21 +77,21 @@ public class AuthenticationController(
     {
         var userId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "UserId")?.Value;
 
-        if (userId is not null)
-        {
-            var command = new LogoutCommand(Guid.Parse(userId));
-            var authResult = await logoutCommandHandler.Handle(command, cancellationToken);
-            if (!authResult.IsError) DeleteJwtAccessTokenCookie();
+        if (userId is null)
+            return Problem([Errors.Authentication.UserNotFound]);
 
-            return authResult.Match(
-                authResult => Ok(),
-                errors => Problem(errors)
-            );
-        }
-        else
+        var isIdParsed = Guid.TryParse(userId, out Guid id);
+        if (!isIdParsed)
         {
-            return Problem(statusCode: 401);
+            DeleteJwtAccessTokenCookie();
+            return Problem([Errors.Authentication.InvalidCredentials]);
         }
+        return await logoutCommandHandler
+            .Handle(id, cancellationToken)
+            .Then(value => DeleteJwtAccessTokenCookie())
+            .Match(
+                authResult => Ok(),
+                errors => Problem(errors));
     }
 
     [HttpPost("login-by-phone")]

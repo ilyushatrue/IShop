@@ -46,8 +46,9 @@ function Dialog({
 				<DialogContentText>{content}</DialogContentText>
 			</DialogContent>
 			<DialogActions>
-				{actions.map(({ icon, onClick, title }) => (
+				{actions.map(({ icon, onClick, title }, index) => (
 					<IconButton
+						key={index}
 						iconName={icon}
 						onClick={onClick}
 						caption={title}

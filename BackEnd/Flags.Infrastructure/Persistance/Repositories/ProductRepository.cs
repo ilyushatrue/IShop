@@ -26,7 +26,9 @@ public class ProductRepository(FlagDbContext dbContext) : IProductRepository
 
     public async Task<List<Product>> GetAllAsync()
     {
-        return await dbContext.Products.ToListAsync();
+        return await dbContext.Products
+            .Include(p => p.Category)
+            .ToListAsync();
     }
 
     public async Task<bool> UpdateAsync(Product product)

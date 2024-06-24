@@ -23,7 +23,7 @@ public class RegisterCommandHandler(
 
 
         var email = Email.Create(command.Email, existingEmails);
-        var phone = Phone.Create(command.Phone, existingPhones);
+        var phone = Phone.Create(command.Phone);
 
         var passwordHash = passwordHasher.Generate(command.Password);
         var password = Password.Create(passwordHash);

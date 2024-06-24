@@ -12,25 +12,26 @@ public class Phone
     }
 
     public string Value { get; private set; } = null!;
-    public static ErrorOr<Phone> Create(string input, string[] existingPhones)
+
+    public static ErrorOr<Phone> Create(string input)
     {
-        if (string.IsNullOrWhiteSpace(input))
+        var trimmedInput = Trim(input);
+        if (Validate(trimmedInput))
+            return new Phone(trimmedInput);
+        else
             return Errors.Authentication.InvalidCredentials;
-
-        var phone = DropSymbols(input);
-
-        if (phone.Length != 11)
-            return Errors.Authentication.InvalidCredentials;
-
-        if (existingPhones.Contains(phone))
-            return Errors.Authentication.InvalidCredentials;
-
-        return new Phone(phone);
     }
 
-    public static string DropSymbols(string phoneNumber)
+    public static string Trim(string phoneNumber) => 
+        Regex.Replace(phoneNumber, @"\D", "").Trim();
+
+
+    public static bool Validate(string phoneNumber)
     {
-        string digitsOnly = Regex.Replace(phoneNumber, @"\D", "").Trim();
-        return digitsOnly;
+        phoneNumber = Regex.Replace(phoneNumber, @"\D", "").Trim();
+        if (Regex.IsMatch(phoneNumber, "^7\\d{10}$"))
+            return true;
+        else
+            return false;
     }
 }

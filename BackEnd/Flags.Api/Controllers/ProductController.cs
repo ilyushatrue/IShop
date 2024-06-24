@@ -1,5 +1,8 @@
 ﻿using Flags.Application.Products.Commands;
 using Flags.Application.Products.Queries;
+using Flags.Contracts.Products;
+using Flags.Domain.ProductRoot;
+using MapsterMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,7 +13,8 @@ public class ProductController(
     IGetAllProductsQueryHandler getAllProductsQueryHandler,
     ICreateProductCommandHandler createProductCommandHandler,
     IDeleteProductByIdCommandHandler deleteProductByIdCommandHandler,
-    IUpdateProductCommandHandler updateProductCommandHandler) : ApiController
+    IUpdateProductCommandHandler updateProductCommandHandler,
+    IMapper mapper) : ApiController
 {
     [AllowAnonymous]
     [HttpGet]
@@ -19,7 +23,7 @@ public class ProductController(
         var result = await getAllProductsQueryHandler.Handle(cancellationToken);
 
         return result.Match(
-            ok => Ok(result),
+            value => Ok(mapper.Map<IEnumerable<ProductDto>>(value)),
             errors => Problem(errors));
     }
 
@@ -29,7 +33,7 @@ public class ProductController(
         var result = await createProductCommandHandler.Handle(command, cancellationToken);
 
         return result.Match(
-            ok => Ok(result),
+            ok => Ok(),
             errors => Problem(errors));
     }
 
@@ -39,17 +43,17 @@ public class ProductController(
         var result = await deleteProductByIdCommandHandler.Handle(id, cancellationToken);
 
         return result.Match(
-            ok => Ok(result),
+            ok => Ok(),
             errors => Problem(errors));
     }
 
     [HttpPut]
-    public async Task<IActionResult> UpdateProductAsync(CreateProductCommand command, CancellationToken cancellationToken)
+    public async Task<IActionResult> UpdateProductAsync(Product product, CancellationToken cancellationToken)
     {
-        var result = await createProductCommandHandler.Handle(command, cancellationToken);
+        var result = await updateProductCommandHandler.Handle(product, cancellationToken);
 
         return result.Match(
-            ok => Ok(result),
+            ok => Ok(),
             errors => Problem(errors));
     }
 }

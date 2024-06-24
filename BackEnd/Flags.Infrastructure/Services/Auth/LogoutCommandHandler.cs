@@ -9,17 +9,13 @@ public class LogoutCommandHandler(
     IRefreshJwtRepository userRefreshJwtRepository
 ) : ILogoutCommandHandler
 {
-    public async Task<ErrorOr<bool>> Handle(LogoutCommand command, CancellationToken cancellationToken)
+    public async Task<ErrorOr<bool>> Handle(Guid id, CancellationToken cancellationToken)
     {
-        var refreshJwt = await userRefreshJwtRepository.GetByIdAsync(command.UserId);
-        if (refreshJwt is not null)
-        {
-            var result = await userRefreshJwtRepository.DeleteAsync(refreshJwt);
-            return result > 0;
-        }
-        else
-        {
+        var refreshJwt = await userRefreshJwtRepository.GetByIdAsync(id);
+        if (refreshJwt is null)
             return Errors.Authentication.UserNotFound;
-        }
+
+        var result = await userRefreshJwtRepository.DeleteAsync(refreshJwt);
+        return result > 0;
     }
 }
