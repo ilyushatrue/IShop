@@ -3,18 +3,15 @@ import getConstant from "../infrastructure/constantProvider";
 type TPost = {
 	url: string;
 	body?: any;
-	expectedOutput?: "text" | "json" | "blob" | "none";
+	responseType?: "text" | "json" | "blob" | "none";
 	props?: (requestInit: RequestInit) => RequestInit;
 };
 
 export type ApiResponse<T> = {
 	status: Response["status"];
 	ok: Response["ok"];
-	body?: {
-		errors: { description: string }[];
-		isError: boolean;
-		value: T;
-	};
+	body: T;
+	errors: string[];
 };
 
 const fetchPipe = async <TOut = any>({
@@ -23,11 +20,12 @@ const fetchPipe = async <TOut = any>({
 }: {
 	request: () => Promise<Response>;
 	expectedOutput: "text" | "json" | "blob" | "none";
-}): Promise<ApiResponse<TOut | undefined>> => {
+}): Promise<ApiResponse<TOut>> => {
 	const attemptsCount = 2;
 	let body = undefined;
 	let ok = false;
 	let status = 500;
+	let errors: string[] = [];
 
 	try {
 		for (let attempt = 1; attempt <= attemptsCount; attempt++) {
@@ -53,6 +51,10 @@ const fetchPipe = async <TOut = any>({
 				}
 				break;
 			} else {
+				const errorResponse = await response.json();
+				errors = Object.values(errorResponse.errors).flatMap(
+					(x: any) => x
+				);
 				if (status === 401 && attempt === 1) {
 					const jwtResponse = await post({
 						url: "/auth/refresh-jwt",
@@ -69,9 +71,10 @@ const fetchPipe = async <TOut = any>({
 		console.error(error);
 	}
 	return {
-		body: body,
-		ok: ok,
-		status: status,
+		body,
+		ok,
+		status,
+		errors,
 	};
 };
 
@@ -129,54 +132,52 @@ const put = async ({ url, body, props }: TPost): Promise<Response> => {
 	return await fetch(fullUrl, requestInit || defaultRequestInit);
 };
 
-const api = {
-	getAsync: async <TOut>({
-		url,
-		expectedOutput = "json",
-	}: {
-		url: string;
-		expectedOutput?: "text" | "json" | "blob" | "none";
-	}): Promise<ApiResponse<TOut | undefined>> =>
-		await fetchPipe({
-			request: async () => await get({ url }),
-			expectedOutput: expectedOutput,
-		}),
+const httpGet = async <TOut>({
+	url,
+	expectedOutput = "json",
+}: {
+	url: string;
+	expectedOutput?: "text" | "json" | "blob" | "none";
+}): Promise<ApiResponse<TOut>> =>
+	await fetchPipe({
+		request: async () => await get({ url }),
+		expectedOutput: expectedOutput,
+	});
 
-	postAsync: async <TOut = undefined>({
-		url,
-		body,
-		expectedOutput = "none",
-		props,
-	}: TPost): Promise<ApiResponse<TOut | undefined>> =>
-		await fetchPipe({
-			request: async () =>
-				await post({ url, body, expectedOutput, props }),
-			expectedOutput: expectedOutput,
-		}),
+const httpPost = async <TOut = undefined>({
+	url,
+	body,
+	responseType: expectedOutput = "none",
+	props,
+}: TPost): Promise<ApiResponse<TOut | undefined>> =>
+	await fetchPipe({
+		request: async () =>
+			await post({ url, body, responseType: expectedOutput, props }),
+		expectedOutput: expectedOutput,
+	});
 
-	deleteAsync: async <TOut = undefined>({
-		url,
-		body,
-		expectedOutput = "none",
-		props,
-	}: TPost): Promise<ApiResponse<TOut | undefined>> =>
-		await fetchPipe({
-			request: async () =>
-				await remove({ url, body, expectedOutput, props }),
-			expectedOutput: expectedOutput,
-		}),
+const httpRemove = async <TOut = undefined>({
+	url,
+	body,
+	responseType: expectedOutput = "none",
+	props,
+}: TPost): Promise<ApiResponse<TOut | undefined>> =>
+	await fetchPipe({
+		request: async () =>
+			await remove({ url, body, responseType: expectedOutput, props }),
+		expectedOutput: expectedOutput,
+	});
 
-	putAsync: async <TOut = undefined>({
-		url,
-		body,
-		expectedOutput = "none",
-		props,
-	}: TPost): Promise<ApiResponse<TOut | undefined>> =>
-		await fetchPipe({
-			request: async () =>
-				await put({ url, body, expectedOutput, props }),
-			expectedOutput: expectedOutput,
-		}),
-};
+const httpPut = async <TOut = undefined>({
+	url,
+	body,
+	responseType: expectedOutput = "none",
+	props,
+}: TPost): Promise<ApiResponse<TOut | undefined>> =>
+	await fetchPipe({
+		request: async () =>
+			await put({ url, body, responseType: expectedOutput, props }),
+		expectedOutput: expectedOutput,
+	});
 
-export default api;
+export { httpPut, httpRemove, httpPost, httpGet };

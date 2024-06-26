@@ -12,7 +12,7 @@ public class EditUserDataCommandHandler(
     {
         var model = await userRepository.GetByPhoneAsync(command.Phone);
         if (model is null)
-            return Errors.User.InvalidInput;
+            return Errors.User.NotFound;
 
         var user = User.Create(model.Id, command.FirstName, command.LastName, model.Phone, model.Email, model.Password, command.AvatarId);
         await userRepository.UpdateAsync(user);

@@ -7,11 +7,11 @@ import apiAuth from "../api/auth.api";
 import usersApi from "../api/users.api";
 import { IUser } from "../api/interfaces/user/user.interface";
 
-export const loginByPhoneAsync = createAsyncThunk(
-	"/auth/login-by-phone",
-	async (request: ILoginByPhoneRequest) =>
-		await apiAuth.loginByPhoneAsync(request)
-);
+// export const loginByPhoneAsync = createAsyncThunk(
+// 	"/auth/login-by-phone",
+// 	async (request: ILoginByPhoneRequest) =>
+// 		await apiAuth.loginByPhoneAsync(request)
+// );
 export const loginByEmailAsync = createAsyncThunk(
 	"/auth/login-by-email",
 	async (request: ILoginByEmailRequest) =>
@@ -56,12 +56,6 @@ const userSlice = createSlice({
 			.addCase(loginByEmailAsync.rejected, (state) => {
 				state.isLoading = false;
 			})
-			.addCase(loginByPhoneAsync.pending, (state) => {
-				state.isLoading = true;
-			})
-			.addCase(loginByPhoneAsync.rejected, (state) => {
-				state.isLoading = false;
-			})
 			.addCase(registerAsync.pending, (state) => {
 				state.isLoading = true;
 			})
@@ -74,7 +68,7 @@ const userSlice = createSlice({
 			.addCase(getCurrentAsync.fulfilled, (state, action) => {
 				state.isLoading = false;
 				if (action.payload.ok) {
-					state.user = action.payload.body?.value ?? null;
+					state.user = action.payload.body ?? null;
 					state.isAuthenticated = true;
 				}
 			})

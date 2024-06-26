@@ -12,7 +12,7 @@ export default function Users({ tabName }: IPage) {
 		fetchAsync<IUser[]>({
 			request: usersApi.getListAsync,
 			onSuccess: (handler) =>
-				handler.do((result) => setUsers(result.body!.value!)),
+				handler.do((result) => setUsers(result.body!)),
 			onError: (handler) => handler.log().popup(),
 		});
 	}, []);

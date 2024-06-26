@@ -22,7 +22,7 @@ public class LoginByPhoneQueryHandler(
         var user = await userRepository.GetByPhoneAsync(phone);
 
         if (user is null)
-            return Errors.Authentication.UserNotFound;
+            return Errors.Authentication.InvalidCredentials;
 
         var passwordsMatch = passwordHasher.Verify(query.Password, user.Password.Value);
 

@@ -20,9 +20,11 @@ public class RefreshJwtCommandHandler(
             return Errors.Authentication.InvalidCredentials;
 
         var user = await userRepository.GetByPhoneAsync(userPhone);
-
-        if (user?.RefreshJwt is null)
+        if (user is null)
             return Errors.Authentication.UserNotFound;
+
+        if (user.RefreshJwt is null)
+            return Errors.User.UserNotAuthenticated;
 
         var newJwtAccessToken = jwtTokenGenerator.GenerateAccessToken(user);
 

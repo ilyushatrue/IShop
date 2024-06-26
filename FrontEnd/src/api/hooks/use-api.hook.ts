@@ -18,13 +18,9 @@ type TApiSuccessHandler<T> = {
 };
 
 type TTryFetch<TOut> = {
-	request: () => Promise<ApiResponse<TOut | undefined>>;
-	onSuccess?: (
-		handler: TApiSuccessHandler<ApiResponse<TOut | undefined>>
-	) => void;
-	onError?: (
-		handler: TApiErrorHandler<ApiResponse<TOut | undefined>>
-	) => void;
+	request: () => Promise<ApiResponse<TOut>>;
+	onSuccess?: (handler: TApiSuccessHandler<ApiResponse<TOut>>) => void;
+	onError?: (handler: TApiErrorHandler<ApiResponse<TOut>>) => void;
 };
 
 export default function useApi() {
@@ -37,22 +33,21 @@ export default function useApi() {
 		onSuccess,
 	}: TTryFetch<TOut>): Promise<void> => {
 		setIsFetching(true);
-		let errorHandler: TApiErrorHandler<TOut>;
 		const response = await request();
 		if (response.ok) {
 			const successHandler = getSuccessHandler(response);
 			onSuccess?.(successHandler);
 		} else {
-			errorHandler = getErrorHandler(response);
+			const errorHandler = getErrorHandler(response);
 			onError?.(errorHandler);
 		}
 		setIsFetching(false);
 	};
 
 	function getSuccessHandler<TOut>(
-		apiResult: TOut
-	): TApiSuccessHandler<TOut> {
-		const successHandler: TApiSuccessHandler<TOut> = {
+		apiResult: ApiResponse<TOut>
+	): TApiSuccessHandler<ApiResponse<TOut>> {
+		const successHandler: TApiSuccessHandler<ApiResponse<TOut>> = {
 			popup: (message) => {
 				popupSuccess(message);
 				return successHandler;
@@ -70,14 +65,16 @@ export default function useApi() {
 		return successHandler;
 	}
 
-	function getErrorHandler<TOut>(apiResult: TOut): TApiErrorHandler<TOut> {
-		const errorHandler: TApiErrorHandler<TOut> = {
+	function getErrorHandler<TOut>(
+		apiResult: ApiResponse<TOut>
+	): TApiErrorHandler<ApiResponse<TOut>> {
+		const errorHandler: TApiErrorHandler<ApiResponse<TOut>> = {
 			log: () => {
 				console.error(apiResult);
 				return errorHandler;
 			},
 			popup: (message) => {
-				popupError(message ?? "Ошибка hook");
+				popupError(apiResult.errors[0]);
 				return errorHandler;
 			},
 			do: (action) => {

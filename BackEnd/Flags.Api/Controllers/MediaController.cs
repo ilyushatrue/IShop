@@ -1,4 +1,5 @@
-﻿using Flags.Application.Images.Commands;
+﻿using ErrorOr;
+using Flags.Application.Images.Commands;
 using Flags.Application.Images.Queries;
 using MapsterMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -17,19 +18,20 @@ public class MediaController(
     {
         var result = await createImageCommand.Handle(new(file), cancellationToken);
 
-        return result.Match(response => Ok(result), Problem);
+        return result.Match(
+            response => Ok(response),
+            errors => Problem(errors));
     }
 
     [AllowAnonymous]
     [HttpGet("image/{id}")]
     public async Task<IActionResult> GetImageById(Guid id, CancellationToken cancellationToken)
     {
-        var result = await getImageByIdQuery.Handle(new(id), cancellationToken);
+        var result = await getImageByIdQuery
+            .Handle(new(id), cancellationToken);
 
         if (result.IsError)
-        {
-            return Problem(result.Errors.First().Description);
-        }
+            return Problem(result.Errors);
 
         var (fileName, bytes) = result.Value;
         var memoryStream = new MemoryStream(bytes)

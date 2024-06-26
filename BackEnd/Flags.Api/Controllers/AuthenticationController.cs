@@ -8,7 +8,6 @@ using Flags.Domain.Common.Errors;
 using Flags.Domain.UserRoot;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Flags.Api.Controllers;
 
@@ -97,15 +96,13 @@ public class AuthenticationController(
     [HttpPost("login-by-phone")]
     public async Task<IActionResult> LoginByPhone(LoginByPhoneQuery query, CancellationToken cancellationToken)
     {
-        var authResult = await loginByPhoneQueryHandler.Handle(query, cancellationToken);
-
-        if (!authResult.IsError)
-            SetCookies(authResult.Value.User, authResult.Value.JwtAccessToken);
-
-        return authResult.Match(
-            authResult => Ok(),
-            errors => Problem(errors)
-        );
+        return await loginByPhoneQueryHandler
+            .Handle(query, cancellationToken)
+            .Then(value => SetCookies(value.User, value.JwtAccessToken))
+            .Match(
+                authResult => Ok(),
+                errors => Problem(errors)
+            );
     }
 
     private void SetCookies(User user, string jwtAccessToken)

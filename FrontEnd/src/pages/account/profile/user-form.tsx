@@ -4,7 +4,7 @@ import { IUserCredentialsRequest } from "./profile";
 export default function UserForm({
 	onSubmitAsync,
 	defaultValues,
-	minHeight =330,
+	minHeight = 330,
 }: {
 	defaultValues: IUserCredentialsRequest;
 	onSubmitAsync: (values: IUserCredentialsRequest) => Promise<void>;
@@ -19,8 +19,8 @@ export default function UserForm({
 			fields={(builder) =>
 				builder
 					.image({
-						name:"avatarId",
-						shape:"circled"
+						name: "avatarId",
+						shape: "circled",
 					})
 					.text({
 						name: "firstName",

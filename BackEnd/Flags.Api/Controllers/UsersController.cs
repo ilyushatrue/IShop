@@ -1,4 +1,3 @@
-using ErrorOr;
 using Flags.Application.Users.Command;
 using Flags.Application.Users.Queries;
 using Flags.Contracts.Authentication;
@@ -25,7 +24,7 @@ public class UsersController(
         var result = await getAllUsersQueryHandler.Handle(cancellationToken);
 
         return result.Match(
-            authResult => Ok(result),
+            value => Ok(value),
             errors => Problem(errors)
         );
     }
@@ -37,7 +36,7 @@ public class UsersController(
         var result = await getUserByIdQueryHandler.Handle(new(id), cancellationToken);
 
         return result.Match(
-            authResult => Ok(result),
+            value => Ok(value),
             errors => Problem(errors)
         );
     }
@@ -46,48 +45,36 @@ public class UsersController(
     [HttpGet("current")]
     public IActionResult GetCurrent(CancellationToken cancellationToken)
     {
-        ErrorOr<AuthenticationResponse> GetUserData()
+        if (User.Identity?.IsAuthenticated != true)
+            return Problem([Errors.User.UserNotAuthenticated]);
+
+        var firstName = Request.Cookies["user-first-name"];
+        var lastName = Request.Cookies["user-last-name"];
+        var phone = Request.Cookies["user-phone"];
+        var email = Request.Cookies["user-email"];
+        var avatarId = Request.Cookies["user-avatar"];
+
+        var requiredCredentials = new string?[]
         {
-            if (User.Identity?.IsAuthenticated == true)
-            {
-                var firstName = Request.Cookies["user-first-name"];
-                var lastName = Request.Cookies["user-last-name"];
-                var phone = Request.Cookies["user-phone"];
-                var email = Request.Cookies["user-email"];
-                var avatarId = Request.Cookies["user-avatar"];
+            firstName,
+            lastName,
+            phone,
+            email,
+        };
 
-                var requiredCredentials = new string?[]
-                {
-                    firstName,
-                    lastName,
-                    phone,
-                    email,
-                };
+        if (requiredCredentials.Any(x => x is null))
+            return Problem([Errors.User.UserNotAuthenticated]);
 
-                if (requiredCredentials.Any(x => x is null))
-                {
-                    return Errors.User.UserNotAuthenticated;
-                }
-                else
-                {
-                    return new AuthenticationResponse(
-                        firstName!,
-                        lastName!,
-                        email!,
-                        phone!,
-                        avatarId != null ? Guid.Parse(avatarId) : null);
-                }
-            }
-            else
-            {
-                return Errors.User.UserNotAuthenticated;
-            }
-        }
-        var result = GetUserData();
-        return result.Match(
-            authResult => Ok(result),
-            errors => Problem(errors)
-        );
+        Guid? avatarGuid = Guid.TryParse(avatarId, out Guid result) ? result : null;
+
+        var response = new AuthenticationResponse(
+            firstName!,
+            lastName!,
+            email!,
+            phone!,
+            avatarGuid);
+
+        return Ok(response);
     }
 
     [HttpPut]

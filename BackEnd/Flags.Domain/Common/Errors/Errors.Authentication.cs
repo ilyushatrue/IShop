@@ -8,12 +8,12 @@ public static partial class Errors
     {
         public static Error InvalidCredentials => Error.Validation(
             code: "Auth.InvalidCredentials",
-            description: "Invalid Credentials."
+            description: "Неверный логин или пароль!"
         );
 
         public static Error UserNotFound => Error.NotFound(
             code: "Auth.UserNotFound",
-            description: "User not found. Try register."
+            description: "Пользователя не существует."
         );
     }
 }

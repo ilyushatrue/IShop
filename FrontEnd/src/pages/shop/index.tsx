@@ -16,7 +16,7 @@ export default function Shop() {
 		fetchAsync({
 			request: productsApi.getAllAsync,
 			onSuccess: (handler) =>
-				handler.do((res) => setProducts(res.body?.value)),
+				handler.do((res) => setProducts(res.body)),
 			onError: (handler) => handler.do(() => navigate("/not-found")),
 		});
 	}, []);

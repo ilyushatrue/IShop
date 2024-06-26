@@ -43,8 +43,8 @@ export default function AvatarPlus({
 					handler
 						.validate((res) => !!res.body)
 						.do((res) => {
-							setImageUrl(res.body?.value!);
-							onChange(res.body?.value!);
+							setImageUrl(res.body!);
+							onChange(res.body!);
 						}),
 				onError: (handler) => handler.log().popup(),
 			});

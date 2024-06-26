@@ -1,11 +1,11 @@
-import api from "./api";
+import { httpGet, httpPost } from "./api";
 
 const baseUrl = "/media";
 export const mediaApi = {
 	uploadFile: (file: FormData) =>
-		api.postAsync<string>({
+		httpPost<string>({
 			url: `${baseUrl}/image/`,
-			expectedOutput: "json",
+			responseType: "json",
 			props: (def) => ({
 				...def,
 				body: file,
@@ -13,7 +13,7 @@ export const mediaApi = {
 			}),
 		}),
 	getImageById: (id: string) =>
-		api.getAsync<File>({
+		httpGet<File>({
 			url: `${baseUrl}/image/${id}`,
 			expectedOutput: "blob",
 		}),

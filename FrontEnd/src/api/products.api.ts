@@ -1,19 +1,19 @@
-import api from "./api";
+import { httpGet, httpPost, httpPut, httpRemove } from "./api";
 import { IProduct } from "./interfaces/product/product.interface";
 
 const baseUrl = "/products";
 
 const productsApi = {
-	getAllAsync: async () => await api.getAsync<IProduct[]>({ url: baseUrl }),
+	getAllAsync: async () => await httpGet<IProduct[]>({ url: baseUrl }),
 
 	createAsync: async (product: IProduct) =>
-		await api.postAsync<IProduct>({ url: baseUrl, body: product }),
+		await httpPost({ url: baseUrl, body: product }),
 
 	deleteByIdAsync: async (id: string) =>
-		await api.deleteAsync<IProduct>({ url: `${baseUrl}/${id}` }),
+		await httpRemove({ url: `${baseUrl}/${id}` }),
 
 	updateAsync: async (product: IProduct) =>
-		await api.putAsync<IProduct>({ url: baseUrl, body: product }),
+		await httpPut({ url: baseUrl, body: product }),
 };
 
 export default productsApi;

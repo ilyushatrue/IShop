@@ -89,7 +89,7 @@ public class FlagsProblemDetailsFactory(
 
         if (errors is not null)
         {
-            problemDetails.Extensions.Add("errorCodes", errors.Select(e => e.Code));
+            problemDetails.Extensions.Add("errors", errors.Select(e => e.Code));
         }
     }
 }

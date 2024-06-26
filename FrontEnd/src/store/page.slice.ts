@@ -66,5 +66,5 @@ const pageSlice = createSlice({
 	},
 });
 
-export const { setActiveTab } = pageSlice.actions;
+export const { setActiveTab, setIsLoading } = pageSlice.actions;
 export default pageSlice.reducer;

@@ -2,8 +2,6 @@ import {
 	Box,
 	FormControl,
 	FormHelperText,
-	Input,
-	InputLabel,
 	Typography,
 } from "@mui/material";
 import {
@@ -18,7 +16,6 @@ import { usePopup } from "../../../app/hooks/use-popup.hook";
 import { useRef } from "react";
 import { mediaApi } from "../../../api/media.api";
 import IconButton from "../../icon-button";
-import Avatar from "../../avatar";
 import Image from "../../image";
 
 export default function InputImage<T extends FieldValues>({
@@ -58,7 +55,7 @@ export default function InputImage<T extends FieldValues>({
 				onSuccess: (handler) =>
 					handler
 						.validate((res) => !!res.body)
-						.do((res) => field.onChange(res.body!.value!)),
+						.do((res) => field.onChange(res.body)),
 				onError: (handler) => handler.log().popup(),
 			});
 		} else {
