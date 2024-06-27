@@ -32,7 +32,7 @@ public class ApiController : ControllerBase
         var statusCode = error.Type switch
         {
             ErrorType.Validation => StatusCodes.Status400BadRequest,
-            ErrorType.Unexpected => StatusCodes.Status400BadRequest,
+            ErrorType.Unexpected => StatusCodes.Status500InternalServerError,
             ErrorType.Unauthorized => StatusCodes.Status401Unauthorized,
             ErrorType.NotFound => StatusCodes.Status404NotFound,
             ErrorType.Conflict => StatusCodes.Status409Conflict,
@@ -40,7 +40,19 @@ public class ApiController : ControllerBase
             ErrorType.Failure => StatusCodes.Status500InternalServerError,
             _ => StatusCodes.Status500InternalServerError,
         };
-        return Problem(statusCode: statusCode, title: error.Description);
+
+        var problemDetails = new ProblemDetails
+        {
+            Status = statusCode,
+            Title = error.Description,
+            Detail = error.Description,
+            Instance = HttpContext.TraceIdentifier
+        };
+
+        return new ObjectResult(problemDetails)
+        {
+            StatusCode = statusCode
+        };
     }
 
     private ActionResult ValidationProblem(List<Error> errors)

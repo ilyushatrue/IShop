@@ -8,6 +8,7 @@ using Flags.Domain.Common.Errors;
 using Flags.Domain.UserRoot;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace Flags.Api.Controllers;
 
@@ -74,20 +75,15 @@ public class AuthenticationController(
     [HttpPost("logout")]
     public async Task<IActionResult> Logout(CancellationToken cancellationToken)
     {
+        throw new ValidationException("askldjfalsk;jda");
+        DeleteJwtAccessTokenCookie();
         var userId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "UserId")?.Value;
 
-        if (userId is null)
-            return Problem([Errors.Authentication.UserNotFound]);
-
-        var isIdParsed = Guid.TryParse(userId, out Guid id);
-        if (!isIdParsed)
-        {
-            DeleteJwtAccessTokenCookie();
+        if (!Guid.TryParse(userId, out Guid id))
             return Problem([Errors.Authentication.InvalidCredentials]);
-        }
+
         return await logoutCommandHandler
             .Handle(id, cancellationToken)
-            .Then(value => DeleteJwtAccessTokenCookie())
             .Match(
                 authResult => Ok(),
                 errors => Problem(errors));

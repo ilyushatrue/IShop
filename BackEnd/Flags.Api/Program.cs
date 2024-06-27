@@ -1,6 +1,6 @@
+using Flags.Api.Middlewares;
 using Flags.Infrastructure;
 using Microsoft.AspNetCore.CookiePolicy;
-using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 
 namespace Flags.Api;
@@ -41,7 +41,8 @@ public class Program
         }
 
         app.UseCors("CORS");
-        app.UseExceptionHandler("/error");
+        app.UseMiddleware<ExceptionHandlingMiddleware>();
+        //app.UseExceptionHandler("/error");
         app.UseHttpsRedirection();
         app.UseCookiePolicy(new CookiePolicyOptions
         {

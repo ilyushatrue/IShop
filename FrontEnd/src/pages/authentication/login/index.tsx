@@ -13,10 +13,8 @@ import LoginByEmailForm from "./login-by-email-form";
 import LoginByPhoneForm from "./login-by-phone-form";
 import { ILoginByEmailRequest } from "../../../api/contracts/authentication/login-by-email-request.interface";
 import { ILoginByPhoneRequest } from "../../../api/contracts/authentication/login-by-phone-request.interface";
-import { loginByEmailAsync } from "../../../store/user.slice";
 import { setIsLoading } from "../../../store/page.slice";
 import { useAppDispatch } from "../../../app/hooks/redux/use-app-dispatch";
-import { ApiResponse } from "../../../api/api";
 import { redirect } from "../../../app/helpers/redirect";
 import { usePopup } from "../../../app/hooks/use-popup.hook";
 import useApi from "../../../api/hooks/use-api.hook";
@@ -34,9 +32,8 @@ const MemoizedLoginByPhoneForm = React.memo(LoginByPhoneForm);
 
 export default function Login({ sm = false, onToRegisterClick }: IProps) {
 	const [authType, setAuthType] = useState<AuthType>("email");
-	const { fetchAsync, isFetching } = useApi();
+	const { fetchAsync } = useApi();
 	const dispatch = useAppDispatch();
-	const { popupError } = usePopup();
 
 	const handleAuthTypeChange = (
 		event: React.MouseEvent<HTMLElement>,
@@ -50,32 +47,22 @@ export default function Login({ sm = false, onToRegisterClick }: IProps) {
 		await fetchAsync({
 			request: async () => await apiAuth.loginByPhoneAsync(request),
 			onSuccess: (handler) =>
-				handler.do((result) => redirect("/account")),
+				handler.do(() => redirect("/account")),
 			onError: (handler) => handler.log().popup(),
 		});
 		dispatch(setIsLoading(false));
 	}
 
 	async function handleLoginByEmailAsync(request: ILoginByEmailRequest) {
-		const result = await dispatch(loginByEmailAsync(request));
-		const payload = result.payload as ApiResponse<undefined>;
-		if (payload.ok) {
-			redirect("/account");
-		} else {
-			switch (payload.status) {
-				case 500:
-					popupError(
-						"Ошибка подключения. Обратитесь к администратору."
-					);
-					break;
-				case 404:
-					popupError("Неверный логин или пароль.");
-					break;
-				default:
-					popupError("Неверный логин или пароль.");
-			}
-		}
-	}
+		dispatch(setIsLoading(true));
+		await fetchAsync({
+			request: async () => await apiAuth.loginByEmailAsync(request),
+			onSuccess: (handler) =>
+				handler.do(() => redirect("/account")),
+			onError: (handler) => handler.log().popup(),
+		});
+		dispatch(setIsLoading(false));
+	}	
 
 	return (
 		<Template sm={sm} avatar={<LockOutlined />} title={"Войти"}>

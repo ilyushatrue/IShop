@@ -15,5 +15,9 @@ public static partial class Errors
             code: "Auth.UserNotFound",
             description: "Пользователя не существует."
         );
+        public static Error ServerError => Error.Failure(
+            code: "Auth.UnableToLogout",
+            description: "Возникла ошибка. Обратитесь к администратору!"
+        );
     }
 }

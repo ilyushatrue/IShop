@@ -14,8 +14,9 @@ export interface IPage {
 	tabName?: string;
 }
 
-export default function Page({ isLoading = false, children, sx }: IPage) {
+export default function Page({ children, sx }: IPage) {
 	const dispatch = useAppDispatch();
+	const isLoading = useAppSelector((state) => state.page.isLoading);
 	const navbarHeight = useAppSelector((state) => state.page.navbar.height);
 	const displayWidth = useAppSelector((state) => state.page.displayWidth);
 	const { pathname } = useLocation();

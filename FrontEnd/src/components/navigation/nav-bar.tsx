@@ -4,8 +4,10 @@ import { IAvatar } from "./nav-avatar";
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../app/hooks/redux/use-app-dispatch";
-import { logoutAsync } from "../../store/user.slice";
 import { useAppSelector } from "../../app/hooks/redux/use-app-selector";
+import useApi from "../../api/hooks/use-api.hook";
+import { setIsLoading } from "../../store/page.slice";
+import apiAuth from "../../api/auth.api";
 
 export interface INavBar {
 	sm?: boolean;
@@ -13,6 +15,7 @@ export interface INavBar {
 export default function NavBar({ sm = false }: INavBar) {
 	const navigate = useNavigate();
 	const tabs = useAppSelector((state) => state.page.tabs);
+	const { fetchAsync, isFetching } = useApi();
 	const dispatch = useAppDispatch();
 	const { isAuthenticated } = useAppSelector((state) => state.user);
 
@@ -52,12 +55,18 @@ export default function NavBar({ sm = false }: INavBar) {
 		}),
 		[]
 	);
-
-	async function handleLogout(): Promise<boolean | undefined> {
-		await dispatch(logoutAsync());
-		navigate("/auth");
-		window.location.reload();
-		return true;
+	async function handleLogout() {
+		dispatch(setIsLoading(true));
+		await fetchAsync({
+			request: async () => await apiAuth.logoutAsync(),
+			onSuccess: (handler) =>
+				handler.do(() => {
+					navigate("/auth");
+					window.location.reload();
+				}),
+			onError: (handler) => handler.log().popup(),
+		});
+		dispatch(setIsLoading(false));
 	}
 
 	return (
