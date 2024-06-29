@@ -5,7 +5,6 @@ export const mediaApi = {
 	uploadFile: (file: FormData) =>
 		httpPost<string>({
 			url: `${baseUrl}/image/`,
-			responseType: "json",
 			props: (def) => ({
 				...def,
 				body: file,
@@ -13,8 +12,5 @@ export const mediaApi = {
 			}),
 		}),
 	getImageById: (id: string) =>
-		httpGet<File>({
-			url: `${baseUrl}/image/${id}`,
-			expectedOutput: "blob",
-		}),
+		httpGet<Blob>({ url: `${baseUrl}/image/${id}` }, (response) => response.blob()),
 };

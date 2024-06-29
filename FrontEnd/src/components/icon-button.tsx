@@ -29,7 +29,6 @@ export default function IconButton({
 	fontSize = 26,
 }: IIconButton) {
 	const isCircled = variant === "circled";
-	console.log(fontSize);
 	return (
 		<Tooltip title={tip}>
 			<Button

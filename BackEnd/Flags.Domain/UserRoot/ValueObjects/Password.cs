@@ -1,5 +1,4 @@
-using ErrorOr;
-using Flags.Domain.Common.Errors;
+using Flags.Domain.Common.Exceptions;
 
 namespace Flags.Domain.UserRoot.ValueObjects;
 
@@ -13,15 +12,15 @@ public class Password
 
     public string Value { get; private set; } = null!;
 
-    public static ErrorOr<Password> Create(string passwordHash)
+    public static Password Create(string passwordHash)
     {
         if (string.IsNullOrWhiteSpace(passwordHash))
-            return Errors.Authentication.InvalidCredentials;
+            throw new ArgumentNullException(nameof(passwordHash), "Пароль необходим.");
 
         var password = passwordHash.Trim();
 
         if (password.Length != HASH_LENGTH)
-            return Errors.Authentication.InvalidCredentials;
+            throw new ValidationException($"Превышена допустимая длина пароля ({HASH_LENGTH}).");
 
         return new Password(password);
     }

@@ -1,7 +1,5 @@
-﻿using ErrorOr;
-
-namespace Flags.Application.Images.Commands;
+﻿namespace Flags.Application.Images.Commands;
 public interface ICreateImageCommandHandler
 {
-    Task<ErrorOr<string>> Handle(CreateImageCommand request, CancellationToken cancellationToken);
+    Task<string> Handle(CreateImageCommand request, CancellationToken cancellationToken);
 }

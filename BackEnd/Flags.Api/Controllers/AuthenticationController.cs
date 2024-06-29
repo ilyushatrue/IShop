@@ -1,14 +1,12 @@
-﻿using ErrorOr;
-using Flags.Application.Authentication.Commands.Login;
+﻿using Flags.Application.Authentication.Commands.Login;
 using Flags.Application.Authentication.Commands.Logout;
 using Flags.Application.Authentication.Commands.RefreshJwt;
 using Flags.Application.Authentication.Commands.Register;
 using Flags.Application.Authentication.Queries;
-using Flags.Domain.Common.Errors;
+using Flags.Domain.Common.Exceptions;
 using Flags.Domain.UserRoot;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
 
 namespace Flags.Api.Controllers;
 
@@ -26,21 +24,8 @@ public class AuthenticationController(
     public async Task<IActionResult> Register(RegisterCommand command, CancellationToken cancellationToken)
     {
         var authResult = await registerCommandHandler.Handle(command, cancellationToken);
-
-        if (authResult.IsError && authResult.FirstError == Errors.Authentication.InvalidCredentials)
-        {
-            return Problem(
-                statusCode: StatusCodes.Status401Unauthorized,
-                title: authResult.FirstError.Description);
-        }
-
-        if (!authResult.IsError)
-            SetCookies(authResult.Value.User, authResult.Value.JwtAccessToken);
-
-        return authResult.Match(
-            authResult => Ok(),
-            errors => Problem(errors)
-        );
+        SetCookies(authResult.User, authResult.JwtAccessToken);
+        return Ok();
     }
 
     [HttpPost("refresh-jwt")]
@@ -49,56 +34,41 @@ public class AuthenticationController(
         var phone = Request.Cookies["user-phone"];
 
         if (string.IsNullOrWhiteSpace(phone))
-            return Problem(statusCode: StatusCodes.Status401Unauthorized);
+            throw new NotAuthenticatedException();
 
-        return await refreshJwtCommandHandler
-            .Handle(phone, cancellationToken)
-            .Then(value => SetCookies(value.User, value.JwtAccessToken))
-            .Match(
-                value => Ok(),
-                errors => Problem(errors));
+        var result = await refreshJwtCommandHandler.Handle(phone, cancellationToken);
+        SetCookies(result.User, result.JwtAccessToken);
+        return Ok();
     }
 
 
     [HttpPost("login-by-email")]
     public async Task<IActionResult> LoginByEmail(LoginByEmailQuery query, CancellationToken cancellationToken)
     {
-        return await loginByEmailQueryHandler
-            .Handle(query, cancellationToken)
-            .Then(value => SetCookies(value.User, value.JwtAccessToken))
-            .Match(
-                authResult => Ok(),
-                errors => Problem(errors)
-            );
+        var result = await loginByEmailQueryHandler.Handle(query, cancellationToken);
+        SetCookies(result.User, result.JwtAccessToken);
+        return Ok();
     }
 
     [HttpPost("logout")]
     public async Task<IActionResult> Logout(CancellationToken cancellationToken)
     {
-        throw new ValidationException("askldjfalsk;jda");
         DeleteJwtAccessTokenCookie();
         var userId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "UserId")?.Value;
 
         if (!Guid.TryParse(userId, out Guid id))
-            return Problem([Errors.Authentication.InvalidCredentials]);
+            throw new Exception("Непредвиденная ошибка при выходе из учетной записи. Обратитесь к администратору.");
 
-        return await logoutCommandHandler
-            .Handle(id, cancellationToken)
-            .Match(
-                authResult => Ok(),
-                errors => Problem(errors));
+        await logoutCommandHandler.Handle(id, cancellationToken);
+        return Ok();
     }
 
     [HttpPost("login-by-phone")]
     public async Task<IActionResult> LoginByPhone(LoginByPhoneQuery query, CancellationToken cancellationToken)
     {
-        return await loginByPhoneQueryHandler
-            .Handle(query, cancellationToken)
-            .Then(value => SetCookies(value.User, value.JwtAccessToken))
-            .Match(
-                authResult => Ok(),
-                errors => Problem(errors)
-            );
+        var loginResult = await loginByPhoneQueryHandler.Handle(query.Phone, query.Password, cancellationToken);
+        SetCookies(loginResult.User, loginResult.JwtAccessToken);
+        return Ok();
     }
 
     private void SetCookies(User user, string jwtAccessToken)

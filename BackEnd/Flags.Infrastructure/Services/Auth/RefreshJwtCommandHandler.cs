@@ -1,9 +1,8 @@
-using ErrorOr;
 using Flags.Application.Authentication.Common;
-using Flags.Domain.Common.Errors;
 using Flags.Application.Authentication.Commands.RefreshJwt;
 using Flags.Application.Common.Persistance;
 using Flags.Domain.UserRoot.ValueObjects;
+using Flags.Domain.Common.Exceptions;
 
 namespace Flags.Infrastructure.Services.Auth;
 
@@ -13,18 +12,17 @@ public class RefreshJwtCommandHandler(
     IUserRepository userRepository
 ) : IRefreshJwtCommandHandler
 {
-    public async Task<ErrorOr<AuthenticationResult>> Handle(string userPhone, CancellationToken cancellationToken)
+    public async Task<AuthenticationResult> Handle(string userPhone, CancellationToken cancellationToken)
     {
         userPhone = Phone.Trim(userPhone);
         if (!Phone.Validate(userPhone))
-            return Errors.Authentication.InvalidCredentials;
+            throw new ValidationException("Некорректный номер телефона.");
 
-        var user = await userRepository.GetByPhoneAsync(userPhone);
-        if (user is null)
-            return Errors.Authentication.UserNotFound;
+        var user = await userRepository.GetByPhoneAsync(userPhone) ??
+            throw new NotFoundException($"Пользователь с номером телефона {userPhone} не найден."); 
 
         if (user.RefreshJwt is null)
-            return Errors.User.UserNotAuthenticated;
+            throw new NotAuthenticatedException();
 
         var newJwtAccessToken = jwtTokenGenerator.GenerateAccessToken(user);
 

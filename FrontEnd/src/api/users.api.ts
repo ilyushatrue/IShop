@@ -4,7 +4,7 @@ import { IUser } from "./interfaces/user/user.interface";
 
 const usersApi = {
 	getCurrentAsync: async () =>
-		await httpGet<IUser>({ url: "/users/current" }),
+		await httpGet<IUser>({ url: "/users/current", unauthorized: true }),
 
 	getListAsync: async () => await httpGet<IUser[]>({ url: "/users" }),
 

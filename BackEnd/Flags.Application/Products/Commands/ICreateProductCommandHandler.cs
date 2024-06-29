@@ -1,7 +1,5 @@
-﻿using ErrorOr;
-
-namespace Flags.Application.Products.Commands;
+﻿namespace Flags.Application.Products.Commands;
 public interface ICreateProductCommandHandler
 {
-    Task<ErrorOr<bool>> Handle(CreateProductCommand command, CancellationToken cancellationToken);
+    Task<bool> Handle(CreateProductCommand command, CancellationToken cancellationToken);
 }

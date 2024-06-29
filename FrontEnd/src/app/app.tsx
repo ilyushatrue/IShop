@@ -1,6 +1,6 @@
 import { CssBaseline, ThemeProvider, useMediaQuery } from "@mui/material";
 import { theme } from "../styles/themeProvider";
-import Router from "./router";
+import Router from "./routes";
 import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "../store/store";

@@ -1,5 +1,4 @@
-﻿using ErrorOr;
-using Flags.Application.AppSettings;
+﻿using Flags.Application.AppSettings;
 using Flags.Application.Common.Persistance;
 using Flags.Application.Images.Commands;
 using Microsoft.Extensions.Options;
@@ -11,7 +10,7 @@ public class CreateImageCommandHandler(
     IMediaRepository mediaRepository) : ICreateImageCommandHandler
 {
     private readonly string _uploadPath = fileSettings.Value.UploadPath;
-    public async Task<ErrorOr<string>> Handle(CreateImageCommand request, CancellationToken cancellationToken)
+    public async Task<string> Handle(CreateImageCommand request, CancellationToken cancellationToken)
     {
         var file = request.File;
         var extension = Path.GetExtension(request.File.FileName);
@@ -29,7 +28,7 @@ public class CreateImageCommandHandler(
             }
             catch (Exception e)
             {
-                throw new Exception(e.Message);
+                throw;
             }
         }
         await mediaRepository.CreateAsync(imageId, newFileName, extension, (int)file.Length);

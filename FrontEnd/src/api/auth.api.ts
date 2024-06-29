@@ -7,18 +7,21 @@ const apiAuth = {
 	loginByEmailAsync: async (request: ILoginByEmailRequest) =>
 		await httpPost({
 			url: "/auth/login-by-email",
+			unauthorized: true,
 			body: request,
 		}),
 
 	loginByPhoneAsync: async (request: ILoginByPhoneRequest) =>
 		await httpPost({
 			url: "/auth/login-by-phone",
+			unauthorized: true,
 			body: request,
 		}),
 
 	registerAsync: async (request: IRegisterRequest) =>
 		await httpPost({
 			url: "/auth/register",
+			unauthorized: true,
 			body: request,
 		}),
 

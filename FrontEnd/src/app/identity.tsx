@@ -1,10 +1,10 @@
 import { ReactElement, useEffect, useState } from "react";
-import { getCurrentAsync } from "../store/user.slice";
 import { useAppDispatch } from "./hooks/redux/use-app-dispatch";
 import { CircularProgress } from "@mui/material";
-import { ApiResponse } from "../api/api";
-import { IUser } from "../api/interfaces/user/user.interface";
 import getConstant from "../infrastructure/constantProvider";
+import useApi from "../api/hooks/use-api.hook";
+import usersApi from "../api/users.api";
+import { updateUserData } from "../store/user.slice";
 
 export default function Identity({
 	children,
@@ -17,14 +17,15 @@ export default function Identity({
 	const [isLoading, setIsLoading] = useState(true);
 
 	useEffect(() => {
-		setIsLoading(true);
-		dispatch(getCurrentAsync()).then((result) => {
-			setIsLoading(false);
-			const payload = result.payload as ApiResponse<IUser | null>;
-			if (payload.ok) return;
-			if (payload.status === 500) setServerIsDead(true);
-		});
-	}, [dispatch]);
+		usersApi
+			.getCurrentAsync()
+			.then((res) =>
+				dispatch(
+					updateUserData({ isAuthenticated: true, user: res.body! })
+				)
+			)
+			.finally(() => setIsLoading(false));
+	}, []);
 
 	if (isLoading) {
 		return (

@@ -1,5 +1,4 @@
 ﻿using Flags.Api.Common.Mapping;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace Flags.Api;
 

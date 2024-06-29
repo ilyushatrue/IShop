@@ -20,7 +20,6 @@ export default function ProductMenu() {
 			onError: (handler) => handler.log().popup(),
 		});
 	}, []);
-
 	if (!products || isFetching) return null;
 	return (
 		<ProfilePage>

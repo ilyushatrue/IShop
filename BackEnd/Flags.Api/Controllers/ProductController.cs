@@ -21,39 +21,27 @@ public class ProductController(
     public async Task<IActionResult> GetAllProductsAsync(CancellationToken cancellationToken)
     {
         var result = await getAllProductsQueryHandler.Handle(cancellationToken);
-
-        return result.Match(
-            value => Ok(mapper.Map<IEnumerable<ProductDto>>(value)),
-            errors => Problem(errors));
+        return Ok(mapper.Map<IEnumerable<ProductDto>>(result));
     }
 
     [HttpPost]
     public async Task<IActionResult> CreateProductAsync(CreateProductCommand command, CancellationToken cancellationToken)
     {
-        var result = await createProductCommandHandler.Handle(command, cancellationToken);
-
-        return result.Match(
-            ok => Ok(),
-            errors => Problem(errors));
+        await createProductCommandHandler.Handle(command, cancellationToken);
+        return Ok();
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteProductAsync(Guid id, CancellationToken cancellationToken)
     {
-        var result = await deleteProductByIdCommandHandler.Handle(id, cancellationToken);
-
-        return result.Match(
-            ok => Ok(),
-            errors => Problem(errors));
+        await deleteProductByIdCommandHandler.Handle(id, cancellationToken);
+        return Ok();
     }
 
     [HttpPut]
     public async Task<IActionResult> UpdateProductAsync(Product product, CancellationToken cancellationToken)
     {
         var result = await updateProductCommandHandler.Handle(product, cancellationToken);
-
-        return result.Match(
-            ok => Ok(),
-            errors => Problem(errors));
+        return Ok();
     }
 }

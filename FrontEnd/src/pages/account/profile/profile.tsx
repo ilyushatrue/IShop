@@ -3,12 +3,10 @@ import { useAppSelector } from "../../../app/hooks/redux/use-app-selector";
 import UserForm from "./user-form";
 import useApi from "../../../api/hooks/use-api.hook";
 import usersApi from "../../../api/users.api";
-import { IUser } from "../../../api/interfaces/user/user.interface";
 import { useAppDispatch } from "../../../app/hooks/redux/use-app-dispatch";
-import { getCurrentAsync } from "../../../store/user.slice";
-import { ApiResponse } from "../../../api/api";
 import { useState } from "react";
 import ProfilePage from "../../profile-page";
+import { updateUserData } from "../../../store/user.slice";
 
 export interface IUserCredentialsRequest {
 	firstName: string;
@@ -26,17 +24,26 @@ export default function Profile() {
 	const { fetchAsync } = useApi();
 
 	async function handleFormSubmitAsync(user: IUserCredentialsRequest) {
+		let updated: boolean = false;
 		await fetchAsync({
 			request: async () => await usersApi.updateUserData(user),
 			onSuccess: (handler) =>
 				handler
 					.popup("Данные успешно обновлены. Ураааааааааааааа!")
-					.do(async () => {
-						const refreshResult = await dispatch(getCurrentAsync());
-						const payload =
-							refreshResult.payload as ApiResponse<IUser | null>;
-						setUser(payload.body);
-					}),
+					.do(async () => (updated = true)),
+			onError: (handler) => handler.log().popup(),
+		});
+
+		if (!updated) return;
+		await fetchAsync({
+			request: usersApi.getCurrentAsync,
+			onSuccess: (handler) =>
+				handler.do(({ body }) => {
+					dispatch(
+						updateUserData({ isAuthenticated: true, user: body! })
+					);
+					setUser(body!);
+				}),
 			onError: (handler) => handler.log().popup(),
 		});
 	}

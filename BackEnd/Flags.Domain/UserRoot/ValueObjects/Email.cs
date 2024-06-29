@@ -1,12 +1,12 @@
 using System.Text.RegularExpressions;
-using ErrorOr;
-using Flags.Domain.Common.Errors;
+using Flags.Domain.Common.Exceptions;
 using Flags.Domain.Common.Models;
 
 namespace Flags.Domain.UserRoot.ValueObjects;
 
 public class Email : ValueObject
 {
+    private const int EMAIL_MAX_LENGTH = 50;
     public string Value { get; private set; } = null!;
 
     private Email(string value)
@@ -18,21 +18,18 @@ public class Email : ValueObject
         yield return Value;
     }
 
-    public static ErrorOr<Email> Create(string input, string[] existingEmails)
+    public static Email Create(string input)
     {
         if (string.IsNullOrWhiteSpace(input))
-            return Errors.Authentication.InvalidCredentials;
+            throw new InvalidCredentialsException("Email не введен.");
 
         var email = input.Trim();
 
-        if (email.Length > 50)
-            return Errors.Authentication.InvalidCredentials;
+        if (email.Length > EMAIL_MAX_LENGTH)
+            throw new InvalidCredentialsException($"Превышено максимальное количество символов email ({EMAIL_MAX_LENGTH}).");
 
         if (Regex.IsMatch(email, @"^(.+)@(.+)$") == false)
-            return Errors.Authentication.InvalidCredentials;
-
-        if (existingEmails.Contains(email))
-            return Errors.User.DuplicateEmail;
+            throw new InvalidCredentialsException("Email не корректен.");
 
         return new Email(email);
     }

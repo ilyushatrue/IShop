@@ -1,9 +1,7 @@
-using ErrorOr;
 using Flags.Application.Authentication.Commands.Login;
 using Flags.Application.Authentication.Common;
-using Flags.Application.Authentication.Queries;
 using Flags.Application.Common.Persistance;
-using Flags.Domain.Common.Errors;
+using Flags.Domain.Common.Exceptions;
 using Flags.Domain.UserRoot.ValueObjects;
 
 namespace Flags.Infrastructure.Services.Auth;
@@ -15,19 +13,17 @@ public class LoginByPhoneQueryHandler(
     IPasswordHasher passwordHasher
 ) : ILoginByPhoneQueryHandler
 {
-    public async Task<ErrorOr<AuthenticationResult>> Handle(LoginByPhoneQuery query, CancellationToken cancellationToken)
+    public async Task<AuthenticationResult> Handle(string phone, string password, CancellationToken cancellationToken)
     {
-        var phone = Phone.Trim(query.Phone);
+        phone = Phone.Trim(phone);
 
-        var user = await userRepository.GetByPhoneAsync(phone);
+        var user = await userRepository.GetByPhoneAsync(phone) ??
+            throw new NotFoundException($"Пользователь с номером телефона {phone} не найден.");
 
-        if (user is null)
-            return Errors.Authentication.InvalidCredentials;
-
-        var passwordsMatch = passwordHasher.Verify(query.Password, user.Password.Value);
+        var passwordsMatch = passwordHasher.Verify(password, user.Password.Value);
 
         if (!passwordsMatch)
-            return Errors.Authentication.InvalidCredentials;
+            throw new InvalidCredentialsException($"Неверный логин или пароль.");
 
         var jwtAccessToken = jwtTokenGenerator.GenerateAccessToken(user);
 

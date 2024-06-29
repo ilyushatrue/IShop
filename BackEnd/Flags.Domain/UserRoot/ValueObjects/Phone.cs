@@ -1,6 +1,5 @@
+using Flags.Domain.Common.Exceptions;
 using System.Text.RegularExpressions;
-using ErrorOr;
-using Flags.Domain.Common.Errors;
 
 namespace Flags.Domain.UserRoot.ValueObjects;
 
@@ -13,13 +12,13 @@ public class Phone
 
     public string Value { get; private set; } = null!;
 
-    public static ErrorOr<Phone> Create(string input)
+    public static Phone Create(string input)
     {
         var trimmedInput = Trim(input);
         if (Validate(trimmedInput))
             return new Phone(trimmedInput);
         else
-            return Errors.Authentication.InvalidCredentials;
+            throw new InvalidCredentialsException("ex");
     }
 
     public static string Trim(string phoneNumber) => 

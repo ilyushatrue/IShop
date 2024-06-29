@@ -23,17 +23,21 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
                 lb => lb.HasOne(ur => ur.Role).WithMany().HasForeignKey(ur => ur.RoleId),
                 rb => rb.HasOne(ur => ur.User).WithMany().HasForeignKey(ur => ur.UserId));
 
-        builder.ComplexProperty(u => u.Password, b =>
+        builder.OwnsOne(u => u.Password, b =>
         {
             b.Property(x => x.Value).HasColumnName("password");
         });
-        builder.ComplexProperty(u => u.Phone, b =>
+
+        builder.OwnsOne(u => u.Phone, b =>
         {
             b.Property(x => x.Value).HasColumnName("phone");
+            b.HasIndex(x => x.Value).IsUnique().HasDatabaseName("ix_user_phone");
         });
-        builder.ComplexProperty(u => u.Email, b =>
+
+        builder.OwnsOne(u => u.Email, b =>
         {
             b.Property(x => x.Value).HasColumnName("email");
+            b.HasIndex(x => x.Value).IsUnique().HasDatabaseName("ix_user_email");
         });
     }
 }

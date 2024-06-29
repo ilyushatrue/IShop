@@ -1,4 +1,3 @@
-using ErrorOr;
 using Flags.Application.Authentication.Common;
 using Flags.Domain.UserRoot.ValueObjects;
 using Flags.Domain.UserRoot;
@@ -14,36 +13,21 @@ public class RegisterCommandHandler(
     IPasswordHasher passwordHasher
 ) : IRegisterCommandHandler
 {
-    public async Task<ErrorOr<AuthenticationResult>> Handle(RegisterCommand command, CancellationToken cancellationToken)
+    public async Task<AuthenticationResult> Handle(RegisterCommand command, CancellationToken cancellationToken)
     {
-        var errors = new List<Error>();
-        var existingUsers = await userRepository.GetAllAsync();
-        var existingEmails = existingUsers.Select(x => x.Email.Value).ToArray();
-        var existingPhones = existingUsers.Select(x => x.Phone.Value).ToArray();
-
-
-        var email = Email.Create(command.Email, existingEmails);
+        var email = Email.Create(command.Email);
         var phone = Phone.Create(command.Phone);
 
         var passwordHash = passwordHasher.Generate(command.Password);
         var password = Password.Create(passwordHash);
 
-        if (email.IsError)
-            errors.AddRange(email.Errors);
-        if (phone.IsError)
-            errors.AddRange(phone.Errors);
-        if (password.IsError)
-            errors.AddRange(password.Errors);
-        if (errors.Count > 0)
-            return errors;
-
         var user = User.Create(
             id: new Guid(),
             firstName: command.FirstName,
             lastName: command.LastName,
-            email: email.Value,
-            phone: phone.Value,
-            password: password.Value,
+            email: email,
+            phone: phone,
+            password: password,
             avatarId: command.AvatarId
         );
 

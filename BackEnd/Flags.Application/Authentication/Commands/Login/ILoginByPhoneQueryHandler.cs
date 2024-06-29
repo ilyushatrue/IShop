@@ -1,9 +1,7 @@
-﻿using ErrorOr;
-using Flags.Application.Authentication.Common;
-using Flags.Application.Authentication.Queries;
+﻿using Flags.Application.Authentication.Common;
 
 namespace Flags.Application.Authentication.Commands.Login;
 public interface ILoginByPhoneQueryHandler
 {
-    Task<ErrorOr<AuthenticationResult>> Handle(LoginByPhoneQuery query, CancellationToken cancellationToken);
+    Task<AuthenticationResult> Handle(string phone, string password, CancellationToken cancellationToken);
 }

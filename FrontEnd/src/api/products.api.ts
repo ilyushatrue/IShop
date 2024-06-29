@@ -1,4 +1,4 @@
-import { httpGet, httpPost, httpPut, httpRemove } from "./api";
+import { httpGet, httpPost, httpPut, httpDelete } from "./api";
 import { IProduct } from "./interfaces/product/product.interface";
 
 const baseUrl = "/products";
@@ -10,7 +10,7 @@ const productsApi = {
 		await httpPost({ url: baseUrl, body: product }),
 
 	deleteByIdAsync: async (id: string) =>
-		await httpRemove({ url: `${baseUrl}/${id}` }),
+		await httpDelete({ url: `${baseUrl}/${id}` }),
 
 	updateAsync: async (product: IProduct) =>
 		await httpPut({ url: baseUrl, body: product }),

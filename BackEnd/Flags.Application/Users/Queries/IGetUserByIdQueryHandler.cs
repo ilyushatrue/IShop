@@ -1,8 +1,7 @@
-﻿using ErrorOr;
-using Flags.Domain.UserRoot;
+﻿using Flags.Domain.UserRoot;
 
 namespace Flags.Application.Users.Queries;
 public interface IGetUserByIdQueryHandler
 {
-    Task<ErrorOr<User?>> Handle(string id, CancellationToken cancellationToken);
+    Task<User> Handle(Guid id, CancellationToken cancellationToken);
 }

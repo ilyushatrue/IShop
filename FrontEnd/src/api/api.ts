@@ -1,183 +1,124 @@
 import getConstant from "../infrastructure/constantProvider";
+import { StatusCodes } from "./enums/status-codes.enum";
 
-type TPost = {
+type ApiRequest = {
 	url: string;
+	unauthorized?: boolean;
 	body?: any;
-	responseType?: "text" | "json" | "blob" | "none";
 	props?: (requestInit: RequestInit) => RequestInit;
 };
 
 export type ApiResponse<T> = {
 	status: Response["status"];
 	ok: Response["ok"];
-	body: T;
+	body?: T;
 	errors: string[];
 };
 
-const fetchPipe = async <TOut = any>({
-	request,
-	expectedOutput = "none",
-}: {
-	request: () => Promise<Response>;
-	expectedOutput: "text" | "json" | "blob" | "none";
-}): Promise<ApiResponse<TOut>> => {
+const fetchPipe = async (
+	request: () => Promise<Response>
+): Promise<Response> => {
 	const attemptsCount = 2;
-	let body = undefined;
-	let ok = false;
-	let status = 500;
-	let errors: string[] = [];
-
-	try {
-		for (let attempt = 1; attempt <= attemptsCount; attempt++) {
-			const response = await request();
-			ok = response.ok;
-			status = response.status;
-			if (ok) {
-				if (expectedOutput === "none") break;
-				try {
-					switch (expectedOutput) {
-						case "blob":
-							body = await response.blob();
-							break;
-						case "json":
-							body = await response.json();
-							break;
-						case "text":
-							body = await response.text();
-							break;
-					}
-				} catch {
-					body = undefined;
-				}
-				break;
-			} else {
-				const errorResponse = await response.json();
-				errors = Object.values(errorResponse.errors).flatMap(
-					(x: any) => x
-				);
-				if (status === 401 && attempt === 1) {
-					const jwtResponse = await post({
-						url: "/auth/refresh-jwt",
-					});
-					if (jwtResponse.ok) continue;
-					else break;
-				}
-				throw new Error(`${status}. ${response.statusText}`, {
-					cause: status,
-				});
-			}
+	let response: Response;
+	for (let attempt = 1; attempt <= attemptsCount; attempt++) {
+		response = await request();
+		if (response.ok) break;
+		if (response.status === 401 && attempt === 1) {
+			const jwtResponse = await post({
+				url: "/auth/refresh-jwt",
+			});
+			if (jwtResponse.ok) continue;
+			else break;
+		} else {
+			break;
 		}
-	} catch (error) {
-		console.error(error);
 	}
-	return {
-		body,
-		ok,
-		status,
-		errors,
+	return response!;
+};
+
+const handleResponse = async <TOut>(
+	response: Response,
+	onResponse?: (response: Response) => Promise<TOut>
+): Promise<ApiResponse<TOut>> => {
+	const apiResponse: ApiResponse<TOut> = {
+		body: undefined,
+		errors: [],
+		ok: response.ok,
+		status: StatusCodes.INTERNAL_SERVER_ERROR,
 	};
+	if (response.ok) {
+		const successResult =
+			(await onResponse?.(response)) ?? ((await response.json()) as TOut);
+		apiResponse.status = response.status;
+		apiResponse.body = successResult;
+	} else {
+		const { detail, status } = await response.json();
+		apiResponse.status = status;
+		apiResponse.errors = [detail];
+	}
+	return apiResponse;
 };
 
-const get = async ({ url }: { url: string }): Promise<Response> => {
-	const fullUrl = getConstant("API_URL") + url;
-	return await fetch(fullUrl, {
-		method: "GET",
-		credentials: "include",
-	});
-};
-
-const post = async ({ url, body, props }: TPost): Promise<Response> => {
+const handleRequest = async (
+	method: string,
+	{ url, body, props }: ApiRequest
+): Promise<Response> => {
 	const fullUrl = getConstant("API_URL") + url;
 	const defaultRequestInit: RequestInit = {
-		method: "POST",
-		body: JSON.stringify(body),
+		method,
+		body: body && JSON.stringify(body),
 		credentials: "include",
 		headers: {
 			"Content-Type": "application/json",
 		},
 	};
-	const requestInit = props?.(defaultRequestInit);
-
-	return await fetch(fullUrl, requestInit || defaultRequestInit);
+	const requestInit = props?.(defaultRequestInit) || defaultRequestInit;
+	return await fetch(fullUrl, requestInit);
 };
 
-const remove = async ({ url, body, props }: TPost): Promise<Response> => {
-	const fullUrl = getConstant("API_URL") + url;
-	const defaultRequestInit: RequestInit = {
-		method: "DELETE",
-		body: JSON.stringify(body),
-		credentials: "include",
-		headers: {
-			"Content-Type": "application/json",
-		},
-	};
-	const requestInit = props?.(defaultRequestInit);
+const get = (request: ApiRequest) => handleRequest("GET", request);
+const post = (request: ApiRequest) => handleRequest("POST", request);
+const remove = (request: ApiRequest) => handleRequest("DELETE", request);
+const put = (request: ApiRequest) => handleRequest("PUT", request);
 
-	return await fetch(fullUrl, requestInit || defaultRequestInit);
+const httpGet = async <TOut>(
+	request: ApiRequest,
+	onResponse?: (response: Response) => Promise<TOut>
+): Promise<ApiResponse<TOut>> => {
+	const response = request.unauthorized
+		? await get(request)
+		: await fetchPipe(() => get(request));
+	return handleResponse(response, onResponse);
 };
 
-const put = async ({ url, body, props }: TPost): Promise<Response> => {
-	console.log(body);
-	const fullUrl = getConstant("API_URL") + url;
-	const defaultRequestInit: RequestInit = {
-		method: "PUT",
-		body: JSON.stringify(body),
-		credentials: "include",
-		headers: {
-			"Content-Type": "application/json",
-		},
-	};
-	const requestInit = props?.(defaultRequestInit);
-
-	return await fetch(fullUrl, requestInit || defaultRequestInit);
+const httpPost = async <TOut = undefined>(
+	request: ApiRequest,
+	onResponse?: (response: Response) => Promise<TOut>
+): Promise<ApiResponse<TOut>> => {
+	const response = request.unauthorized
+		? await post(request)
+		: await fetchPipe(() => post(request));
+	return handleResponse(response, onResponse);
 };
 
-const httpGet = async <TOut>({
-	url,
-	expectedOutput = "json",
-}: {
-	url: string;
-	expectedOutput?: "text" | "json" | "blob" | "none";
-}): Promise<ApiResponse<TOut>> =>
-	await fetchPipe({
-		request: async () => await get({ url }),
-		expectedOutput: expectedOutput,
-	});
+const httpDelete = async <TOut = undefined>(
+	request: ApiRequest,
+	onResponse?: (response: Response) => Promise<TOut>
+): Promise<ApiResponse<TOut>> => {
+	const response = request.unauthorized
+		? await remove(request)
+		: await fetchPipe(() => remove(request));
+	return handleResponse(response, onResponse);
+};
 
-const httpPost = async <TOut = undefined>({
-	url,
-	body,
-	responseType: expectedOutput = "none",
-	props,
-}: TPost): Promise<ApiResponse<TOut | undefined>> =>
-	await fetchPipe({
-		request: async () =>
-			await post({ url, body, responseType: expectedOutput, props }),
-		expectedOutput: expectedOutput,
-	});
+const httpPut = async <TOut = undefined>(
+	request: ApiRequest,
+	onResponse?: (response: Response) => Promise<TOut>
+): Promise<ApiResponse<TOut>> => {
+	const response = request.unauthorized
+		? await put(request)
+		: await fetchPipe(() => put(request));
+	return handleResponse(response, onResponse);
+};
 
-const httpRemove = async <TOut = undefined>({
-	url,
-	body,
-	responseType: expectedOutput = "none",
-	props,
-}: TPost): Promise<ApiResponse<TOut | undefined>> =>
-	await fetchPipe({
-		request: async () =>
-			await remove({ url, body, responseType: expectedOutput, props }),
-		expectedOutput: expectedOutput,
-	});
-
-const httpPut = async <TOut = undefined>({
-	url,
-	body,
-	responseType: expectedOutput = "none",
-	props,
-}: TPost): Promise<ApiResponse<TOut | undefined>> =>
-	await fetchPipe({
-		request: async () =>
-			await put({ url, body, responseType: expectedOutput, props }),
-		expectedOutput: expectedOutput,
-	});
-
-export { httpPut, httpRemove, httpPost, httpGet };
+export { httpPut, httpDelete, httpPost, httpGet };

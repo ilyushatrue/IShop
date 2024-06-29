@@ -1,7 +1,7 @@
 using Flags.Application.Users.Command;
 using Flags.Application.Users.Queries;
 using Flags.Contracts.Authentication;
-using Flags.Domain.Common.Errors;
+using Flags.Domain.Common.Exceptions;
 using Flags.Infrastructure.Authentication;
 using MapsterMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -22,23 +22,14 @@ public class UsersController(
     public async Task<IActionResult> GetAllUsersAsync(CancellationToken cancellationToken)
     {
         var result = await getAllUsersQueryHandler.Handle(cancellationToken);
-
-        return result.Match(
-            value => Ok(value),
-            errors => Problem(errors)
-        );
+        return Ok(result);
     }
 
-    // not used
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetUserByIdAsync(string id, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetUserByIdAsync(Guid id, CancellationToken cancellationToken)
     {
-        var result = await getUserByIdQueryHandler.Handle(new(id), cancellationToken);
-
-        return result.Match(
-            value => Ok(value),
-            errors => Problem(errors)
-        );
+        var result = await getUserByIdQueryHandler.Handle(id, cancellationToken);
+        return Ok(result);
     }
 
     [AllowAnonymous]
@@ -46,7 +37,7 @@ public class UsersController(
     public IActionResult GetCurrent(CancellationToken cancellationToken)
     {
         if (User.Identity?.IsAuthenticated != true)
-            return Problem([Errors.User.UserNotAuthenticated]);
+            throw new NotAuthenticatedException();
 
         var firstName = Request.Cookies["user-first-name"];
         var lastName = Request.Cookies["user-last-name"];
@@ -63,7 +54,7 @@ public class UsersController(
         };
 
         if (requiredCredentials.Any(x => x is null))
-            return Problem([Errors.User.UserNotAuthenticated]);
+            throw new NotAuthenticatedException();
 
         Guid? avatarGuid = Guid.TryParse(avatarId, out Guid result) ? result : null;
 
@@ -81,19 +72,13 @@ public class UsersController(
     public async Task<IActionResult> EditUserData([FromBody] EditUserDataCommand user, CancellationToken cancellationToken)
     {
         var result = await editUserDataCommandHandler.Handle(user, cancellationToken);
-        var updatedUser = result.Value;
-        if (!result.IsError)
-        {
-            HttpContext.Response.Cookies.Append("user-first-name", updatedUser.FirstName);
-            HttpContext.Response.Cookies.Append("user-last-name", updatedUser.LastName);
-            HttpContext.Response.Cookies.Append("user-email", updatedUser.Email.Value);
-            HttpContext.Response.Cookies.Append("user-phone", updatedUser.Phone.Value);
-            HttpContext.Response.Cookies.Append("user-avatar", updatedUser.AvatarId.ToString() ?? "");
-        }
 
-        return result.Match(
-            ok => Ok(),
-            errors => Problem(errors)
-        );
+        HttpContext.Response.Cookies.Append("user-first-name", result.FirstName);
+        HttpContext.Response.Cookies.Append("user-last-name", result.LastName);
+        HttpContext.Response.Cookies.Append("user-email", result.Email.Value);
+        HttpContext.Response.Cookies.Append("user-phone", result.Phone.Value);
+        HttpContext.Response.Cookies.Append("user-avatar", result.AvatarId.ToString() ?? "");
+
+        return Ok();
     }
 }

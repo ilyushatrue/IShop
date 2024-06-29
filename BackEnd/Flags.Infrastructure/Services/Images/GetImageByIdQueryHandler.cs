@@ -1,8 +1,7 @@
-﻿using ErrorOr;
-using Flags.Application.AppSettings;
+﻿using Flags.Application.AppSettings;
 using Flags.Application.Common.Persistance;
 using Flags.Application.Images.Queries;
-using Flags.Domain.Common.Errors;
+using Flags.Domain.Common.Exceptions;
 using Microsoft.Extensions.Options;
 using System.Drawing;
 
@@ -12,15 +11,11 @@ public class GetImageByIdQueryHandler(
     IOptions<FileSettings> fileSettings,
     IMediaRepository mediaRepository) : IGetImageByIdQueryHandler
 {
-    public async Task<ErrorOr<(string, byte[])>> Handle(GetImageByIdQuery request, CancellationToken cancellationToken)
+    public async Task<(string, byte[])> Handle(GetImageByIdQuery request, CancellationToken cancellationToken)
     {
         var folderPath = fileSettings.Value.UploadPath;
-        var image = await mediaRepository.GetByIdAsync(request.Id);
-
-        if (image is null)
-        {
-            return Errors.Media.ImageNotFound;
-        }
+        var image = await mediaRepository.GetByIdAsync(request.Id) ??
+            throw new NotFoundException("Изображение не найдено.");
 
         var fullPath = Path.Combine(folderPath, image.Uri);
 
@@ -38,7 +33,7 @@ public class GetImageByIdQueryHandler(
         }
         catch (Exception)
         {
-            return Errors.Media.ImageNotFound;
+            throw;
         }
     }
 }

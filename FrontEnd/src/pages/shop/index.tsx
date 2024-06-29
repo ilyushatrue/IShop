@@ -13,6 +13,7 @@ export default function Shop() {
 	const [products, setProducts] = useState<IProduct[]>();
 
 	useEffect(() => {
+		console.log(1)
 		fetchAsync({
 			request: productsApi.getAllAsync,
 			onSuccess: (handler) =>
@@ -21,8 +22,8 @@ export default function Shop() {
 		});
 	}, []);
 
+	
 	if (!products) return null;
-
 	return (
 		<Page isLoading={isFetching} sx={{ mt: 2 }}>
 			<Box display={"flex"} gap={2}>

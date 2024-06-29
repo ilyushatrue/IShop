@@ -1,10 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using System;
-using System.ComponentModel.DataAnnotations;
-using System.Net;
+﻿using Flags.Domain.Common.Exceptions;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace Flags.Api.Middlewares
 {
@@ -27,36 +22,57 @@ namespace Flags.Api.Middlewares
             {
                 await _next(httpContext);
             }
+            catch (NotAuthenticatedException ex)
+            {
+                await HandleExceptionAsync(httpContext, StatusCodes.Status401Unauthorized, ex.Message);
+            }
             catch (ValidationException ex)
             {
-                await HandleExceptionAsync(httpContext, HttpStatusCode.BadRequest, ex.Message);
+                await HandleExceptionAsync(httpContext, StatusCodes.Status400BadRequest, ex.Message);
+            }
+            catch (NotFoundException ex)
+            {
+                await HandleExceptionAsync(httpContext, StatusCodes.Status404NotFound, ex.Message);
+            }
+            catch (InvalidCredentialsException ex)
+            {
+                await HandleExceptionAsync(httpContext, StatusCodes.Status400BadRequest, ex.Message);
+            }
+            catch (ArgumentNullException ex)
+            {
+                await HandleExceptionAsync(httpContext, StatusCodes.Status400BadRequest, ex.Message);
             }
             catch (Exception ex)
             {
-                await HandleExceptionAsync(httpContext, HttpStatusCode.InternalServerError, ex.Message);
+                await HandleExceptionAsync(httpContext, StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 
         private async Task HandleExceptionAsync(
             HttpContext httpContext,
-            HttpStatusCode statusCode,
+            int statusCode,
             string exceptionMessage)
         {
             _logger.LogError(exceptionMessage);
             HttpResponse response = httpContext.Response;
             response.ContentType = "application/json";
-            response.StatusCode = (int)statusCode;
+            response.StatusCode = statusCode;
 
             var errorDetail = new
             {
-                Type = "https://tools.ietf.org/html/rfc9110#section-15.5.1",
-                Title = "An error occurred while processing your request.",
-                Status = response.StatusCode,
-                Detail = exceptionMessage,
-                TraceId = httpContext.TraceIdentifier
+                title = "Возникла ошибка при выполнении запроса.",
+                status = response.StatusCode,
+                detail = exceptionMessage,
+                traceId = httpContext.TraceIdentifier
             };
 
-            string result = JsonSerializer.Serialize(errorDetail);
+            var options = new JsonSerializerOptions
+            {
+                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+                WriteIndented = true
+            };
+
+            string result = JsonSerializer.Serialize(errorDetail, options);
             await response.WriteAsync(result);
         }
     }
