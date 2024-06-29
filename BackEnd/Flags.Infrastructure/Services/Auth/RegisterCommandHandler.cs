@@ -3,17 +3,23 @@ using Flags.Domain.UserRoot.ValueObjects;
 using Flags.Domain.UserRoot;
 using Flags.Application.Authentication.Commands.Register;
 using Flags.Application.Common.Persistance;
+using Flags.Application.AppSettings;
+using Microsoft.Extensions.Options;
+using Flags.Application.Emails;
+using System.Data.SqlTypes;
 
 namespace Flags.Infrastructure.Services.Auth;
 
 public class RegisterCommandHandler(
     IUserRepository userRepository,
-    IRefreshJwtRepository refreshJwtRepository,
-    IJwtTokenGenerator jwtTokenGenerator,
-    IPasswordHasher passwordHasher
+    IPasswordHasher passwordHasher,
+    IEmailSender emailSender,
+    IOptions<HostSettings> hostSettings
 ) : IRegisterCommandHandler
 {
-    public async Task<AuthenticationResult> Handle(RegisterCommand command, CancellationToken cancellationToken)
+    private readonly HostSettings _hostSettings = hostSettings.Value;
+
+    public async Task<bool> Handle(RegisterCommand command, CancellationToken cancellationToken)
     {
         var email = Email.Create(command.Email);
         var phone = Phone.Create(command.Phone);
@@ -22,7 +28,7 @@ public class RegisterCommandHandler(
         var password = Password.Create(passwordHash);
 
         var user = User.Create(
-            id: new Guid(),
+            id: Guid.NewGuid(),
             firstName: command.FirstName,
             lastName: command.LastName,
             email: email,
@@ -33,9 +39,12 @@ public class RegisterCommandHandler(
 
         await userRepository.AddAsync(user);
 
-        var jwtAccessToken = jwtTokenGenerator.GenerateAccessToken(user);
-        await refreshJwtRepository.CreateAsync(user.Id);
+        await emailSender.SendEmailAsync(
+            email.Value,
+            "Подтверждение эл. почты",
+            $"Подтвердите свою электронную почту перейдя по <a href=\"{_hostSettings.Domain}/auth/verify-email/{user.Id}\">ссылке</a>."
+        );
 
-        return new AuthenticationResult(user, jwtAccessToken);
+        return true;
     }
 }

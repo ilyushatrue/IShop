@@ -1,5 +1,6 @@
 ﻿using Flags.Domain.Common.Exceptions;
 using System.Text.Json;
+using InvalidOperationException = Flags.Domain.Common.Exceptions.InvalidOperationException;
 
 namespace Flags.Api.Middlewares
 {
@@ -39,6 +40,10 @@ namespace Flags.Api.Middlewares
                 await HandleExceptionAsync(httpContext, StatusCodes.Status400BadRequest, ex.Message);
             }
             catch (ArgumentNullException ex)
+            {
+                await HandleExceptionAsync(httpContext, StatusCodes.Status400BadRequest, ex.Message);
+            }
+            catch (InvalidOperationException ex)
             {
                 await HandleExceptionAsync(httpContext, StatusCodes.Status400BadRequest, ex.Message);
             }

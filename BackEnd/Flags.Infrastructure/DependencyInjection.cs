@@ -30,6 +30,9 @@ using Flags.Application.Common;
 using Flags.Application.Products.Queries;
 using Flags.Infrastructure.Services.Products;
 using Flags.Application.Products.Commands;
+using Flags.Application.Emails;
+using Flags.Infrastructure.Services.Emails;
+using Flags.Application.Authentication.Commands.VerifyEmail;
 
 namespace Flags.Infrastructure;
 
@@ -85,6 +88,8 @@ public static class DependencyInjection
         services.AddScoped<ICreateProductCommandHandler, CreateProductCommandHandler>();
         services.AddScoped<IDeleteProductByIdCommandHandler, DeleteProductByIdCommandHandler>();
         services.AddScoped<IUpdateProductCommandHandler, UpdateProductCommandHandler>();
+        services.AddScoped<IEmailSender, EmailSender>();
+        services.AddScoped<IVerifyEmailCommandHandler, VerifyEmailCommandHandler>();
 
         return services;
     }
@@ -127,19 +132,19 @@ public static class DependencyInjection
 
         services.Configure<AuthorizationSettings>(configuration.GetSection(nameof(AuthorizationSettings)));
         services.Configure<FileSettings>(configuration.GetSection(nameof(FileSettings)));
+        services.Configure<EmailSettings>(configuration.GetSection(nameof(EmailSettings)));
+        services.Configure<ClientSettings>(configuration.GetSection(nameof(ClientSettings)));
+        services.Configure<HostSettings>(configuration.GetSection(nameof(HostSettings)));
         services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
         services.AddAuthorizationBuilder()
-            .AddPolicy(CustomPolicies.ADMIN_POLICY, policy =>
-            {
-                policy
-                    .AddRequirements(new PermissionRequirement(
-                    [
-                        PermissionEnum.Create,
-                        PermissionEnum.Read,
-                        PermissionEnum.Delete,
-                        PermissionEnum.Update
-                    ]));
-            });
+            .AddPolicy(CustomPolicies.ADMIN_POLICY, policy => policy
+                .AddRequirements(new PermissionRequirement(
+                [
+                    PermissionEnum.Create,
+                    PermissionEnum.Read,
+                    PermissionEnum.Delete,
+                    PermissionEnum.Update
+                ])));
 
         return services;
     }

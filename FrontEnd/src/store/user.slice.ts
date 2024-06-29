@@ -10,13 +10,13 @@ const userSlice = createSlice({
 	name: "user",
 	initialState,
 	reducers: {
-		updateUserData: (state, action: PayloadAction<IUserState>) => {
+		updateCurrentUserState: (state, action: PayloadAction<IUserState>) => {
 			state.isAuthenticated = action.payload.isAuthenticated;
 			state.user = action.payload.user;
 		},
-		resetState: (state) => (state = initialState),
+		resetCurrentUserState: (state) => (state = initialState),
 	},
 });
 
-export const { updateUserData } = userSlice.actions;
+export const { updateCurrentUserState, resetCurrentUserState } = userSlice.actions;
 export default userSlice.reducer;

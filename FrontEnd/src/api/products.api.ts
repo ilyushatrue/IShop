@@ -4,7 +4,8 @@ import { IProduct } from "./interfaces/product/product.interface";
 const baseUrl = "/products";
 
 const productsApi = {
-	getAllAsync: async () => await httpGet<IProduct[]>({ url: baseUrl }),
+	getAllAsync: async () =>
+		await httpGet<IProduct[]>({ url: baseUrl }, (r) => r.json()),
 
 	createAsync: async (product: IProduct) =>
 		await httpPost({ url: baseUrl, body: product }),

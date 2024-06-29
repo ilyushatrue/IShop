@@ -3,6 +3,7 @@ using System;
 using Flags.Infrastructure.Persistance;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Flags.Infrastructure.Migrations
 {
     [DbContext(typeof(FlagDbContext))]
-    partial class FlagDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240629075820_EmailIsVerified2")]
+    partial class EmailIsVerified2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.4");
@@ -349,6 +352,10 @@ namespace Flags.Infrastructure.Migrations
                                 .IsRequired()
                                 .HasColumnType("TEXT")
                                 .HasColumnName("email");
+
+                            b1.Property<Guid>("VerificationGuid")
+                                .HasColumnType("TEXT")
+                                .HasColumnName("email_verification_guid");
 
                             b1.HasKey("UserId");
 

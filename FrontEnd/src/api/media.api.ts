@@ -12,5 +12,7 @@ export const mediaApi = {
 			}),
 		}),
 	getImageById: (id: string) =>
-		httpGet<Blob>({ url: `${baseUrl}/image/${id}` }, (response) => response.blob()),
+		httpGet<Blob>({ url: `${baseUrl}/image/${id}` }, (response) =>
+			response.blob()
+		),
 };

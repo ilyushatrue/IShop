@@ -1,12 +1,18 @@
-﻿using Flags.Application.Authentication.Commands.Login;
+﻿using Flags.Application.AppSettings;
+using Flags.Application.Authentication.Commands.Login;
 using Flags.Application.Authentication.Commands.Logout;
 using Flags.Application.Authentication.Commands.RefreshJwt;
 using Flags.Application.Authentication.Commands.Register;
+using Flags.Application.Authentication.Commands.VerifyEmail;
+using Flags.Application.Authentication.Common;
 using Flags.Application.Authentication.Queries;
 using Flags.Domain.Common.Exceptions;
 using Flags.Domain.UserRoot;
+using Flags.Infrastructure.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace Flags.Api.Controllers;
 
@@ -17,14 +23,18 @@ public class AuthenticationController(
     IRefreshJwtCommandHandler refreshJwtCommandHandler,
     ILoginByPhoneQueryHandler loginByPhoneQueryHandler,
     ILoginByEmailQueryHandler loginByEmailQueryHandler,
-    ILogoutCommandHandler logoutCommandHandler
+    ILogoutCommandHandler logoutCommandHandler,
+    IVerifyEmailCommandHandler verifyEmailCommandHandler,
+    IJwtTokenGenerator jwtTokenGenerator,
+    IOptions<ClientSettings> clientSettings
     ) : ApiController
 {
+    private readonly ClientSettings _clientSettings = clientSettings.Value;
+
     [HttpPost("register")]
     public async Task<IActionResult> Register(RegisterCommand command, CancellationToken cancellationToken)
     {
-        var authResult = await registerCommandHandler.Handle(command, cancellationToken);
-        SetCookies(authResult.User, authResult.JwtAccessToken);
+        await registerCommandHandler.Handle(command, cancellationToken);
         return Ok();
     }
 
@@ -45,8 +55,7 @@ public class AuthenticationController(
     [HttpPost("login-by-email")]
     public async Task<IActionResult> LoginByEmail(LoginByEmailQuery query, CancellationToken cancellationToken)
     {
-        var result = await loginByEmailQueryHandler.Handle(query, cancellationToken);
-        SetCookies(result.User, result.JwtAccessToken);
+        await loginByEmailQueryHandler.Handle(query, cancellationToken);
         return Ok();
     }
 
@@ -66,10 +75,31 @@ public class AuthenticationController(
     [HttpPost("login-by-phone")]
     public async Task<IActionResult> LoginByPhone(LoginByPhoneQuery query, CancellationToken cancellationToken)
     {
-        var loginResult = await loginByPhoneQueryHandler.Handle(query.Phone, query.Password, cancellationToken);
-        SetCookies(loginResult.User, loginResult.JwtAccessToken);
+        await loginByPhoneQueryHandler.Handle(query.Phone, query.Password, cancellationToken);
         return Ok();
     }
+
+    [HttpGet("verify-email/{userId}")]
+    public async Task<IActionResult> VerifyEmail(Guid userId)
+    {
+        var result = await verifyEmailCommandHandler.Handle(userId);
+        if (result is null)
+        {
+            return BadRequest(new HtmlString(@"
+               <div>не удалось подтвердить эл. почту</div>
+           "));
+        }
+
+        SetCookies(result.User, result.JwtAccessToken);
+
+        return Ok(new HtmlString($@"
+                <div>
+                    Вы успешно подтвердили эл. почту!
+                    <a href='{_clientSettings.Domain}/account'>ссылке</a>
+                </div>
+            "));
+    }
+
 
     private void SetCookies(User user, string jwtAccessToken)
     {

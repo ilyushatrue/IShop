@@ -6,7 +6,7 @@ import usersApi from "../../../api/users.api";
 import { useAppDispatch } from "../../../app/hooks/redux/use-app-dispatch";
 import { useState } from "react";
 import ProfilePage from "../../profile-page";
-import { updateUserData } from "../../../store/user.slice";
+import { updateCurrentUserState } from "../../../store/user.slice";
 
 export interface IUserCredentialsRequest {
 	firstName: string;
@@ -40,7 +40,7 @@ export default function Profile() {
 			onSuccess: (handler) =>
 				handler.do(({ body }) => {
 					dispatch(
-						updateUserData({ isAuthenticated: true, user: body! })
+						updateCurrentUserState({ isAuthenticated: true, user: body! })
 					);
 					setUser(body!);
 				}),

@@ -4,9 +4,13 @@ import { IUser } from "./interfaces/user/user.interface";
 
 const usersApi = {
 	getCurrentAsync: async () =>
-		await httpGet<IUser>({ url: "/users/current", unauthorized: true }),
+		await httpGet<IUser>(
+			{ url: "/users/current", anonymous: true },
+			(r) => r.json()
+		),
 
-	getListAsync: async () => await httpGet<IUser[]>({ url: "/users" }),
+	getListAsync: async () =>
+		await httpGet<IUser[]>({ url: "/users" }, (r) => r.json()),
 
 	updateUserData: async (data: IUserCredentialsRequest) =>
 		await httpPut({ url: `/users`, body: data }),

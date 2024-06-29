@@ -2,9 +2,11 @@ import { ReactElement, useEffect, useState } from "react";
 import { useAppDispatch } from "./hooks/redux/use-app-dispatch";
 import { CircularProgress } from "@mui/material";
 import getConstant from "../infrastructure/constantProvider";
-import useApi from "../api/hooks/use-api.hook";
 import usersApi from "../api/users.api";
-import { updateUserData } from "../store/user.slice";
+import {
+	resetCurrentUserState,
+	updateCurrentUserState,
+} from "../store/user.slice";
 
 export default function Identity({
 	children,
@@ -19,11 +21,18 @@ export default function Identity({
 	useEffect(() => {
 		usersApi
 			.getCurrentAsync()
-			.then((res) =>
-				dispatch(
-					updateUserData({ isAuthenticated: true, user: res.body! })
-				)
-			)
+			.then((res) => {
+				if (res.ok) {
+					dispatch(
+						updateCurrentUserState({
+							isAuthenticated: true,
+							user: res.body!,
+						})
+					);
+				} else {
+					dispatch(resetCurrentUserState());
+				}
+			})
 			.finally(() => setIsLoading(false));
 	}, []);
 
