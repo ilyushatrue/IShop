@@ -21,19 +21,26 @@ public class Email : ValueObject
 
     public static Email Create(string input)
     {
-        if (string.IsNullOrWhiteSpace(input))
+        if (!ValidateFilled(input))
             throw new InvalidCredentialsException("Email не введен.");
 
         var email = input.Trim();
-
-        if (email.Length > EMAIL_MAX_LENGTH)
+        if (!ValidateLength(email))
             throw new InvalidCredentialsException($"Превышено максимальное количество символов email ({EMAIL_MAX_LENGTH}).");
 
-        if (Regex.IsMatch(email, @"^(.+)@(mail\.ru|gmail\.com)$") == false)
+        if (!ValidateFormat(email))
             throw new InvalidCredentialsException("Email не корректен.");
 
         return new Email(email);
     }
+
+    private static bool ValidateFilled(string email) => !string.IsNullOrWhiteSpace(email);
+    private static bool ValidateLength(string email) => email.Length <= EMAIL_MAX_LENGTH;
+    private static bool ValidateFormat(string email) => Regex.IsMatch(email, @"^(.+)@(mail\.ru|gmail\.com)$");
+    public static bool Validate(string email) =>
+        ValidateFilled(email)
+        && ValidateLength(email)
+        && ValidateFormat(email);
 
     public void SetIsVerified()
     {

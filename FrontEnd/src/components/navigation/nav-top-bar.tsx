@@ -62,15 +62,13 @@ export default function NavTopBar({ menuItems, avatar, value }: IProps) {
 							iconName="local_shipping"
 							iconSx={{ color: "black" }}
 							onClick={() => navigate("/purchases")}
-							fontSize={24}
 						/>
 						<IconButton
 							orientation="vertical"
 							caption="Избранное"
 							iconName="favorite"
 							iconSx={{ color: "black" }}
-							onClick={() => navigate("/goods")}
-							fontSize={24}
+							onClick={() => navigate("/favorite")}
 						/>
 						<IconButton
 							orientation="vertical"
@@ -78,7 +76,6 @@ export default function NavTopBar({ menuItems, avatar, value }: IProps) {
 							iconName="shopping_bag"
 							iconSx={{ color: "black" }}
 							onClick={() => navigate("/cart")}
-							fontSize={24}
 						/>
 						{/* <Box
 							display={"flex"}

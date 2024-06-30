@@ -46,7 +46,6 @@ export default function ProfilePage({children, ...props}:BoxProps) {
 							onClick={() => navigate("/account")}
 							caption="Мой профиль"
 							variant="squared"
-							fontSize={26}
 							fullwidth
 						/>
 						<IconButton
@@ -54,7 +53,6 @@ export default function ProfilePage({children, ...props}:BoxProps) {
 							onClick={() => navigate("/purchases")}
 							caption="Покупки"
 							variant="squared"
-							fontSize={26}
 							fullwidth
 						/>
 						<IconButton
@@ -62,8 +60,6 @@ export default function ProfilePage({children, ...props}:BoxProps) {
 							onClick={() => navigate("/cart")}
 							caption="Корзина"
 							variant="squared"
-							
-							fontSize={26}
 							fullwidth
 						/>
 						<IconButton
@@ -71,7 +67,6 @@ export default function ProfilePage({children, ...props}:BoxProps) {
 							onClick={() => navigate("/products/menu")}
 							caption="Добавить товар"
 							variant="squared"
-							fontSize={26}
 							fullwidth
 						/>
 					</Box>

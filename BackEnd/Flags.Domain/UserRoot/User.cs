@@ -54,4 +54,6 @@ public class User : AggregateRoot<Guid>
     public IReadOnlyCollection<Role> Roles => _roles.AsReadOnly();
     public RefreshJwt? RefreshJwt { get; }
     public Media? Avatar { get; }
+
+    public void ChangePassword(Password password) => Password = password;
 }

@@ -5,8 +5,9 @@ using Flags.Domain.UserRoot.ValueObjects;
 namespace Flags.Application.Common.Persistance;
 public interface IUserRepository
 {
-    Task<bool> CheckUserWithEmailExist(Email email);
-    Task<bool> CheckUserWithPhoneExist(Phone phone);
+    Task<bool> CheckUserExistsByIdAsync(Guid id);
+    Task<bool> CheckUserWithEmailExistsAsync(Email email);
+    Task<bool> CheckUserWithPhoneExistsAsync(Phone phone);
     Task<User?> GetByEmailAsync(string email);
     Task<User?> GetByPhoneAsync(string phone);
     Task<User?> GetByIdAsync(Guid id);

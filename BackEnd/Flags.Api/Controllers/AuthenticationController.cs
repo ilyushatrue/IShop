@@ -3,9 +3,11 @@ using Flags.Application.Authentication.Commands.Login;
 using Flags.Application.Authentication.Commands.Logout;
 using Flags.Application.Authentication.Commands.RefreshJwt;
 using Flags.Application.Authentication.Commands.Register;
+using Flags.Application.Authentication.Commands.ResetPassword;
 using Flags.Application.Authentication.Commands.VerifyEmail;
 using Flags.Application.Authentication.Queries;
 using Flags.Domain.Common.Exceptions;
+using Flags.Infrastructure.Services.Auth.ResetPassword;
 using Flags.Infrastructure.Services.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -23,6 +25,9 @@ public class AuthenticationController(
     ILoginByEmailQueryHandler loginByEmailQueryHandler,
     ILogoutCommandHandler logoutCommandHandler,
     IVerifyEmailCommandHandler verifyEmailCommandHandler,
+    ISendResetPasswordEmailCommandHandler sendResetPasswordEmailCommandHandler,
+    IResetPasswordCommandHandler resetPasswordCommandHandler,
+    ISendResetPasswordFormCommandHandler sendResetPasswordFormCommandHandler,
     IOptions<ClientSettings> clientSettings,
     CookieManager cookieManager
     ) : ApiController
@@ -82,31 +87,40 @@ public class AuthenticationController(
         return Ok();
     }
 
+    [HttpPost("send-reset-password-email")]
+    public async Task<IActionResult> SendResetPasswordEmail([FromBody] string email)
+    {
+        await sendResetPasswordEmailCommandHandler.Handle(email);
+        return Ok();
+    }
+
+    [HttpGet("send-reset-password-form")]
+    public async Task<IActionResult> SendResetPasswordForm([FromQuery] string token)
+    {
+        var formHtml = await sendResetPasswordFormCommandHandler.Handle(token);
+        return Content(formHtml, "text/html", Encoding.UTF8);
+    }
+
+    [HttpPost("reset-password")]
+    public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordCommand command)
+    {
+        var responseHtml = await resetPasswordCommandHandler.Handle(command);
+        return Content(responseHtml, "text/html", Encoding.UTF8);
+    }
+
+
     [HttpGet("verify-email/{userId}")]
     public async Task<IActionResult> VerifyEmail(Guid userId)
     {
         HttpContext.Response.ContentType = "text/html";
 
-        //throw new InvalidUsageException("klsajf;lk");
         var result = await verifyEmailCommandHandler.Handle(userId);
 
         cookieManager.SetUserCookies(result.User);
         cookieManager.SetJwtAccessTokenCookie(result.JwtAccessToken);
 
-        return Content(
-            GenerateHtmlContent(@$"
-                <h1>А это успех!</h1>
-                <div style=""text-align: start""> 
-                    <p>Вы успешно подтвердили электронную почту!</p>
-                    <p>Перейдите по <a href={_clientSettings.Domain}/account>ссылке</a>, чтобы попасть в личный кабинет.
-                </div>"),
-            "text/html", Encoding.UTF8
-        );
-    }
-
-    private string GenerateHtmlContent(string message)
-    {
-        return $@"
+        var responseHtml =
+            $@"
             <!DOCTYPE html>
             <html lang=""en"">
             <head>
@@ -142,9 +156,14 @@ public class AuthenticationController(
             </head>
             <body>
                 <div class=""container"">
-                    {message}
+                    <h1>А это успех!</h1>
+                    <div style=""text-align: start""> 
+                        <p>Вы успешно подтвердили электронную почту!</p>
+                        <p>Перейдите по <a href={_clientSettings.Domain}/account>ссылке</a>, чтобы попасть в личный кабинет.
+                    </div>
                 </div>
             </body>
             </html>";
+        return Content(responseHtml, "text/html", Encoding.UTF8);
     }
 }

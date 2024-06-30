@@ -26,7 +26,7 @@ export default function IconButton({
 	variant = "rounded",
 	centered,
 	fullwidth,
-	fontSize = 26,
+	fontSize = 24,
 }: IIconButton) {
 	const isCircled = variant === "circled";
 	return (

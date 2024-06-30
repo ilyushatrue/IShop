@@ -7,14 +7,14 @@ using Microsoft.EntityFrameworkCore;
 namespace Flags.Infrastructure.Persistance.Repositories;
 public class UserRepository(FlagDbContext dbContext) : IUserRepository
 {
-    public async Task<bool> CheckUserWithEmailExist(Email email)
+    public async Task<bool> CheckUserWithEmailExistsAsync(Email email)
     {
         return await dbContext.Users.AnyAsync(u => u.Email.Value == email.Value);
     }
 
-    public async Task<bool> CheckUserWithPhoneExist(Phone phone)
+    public async Task<bool> CheckUserWithPhoneExistsAsync(Phone phone)
     {
-        return await dbContext.Users.AnyAsync(u => u.Phone.Value == phone.Value);
+        return await dbContext.Users.Where(x => x.Phone != null).AnyAsync(u => u.Phone!.Value == phone.Value);
     }
 
     public async Task CreateAsync(User user)
@@ -40,7 +40,8 @@ public class UserRepository(FlagDbContext dbContext) : IUserRepository
         return await dbContext.Users
             .AsNoTracking()
             .Include(u => u.RefreshJwt)
-            .SingleOrDefaultAsync(u => u.Phone.Value == phone);
+            .Where(u => u.Phone != null)
+            .SingleOrDefaultAsync(u => u.Phone!.Value == phone);
     }
 
     public async Task<User?> GetByIdAsync(Guid id)
@@ -69,5 +70,10 @@ public class UserRepository(FlagDbContext dbContext) : IUserRepository
     {
         dbContext.Update(user);
         await dbContext.SaveChangesAsync();
+    }
+
+    public async Task<bool> CheckUserExistsByIdAsync(Guid id)
+    {
+        return await dbContext.Users.AnyAsync(u => u.Id == id);
     }
 }

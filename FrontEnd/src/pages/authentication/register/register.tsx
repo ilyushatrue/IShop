@@ -5,7 +5,7 @@ import Template from "../base/template";
 import RegisterForm from "./register-form";
 import { useAppDispatch } from "../../../app/hooks/redux/use-app-dispatch";
 import useApi from "../../../api/hooks/use-api.hook";
-import { setIsLoading } from "../../../store/page.slice";
+import { setIsPageLoading } from "../../../store/page.slice";
 import apiAuth from "../../../api/auth.api";
 import { useState } from "react";
 import Dialog from "../../../components/dialog";
@@ -23,14 +23,14 @@ export default function Register({ sm = false, onToLoginClick }: IProps) {
 	const { fetchAsync } = useApi();
 
 	async function handleRegisterAsync(request: IRegisterRequest) {
-		dispatch(setIsLoading(true));
+		dispatch(setIsPageLoading(true));
 		await fetchAsync({
 			request: async () => await apiAuth.registerAsync(request),
 			onSuccess: (handler) =>
 				handler.do(() => setIsEmailConfirmationDialogOn(true)),
 			onError: (handler) => handler.log().popup(),
 		});
-		dispatch(setIsLoading(false));
+		dispatch(setIsPageLoading(false));
 	}
 
 	return (
@@ -45,7 +45,7 @@ export default function Register({ sm = false, onToLoginClick }: IProps) {
 			<Dialog
 				open={isEmailConfirmationDialogOn}
 				title="Подтверждение email"
-				content="На указанный электронный адрес была отправлена ссылка для подтверждения учетной записи. Необходимо перейти по ней для получения доступа к личному кабинету."
+				content="На указанную электронную почту была отправлена ссылка для подтверждения учетной записи. Перейдите по ней для получения доступа к личному кабинету."
 				onCancel={() => {
 					setIsEmailConfirmationDialogOn(false);
 					navigate("/");

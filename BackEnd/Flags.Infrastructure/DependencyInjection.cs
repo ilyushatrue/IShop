@@ -33,6 +33,8 @@ using Flags.Application.Products.Commands;
 using Flags.Application.Emails;
 using Flags.Infrastructure.Services.Emails;
 using Flags.Application.Authentication.Commands.VerifyEmail;
+using Flags.Application.Authentication.Commands.ResetPassword;
+using Flags.Infrastructure.Services.Auth.ResetPassword;
 
 namespace Flags.Infrastructure;
 
@@ -90,6 +92,9 @@ public static class DependencyInjection
         services.AddScoped<IUpdateProductCommandHandler, UpdateProductCommandHandler>();
         services.AddScoped<IEmailSender, EmailSender>();
         services.AddScoped<IVerifyEmailCommandHandler, VerifyEmailCommandHandler>();
+        services.AddScoped<ISendResetPasswordEmailCommandHandler, SendResetPasswordEmailCommandHandler>();
+        services.AddScoped<IResetPasswordCommandHandler, ResetPasswordCommandHandler>();
+        services.AddScoped<ISendResetPasswordFormCommandHandler, SendResetPasswordFormCommandHandler>();
 
         return services;
     }

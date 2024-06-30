@@ -1,4 +1,4 @@
-import { Dialog as MuiDialog } from "@mui/material";
+import { Box, DialogProps, Dialog as MuiDialog } from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
@@ -7,44 +7,46 @@ import { useMemo } from "react";
 import IconButton from "./icon-button";
 
 function Dialog({
-	open,
 	onCancel,
 	onAccept,
 	title,
+	children,
 	content,
-}: {
-	open: boolean;
-	title: string;
-	content: string;
+	...props
+}: DialogProps & {
 	onCancel?: () => void;
 	onAccept?: () => void;
 }) {
 	const actions = useMemo(() => {
-		const actionMap = {
-			cancel: {
+		const actionMap: any = {};
+		if (onCancel) {
+			actionMap.cancel = {
 				title: "Отмена",
 				name: "cancel",
 				icon: "cancel",
-				onClick: () => onCancel?.(),
-			},
-			accept: {
+				onClick: () => onCancel(),
+			};
+		}
+		if (onAccept) {
+			actionMap.accept = {
 				title: "Да",
 				name: "accept",
 				icon: "done",
-				onClick: () => onAccept?.(),
-			},
-		};
-		return ["cancel", "accept"].map(
+				onClick: () => onAccept(),
+			};
+		}
+		return Object.keys(actionMap).map(
 			(action) => actionMap[action as keyof typeof actionMap]
 		);
 	}, [onCancel, onAccept]);
 
 	return (
-		<MuiDialog open={open} onClose={() => onCancel?.()}>
+		<MuiDialog {...props} onClose={() => onCancel?.()}>
 			<DialogTitle>{title}</DialogTitle>
 			<DialogContent>
 				<DialogContentText>{content}</DialogContentText>
 			</DialogContent>
+			<Box sx={{ px: 3 }}>{children}</Box>
 			<DialogActions>
 				{actions.map(({ icon, onClick, title }, index) => (
 					<IconButton

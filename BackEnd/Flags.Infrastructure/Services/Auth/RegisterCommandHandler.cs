@@ -22,7 +22,7 @@ public class RegisterCommandHandler(
     public async Task<bool> Handle(RegisterCommand command, CancellationToken cancellationToken)
     {
         var email = Email.Create(command.Email);
-        if (await userRepository.CheckUserWithEmailExist(email))
+        if (await userRepository.CheckUserWithEmailExistsAsync(email))
             throw new UniquenessViolationExeption("Эл. почта уже занята.");
 
         var inputPhone = Phone.Trim(command.Phone);
@@ -30,7 +30,7 @@ public class RegisterCommandHandler(
         if (Phone.Validate(inputPhone))
         {
             phone = Phone.Create(command.Phone);
-            if (await userRepository.CheckUserWithPhoneExist(phone))
+            if (await userRepository.CheckUserWithPhoneExistsAsync(phone))
                 throw new UniquenessViolationExeption("Номер телефона уже занят.");
         }
 

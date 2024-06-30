@@ -6,6 +6,7 @@ import AccountRoutes from "../pages/account/account";
 import ProductRouter from "../pages/products";
 import Cart from "../pages/cart";
 import Purchases from "../pages/purchases";
+import FavoriteProducts from "../pages/favorite-products";
 
 export default function ProtectedRoutes() {
 	const isAuthenticated = useAppSelector(
@@ -25,8 +26,9 @@ export default function ProtectedRoutes() {
 				<Route path="/products/*" element={<ProductRouter />} />
 				<Route path="/purchases/*" element={<Purchases />} />
 				<Route path="/cart/*" element={<Cart />} />
-				<Route path="*" element={<NotFound />} />
+				<Route path="/favorite/*" element={<FavoriteProducts />} />
 				<Route path="/account/*" element={<AccountRoutes />} />
+				<Route path="*" element={<NotFound />} />
 			</Routes>
 		);
 	}

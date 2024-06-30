@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../app/hooks/redux/use-app-dispatch";
 import { useAppSelector } from "../../app/hooks/redux/use-app-selector";
 import useApi from "../../api/hooks/use-api.hook";
-import { setIsLoading } from "../../store/page.slice";
+import { setIsPageLoading } from "../../store/page.slice";
 import apiAuth from "../../api/auth.api";
 
 export interface INavBar {
@@ -56,7 +56,7 @@ export default function NavBar({ sm = false }: INavBar) {
 		[]
 	);
 	async function handleLogout() {
-		dispatch(setIsLoading(true));
+		dispatch(setIsPageLoading(true));
 		await fetchAsync({
 			request: async () => await apiAuth.logoutAsync(),
 			onSuccess: (handler) =>
@@ -66,7 +66,7 @@ export default function NavBar({ sm = false }: INavBar) {
 				}),
 			onError: (handler) => handler.log().popup(),
 		});
-		dispatch(setIsLoading(false));
+		dispatch(setIsPageLoading(false));
 	}
 
 	return (

@@ -52,7 +52,7 @@ const pageSlice = createSlice({
 	initialState: menuItems,
 	name: "page",
 	reducers: {
-		setIsLoading(state, action: PayloadAction<boolean>) {
+		setIsPageLoading(state, action: PayloadAction<boolean>) {
 			state.isLoading = action.payload;
 		},
 		setActiveTab(state, action: PayloadAction<string | undefined>) {
@@ -66,5 +66,5 @@ const pageSlice = createSlice({
 	},
 });
 
-export const { setActiveTab, setIsLoading } = pageSlice.actions;
+export const { setActiveTab, setIsPageLoading } = pageSlice.actions;
 export default pageSlice.reducer;
