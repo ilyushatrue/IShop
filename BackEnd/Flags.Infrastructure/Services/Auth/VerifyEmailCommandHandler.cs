@@ -1,25 +1,23 @@
-﻿using Flags.Application.AppSettings;
-using Flags.Application.Authentication.Commands.VerifyEmail;
+﻿using Flags.Application.Authentication.Commands.VerifyEmail;
 using Flags.Application.Authentication.Common;
 using Flags.Application.Common.Persistance;
-using Microsoft.Extensions.Options;
+using Flags.Domain.Common.Exceptions;
 
 namespace Flags.Infrastructure.Services.Auth;
 public class VerifyEmailCommandHandler(
-    IOptions<ClientSettings> clientSettings,
     IRefreshJwtRepository refreshJwtRepository,
     IJwtTokenGenerator jwtTokenGenerator,
     IUserRepository userRepository
     ) : IVerifyEmailCommandHandler
 {
-    public async Task<AuthenticationResult?> Handle(Guid userId)
+    public async Task<AuthenticationResult> Handle(Guid userId)
     {
-        var user = await userRepository.GetByIdAsync(userId);
-        if (user is null)
-            return null;
+        var user = await userRepository.GetByIdAsync(userId) ??
+            throw new Exception("Не удалось подтвердить электронную почту :(");
 
         if (user.Email.IsVerified)
-            throw new Exception("Email уже подтвержден.");
+            throw new InvalidUsageException("Email уже подтвержден ☺");
+
         user.Email.SetIsVerified();
         await userRepository.UpdateAsync(user);
         var jwtAccessToken = jwtTokenGenerator.GenerateAccessToken(user);

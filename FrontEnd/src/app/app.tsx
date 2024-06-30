@@ -1,5 +1,6 @@
+import "../assets/fonts/fonts.scss"
 import { CssBaseline, ThemeProvider, useMediaQuery } from "@mui/material";
-import { theme } from "../styles/themeProvider";
+import { theme } from "../styles/theme-provider";
 import Router from "./routes";
 import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";

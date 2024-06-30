@@ -28,10 +28,14 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             b.Property(x => x.Value).HasColumnName("password");
         });
 
-        builder.OwnsOne(u => u.Phone, b =>
+        builder.OwnsOne(u => u.Phone, phone =>
         {
-            b.Property(x => x.Value).HasColumnName("phone");
-            b.HasIndex(x => x.Value).IsUnique().HasDatabaseName("ix_user_phone");
+            phone.Property(x => x.Value).HasColumnName("phone");
+            phone
+                .HasIndex(x => x.Value)
+                .IsUnique()
+                .HasDatabaseName("ix_user_phone")
+                .HasFilter("[phone] IS NOT NULL");
         });
 
         builder.OwnsOne(u => u.Email, b =>

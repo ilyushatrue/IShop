@@ -1,6 +1,6 @@
 import { Box, BoxProps, Grid } from "@mui/material";
 import { IProduct } from "../../api/interfaces/product/product.interface";
-import getConstant from "../../infrastructure/constantProvider";
+import getConstant from "../../app/infrastructure/constant-provider";
 import { useMemo, useState } from "react";
 import useApi from "../../api/hooks/use-api.hook";
 import { useAppSelector } from "../../app/hooks/redux/use-app-selector";

@@ -1,12 +1,23 @@
 ﻿using Flags.Application.Common.Persistance;
 using Flags.Domain.Enums;
 using Flags.Domain.UserRoot;
+using Flags.Domain.UserRoot.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 
 namespace Flags.Infrastructure.Persistance.Repositories;
 public class UserRepository(FlagDbContext dbContext) : IUserRepository
 {
-    public async Task AddAsync(User user)
+    public async Task<bool> CheckUserWithEmailExist(Email email)
+    {
+        return await dbContext.Users.AnyAsync(u => u.Email.Value == email.Value);
+    }
+
+    public async Task<bool> CheckUserWithPhoneExist(Phone phone)
+    {
+        return await dbContext.Users.AnyAsync(u => u.Phone.Value == phone.Value);
+    }
+
+    public async Task CreateAsync(User user)
     {
         dbContext.Add(user);
         await dbContext.SaveChangesAsync();

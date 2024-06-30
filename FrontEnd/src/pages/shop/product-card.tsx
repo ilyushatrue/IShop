@@ -1,6 +1,6 @@
 import { Typography } from "@mui/material";
 import Card from "../../components/card/card";
-import getConstant from "../../infrastructure/constantProvider";
+import getConstant from "../../app/infrastructure/constant-provider";
 
 export interface ICardAction {
 	onClick: (id: string) => void;

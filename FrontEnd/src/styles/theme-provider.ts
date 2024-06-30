@@ -1,6 +1,9 @@
 import { createTheme } from "@mui/material/styles";
 
 export const theme = createTheme({
+	typography: {
+		fontFamily: 'Rubik Regular',
+	},
 	palette: {
 		primary: {
 			light: "rgb(65, 148, 209)",

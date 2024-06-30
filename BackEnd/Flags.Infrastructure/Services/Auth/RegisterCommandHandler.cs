@@ -6,7 +6,7 @@ using Flags.Application.Common.Persistance;
 using Flags.Application.AppSettings;
 using Microsoft.Extensions.Options;
 using Flags.Application.Emails;
-using System.Data.SqlTypes;
+using Flags.Domain.Common.Exceptions;
 
 namespace Flags.Infrastructure.Services.Auth;
 
@@ -22,7 +22,17 @@ public class RegisterCommandHandler(
     public async Task<bool> Handle(RegisterCommand command, CancellationToken cancellationToken)
     {
         var email = Email.Create(command.Email);
-        var phone = Phone.Create(command.Phone);
+        if (await userRepository.CheckUserWithEmailExist(email))
+            throw new UniquenessViolationExeption("Эл. почта уже занята.");
+
+        var inputPhone = Phone.Trim(command.Phone);
+        Phone? phone = null;
+        if (Phone.Validate(inputPhone))
+        {
+            phone = Phone.Create(command.Phone);
+            if (await userRepository.CheckUserWithPhoneExist(phone))
+                throw new UniquenessViolationExeption("Номер телефона уже занят.");
+        }
 
         var passwordHash = passwordHasher.Generate(command.Password);
         var password = Password.Create(passwordHash);
@@ -37,7 +47,7 @@ public class RegisterCommandHandler(
             avatarId: command.AvatarId
         );
 
-        await userRepository.AddAsync(user);
+        await userRepository.CreateAsync(user);
 
         await emailSender.SendEmailAsync(
             email.Value,

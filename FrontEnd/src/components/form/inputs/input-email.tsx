@@ -11,7 +11,10 @@ const getValidateOptions = <T extends FieldValues>(
 	required: boolean
 ): RegisterOptions<T, Path<T>> => ({
 	required: { value: required, message: "Обязательно для заполнения" },
-	pattern: { value: /(?=.*[@])/, message: "Некорректный email" },
+	pattern: {
+		value: /^(.+)@(mail\.ru|gmail\.com)$/,
+		message: "Некорректный email",
+	},
 });
 
 export default function InputEmail<T extends FieldValues>({

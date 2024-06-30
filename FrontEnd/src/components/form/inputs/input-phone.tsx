@@ -25,7 +25,8 @@ const getValidateOptions = <T extends FieldValues>(
 ): RegisterOptions<T, Path<T>> => ({
 	required: { value: required, message: "Обязательно для заполнения" },
 	validate: (value: string) => {
-		if (value.replace(/\D/g, "").length !== 11) {
+		const trimmedValue = value.replace(/\D/g, "");
+		if (trimmedValue.length > 0 && trimmedValue.length !== 11) {
 			return "Некорректный номер";
 		}
 		return true;

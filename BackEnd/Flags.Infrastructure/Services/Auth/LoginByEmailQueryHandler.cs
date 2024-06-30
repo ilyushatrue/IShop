@@ -25,6 +25,9 @@ public class LoginByEmailQueryHandler(
         if (!passwordsMatch)
             throw new InvalidCredentialsException("Неверный логин или пароль!");
 
+        if (!user.Email.IsVerified)
+            throw new InvalidUsageException("Вы не подтвердили свою эл. почту!");
+
         var jwtAccessToken = jwtTokenGenerator.GenerateAccessToken(user);
 
         if (user.RefreshJwt is null)

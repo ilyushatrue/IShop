@@ -18,7 +18,7 @@ public class Phone
         if (Validate(trimmedInput))
             return new Phone(trimmedInput);
         else
-            throw new InvalidCredentialsException("ex");
+            throw new ValidationException("Неверный номер телефона");
     }
 
     public static string Trim(string phoneNumber) => 

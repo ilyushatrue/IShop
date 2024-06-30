@@ -3,7 +3,7 @@ using Flags.Application.Users.Queries;
 using Flags.Contracts.Authentication;
 using Flags.Domain.Common.Exceptions;
 using Flags.Infrastructure.Authentication;
-using MapsterMapper;
+using Flags.Infrastructure.Services.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,10 +12,10 @@ namespace Flags.Api.Controllers;
 [Route("users")]
 [Authorize(Policy = CustomPolicies.ADMIN_POLICY)]
 public class UsersController(
-    IMapper mapper,
     IGetAllUsersQueryHandler getAllUsersQueryHandler,
     IGetUserByIdQueryHandler getUserByIdQueryHandler,
-    IEditUserDataCommandHandler editUserDataCommandHandler
+    IEditUserDataCommandHandler editUserDataCommandHandler,
+    CookieManager cookieManager
 ) : ApiController
 {
     [HttpGet]
@@ -39,17 +39,12 @@ public class UsersController(
         if (User.Identity?.IsAuthenticated != true)
             throw new NotAuthenticatedException();
 
-        var firstName = Request.Cookies["user-first-name"];
-        var lastName = Request.Cookies["user-last-name"];
-        var phone = Request.Cookies["user-phone"];
-        var email = Request.Cookies["user-email"];
-        var avatarId = Request.Cookies["user-avatar"];
+        var (firstName, lastName, phone, email, avatarId) = cookieManager.GetUserCookies();
 
         var requiredCredentials = new string?[]
         {
             firstName,
             lastName,
-            phone,
             email,
         };
 
@@ -62,7 +57,7 @@ public class UsersController(
             firstName!,
             lastName!,
             email!,
-            phone!,
+            phone,
             avatarGuid);
 
         return Ok(response);
@@ -72,13 +67,7 @@ public class UsersController(
     public async Task<IActionResult> EditUserData([FromBody] EditUserDataCommand user, CancellationToken cancellationToken)
     {
         var result = await editUserDataCommandHandler.Handle(user, cancellationToken);
-
-        HttpContext.Response.Cookies.Append("user-first-name", result.FirstName);
-        HttpContext.Response.Cookies.Append("user-last-name", result.LastName);
-        HttpContext.Response.Cookies.Append("user-email", result.Email.Value);
-        HttpContext.Response.Cookies.Append("user-phone", result.Phone.Value);
-        HttpContext.Response.Cookies.Append("user-avatar", result.AvatarId.ToString() ?? "");
-
+        cookieManager.SetUserCookies(result);
         return Ok();
     }
 }

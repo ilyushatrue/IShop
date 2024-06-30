@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import getConstant from "../infrastructure/constantProvider";
+import getConstant from "../app/infrastructure/constant-provider";
 
 export default function Image({
 	imageId,

@@ -1,7 +1,7 @@
 import { ReactElement, useEffect, useState } from "react";
 import { useAppDispatch } from "./hooks/redux/use-app-dispatch";
 import { CircularProgress } from "@mui/material";
-import getConstant from "../infrastructure/constantProvider";
+import getConstant from "./infrastructure/constant-provider";
 import usersApi from "../api/users.api";
 import {
 	resetCurrentUserState,

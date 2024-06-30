@@ -1,4 +1,4 @@
-import getConstant from "../infrastructure/constantProvider";
+import getConstant from "../app/infrastructure/constant-provider";
 import { StatusCodes } from "./enums/status-codes.enum";
 
 type ApiRequest = {

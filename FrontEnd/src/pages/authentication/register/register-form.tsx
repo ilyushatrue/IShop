@@ -25,6 +25,7 @@ export default function RegisterForm({
 				confirmPassword: "",
 			}}
 			minHeight={430}
+			submitButtonText="Зарегистрироваться"
 			onSubmitAsync={onSubmitAsync}
 			fields={(builder) =>
 				builder
@@ -42,7 +43,7 @@ export default function RegisterForm({
 					.phone({
 						name: "phone",
 						size: "small",
-						required: true,
+						required: false,
 					})
 					.email({
 						name: "email",

@@ -13,7 +13,7 @@ public class User : AggregateRoot<Guid>
         Guid id,
         string firstName,
         string lastName,
-        Phone phone,
+        Phone? phone,
         Email email,
         Password password,
         Guid? avatarId = null) : this()
@@ -31,7 +31,7 @@ public class User : AggregateRoot<Guid>
         Guid id,
         string firstName,
         string lastName,
-        Phone phone,
+        Phone? phone,
         Email email,
         Password password,
         Guid? avatarId)
@@ -47,7 +47,7 @@ public class User : AggregateRoot<Guid>
     }
     public string FirstName { get; private set; } = null!;
     public string LastName { get; private set; } = null!;
-    public Phone Phone { get; private set; } = null!;
+    public Phone? Phone { get; private set; }
     public Email Email { get; private set; } = null!;
     public Password Password { get; private set; } = null!;
     public Guid? AvatarId { get; private set; }

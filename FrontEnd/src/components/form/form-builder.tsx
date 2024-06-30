@@ -15,15 +15,16 @@ import {
 	SubmitHandler,
 	useForm,
 } from "react-hook-form";
-import InputEmail from "./input/input-email";
-import InputPassword from "./input/input-password";
-import InputText from "./input/input-text";
-import InputPhone from "./input/input-phone";
-import { IFormField } from "./input/form-field.interface";
-import { Button, CircularProgress } from "@mui/material";
-import InputPasswordConfirm from "./input/input-password-confirm";
-import InputImage from "./input/input-image";
-import InputNumber from "./input/input-number";
+import InputEmail from "./inputs/input-email";
+import InputPassword from "./inputs/input-password";
+import InputText from "./inputs/input-text";
+import InputPhone from "./inputs/input-phone";
+import { IFormField } from "./inputs/form-field.interface";
+import { CircularProgress } from "@mui/material";
+import InputPasswordConfirm from "./inputs/input-password-confirm";
+import InputImage from "./inputs/input-image";
+import InputNumber from "./inputs/input-number";
+import Button from "../button";
 
 const formStyles: CSSProperties = {
 	display: "flex",
@@ -179,7 +180,11 @@ function FormBuilder<T extends FieldValues>(
 				type="submit"
 				disabled={isLoading}
 				variant="contained"
-				sx={{ width: "50%", margin: "16px" }}
+				sx={{
+					minwidth: "50%",
+					margin: "16px",
+					textTransform: "none",
+				}}
 			>
 				{isLoading ? <CircularProgress size={24} /> : submitButtonText}
 			</Button>

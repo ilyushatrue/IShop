@@ -1,5 +1,5 @@
 import { Avatar as MuiAvatar } from "@mui/material";
-import getConstant from "../infrastructure/constantProvider";
+import getConstant from "../app/infrastructure/constant-provider";
 import { useEffect } from "react";
 import useApi from "../api/hooks/use-api.hook";
 import { mediaApi } from "../api/media.api";

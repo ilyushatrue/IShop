@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Box } from "@mui/material";
 import useApi from "../../../api/hooks/use-api.hook";
 import { mediaApi } from "../../../api/media.api";
-import getConstant from "../../../infrastructure/constantProvider";
+import getConstant from "../../../app/infrastructure/constant-provider";
 import IconButton from "../../../components/icon-button";
 import { usePopup } from "../../../app/hooks/use-popup.hook";
 import Avatar from "../../../components/avatar";

@@ -66,7 +66,7 @@ export default function Login({ sm = false, onToRegisterClick }: IProps) {
 
 	return (
 		<Template sm={sm} avatar={<LockOutlined />} title={"Войти"}>
-			<ToggleButtonGroup
+			{/* <ToggleButtonGroup
 				fullWidth
 				color="primary"
 				value={authType}
@@ -86,7 +86,7 @@ export default function Login({ sm = false, onToRegisterClick }: IProps) {
 				>
 					Номер телефона
 				</ToggleButton>
-			</ToggleButtonGroup>
+			</ToggleButtonGroup> */}
 
 			<Box sx={{ display: authType === "email" ? "block" : "none" }}>
 				<MemoizedLoginByEmailForm

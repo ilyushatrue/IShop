@@ -29,7 +29,7 @@ public class Email : ValueObject
         if (email.Length > EMAIL_MAX_LENGTH)
             throw new InvalidCredentialsException($"Превышено максимальное количество символов email ({EMAIL_MAX_LENGTH}).");
 
-        if (Regex.IsMatch(email, @"^(.+)@(.+)$") == false)
+        if (Regex.IsMatch(email, @"^(.+)@(mail\.ru|gmail\.com)$") == false)
             throw new InvalidCredentialsException("Email не корректен.");
 
         return new Email(email);
