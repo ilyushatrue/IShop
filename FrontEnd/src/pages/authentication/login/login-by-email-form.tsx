@@ -2,8 +2,9 @@ import { ILoginByEmailRequest } from "../../../api/contracts/authentication/logi
 import Form from "../../../components/form/form";
 interface IProps {
 	onSubmitAsync: (values: ILoginByEmailRequest) => Promise<void>;
+	loading: boolean;
 }
-export default function LoginByEmailForm({ onSubmitAsync }: IProps) {
+export default function LoginByEmailForm({ onSubmitAsync, loading }: IProps) {
 	return (
 		<Form<ILoginByEmailRequest>
 			defaultValues={{
@@ -11,15 +12,14 @@ export default function LoginByEmailForm({ onSubmitAsync }: IProps) {
 				email: "",
 			}}
 			minHeight={210}
-			onSubmitAsync={onSubmitAsync}
+			loading={loading}
+			onSubmit={onSubmitAsync}
 			submitButtonText="Войти"
 			fields={(builder) =>
-				builder
-					.email({ name: "email", required: true })
-					.password({
-						name: "password",
-						required: true,
-					})
+				builder.email({ name: "email", required: true }).password({
+					name: "password",
+					required: true,
+				})
 			}
 		/>
 	);

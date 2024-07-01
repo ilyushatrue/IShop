@@ -29,7 +29,7 @@ export default function Login({ sm = false, onToRegisterClick }: IProps) {
 	const [authType, setAuthType] = useState<AuthType>("email");
 	const [isResetPasswordDialogOn, setIsResetPasswordDialogOn] =
 		useState(false);
-	const { fetchAsync } = useApi();
+	const { fetchAsync, isFetching } = useApi();
 	const dispatch = useAppDispatch();
 
 	const handleAuthTypeChange = (
@@ -61,7 +61,7 @@ export default function Login({ sm = false, onToRegisterClick }: IProps) {
 
 	async function handleResetPasswordAsync(email: string) {
 		dispatch(setIsPageLoading(true));
-		setIsResetPasswordDialogOn(false)
+		setIsResetPasswordDialogOn(false);
 		await fetchAsync({
 			request: async () =>
 				await apiAuth.sendResetPasswordEmailAsync(email),
@@ -101,11 +101,13 @@ export default function Login({ sm = false, onToRegisterClick }: IProps) {
 
 				<Box sx={{ display: authType === "email" ? "block" : "none" }}>
 					<MemoizedLoginByEmailForm
+						loading={isFetching}
 						onSubmitAsync={handleLoginByEmailAsync}
 					/>
 				</Box>
 				<Box sx={{ display: authType === "phone" ? "block" : "none" }}>
 					<MemoizedLoginByPhoneForm
+						loading={isFetching}
 						onSubmitAsync={handleLoginByPhoneAsync}
 					/>
 				</Box>
@@ -130,7 +132,6 @@ export default function Login({ sm = false, onToRegisterClick }: IProps) {
 				open={isResetPasswordDialogOn}
 				title="Изменение пароля"
 				content="На указанный адрес эл. почты будет отправлено сообщение на изменение пароля."
-				onCancel={() => setIsResetPasswordDialogOn(false)}
 			>
 				<Form<{ email: string }>
 					defaultValues={{ email: "" }}
@@ -138,7 +139,10 @@ export default function Login({ sm = false, onToRegisterClick }: IProps) {
 						builder.email({ name: "email", required: true })
 					}
 					minHeight={80}
-					onSubmitAsync={(values) =>
+					loading={isFetching}
+					resetButtonText="Отмена"
+					onReset={() => setIsResetPasswordDialogOn(false)}
+					onSubmit={(values) =>
 						handleResetPasswordAsync(values.email)
 					}
 				/>

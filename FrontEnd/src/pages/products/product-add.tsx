@@ -53,7 +53,7 @@ export default function ProductAdd() {
 						})
 				}
 				minHeight={500}
-				onSubmitAsync={handleSubmitAsync}
+				onSubmit={handleSubmitAsync}
 			/>
 		</ProfilePage>
 	);

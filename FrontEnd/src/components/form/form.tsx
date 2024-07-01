@@ -1,21 +1,29 @@
 import { useEffect, useRef } from "react";
 import FormBuilder, { TFormBuilderRef } from "./form-builder";
 import { DefaultValues, FieldValues } from "react-hook-form";
+import { Box } from "@mui/material";
+import Button from "../button";
 
 export default function Form<T extends FieldValues>({
 	defaultValues,
 	fields,
-	onSubmitAsync,
+	onSubmit,
+	onReset,
 	submitButtonText = "Отправить",
+	resetButtonText,
 	minHeight,
 	fullwidth = true,
+	loading = false,
 }: {
 	defaultValues: DefaultValues<T>;
-	onSubmitAsync: (values: T) => Promise<void>;
+	onSubmit: (values: T) => void;
+	onReset?: () => void;
 	fields: (builder: TFormBuilderRef<T>) => void;
+	resetButtonText?: string;
 	submitButtonText?: string;
 	minHeight: number | string;
 	fullwidth?: boolean;
+	loading?: boolean;
 }) {
 	const builderRef = useRef<TFormBuilderRef<T>>(null);
 
@@ -26,11 +34,47 @@ export default function Form<T extends FieldValues>({
 	return (
 		<FormBuilder<T>
 			fullwidth={fullwidth}
-			submitButtonText={submitButtonText}
 			defaultValues={defaultValues}
-			onSubmitAsync={onSubmitAsync}
+			onSubmit={onSubmit}
 			minHeight={minHeight}
+			loading={loading}
 			ref={builderRef}
-		/>
+		>
+			<Box
+				style={{
+					display: "flex",
+					justifyContent: onReset ? "space-between" : "center",
+					width: "100%",
+				}}
+			>
+				{onReset && (
+					<Button
+						type="reset"
+						disabled={loading}
+						onClick={onReset}
+						variant="contained"
+						sx={{
+							minwidth: "50%",
+							margin: "16px",
+							textTransform: "none",
+						}}
+					>
+						{resetButtonText}
+					</Button>
+				)}
+				<Button
+					type="submit"
+					disabled={loading}
+					variant="contained"
+					sx={{
+						minwidth: "50%",
+						margin: "16px",
+						textTransform: "none",
+					}}
+				>
+					{submitButtonText}
+				</Button>
+			</Box>
+		</FormBuilder>
 	);
 }

@@ -1,6 +1,7 @@
 import {
 	CSSProperties,
 	ReactElement,
+	ReactNode,
 	Ref,
 	cloneElement,
 	forwardRef,
@@ -18,13 +19,11 @@ import {
 import InputEmail from "./inputs/input-email";
 import InputPassword from "./inputs/input-password";
 import InputText from "./inputs/input-text";
-import { InputPhone } from "./inputs/input-phone"; 
+import { InputPhone } from "./inputs/input-phone";
 import { IFormField } from "./inputs/form-field.interface";
-import { CircularProgress } from "@mui/material";
 import InputPasswordConfirm from "./inputs/input-password-confirm";
 import InputImage from "./inputs/input-image";
 import InputNumber from "./inputs/input-number";
-import Button from "../button";
 
 const formStyles: CSSProperties = {
 	display: "flex",
@@ -54,23 +53,24 @@ export type TFormBuilderRef<T extends FieldValues> = {
 
 export interface IForm<T extends FieldValues> {
 	defaultValues: DefaultValues<T>;
-	onSubmitAsync: (values: T) => Promise<void>;
-	submitButtonText: string;
+	onSubmit: (values: T) => void;
+	children: ReactNode;
 	minHeight: number | string;
 	fullwidth: boolean;
+	loading: boolean;
 }
 
 function FormBuilder<T extends FieldValues>(
 	{
 		defaultValues,
-		onSubmitAsync,
-		submitButtonText,
+		onSubmit,
+		children,
 		minHeight,
 		fullwidth,
+		loading,
 	}: IForm<T>,
 	ref: Ref<TFormBuilderRef<T>>
 ) {
-	const [isLoading, setIsLoading] = useState(false);
 	const { handleSubmit, control, watch } = useForm<T>({
 		mode: "onChange",
 		reValidateMode: "onBlur",
@@ -81,12 +81,8 @@ function FormBuilder<T extends FieldValues>(
 	);
 	const inputs = useMemo(() => Array.from(inputsMap.values()), [inputsMap]);
 
-	const handleSubmitButtonClick: SubmitHandler<T> = async (
-		data
-	): Promise<void> => {
-		setIsLoading(true);
-		await onSubmitAsync(data);
-		setIsLoading(false);
+	const handleSubmitButtonClick: SubmitHandler<T> = async (data) => {
+		onSubmit(data);
 	};
 
 	const addInput = (key: string, field: ReactElement) => {
@@ -173,21 +169,10 @@ function FormBuilder<T extends FieldValues>(
 			{inputs.map((input) =>
 				cloneElement(input, {
 					key: input.props.name,
-					disabled: isLoading,
+					disabled: loading,
 				})
 			)}
-			<Button
-				type="submit"
-				disabled={isLoading}
-				variant="contained"
-				sx={{
-					minwidth: "50%",
-					margin: "16px",
-					textTransform: "none",
-				}}
-			>
-				{isLoading ? <CircularProgress size={24} /> : submitButtonText}
-			</Button>
+			{children}
 		</form>
 	);
 }

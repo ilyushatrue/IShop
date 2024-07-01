@@ -20,7 +20,7 @@ export default function Register({ sm = false, onToLoginClick }: IProps) {
 	const navigate = useNavigate();
 	const [isEmailConfirmationDialogOn, setIsEmailConfirmationDialogOn] =
 		useState(false);
-	const { fetchAsync } = useApi();
+	const { fetchAsync, isFetching } = useApi();
 
 	async function handleRegisterAsync(request: IRegisterRequest) {
 		dispatch(setIsPageLoading(true));
@@ -35,7 +35,10 @@ export default function Register({ sm = false, onToLoginClick }: IProps) {
 
 	return (
 		<Template sm={sm} avatar={<LockOutlined />} title="Регистрация">
-			<RegisterForm onSubmitAsync={handleRegisterAsync} />
+			<RegisterForm
+				onSubmitAsync={handleRegisterAsync}
+				loading={isFetching}
+			/>
 			<Typography sx={{ cursor: "pointer" }} variant="body2">
 				Уже есть аккант?
 				<Link onClick={onToLoginClick} marginLeft={1}>

@@ -40,7 +40,10 @@ export default function Profile() {
 			onSuccess: (handler) =>
 				handler.do(({ body }) => {
 					dispatch(
-						updateCurrentUserState({ isAuthenticated: true, user: body! })
+						updateCurrentUserState({
+							isAuthenticated: true,
+							user: body!,
+						})
 					);
 					setUser(body!);
 				}),
@@ -58,7 +61,13 @@ export default function Profile() {
 			>
 				<UserForm
 					onSubmitAsync={handleFormSubmitAsync}
-					defaultValues={user!}
+					defaultValues={{
+						email: user!.email,
+						firstName: user!.firstName,
+						lastName: user!.lastName,
+						phone:user!.phone ?? "",
+						avatarId: user?.avatarId
+					}}
 				/>
 			</Box>
 		</ProfilePage>

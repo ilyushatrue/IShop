@@ -11,22 +11,25 @@ interface IRegisterForm {
 
 export default function RegisterForm({
 	onSubmitAsync,
+	loading,
 }: {
 	onSubmitAsync: (values: IRegisterForm) => Promise<void>;
+	loading: boolean;
 }) {
 	return (
 		<Form<IRegisterForm>
 			defaultValues={{
 				firstName: "",
 				lastName: "",
-				phone: "",
+				phone: "+7",
 				email: "",
 				password: "",
 				confirmPassword: "",
 			}}
 			minHeight={430}
+			loading={loading}
 			submitButtonText="Зарегистрироваться"
-			onSubmitAsync={onSubmitAsync}
+			onSubmit={onSubmitAsync}
 			fields={(builder) =>
 				builder
 					.text({

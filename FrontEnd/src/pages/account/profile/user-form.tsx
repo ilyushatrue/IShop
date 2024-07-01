@@ -15,7 +15,7 @@ export default function UserForm({
 			defaultValues={defaultValues}
 			minHeight={minHeight}
 			submitButtonText="Сохранить"
-			onSubmitAsync={onSubmitAsync}
+			onSubmit={onSubmitAsync}
 			fields={(builder) =>
 				builder
 					.image({
