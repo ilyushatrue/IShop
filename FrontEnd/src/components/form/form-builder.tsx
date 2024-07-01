@@ -18,7 +18,7 @@ import {
 import InputEmail from "./inputs/input-email";
 import InputPassword from "./inputs/input-password";
 import InputText from "./inputs/input-text";
-import InputPhone from "./inputs/input-phone";
+import { InputPhone } from "./inputs/input-phone"; 
 import { IFormField } from "./inputs/form-field.interface";
 import { CircularProgress } from "@mui/material";
 import InputPasswordConfirm from "./inputs/input-password-confirm";

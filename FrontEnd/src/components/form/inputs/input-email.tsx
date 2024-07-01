@@ -43,6 +43,7 @@ export default function InputEmail<T extends FieldValues>({
 					margin={margin}
 					disabled={disabled}
 					InputProps={{ readOnly: readonly }}
+					autoComplete="email" 
 					fullWidth
 					onChange={field.onChange}
 					value={field.value}
