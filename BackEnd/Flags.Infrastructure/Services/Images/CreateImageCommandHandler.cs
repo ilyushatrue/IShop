@@ -26,7 +26,7 @@ public class CreateImageCommandHandler(
             {
                 await file.CopyToAsync(outputStream, cancellationToken);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }

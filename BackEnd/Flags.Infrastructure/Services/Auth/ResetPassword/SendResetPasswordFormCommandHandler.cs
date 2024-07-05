@@ -4,14 +4,14 @@ using Flags.Domain.Common.Exceptions;
 
 namespace Flags.Infrastructure.Services.Auth.ResetPassword;
 public class SendResetPasswordFormCommandHandler(
-    IUserRepository userRepository) : ISendResetPasswordFormCommandHandler
+    IUserEmailConfirmationRepository emailConfirmationRepository) : ISendResetPasswordFormCommandHandler
 {
     public async Task<string> Handle(string token)
     {
         if (!Guid.TryParse(token, out Guid guid))
             throw new NotFoundException("Не удалось изменить пароль. Обратитесь к администратору.");
 
-        if (!await userRepository.CheckUserExistsByIdAsync(guid))
+        if (!await emailConfirmationRepository.ValidateTokenAsync(guid))
             throw new NotFoundException("Не удалось изменить пароль. Обратитесь к администратору.");
 
         return $@"

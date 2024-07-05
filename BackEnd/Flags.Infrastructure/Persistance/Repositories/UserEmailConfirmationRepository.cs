@@ -17,4 +17,11 @@ public class UserEmailConfirmationRepository(FlagDbContext dbContext) : IUserEma
             .Include(x => x.User!.RefreshJwt)
             .SingleOrDefaultAsync(x => x.ConfirmationToken == emailConfirmationToken);
     }
+
+    public async Task<bool> ValidateTokenAsync(Guid emailConfirmationToken)
+    {
+        return await dbContext.UserEmailConfirmations.AnyAsync(cc => 
+            cc.ConfirmationToken == emailConfirmationToken 
+            && cc.ExpiryDateTime > DateTime.UtcNow);
+    }
 }

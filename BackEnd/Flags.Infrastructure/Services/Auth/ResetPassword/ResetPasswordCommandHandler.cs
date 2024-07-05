@@ -1,13 +1,14 @@
 ﻿using Flags.Application.Authentication.Commands.ResetPassword;
 using Flags.Application.Authentication.Common;
+using Flags.Application.Persistance;
 using Flags.Application.Persistance.Repositories;
 using Flags.Domain.Common.Exceptions;
-using Flags.Domain.UserRoot;
 using Flags.Domain.UserRoot.ValueObjects;
 
 namespace Flags.Infrastructure.Services.Auth.ResetPassword;
 public class ResetPasswordCommandHandler(
-    IUserRepository userRepository,
+    IUserEmailConfirmationRepository emailConfirmationRepository,
+    IDbManager dbManager,
     IPasswordHasher passwordHasher) : IResetPasswordCommandHandler
 {
     public async Task<string> Handle(ResetPasswordCommand command)
@@ -15,15 +16,22 @@ public class ResetPasswordCommandHandler(
         if (!Guid.TryParse(command.Token, out Guid guid))
             throw new NotFoundException("Не удалось изменить пароль. Обратитесь к администратору.");
 
-        var user = await userRepository.GetByIdAsync(guid) ??
+        if (!await emailConfirmationRepository.ValidateTokenAsync(guid))
+            throw new NotFoundException("Ссылка не действительна.");
+
+        var emailConfirmation = await emailConfirmationRepository.GetByTokenAsync(guid) ??
             throw new NotFoundException("Не удалось изменить пароль. Обратитесь к администратору.");
 
         var passwordHash = passwordHasher.Generate(command.NewPassword);
         var newPassword = Password.Create(passwordHash);
 
+        var user = emailConfirmation.User!;
+
         user.ChangePassword(newPassword);
 
-        await userRepository.UpdateAsync(user);
+        emailConfirmation.SetIsConfirmed();
+
+        await dbManager.SaveChangesAsync();
 
         var responseHtml =
             $@"

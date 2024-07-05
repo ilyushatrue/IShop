@@ -7,9 +7,6 @@ using Microsoft.Extensions.Options;
 using Flags.Application.Emails;
 using Flags.Domain.Common.Exceptions;
 using Flags.Application.Persistance.Repositories;
-using Flags.Application.Persistance;
-using Flags.Domain.UserRoot.Entities;
-using Flags.Infrastructure.Migrations;
 
 namespace Flags.Infrastructure.Services.Auth;
 
@@ -17,9 +14,7 @@ public class RegisterCommandHandler(
     IUserRepository userRepository,
     IPasswordHasher passwordHasher,
     IEmailSender emailSender,
-    IUserEmailConfirmationRepository emailConfirmationRepository,
     IOptions<HostSettings> hostSettings,
-    IDbManager dbManager,
     IOptions<AuthenticationSettings> authenticationSettings
 ) : IRegisterCommandHandler
 {

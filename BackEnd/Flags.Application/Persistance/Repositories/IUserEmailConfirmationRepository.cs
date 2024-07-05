@@ -5,4 +5,5 @@ public interface IUserEmailConfirmationRepository
 {
     Task<int> CreateAsync(UserEmailConfirmation emailConfirmation);
     Task<UserEmailConfirmation?> GetByTokenAsync(Guid emailConfirmationToken);
+    Task<bool> ValidateTokenAsync(Guid emailConfirmationToken);
 }

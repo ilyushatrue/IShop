@@ -8,7 +8,6 @@ namespace Flags.Api.Controllers;
 
 [Route("media")]
 public class MediaController(
-    IMapper mapper,
     ICreateImageCommandHandler createImageCommand,
     IGetImageByIdQueryHandler getImageByIdQuery) : ApiController
 {
