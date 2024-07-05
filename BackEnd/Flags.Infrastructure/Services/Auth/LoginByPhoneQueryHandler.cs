@@ -1,8 +1,11 @@
+using Flags.Application.AppSettings;
 using Flags.Application.Authentication.Commands.Login;
 using Flags.Application.Authentication.Common;
-using Flags.Application.Common.Persistance;
+using Flags.Application.Persistance.Repositories;
 using Flags.Domain.Common.Exceptions;
+using Flags.Domain.UserRoot.Entities;
 using Flags.Domain.UserRoot.ValueObjects;
+using Microsoft.Extensions.Options;
 
 namespace Flags.Infrastructure.Services.Auth;
 
@@ -10,9 +13,11 @@ public class LoginByPhoneQueryHandler(
     IUserRepository userRepository,
     IJwtTokenGenerator jwtTokenGenerator,
     IRefreshJwtRepository refreshJwtRepository,
-    IPasswordHasher passwordHasher
+    IPasswordHasher passwordHasher,
+    IOptions<RefreshJwtSettings> refreshJwtSettings
 ) : ILoginByPhoneQueryHandler
 {
+    private readonly RefreshJwtSettings _refreshJwtSettings = refreshJwtSettings.Value;
     public async Task<AuthenticationResult> Handle(string phone, string password, CancellationToken cancellationToken)
     {
         phone = Phone.Trim(phone);
@@ -28,9 +33,14 @@ public class LoginByPhoneQueryHandler(
         var jwtAccessToken = jwtTokenGenerator.GenerateAccessToken(user);
 
         if (user.RefreshJwt is null)
-            await refreshJwtRepository.CreateAsync(user.Id);
+        {
+            var refreshJwt = RefreshJwt.Create(user.Id, _refreshJwtSettings.ExpiryDays);
+            await refreshJwtRepository.CreateAsync(refreshJwt);
+        }
         else
+        {
             await refreshJwtRepository.UpdateAsync(user.RefreshJwt);
+        }
 
         return new AuthenticationResult(user, jwtAccessToken);
     }

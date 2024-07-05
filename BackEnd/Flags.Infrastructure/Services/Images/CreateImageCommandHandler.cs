@@ -1,6 +1,6 @@
 ﻿using Flags.Application.AppSettings;
-using Flags.Application.Common.Persistance;
 using Flags.Application.Images.Commands;
+using Flags.Application.Persistance.Repositories;
 using Microsoft.Extensions.Options;
 
 namespace Flags.Infrastructure.Services.Images;

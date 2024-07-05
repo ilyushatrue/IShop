@@ -32,4 +32,5 @@ public class FlagDbContext(
     public DbSet<Media> Media { get; set; } = null!;
     public DbSet<Product> Products { get; set; } = null!;
     public DbSet<ProductCategory> ProductCategories { get; set; } = null!;
+    public DbSet<UserEmailConfirmation> UserEmailConfirmations { get; set; } = null!;
 }

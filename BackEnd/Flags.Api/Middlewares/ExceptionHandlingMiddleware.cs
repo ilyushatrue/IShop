@@ -3,7 +3,6 @@ using System.Text.Json;
 using System.Text;
 using Microsoft.Extensions.Options;
 using Flags.Application.AppSettings;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Flags.Api.Middlewares
 {
@@ -41,6 +40,10 @@ namespace Flags.Api.Middlewares
             catch (ArgumentNullException ex)
             {
                 await HandleExceptionAsync(httpContext, StatusCodes.Status400BadRequest, ex.Message);
+            }
+            catch (ExpirationException ex)
+            {
+                await HandleExceptionAsync(httpContext, StatusCodes.Status406NotAcceptable, ex.Message);
             }
             catch (InvalidUsageException ex)
             {

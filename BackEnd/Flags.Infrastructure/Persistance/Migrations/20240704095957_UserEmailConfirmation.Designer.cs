@@ -3,6 +3,7 @@ using System;
 using Flags.Infrastructure.Persistance;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Flags.Infrastructure.Migrations
 {
     [DbContext(typeof(FlagDbContext))]
-    partial class FlagDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240704095957_UserEmailConfirmation")]
+    partial class UserEmailConfirmation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.4");
@@ -214,17 +217,14 @@ namespace Flags.Infrastructure.Migrations
                         .HasColumnType("TEXT")
                         .HasColumnName("id");
 
-                    b.Property<Guid>("ConfirmationToken")
+                    b.Property<string>("ConfirmationToken")
+                        .IsRequired()
                         .HasColumnType("TEXT")
                         .HasColumnName("confirmation_token");
 
                     b.Property<DateTime>("ExpiryDateTime")
                         .HasColumnType("TEXT")
                         .HasColumnName("expiry_date_time");
-
-                    b.Property<bool>("IsConfirmed")
-                        .HasColumnType("INTEGER")
-                        .HasColumnName("is_confirmed");
 
                     b.HasKey("Id")
                         .HasName("pk_user_email_confirmations");
@@ -376,6 +376,10 @@ namespace Flags.Infrastructure.Migrations
                             b1.Property<Guid>("UserId")
                                 .HasColumnType("TEXT")
                                 .HasColumnName("id");
+
+                            b1.Property<bool>("IsVerified")
+                                .HasColumnType("INTEGER")
+                                .HasColumnName("email_is_verified");
 
                             b1.Property<string>("Value")
                                 .IsRequired()

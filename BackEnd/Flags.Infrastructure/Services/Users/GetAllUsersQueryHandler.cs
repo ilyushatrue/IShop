@@ -1,4 +1,4 @@
-using Flags.Application.Common.Persistance;
+using Flags.Application.Persistance.Repositories;
 using Flags.Application.Users.Queries;
 using Flags.Domain.UserRoot;
 

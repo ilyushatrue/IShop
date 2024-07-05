@@ -1,10 +1,10 @@
 ﻿using Flags.Application.Authentication.Commands.ResetPassword;
 using Flags.Domain.UserRoot.ValueObjects;
 using Flags.Domain.Common.Exceptions;
-using Flags.Application.Common.Persistance;
 using Flags.Application.Emails;
 using Microsoft.Extensions.Options;
 using Flags.Application.AppSettings;
+using Flags.Application.Persistance.Repositories;
 
 namespace Flags.Infrastructure.Services.Auth.ResetPassword;
 public class SendResetPasswordEmailCommandHandler(

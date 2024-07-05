@@ -1,4 +1,4 @@
-using Flags.Application.Common.Persistance;
+using Flags.Application.Persistance.Repositories;
 using Flags.Domain.Common.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;

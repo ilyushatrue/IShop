@@ -1,6 +1,6 @@
 ﻿using Flags.Application.Authentication.Commands.ResetPassword;
 using Flags.Application.Authentication.Common;
-using Flags.Application.Common.Persistance;
+using Flags.Application.Persistance.Repositories;
 using Flags.Domain.Common.Exceptions;
 using Flags.Domain.UserRoot;
 using Flags.Domain.UserRoot.ValueObjects;

@@ -1,7 +1,7 @@
-using Flags.Application.Common.Persistance;
 using Flags.Application.Users.Queries;
 using Flags.Domain.UserRoot;
 using Flags.Domain.Common.Exceptions;
+using Flags.Application.Persistance.Repositories;
 
 namespace Flags.Infrastructure.Services.Users;
 

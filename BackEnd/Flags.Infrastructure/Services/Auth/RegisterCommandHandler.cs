@@ -2,11 +2,14 @@ using Flags.Application.Authentication.Common;
 using Flags.Domain.UserRoot.ValueObjects;
 using Flags.Domain.UserRoot;
 using Flags.Application.Authentication.Commands.Register;
-using Flags.Application.Common.Persistance;
 using Flags.Application.AppSettings;
 using Microsoft.Extensions.Options;
 using Flags.Application.Emails;
 using Flags.Domain.Common.Exceptions;
+using Flags.Application.Persistance.Repositories;
+using Flags.Application.Persistance;
+using Flags.Domain.UserRoot.Entities;
+using Flags.Infrastructure.Migrations;
 
 namespace Flags.Infrastructure.Services.Auth;
 
@@ -14,28 +17,39 @@ public class RegisterCommandHandler(
     IUserRepository userRepository,
     IPasswordHasher passwordHasher,
     IEmailSender emailSender,
-    IOptions<HostSettings> hostSettings
+    IUserEmailConfirmationRepository emailConfirmationRepository,
+    IOptions<HostSettings> hostSettings,
+    IDbManager dbManager,
+    IOptions<AuthenticationSettings> authenticationSettings
 ) : IRegisterCommandHandler
 {
     private readonly HostSettings _hostSettings = hostSettings.Value;
+    private readonly AuthenticationSettings _authenticationSettings = authenticationSettings.Value;
 
     public async Task<bool> Handle(RegisterCommand command, CancellationToken cancellationToken)
     {
-        var email = Email.Create(command.Email);
+        var email = command.Email.Trim();
         if (await userRepository.CheckUserWithEmailExistsAsync(email))
             throw new UniquenessViolationExeption("Эл. почта уже занята.");
 
-        var inputPhone = Phone.Trim(command.Phone);
-        Phone? phone = null;
-        if (Phone.Validate(inputPhone))
+        string? phone = null;
+        if (!string.IsNullOrWhiteSpace(command.Phone))
         {
-            phone = Phone.Create(command.Phone);
-            if (await userRepository.CheckUserWithPhoneExistsAsync(phone))
-                throw new UniquenessViolationExeption("Номер телефона уже занят.");
+            phone = Phone.Trim(command.Phone);
+            if (Phone.Validate(phone))
+            {
+                if (await userRepository.CheckUserWithPhoneExistsAsync(command.Phone.Trim()))
+                    throw new UniquenessViolationExeption("Номер телефона уже занят.");
+            }
+            else
+            {
+                throw new ValidationException("Некорректный номер телефона");
+            }
         }
 
         var passwordHash = passwordHasher.Generate(command.Password);
-        var password = Password.Create(passwordHash);
+
+        var emailConfirmationTokenExpiry = DateTime.UtcNow.AddHours(_authenticationSettings.EmailConfirmationTokenExpiryHours);
 
         var user = User.Create(
             id: Guid.NewGuid(),
@@ -43,16 +57,17 @@ public class RegisterCommandHandler(
             lastName: command.LastName,
             email: email,
             phone: phone,
-            password: password,
+            passwordHash: passwordHash,
+            emailConfirmationTokenExpiry: emailConfirmationTokenExpiry,
             avatarId: command.AvatarId
         );
 
         await userRepository.CreateAsync(user);
 
         await emailSender.SendEmailAsync(
-            email.Value,
-            "Подтверждение эл. почты",
-            $"Подтвердите свою электронную почту перейдя по <a href=\"{_hostSettings.Domain}/auth/verify-email/{user.Id}\">ссылке</a>."
+            user.Email.Value,
+        "Подтверждение эл. почты",
+            $"Подтвердите свою электронную почту перейдя по <a href=\"{_hostSettings.Domain}/auth/verify-email/{user.EmailConfirmation!.ConfirmationToken}\">ссылке</a>."
         );
 
         return true;

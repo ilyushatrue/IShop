@@ -25,7 +25,6 @@ using Flags.Application.Users.Queries;
 using Flags.Application.Users.Command;
 using Flags.Application.Images.Queries;
 using Flags.Application.Images.Commands;
-using Flags.Application.Common.Persistance;
 using Flags.Application.Common;
 using Flags.Application.Products.Queries;
 using Flags.Infrastructure.Services.Products;
@@ -35,6 +34,8 @@ using Flags.Infrastructure.Services.Emails;
 using Flags.Application.Authentication.Commands.VerifyEmail;
 using Flags.Application.Authentication.Commands.ResetPassword;
 using Flags.Infrastructure.Services.Auth.ResetPassword;
+using Flags.Application.Persistance.Repositories;
+using Flags.Application.Persistance;
 
 namespace Flags.Infrastructure;
 
@@ -65,10 +66,12 @@ public static class DependencyInjection
             .UseSqlite($"Data Source={dbPath}")
             .UseSnakeCaseNamingConvention());
 
+        services.AddScoped<IDbManager, DbManager>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IRefreshJwtRepository, RefreshJwtRepository>();
         services.AddScoped<IMediaRepository, MediaRepository>();
         services.AddScoped<IProductRepository, ProductRepository>();
+        services.AddScoped<IUserEmailConfirmationRepository, UserEmailConfirmationRepository>();
 
         return services;
     }
@@ -91,7 +94,7 @@ public static class DependencyInjection
         services.AddScoped<IDeleteProductByIdCommandHandler, DeleteProductByIdCommandHandler>();
         services.AddScoped<IUpdateProductCommandHandler, UpdateProductCommandHandler>();
         services.AddScoped<IEmailSender, EmailSender>();
-        services.AddScoped<IVerifyEmailCommandHandler, VerifyEmailCommandHandler>();
+        services.AddScoped<IConfirmEmailCommandHandler, ConfirmEmailCommandHandler>();
         services.AddScoped<ISendResetPasswordEmailCommandHandler, SendResetPasswordEmailCommandHandler>();
         services.AddScoped<IResetPasswordCommandHandler, ResetPasswordCommandHandler>();
         services.AddScoped<ISendResetPasswordFormCommandHandler, SendResetPasswordFormCommandHandler>();
@@ -105,10 +108,15 @@ public static class DependencyInjection
         ConfigurationManager configuration)
     {
         var jwtSettings = new JwtSettings();
-        configuration.Bind(JwtSettings.SectionName, jwtSettings);
+        configuration.Bind(nameof(JwtSettings), jwtSettings);
         services.AddSingleton(Options.Create(jwtSettings));
-
-        services.Configure<JwtSettings>(configuration.GetSection(JwtSettings.SectionName));
+        services.Configure<RefreshJwtSettings>(configuration.GetSection(nameof(RefreshJwtSettings)));
+        services.Configure<AuthorizationSettings>(configuration.GetSection(nameof(AuthorizationSettings)));
+        services.Configure<FileSettings>(configuration.GetSection(nameof(FileSettings)));
+        services.Configure<EmailSettings>(configuration.GetSection(nameof(EmailSettings)));
+        services.Configure<ClientSettings>(configuration.GetSection(nameof(ClientSettings)));
+        services.Configure<HostSettings>(configuration.GetSection(nameof(HostSettings)));
+        services.Configure<AuthenticationSettings>(configuration.GetSection(nameof(AuthenticationSettings)));
         services.AddSingleton<IPasswordHasher, PasswordHasher>();
         services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
         services.AddAuthentication(defaultScheme: JwtBearerDefaults.AuthenticationScheme)
@@ -135,11 +143,7 @@ public static class DependencyInjection
                 };
             });
 
-        services.Configure<AuthorizationSettings>(configuration.GetSection(nameof(AuthorizationSettings)));
-        services.Configure<FileSettings>(configuration.GetSection(nameof(FileSettings)));
-        services.Configure<EmailSettings>(configuration.GetSection(nameof(EmailSettings)));
-        services.Configure<ClientSettings>(configuration.GetSection(nameof(ClientSettings)));
-        services.Configure<HostSettings>(configuration.GetSection(nameof(HostSettings)));
+
         services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
         services.AddAuthorizationBuilder()
             .AddPolicy(CustomPolicies.ADMIN_POLICY, policy => policy

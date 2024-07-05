@@ -1,6 +1,6 @@
 ﻿using Flags.Application.AppSettings;
-using Flags.Application.Common.Persistance;
 using Flags.Application.Images.Queries;
+using Flags.Application.Persistance.Repositories;
 using Flags.Domain.Common.Exceptions;
 using Microsoft.Extensions.Options;
 using System.Drawing;

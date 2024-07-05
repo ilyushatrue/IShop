@@ -1,4 +1,4 @@
-using Flags.Application.Common.Persistance;
+using Flags.Application.Persistance.Repositories;
 using Flags.Domain.UserRoot.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,9 +7,8 @@ namespace Flags.Infrastructure.Persistance.Repositories;
 public class RefreshJwtRepository(
     FlagDbContext dbContext) : IRefreshJwtRepository
 {
-    public async Task<int> CreateAsync(Guid userId)
+    public async Task<int> CreateAsync(RefreshJwt token)
     {
-        var token = RefreshJwt.Create(userId);
         dbContext.RefreshJwts.Add(token);
         return await dbContext.SaveChangesAsync();
     }
@@ -30,7 +29,6 @@ public class RefreshJwtRepository(
 
     public async Task<int> UpdateAsync(RefreshJwt token)
     {
-        token.Update();
         dbContext.Update(token);
         return await dbContext.SaveChangesAsync();
     }

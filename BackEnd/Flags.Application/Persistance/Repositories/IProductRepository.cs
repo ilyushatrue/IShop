@@ -1,6 +1,6 @@
 ﻿using Flags.Domain.ProductRoot;
 
-namespace Flags.Application.Common.Persistance;
+namespace Flags.Application.Persistance.Repositories;
 public interface IProductRepository
 {
     Task<bool> CreateAsync(Product product);

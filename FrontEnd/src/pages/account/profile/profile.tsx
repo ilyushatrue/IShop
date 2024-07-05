@@ -29,7 +29,7 @@ export default function Profile() {
 			request: async () => await usersApi.updateUserData(user),
 			onSuccess: (handler) =>
 				handler
-					.popup("Данные успешно обновлены. Ураааааааааааааа!")
+					.popup("Данные успешно обновлены!")
 					.do(async () => (updated = true)),
 			onError: (handler) => handler.log().popup(),
 		});

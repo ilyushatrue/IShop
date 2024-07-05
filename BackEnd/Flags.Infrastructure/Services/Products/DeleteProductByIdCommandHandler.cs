@@ -1,4 +1,4 @@
-﻿using Flags.Application.Common.Persistance;
+﻿using Flags.Application.Persistance.Repositories;
 using Flags.Application.Products.Commands;
 
 namespace Flags.Infrastructure.Services.Products;

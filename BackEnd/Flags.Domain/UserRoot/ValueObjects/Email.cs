@@ -8,7 +8,6 @@ public class Email : ValueObject
 {
     private const int EMAIL_MAX_LENGTH = 50;
     public string Value { get; private set; } = null!;
-    public bool IsVerified { get; private set; }
 
     private Email(string value)
     {
@@ -41,9 +40,4 @@ public class Email : ValueObject
         ValidateFilled(email)
         && ValidateLength(email)
         && ValidateFormat(email);
-
-    public void SetIsVerified()
-    {
-        IsVerified = true;
-    }
 }

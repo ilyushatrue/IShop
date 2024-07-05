@@ -27,7 +27,6 @@ public class Phone
 
     public static bool Validate(string phoneNumber)
     {
-        phoneNumber = Regex.Replace(phoneNumber, @"\D", "").Trim();
         if (Regex.IsMatch(phoneNumber, "^7\\d{10}$"))
             return true;
         else

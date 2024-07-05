@@ -6,25 +6,25 @@ namespace Flags.Domain.UserRoot.Entities;
 public class RefreshJwt : Entity<Guid>
 {
 	private RefreshJwt() { }
-	private RefreshJwt(Guid userId) : base(userId)
+	private RefreshJwt(Guid userId, int expiryDays) : base(userId)
 	{
-		Update();
+		Update(expiryDays);
 	}
 
-	public static RefreshJwt Create(Guid userId) => new(userId);
+	public static RefreshJwt Create(Guid userId, int expiryDays) => new(userId, expiryDays);
 
 	public DateTime ExpiryDatetime { get; private set; }
 	public string Value { get; private set; } = null!;
 
 	public User User { get; } = null!;
 
-	public void Update()
+	public void Update(int expiryDays)
 	{
 		Value = GenerateToken();
-		ExpiryDatetime = DateTime.Now.AddMinutes(5);
+		ExpiryDatetime = DateTime.Now.AddDays(expiryDays);
 	}
 
-	private string GenerateToken()
+	private static string GenerateToken()
 	{
 		var randomNumber = new byte[32];
 		using var rng = RandomNumberGenerator.Create();

@@ -24,7 +24,7 @@ public class AuthenticationController(
     ILoginByPhoneQueryHandler loginByPhoneQueryHandler,
     ILoginByEmailQueryHandler loginByEmailQueryHandler,
     ILogoutCommandHandler logoutCommandHandler,
-    IVerifyEmailCommandHandler verifyEmailCommandHandler,
+    IConfirmEmailCommandHandler confirmEmailCommandHandler,
     ISendResetPasswordEmailCommandHandler sendResetPasswordEmailCommandHandler,
     IResetPasswordCommandHandler resetPasswordCommandHandler,
     ISendResetPasswordFormCommandHandler sendResetPasswordFormCommandHandler,
@@ -44,12 +44,12 @@ public class AuthenticationController(
     [HttpPost("refresh-jwt")]
     public async Task<IActionResult> RefreshJwt(CancellationToken cancellationToken)
     {
-        var phone = Request.Cookies["user-phone"];
+        var email = Request.Cookies["user-email"];
 
-        if (string.IsNullOrWhiteSpace(phone))
+        if (string.IsNullOrWhiteSpace(email))
             throw new NotAuthenticatedException();
 
-        var result = await refreshJwtCommandHandler.Handle(phone, cancellationToken);
+        var result = await refreshJwtCommandHandler.Handle(email, cancellationToken);
         cookieManager.SetUserCookies(result.User);
         cookieManager.SetJwtAccessTokenCookie(result.JwtAccessToken);
         return Ok();
@@ -109,12 +109,12 @@ public class AuthenticationController(
     }
 
 
-    [HttpGet("verify-email/{userId}")]
-    public async Task<IActionResult> VerifyEmail(Guid userId)
+    [HttpGet("verify-email/{emailConfirationToken}")]
+    public async Task<IActionResult> VerifyEmail(Guid emailConfirationToken)
     {
         HttpContext.Response.ContentType = "text/html";
 
-        var result = await verifyEmailCommandHandler.Handle(userId);
+        var result = await confirmEmailCommandHandler.Handle(emailConfirationToken);
 
         cookieManager.SetUserCookies(result.User);
         cookieManager.SetJwtAccessTokenCookie(result.JwtAccessToken);

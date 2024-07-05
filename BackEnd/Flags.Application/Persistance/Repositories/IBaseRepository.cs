@@ -1,7 +1,7 @@
 using Flags.Domain.Common.Models;
 using Microsoft.EntityFrameworkCore.Storage;
 
-namespace Flags.Application.Common.Persistance;
+namespace Flags.Application.Persistance.Repositories;
 
 public interface IBaseRepository<TEntity, TId>
     where TEntity : Entity<TId>, new()

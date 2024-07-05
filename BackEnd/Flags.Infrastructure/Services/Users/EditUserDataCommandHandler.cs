@@ -1,7 +1,7 @@
 ﻿using Flags.Application.Users.Command;
 using Flags.Domain.UserRoot;
-using Flags.Application.Common.Persistance;
 using Flags.Domain.Common.Exceptions;
+using Flags.Application.Persistance.Repositories;
 
 namespace Flags.Infrastructure.Services.Users;
 public class EditUserDataCommandHandler(
@@ -9,10 +9,10 @@ public class EditUserDataCommandHandler(
 {
     public async Task<User> Handle(EditUserDataCommand command, CancellationToken cancellationToken)
     {
-        var model = await userRepository.GetByPhoneAsync(command.Phone) ??
-            throw new NotFoundException($"Пользователь с телефоном {command.Phone} не найден.");
+        var user = await userRepository.GetByEmailAsync(command.Email) ??
+            throw new NotFoundException($"Пользователь с эл. почтой {command.Email} не найден.");
 
-        var user = User.Create(model.Id, command.FirstName, command.LastName, model.Phone, model.Email, model.Password, command.AvatarId);
+        user.Update(command.FirstName, command.LastName, command.Phone, command.Email, command.AvatarId);
         await userRepository.UpdateAsync(user);
         return user;
     }

@@ -1,6 +1,6 @@
 ﻿using Flags.Domain.MediaEntity;
 
-namespace Flags.Application.Common.Persistance;
+namespace Flags.Application.Persistance.Repositories;
 public interface IMediaRepository
 {
     Task<Media?> GetByIdAsync(Guid id);

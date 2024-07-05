@@ -1,5 +1,5 @@
 using Flags.Application.Authentication.Commands.Logout;
-using Flags.Application.Common.Persistance;
+using Flags.Application.Persistance.Repositories;
 using Flags.Domain.Common.Exceptions;
 
 namespace Flags.Infrastructure.Services.Auth;
