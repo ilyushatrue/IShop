@@ -57,6 +57,11 @@ namespace Flags.Api.Middlewares
             {
                 await HandleExceptionAsync(httpContext, StatusCodes.Status500InternalServerError, ex.Message);
             }
+
+            if (httpContext.Response.StatusCode == StatusCodes.Status403Forbidden)
+            {
+                await HandleExceptionAsync(httpContext, StatusCodes.Status403Forbidden, "Недостаточно прав");
+            }
         }
 
         private async Task HandleExceptionAsync(HttpContext httpContext, int statusCode, string exceptionMessage)
@@ -65,13 +70,44 @@ namespace Flags.Api.Middlewares
             HttpResponse response = httpContext.Response;
             response.StatusCode = statusCode;
 
-            var acceptHeader = httpContext.Request.Headers["Accept"].ToString();
+            var acceptHeader = httpContext.Request.Headers.Accept.ToString();
             if (acceptHeader.Contains("text/html"))
             {
-                // Return HTML response
-                response.ContentType = "text/html";
+                await GenerateHtmlErrorResponse(exceptionMessage, response);
+            }
+            else
+            {
+                await GenarateJsonErrorResponse(httpContext, exceptionMessage, response);
+            }
+        }
 
-                string htmlResponse = $@"
+        private static async Task GenarateJsonErrorResponse(HttpContext httpContext, string exceptionMessage, HttpResponse response)
+        {
+            response.ContentType = "application/json; charset=utf-8";
+
+            var errorDetail = new
+            {
+                title = "Возникла ошибка при выполнении запроса.",
+                status = response.StatusCode,
+                detail = exceptionMessage,
+                traceId = httpContext.TraceIdentifier
+            };
+
+            var options = new JsonSerializerOptions
+            {
+                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+                WriteIndented = true
+            };
+
+            string result = JsonSerializer.Serialize(errorDetail, options);
+            await response.WriteAsync(result, Encoding.UTF8);
+        }
+
+        private async Task GenerateHtmlErrorResponse(string exceptionMessage, HttpResponse response)
+        {
+            response.ContentType = "text/html";
+
+            string htmlResponse = $@"
                     <!DOCTYPE html>
                     <html lang=""en"">
                         <head>
@@ -125,29 +161,7 @@ namespace Flags.Api.Middlewares
                         </body>
                     </html>";
 
-                await response.WriteAsync(htmlResponse);
-            }
-            else
-            {
-                response.ContentType = "application/json; charset=utf-8";
-
-                var errorDetail = new
-                {
-                    title = "Возникла ошибка при выполнении запроса.",
-                    status = response.StatusCode,
-                    detail = exceptionMessage,
-                    traceId = httpContext.TraceIdentifier
-                };
-
-                var options = new JsonSerializerOptions
-                {
-                    Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
-                    WriteIndented = true
-                };
-
-                string result = JsonSerializer.Serialize(errorDetail, options);
-                await response.WriteAsync(result, Encoding.UTF8);
-            }
+            await response.WriteAsync(htmlResponse);
         }
     }
 }

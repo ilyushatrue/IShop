@@ -21,11 +21,6 @@ const menuItems: IPageState = {
 	tabs: [
 		{ label: "Главная", href: "/", active: true },
 		{
-			label: "Пользователи",
-			href: "/users",
-			active: false,
-		},
-		{
 			label: "Одежда и обувь",
 			href: "/test",
 			active: false,

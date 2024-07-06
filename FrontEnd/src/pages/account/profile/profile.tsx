@@ -21,7 +21,7 @@ export default function Profile() {
 		useAppSelector((state) => state.user.user)
 	);
 	const dispatch = useAppDispatch();
-	const { fetchAsync } = useApi();
+	const { fetchAsync, isFetching } = useApi();
 
 	async function handleFormSubmitAsync(user: IUserCredentialsRequest) {
 		let updated: boolean = false;
@@ -52,7 +52,7 @@ export default function Profile() {
 	}
 
 	return (
-		<ProfilePage>
+		<ProfilePage isLoading={isFetching}>
 			<Box
 				width={400}
 				display={"flex"}

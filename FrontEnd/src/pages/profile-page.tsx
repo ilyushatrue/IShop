@@ -1,22 +1,21 @@
 import { Box, BoxProps } from "@mui/material";
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Page from "../components/page";
-import { useAppDispatch } from "../app/hooks/redux/use-app-dispatch";
-import useApi from "../api/hooks/use-api.hook";
 import { useAppSelector } from "../app/hooks/redux/use-app-selector";
 import IconButton from "../components/icon-button";
 
-export default function ProfilePage({children, ...props}:BoxProps) {
+export default function ProfilePage({
+	isLoading,
+	children,
+	...props
+}: { isLoading?: boolean } & BoxProps) {
 	const navbarHeight = useAppSelector((state) => state.page.navbar.height);
 	const displayWidth = useAppSelector((state) => state.page.displayWidth);
 	const navigate = useNavigate();
-	const dispatch = useAppDispatch();
-	const { isFetching, fetchAsync } = useApi();
 
 	return (
 		<Page
-			isLoading={isFetching}
+			isLoading={isLoading}
 			sx={{
 				maxWidth: displayWidth,
 			}}
@@ -47,6 +46,7 @@ export default function ProfilePage({children, ...props}:BoxProps) {
 							caption="Мой профиль"
 							variant="squared"
 							fullwidth
+							buttonSx={{ paddingX: 2 }}
 						/>
 						<IconButton
 							iconName="local_shipping"
@@ -54,6 +54,7 @@ export default function ProfilePage({children, ...props}:BoxProps) {
 							caption="Покупки"
 							variant="squared"
 							fullwidth
+							buttonSx={{ paddingX: 2 }}
 						/>
 						<IconButton
 							iconName="shopping_bag"
@@ -61,6 +62,7 @@ export default function ProfilePage({children, ...props}:BoxProps) {
 							caption="Корзина"
 							variant="squared"
 							fullwidth
+							buttonSx={{ paddingX: 2 }}
 						/>
 						<IconButton
 							iconName="add_circle"
@@ -68,6 +70,15 @@ export default function ProfilePage({children, ...props}:BoxProps) {
 							caption="Добавить товар"
 							variant="squared"
 							fullwidth
+							buttonSx={{ paddingX: 2 }}
+						/>
+						<IconButton
+							iconName="people"
+							onClick={() => navigate("/users")}
+							caption="Пользователи"
+							variant="squared"
+							fullwidth
+							buttonSx={{ paddingX: 2 }}
 						/>
 					</Box>
 				</Box>

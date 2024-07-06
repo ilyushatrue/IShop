@@ -13,9 +13,11 @@ public class UserEmailConfirmation : Entity<Guid>
     public bool IsConfirmed { get; private set; }
     public Guid ConfirmationToken { get; private set; }
     public DateTime ExpiryDateTime { get; private set; }
-
     public User? User { get; }
 
-
-    public void SetIsConfirmed() => IsConfirmed = true;
+    public void SetIsConfirmed()
+    {
+        IsConfirmed = true;
+        ConfirmationToken = Guid.NewGuid();
+    }
 }

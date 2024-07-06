@@ -33,7 +33,6 @@ export function phoneNumberPipe(phone: string): string {
 	if (value.length >= 10) {
 		formattedValue += `-${value.slice(9, 11)}`;
 	}
-
 	return formattedValue;
 }
 
@@ -79,7 +78,7 @@ export function InputPhone<T extends FieldValues>({
 						const formattedValue = phoneNumberPipe(e.target.value);
 						field.onChange(formattedValue);
 					}}
-					value={field.value}
+					value={phoneNumberPipe(field.value)}
 					error={!!error}
 					helperText={error && error.message}
 					disabled={disabled}
