@@ -46,7 +46,7 @@ export default function InputPasswordConfirm<T extends FieldValues>({
 	required = true,
 	onChange,
 	readonly,
-	disabled,
+	enabled: disabled,
 }: {
 	onChange: () => PathValue<T, Path<T>>;
 } & IFormBuilderField<T>) {

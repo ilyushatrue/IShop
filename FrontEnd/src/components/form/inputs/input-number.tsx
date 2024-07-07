@@ -11,7 +11,7 @@ export default function InputNumber<T extends FieldValues>({
 	variant = "filled",
 	margin = "dense",
 	required = false,
-	disabled,
+	enabled: disabled,
 	readonly,
 	min = -DECIMAL_MAX_VALUE,
 	max = DECIMAL_MAX_VALUE,

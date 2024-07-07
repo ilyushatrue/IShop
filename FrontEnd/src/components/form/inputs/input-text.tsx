@@ -10,7 +10,7 @@ export default function InputText<T extends FieldValues>({
 	variant = "filled",
 	margin = "dense",
 	required = false,
-	disabled,
+	enabled: disabled,
 	readonly,
 }: IFormBuilderField<T>) {
 	return (

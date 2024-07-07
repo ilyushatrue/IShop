@@ -15,7 +15,7 @@ export default function LoginByPhoneForm({ onSubmitAsync, loading }: IProps) {
 			onSubmit={onSubmitAsync}
 			minHeight={210}
 			loading={loading}
-			submitButtonText="Войти"
+			actions={([submit, reset]) => [submit, reset]}
 			fields={(builder) =>
 				builder
 					.phone({

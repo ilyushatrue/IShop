@@ -26,8 +26,13 @@ export default function ProductAdd() {
 					description: "",
 					imageId: "",
 					name: "",
+					categoryId: 0,
 					price: 0,
 				}}
+				actions={([submit, reset]) => [submit, reset]}
+				// buttons={{
+				// 	submit: { label: "Сохранить" },
+				// }}
 				fields={(builder) =>
 					builder
 						.image({
@@ -43,6 +48,11 @@ export default function ProductAdd() {
 						.text({
 							name: "description",
 							label: "Описание",
+							required: true,
+						})
+						.number({
+							name: "categoryId",
+							label: "Категория",
 							required: true,
 						})
 						.number({

@@ -14,6 +14,7 @@ import apiAuth from "../../../api/auth.api";
 import Dialog from "../../../components/dialog";
 import { setIsPageLoading } from "../../../store/page.slice";
 import Form from "../../../components/form/form";
+import Button from "../../../components/button";
 
 type AuthType = "phone" | "email";
 
@@ -140,8 +141,11 @@ export default function Login({ sm = false, onToRegisterClick }: IProps) {
 					}
 					minHeight={80}
 					loading={isFetching}
-					resetButtonText="Отмена"
-					onReset={() => setIsResetPasswordDialogOn(false)}
+					actions={([submit, reset]) => [submit, reset]}
+					// buttons={{
+					// 	position: "end",
+					// 	submit: { label: "Отправить" },
+					// }}
 					onSubmit={(values) =>
 						handleResetPasswordAsync(values.email)
 					}

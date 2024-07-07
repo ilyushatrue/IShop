@@ -40,7 +40,7 @@ export default function InputPassword<T extends FieldValues>({
 	variant = "filled",
 	margin = "dense",
 	required = true,
-	disabled,
+	enabled: disabled,
 	readonly,
 }: IFormBuilderField<T>) {
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false);

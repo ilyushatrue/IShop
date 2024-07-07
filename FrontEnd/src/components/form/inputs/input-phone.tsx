@@ -56,8 +56,8 @@ export function InputPhone<T extends FieldValues>({
 	size = "medium",
 	variant = "filled",
 	margin = "dense",
-	required = true,
-	disabled,
+	required = false,
+	enabled: disabled,
 	readonly,
 }: IFormBuilderField<T>) {
 	return (

@@ -7,5 +7,5 @@ public interface IRefreshJwtRepository
     Task<RefreshJwt?> GetByIdAsync(Guid userId);
     Task<int> UpdateAsync(RefreshJwt token);
     Task<int> CreateAsync(RefreshJwt token);
-    Task<int> DeleteAsync(RefreshJwt token);
+    void DeleteAsync(RefreshJwt token);
 }

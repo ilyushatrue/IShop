@@ -31,12 +31,14 @@ export default function Products({ products, ...props }: IProps) {
 				},
 				{
 					iconName: "delete_outline",
-					onClick: (id) => setIsDeleteConfirm(id),
+					onClick: setIsDeleteConfirm,
 				},
 			]);
 		}
 		return actions;
 	}, [isAuth]);
+
+	console.log(isDeleteConfirm)
 	return (
 		<Box {...props} display={"flex"} justifyContent={"center"}>
 			<Grid container rowSpacing={4} width={"100%"} height={"100%"}>

@@ -19,7 +19,6 @@ export default function NavAvatar({ tip, menuItems }: IAvatar) {
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const isMenuOpen = Boolean(anchorEl);
 	const { user } = useAppSelector((state) => state.user);
-	console.log(user)
 	function closeMenu() {
 		setAnchorEl(null);
 	}

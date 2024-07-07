@@ -8,16 +8,17 @@ public class Product : AggregateRoot<Guid>
     private Product() : base(new Guid()) { }
     private Product(Guid id) : base(id) { }
 
-    private Product(Guid id, string name, decimal price, Guid imageId, string? description) : this(id)
+    private Product(Guid id, string name, decimal price, Guid imageId, int categoryId, string? description) : this(id)
     {
         Name = name;
         Price = price;
         ImageId = imageId;
+        CategoryId = categoryId;
         Description = description;
     }
-    public static Product Create(Guid id, string name, decimal price, Guid imageId, string? description)
+    public static Product Create(Guid id, string name, decimal price, Guid imageId, int categoryId, string? description)
     {
-        return new Product(id, name, price, imageId, description);
+        return new Product(id, name, price, imageId, categoryId, description);
     }
 
     public string Name { get; private set; } = null!;

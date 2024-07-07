@@ -27,7 +27,7 @@ export default function InputImage<T extends FieldValues>({
 	variant = "filled",
 	margin = "dense",
 	required = false,
-	disabled,
+	enabled: disabled,
 	readonly,
 	shape = "rounded",
 }: IFormBuilderField<T> & {

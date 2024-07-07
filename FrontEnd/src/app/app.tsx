@@ -1,4 +1,5 @@
-import "../assets/fonts/fonts.scss"
+import "../assets/fonts/fonts.scss";
+import "../extension-methods/array.extensions";
 import { CssBaseline, ThemeProvider, useMediaQuery } from "@mui/material";
 import { theme } from "../styles/theme-provider";
 import Router from "./routes";

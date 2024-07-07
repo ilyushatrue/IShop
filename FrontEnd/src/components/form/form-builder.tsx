@@ -10,11 +10,12 @@ import {
 	useState,
 } from "react";
 import {
-	DefaultValues,
+	Control,
 	FieldValues,
 	Path,
 	SubmitHandler,
-	useForm,
+	UseFormHandleSubmit,
+	UseFormWatch,
 } from "react-hook-form";
 import InputEmail from "./inputs/input-email";
 import InputPassword from "./inputs/input-password";
@@ -52,7 +53,9 @@ export type TFormBuilderRef<T extends FieldValues> = {
 };
 
 export interface IForm<T extends FieldValues> {
-	defaultValues: DefaultValues<T>;
+	watch: UseFormWatch<T>;
+	control: Control<T, any>;
+	handleSubmit: UseFormHandleSubmit<T, undefined>;
 	onSubmit: (values: T) => void;
 	children: ReactNode;
 	minHeight: number | string;
@@ -62,7 +65,9 @@ export interface IForm<T extends FieldValues> {
 
 function FormBuilder<T extends FieldValues>(
 	{
-		defaultValues,
+		control,
+		watch,
+		handleSubmit,
 		onSubmit,
 		children,
 		minHeight,
@@ -71,11 +76,6 @@ function FormBuilder<T extends FieldValues>(
 	}: IForm<T>,
 	ref: Ref<TFormBuilderRef<T>>
 ) {
-	const { handleSubmit, control, watch } = useForm<T>({
-		mode: "onChange",
-		reValidateMode: "onBlur",
-		defaultValues,
-	});
 	const [inputsMap, setInputsMap] = useState<Map<string, ReactElement>>(
 		new Map()
 	);
@@ -101,7 +101,11 @@ function FormBuilder<T extends FieldValues>(
 			email: (props) => {
 				addInput(
 					props.name,
-					<InputEmail<T> {...props} control={control} />
+					<InputEmail<T>
+						enabled={true}
+						{...props}
+						control={control}
+					/>
 				);
 				return inputBuilder;
 			},

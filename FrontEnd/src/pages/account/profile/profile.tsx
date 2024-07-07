@@ -60,13 +60,14 @@ export default function Profile() {
 				alignItems={"center"}
 			>
 				<UserForm
+					loading={isFetching}
 					onSubmitAsync={handleFormSubmitAsync}
 					defaultValues={{
 						email: user!.email,
 						firstName: user!.firstName,
 						lastName: user!.lastName,
-						phone:user!.phone ?? "",
-						avatarId: user?.avatarId
+						phone: user!.phone ?? "",
+						avatarId: user?.avatarId,
 					}}
 				/>
 			</Box>

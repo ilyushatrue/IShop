@@ -5,17 +5,23 @@ export default function UserForm({
 	onSubmitAsync,
 	defaultValues,
 	minHeight = 330,
+	loading,
 }: {
 	defaultValues: IUserCredentialsRequest;
 	onSubmitAsync: (values: IUserCredentialsRequest) => Promise<void>;
+	loading: boolean;
 	minHeight?: number;
 }) {
 	return (
 		<Form
 			defaultValues={defaultValues}
 			minHeight={minHeight}
-			submitButtonText="Сохранить"
+			actions={([submit, reset]) => [
+				{ ...submit, label: "Сохранить" },
+				reset,
+			]}
 			onSubmit={onSubmitAsync}
+			loading={loading}
 			fields={(builder) =>
 				builder
 					.image({
@@ -31,12 +37,10 @@ export default function UserForm({
 						name: "lastName",
 						label: "Фамилия",
 					})
-					.phone({
-						name: "phone",
-					})
 					.email({
 						name: "email",
 						required: true,
+						enabled: false,
 					})
 			}
 		/>

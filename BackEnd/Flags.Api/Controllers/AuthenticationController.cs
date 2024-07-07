@@ -68,13 +68,13 @@ public class AuthenticationController(
     [HttpPost("logout")]
     public async Task<IActionResult> Logout(CancellationToken cancellationToken)
     {
-        cookieManager.DeleteJwtAccessTokenCookie();
         var userId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "UserId")?.Value;
 
         if (!Guid.TryParse(userId, out Guid id))
             throw new Exception("Непредвиденная ошибка при выходе из учетной записи. Обратитесь к администратору.");
 
         await logoutCommandHandler.Handle(id, cancellationToken);
+        cookieManager.DeleteJwtAccessTokenCookie();
         return Ok();
     }
 

@@ -1,11 +1,13 @@
 using Flags.Application.Authentication.Commands.Logout;
+using Flags.Application.Persistance;
 using Flags.Application.Persistance.Repositories;
 using Flags.Domain.Common.Exceptions;
 
 namespace Flags.Infrastructure.Services.Auth;
 
 public class LogoutCommandHandler(
-    IRefreshJwtRepository userRefreshJwtRepository
+    IRefreshJwtRepository userRefreshJwtRepository,
+    IDbManager dbManager
 ) : ILogoutCommandHandler
 {
     public async Task<bool> Handle(Guid userId, CancellationToken cancellationToken)
@@ -13,7 +15,9 @@ public class LogoutCommandHandler(
         var refreshJwt = await userRefreshJwtRepository.GetByIdAsync(userId) ??
             throw new NotFoundException("Пользователя не существует.");
 
-        var result = await userRefreshJwtRepository.DeleteAsync(refreshJwt);
+        userRefreshJwtRepository.DeleteAsync(refreshJwt);
+
+        var result = await dbManager.SaveChangesAsync();
         return result > 0;
     }
 }

@@ -8,6 +8,6 @@ export interface IFormField<T extends FieldValues> {
 	variant?: TextFieldVariants;
 	margin?: "dense" | "normal" | "none";
 	required?: boolean;
-	disabled?: boolean;
+	enabled?: boolean;
 	readonly?: boolean;
 }

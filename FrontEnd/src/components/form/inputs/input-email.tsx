@@ -25,7 +25,7 @@ export default function InputEmail<T extends FieldValues>({
 	variant = "filled",
 	margin = "dense",
 	required = false,
-	disabled,
+	enabled,
 	readonly,
 }: IFormBuilderField<T>) {
 	return (
@@ -41,9 +41,9 @@ export default function InputEmail<T extends FieldValues>({
 					type="email"
 					variant={variant}
 					margin={margin}
-					disabled={disabled}
+					disabled={!enabled}
 					InputProps={{ readOnly: readonly }}
-					autoComplete="email" 
+					autoComplete="email"
 					fullWidth
 					onChange={field.onChange}
 					value={field.value}
