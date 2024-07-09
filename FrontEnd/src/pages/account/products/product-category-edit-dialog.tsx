@@ -5,10 +5,10 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import CommentIcon from "@mui/icons-material/Comment";
-import Dialog from "../../components/dialog";
-import { IProductCategory } from "../../api/interfaces/product/categories/product-category.interface";
-import Icon from "../../components/icon";
-import IconButton from "../../components/icon-button";
+import Dialog from "../../../components/dialog";
+import { IProductCategory } from "../../../api/interfaces/product-categories/queries/product-category.interface";
+import Icon from "../../../components/icon";
+import IconButton from "../../../components/icon-button";
 
 export default function ProductCategoryEditDialog({
 	open,

@@ -1,4 +1,5 @@
 ﻿using Flags.Application.Persistance.Repositories;
+using Flags.Domain.Common.Exceptions;
 using Flags.Domain.ProductRoot;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,22 +7,24 @@ namespace Flags.Infrastructure.Persistance.Repositories;
 
 public class ProductRepository(FlagDbContext dbContext) : IProductRepository
 {
-    public async Task<bool> CreateAsync(Product product)
+    public void Create(Product product)
     {
         dbContext.Products.Add(product);
-        var affected = await dbContext.SaveChangesAsync();
-        return affected > 0;
     }
 
-    public async Task<bool> DeleteByIdAsync(Guid id)
+    public async Task DeleteByIdAsync(Guid id)
     {
-        var entity = await dbContext.Products.FirstOrDefaultAsync(p => p.Id == id);
-        if (entity is not null)
-        {
-            dbContext.Products.Remove(entity);
-            await dbContext.SaveChangesAsync();
-        }
-        return true;
+        var entity = await dbContext.Products.FirstOrDefaultAsync(p => p.Id == id) ??
+            throw new NotFoundException("Товара не существует.");
+        dbContext.Products.Remove(entity);
+    }
+
+    public async Task<List<Product>> GetAllByCategoryAsync(int categoryId)
+    {
+        return await dbContext.Products
+            .Where(p => p.CategoryId == categoryId)
+            .Include(p => p.Category)
+            .ToListAsync();
     }
 
     public async Task<List<Product>> GetAllAsync()
@@ -31,10 +34,14 @@ public class ProductRepository(FlagDbContext dbContext) : IProductRepository
             .ToListAsync();
     }
 
-    public async Task<bool> UpdateAsync(Product product)
+    public void Update(Product product)
     {
         dbContext.Update(product);
-        await dbContext.SaveChangesAsync();
-        return true;
+    }
+
+    public async Task<Product> GetByIdAsync(Guid id)
+    {
+        return await dbContext.Products.SingleOrDefaultAsync(x => x.Id == id) ??
+            throw new NotFoundException("Товара не существует.");
     }
 }

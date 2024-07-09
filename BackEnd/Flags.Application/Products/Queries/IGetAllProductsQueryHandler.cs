@@ -3,5 +3,5 @@
 namespace Flags.Application.Products.Queries;
 public interface IGetAllProductsQueryHandler
 {
-    Task<IEnumerable<Product>> Handle(CancellationToken cancellationToken);
+    Task<IEnumerable<Product>> Handle(GetAllProductsQuery query);
 }

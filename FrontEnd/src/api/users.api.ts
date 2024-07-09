@@ -1,10 +1,9 @@
-import { IApiInitialResponse } from "../store/types";
 import { httpGet, httpPut } from "./api";
 import { IUser } from "./interfaces/user/user.interface";
 
 const usersApi = {
 	getCurrentAsync: async () =>
-		await httpGet<IApiInitialResponse>(
+		await httpGet<IUser>(
 			{ url: "/users/current" },
 			(r) => r.json()
 		),

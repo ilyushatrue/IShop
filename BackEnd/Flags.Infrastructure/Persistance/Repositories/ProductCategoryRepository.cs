@@ -23,6 +23,8 @@ public class ProductCategoryRepository(FlagDbContext dbContext) : IProductCatego
         var commonRecords = dbCategories.Except(recordsToDelete).ToArray();
         var recordsToAdd = categories.Where(inputCat => commonRecords.All(dbCat => inputCat.Id != dbCat.Id));
 
+        dbContext.ProductCategories.RemoveRange(recordsToDelete);
+        dbContext.ProductCategories.AddRange(recordsToAdd);
         foreach (var dbCat in commonRecords)
         {
             var inputCat = categories.First(c => c.Id == dbCat.Id);

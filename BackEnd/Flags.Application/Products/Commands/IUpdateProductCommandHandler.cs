@@ -1,7 +1,5 @@
-﻿using Flags.Domain.ProductRoot;
-
-namespace Flags.Application.Products.Commands;
+﻿namespace Flags.Application.Products.Commands;
 public interface IUpdateProductCommandHandler
 {
-    Task<bool> Handle(Product product, CancellationToken cancellationToken);
+    Task<bool> Handle(UpdateProductCommand product, CancellationToken cancellationToken);
 }

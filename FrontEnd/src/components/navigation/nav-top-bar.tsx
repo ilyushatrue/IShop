@@ -77,30 +77,6 @@ export default function NavTopBar({ menuItems, avatar, value }: IProps) {
 							iconSx={{ color: "black" }}
 							onClick={() => navigate("/cart")}
 						/>
-						{/* <Box
-							display={"flex"}
-							flexDirection={"column"}
-							alignItems={"center"}
-						>
-							<IconButton
-								iconName="shopping_bag"
-								iconSx={{ color: "black" }}
-								onClick={console.log}
-							/>
-							<Typography variant="body2">Избранное</Typography>
-						</Box>
-						<Box
-							display={"flex"}
-							flexDirection={"column"}
-							alignItems={"center"}
-						>
-							<IconButton
-								iconName="shopping_bag"
-								iconSx={{ color: "black" }}
-								onClick={console.log}
-							/>
-							<Typography variant="body2">Корзина</Typography>
-						</Box> */}
 						<Box display={"flex"} alignItems={"center"}>
 							{avatar && (
 								<NavAvatar

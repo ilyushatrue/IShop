@@ -1,14 +1,14 @@
 import { useNavigate } from "react-router-dom";
-import useApi from "../../api/hooks/use-api.hook";
-import productsApi from "../../api/products.api";
-import Form from "../../components/form/form";
+import useApi from "../../../api/hooks/use-api.hook";
+import productsApi from "../../../api/products.api";
+import Form from "../../../components/form/form";
 import ProfilePage from "../profile-page";
 import { Box } from "@mui/material";
-import { ICreateProductCommand } from "../../api/interfaces/product/create-product-command.interface";
+import { ICreateProductCommand } from "../../../api/interfaces/product/commands/create-product-command.interface";
 import { useMemo, useState } from "react";
-import IconButton from "../../components/icon-button";
+import IconButton from "../../../components/icon-button";
 import ProductCategoryEditDialog from "./product-category-edit-dialog";
-import { useAppSelector } from "../../app/hooks/redux/use-app-selector";
+import { useAppSelector } from "../../../app/hooks/redux/use-app-selector";
 
 export default function ProductAdd() {
 	const { fetchAsync, isFetching } = useApi();
@@ -41,7 +41,7 @@ export default function ProductAdd() {
 	if (!categories || !categories.length) return null;
 	return (
 		<ProfilePage>
-			<Box width={500}>
+			<Box width={500} marginX={"auto"}>
 				<Form
 					loading={isFetching}
 					defaultValues={defaultValues}

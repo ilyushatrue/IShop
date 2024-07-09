@@ -90,7 +90,11 @@ export default function IconButton({
 						sx={{ ...iconSx, color: color }}
 						fontSize={fontSize}
 					/>
-					{caption && <Typography fontSize={"inherit"} color={color}>{caption}</Typography>}
+					{caption && (
+						<Typography fontSize={fontSize * 0.6} color={color}>
+							{caption}
+						</Typography>
+					)}
 				</Box>
 			</Button>
 		</Tooltip>

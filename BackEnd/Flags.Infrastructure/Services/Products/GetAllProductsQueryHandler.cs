@@ -5,8 +5,15 @@ using Flags.Domain.ProductRoot;
 namespace Flags.Infrastructure.Services.Products;
 internal class GetAllProductsQueryHandler(IProductRepository productRepository) : IGetAllProductsQueryHandler
 {
-    public async Task<IEnumerable<Product>> Handle(CancellationToken cancellationToken)
+    public async Task<IEnumerable<Product>> Handle(GetAllProductsQuery query)
     {
-        return await productRepository.GetAllAsync();
+        if (query.CategoryId != null)
+        {
+            return await productRepository.GetAllByCategoryAsync((int)query.CategoryId);
+        }
+        else
+        {
+            return await productRepository.GetAllAsync();
+        }
     }
 }

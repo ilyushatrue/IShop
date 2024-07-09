@@ -10,7 +10,7 @@ public class ProductMappingConfig : IRegister
     public void Register(TypeAdapterConfig config)
     {
         config.NewConfig<Product, ProductDto>()
-            .Map(x => x.CategoryName, s => s.Category!.Name);
+            .Map(x => x.CategoryId, s => s.Category!.Id);
 
         config.NewConfig<ProductCategory, ProductCategoryDto>();
         config.NewConfig<ProductCategoryDto, ProductCategory>()

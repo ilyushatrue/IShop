@@ -1,6 +1,7 @@
 ﻿using Flags.Domain.Common.Models;
 using Flags.Domain.MediaEntity;
 using Flags.Domain.ProductRoot.Entities;
+using Flags.Domain.Common.Exceptions;
 
 namespace Flags.Domain.ProductRoot;
 public class Product : AggregateRoot<Guid>
@@ -10,15 +11,22 @@ public class Product : AggregateRoot<Guid>
 
     private Product(Guid id, string name, decimal price, Guid imageId, int categoryId, string? description) : this(id)
     {
+        Update(name, price, imageId, categoryId, description);
+    }
+    public static Product Create(Guid id, string name, decimal price, Guid imageId, int categoryId, string? description)
+    {
+        return new Product(id, name, price, imageId, categoryId, description);
+    }
+
+    public void Update(string name, decimal price, Guid imageId, int categoryId, string? description)
+    {
+        if (price < 0) throw new ValidationException("Цена не может быть ниже 0.");
+
         Name = name;
         Price = price;
         ImageId = imageId;
         CategoryId = categoryId;
         Description = description;
-    }
-    public static Product Create(Guid id, string name, decimal price, Guid imageId, int categoryId, string? description)
-    {
-        return new Product(id, name, price, imageId, categoryId, description);
     }
 
     public string Name { get; private set; } = null!;

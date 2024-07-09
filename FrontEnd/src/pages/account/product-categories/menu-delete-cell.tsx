@@ -1,23 +1,23 @@
 import { Box, CircularProgress } from "@mui/material";
-import IconButton from "../../components/icon-button";
+import IconButton from "../../../components/icon-button";
 
 interface IProps {
 	isLoading: boolean;
 	onClick: () => void;
 }
-export default function MenuEditCell({ isLoading, onClick }: IProps) {
+export default function MenuDeleteCell({ isLoading, onClick }: IProps) {
 	return (
 		<Box
-			display={"flex"}
-			alignItems={"center"}
-			justifyContent={"end"}
-			height={"100%"}
+			display="flex"
+			alignItems="center"
+			justifyContent="end"
+			height="100%"
 		>
 			{isLoading ? (
 				<CircularProgress />
 			) : (
 				<IconButton
-					iconName={"edit"}
+					iconName="delete"
 					centered
 					variant="circled"
 					fontSize={24}

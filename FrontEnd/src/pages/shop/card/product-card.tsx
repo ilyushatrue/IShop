@@ -1,6 +1,6 @@
 import { Typography } from "@mui/material";
-import Card from "../../components/card/card";
-import getConstant from "../../app/infrastructure/constant-provider";
+import Card from "../../../components/card/card";
+import getConstant from "../../../app/infrastructure/constant-provider";
 
 export interface ICardAction {
 	onClick: (id: string) => void;
@@ -22,7 +22,7 @@ export default function ProductCard({
 }) {
 	const imagesPath = getConstant("API_URL");
 
-
+console.log(id)
 	return (
 		<Card
 			src={imagesPath + "/media/image/" + imageId}

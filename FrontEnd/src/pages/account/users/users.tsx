@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { IUser } from "../../api/interfaces/user/user.interface";
-import Page, { IPage } from "../../components/page";
-import useApi from "../../api/hooks/use-api.hook";
+import { IUser } from "../../../api/interfaces/user/user.interface";
+import Page, { IPage } from "../../../components/page";
+import useApi from "../../../api/hooks/use-api.hook";
 import { Box } from "@mui/material";
-import usersApi from "../../api/users.api";
+import usersApi from "../../../api/users.api";
 import { useNavigate } from "react-router-dom";
 import ProfilePage from "../profile-page";
 export default function Users({ tabName }: IPage) {

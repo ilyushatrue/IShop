@@ -1,4 +1,4 @@
-import { IProductCategory } from "../api/interfaces/product/categories/product-category.interface";
+import { IProductCategory } from "../api/interfaces/product-categories/queries/product-category.interface";
 import { IUser } from "../api/interfaces/user/user.interface";
 
 export interface IUserState {
@@ -12,9 +12,4 @@ export interface IUserState {
 
 export interface IGlobalState {
 	productCategories: IProductCategory[]
-}
-
-export type IApiInitialResponse = {
-	user: IUser | null
-	productCategories: IProductCategory[],
 }

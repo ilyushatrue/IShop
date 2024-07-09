@@ -8,6 +8,7 @@ import {
 	updateCurrentUserState,
 } from "../store/user.slice";
 import { setInitialAppState } from "../store/global.slice";
+import { initApi } from "../api/init.api";
 
 export default function Identity({
 	children,
@@ -20,37 +21,33 @@ export default function Identity({
 	const [isLoading, setIsLoading] = useState(true);
 
 	useEffect(() => {
-		usersApi
-			.getCurrentAsync()
-			.then((res) => {
-				if (res.ok) {
-					const { user, productCategories } = res.body!;
-					if (user) {
-						const { avatarId, email, firstName, lastName, phone } =
-							user!;
-						dispatch(
-							updateCurrentUserState({
-								isAuthenticated: true,
-								avatarId: avatarId,
-								email: email,
-								firstName: firstName,
-								lastName: lastName,
-								phone: phone,
-							})
-						);
-					} else {
-						dispatch(resetCurrentUserState());
-					}
-					dispatch(
-						setInitialAppState({
-							productCategories: productCategories,
-						})
-					);
-				} else {
-					dispatch(resetCurrentUserState());
-				}
-			})
-			.finally(() => setIsLoading(false));
+		const initialDataPromise = initApi.getInitialData().then((res) => {
+			if (res.ok) {
+				dispatch(setInitialAppState(res.body!));
+			}
+		});
+
+		const userDataPromise = usersApi.getCurrentAsync().then((res) => {
+			if (res.ok) {
+				const { avatarId, email, firstName, lastName, phone } =
+					res.body!;
+				dispatch(
+					updateCurrentUserState({
+						isAuthenticated: true,
+						avatarId: avatarId,
+						email: email,
+						firstName: firstName,
+						lastName: lastName,
+						phone: phone,
+					})
+				);
+			} else {
+				dispatch(resetCurrentUserState());
+			}
+		});
+		Promise.all([initialDataPromise, userDataPromise]).finally(() =>
+			setIsLoading(false)
+		);
 	}, []);
 
 	if (isLoading) {

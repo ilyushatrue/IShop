@@ -1,12 +1,18 @@
-﻿using Flags.Application.Persistance.Repositories;
+﻿using Flags.Application.Persistance;
+using Flags.Application.Persistance.Repositories;
 using Flags.Application.Products.Commands;
-using Flags.Domain.ProductRoot;
 
 namespace Flags.Infrastructure.Services.Products;
-public class UpdateProductCommandHandler(IProductRepository productRepository) : IUpdateProductCommandHandler
+public class UpdateProductCommandHandler(
+    IProductRepository productRepository,
+    IDbManager dbManager) : IUpdateProductCommandHandler
 {
-    public async Task<bool> Handle(Product product, CancellationToken cancellationToken)
+    public async Task<bool> Handle(UpdateProductCommand product, CancellationToken cancellationToken)
     {
-        return await productRepository.UpdateAsync(product);
+        var dbProduct = await productRepository.GetByIdAsync(product.Id);
+        dbProduct.Update(product.Name, product.Price, product.ImageId, product.CategoryId, product.Description);
+        productRepository.Update(dbProduct);
+        var affectedRecords = await dbManager.SaveChangesAsync();
+        return affectedRecords > 0;
     }
 }

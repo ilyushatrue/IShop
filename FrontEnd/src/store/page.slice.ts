@@ -22,22 +22,22 @@ const menuItems: IPageState = {
 		{ label: "Главная", href: "/", active: true },
 		{
 			label: "Одежда и обувь",
-			href: "/test",
+			href: "/category/clothes",
 			active: false,
 		},
 		{
 			label: "Электроника",
-			href: "/test",
+			href: "/category/electronics",
 			active: false,
 		},
 		{
 			label: "Дом и сад",
-			href: "/test",
+			href: "/category/yard",
 			active: false,
 		},
 		{
 			label: "Детские товары",
-			href: "/test",
+			href: "/category/children-care",
 			active: false,
 		},
 	],

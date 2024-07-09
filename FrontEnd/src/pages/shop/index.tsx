@@ -1,54 +1,32 @@
-import Products from "./products";
-import { IProduct } from "../../api/interfaces/product/product.interface";
-import Page from "../../components/page";
-import useApi from "../../api/hooks/use-api.hook";
-import { useEffect, useState } from "react";
-import productsApi from "../../api/products.api";
-import { useNavigate } from "react-router-dom";
-import { Box, Typography } from "@mui/material";
+import React from "react";
+import { Route, Routes } from "react-router-dom";
+import Clothes from "./categories/clothes";
+import Main from "./main";
+import Electronics from "./categories/electronics";
+import Yard from "./categories/yard";
+import ChilrdenCare from "./categories/children-care";
+import { useAppSelector } from "../../app/hooks/redux/use-app-selector";
 
-export default function Shop() {
-	const { fetchAsync, isFetching } = useApi();
-	const navigate = useNavigate();
-	const [products, setProducts] = useState<IProduct[]>();
+export default function ShopCategoryRoutes() {
 
-	useEffect(() => {
-		console.log(1)
-		fetchAsync({
-			request: productsApi.getAllAsync,
-			onSuccess: (handler) =>
-				handler.do((res) => setProducts(res.body)),
-			onError: (handler) => handler.do(() => navigate("/not-found")),
-		});
-	}, []);
+	// async function handleEditAsync(product: IProduct) {
+	// 	setProductToEdit(undefined);
+	// 	await fetchAsync({
+	// 		request: async () => await productsApi.updateAsync(product),
+	// 		onSuccess: (handler) => handler.popup("Товар успешно обновлен!").do(()=>{
+				
+	// 		}),
+	// 		onError: (handler) => handler.log().popup(),
+	// 	});
+	// }
 
-	
-	if (!products) return null;
 	return (
-		<Page isLoading={isFetching} sx={{ mt: 2 }}>
-			<Box display={"flex"} gap={2}>
-				<Box
-					sx={{
-						bgcolor: "white",
-						borderRadius: "24px",
-						padding: 2,
-						width: 200,
-					}}
-				>
-					<Typography>Цена </Typography>
-					<Typography>от: </Typography>
-					<Typography>до: </Typography>
-				</Box>
-				<Products
-					products={products!}
-					sx={{
-						bgcolor: "white",
-						borderRadius: "24px",
-						padding: 2,
-						width: 1200,
-					}}
-				/>
-			</Box>
-		</Page>
+		<Routes>
+			<Route path="/" element={<Main />} />
+			<Route path="/clothes" element={<Clothes />} />
+			<Route path="/electronics" element={<Electronics />} />
+			<Route path="/yard" element={<Yard />} />
+			<Route path="/children-care" element={<ChilrdenCare />} />
+		</Routes>
 	);
 }

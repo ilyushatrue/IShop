@@ -1,8 +1,8 @@
 import { Box, BoxProps } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import Page from "../components/page";
-import { useAppSelector } from "../app/hooks/redux/use-app-selector";
-import IconButton from "../components/icon-button";
+import Page from "../../components/page";
+import { useAppSelector } from "../../app/hooks/redux/use-app-selector";
+import IconButton from "../../components/icon-button";
 
 export default function ProfilePage({
 	isLoading,
@@ -81,8 +81,16 @@ export default function ProfilePage({
 							buttonSx={{ paddingX: 2 }}
 						/>
 						<IconButton
+							iconName="category"
+							onClick={() => navigate("/categories")}
+							caption="Категории товаров"
+							variant="squared"
+							fullwidth
+							buttonSx={{ paddingX: 2 }}
+						/>
+						<IconButton
 							iconName="settings"
-							onClick={() => navigate("/menu")}
+							onClick={() => navigate("/settings")}
 							caption="Настройки меню"
 							variant="squared"
 							fullwidth
@@ -94,6 +102,7 @@ export default function ProfilePage({
 					flex={1}
 					bgcolor={"white"}
 					borderRadius={4}
+					overflow={"hidden"}
 				>
 					{children}
 				</Box>

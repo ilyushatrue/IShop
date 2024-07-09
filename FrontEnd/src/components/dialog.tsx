@@ -4,7 +4,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useMemo } from "react";
-import IconButton from "./icon-button";
+import Button from "./button";
 
 function Dialog({
 	onCancel,
@@ -21,10 +21,10 @@ function Dialog({
 		const actionMap: any = {};
 		if (onCancel) {
 			actionMap.cancel = {
-				title: "Отмена",
+				title: "Нет",
 				name: "cancel",
 				icon: "cancel",
-				onClick: () => onCancel(),
+				onClick: onCancel,
 			};
 		}
 		if (onAccept) {
@@ -32,7 +32,7 @@ function Dialog({
 				title: "Да",
 				name: "accept",
 				icon: "done",
-				onClick: () => onAccept(),
+				onClick: onAccept,
 			};
 		}
 		return Object.keys(actionMap).map(
@@ -41,7 +41,7 @@ function Dialog({
 	}, [onCancel, onAccept]);
 
 	return (
-		<MuiDialog {...props} onClose={() => onCancel?.()}>
+		<MuiDialog {...props} onClose={onCancel}>
 			<DialogTitle>{title}</DialogTitle>
 			<DialogContent>
 				<DialogContentText>{content}</DialogContentText>
@@ -49,12 +49,7 @@ function Dialog({
 			<Box sx={{ px: 3 }}>{children}</Box>
 			<DialogActions>
 				{actions.map(({ icon, onClick, title }, index) => (
-					<IconButton
-						key={index}
-						iconName={icon}
-						onClick={onClick}
-						caption={title}
-					/>
+					<Button onClick={onClick}>{title}</Button>
 				))}
 			</DialogActions>
 		</MuiDialog>

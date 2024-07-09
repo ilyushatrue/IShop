@@ -22,17 +22,10 @@ public class ProductController(
 {
     [AllowAnonymous]
     [HttpGet]
-    public async Task<IActionResult> GetAllProductsAsync(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetAllProductsAsync(int? categoryId = null)
     {
-        var result = await getAllProductsQueryHandler.Handle(cancellationToken);
+        var result = await getAllProductsQueryHandler.Handle(new(categoryId));
         return Ok(mapper.Map<IEnumerable<ProductDto>>(result));
-    }
-
-    [HttpGet("categories")]
-    public async Task<IActionResult> GetAllProductCategoriesAsync()
-    {
-        var result = await getAllProductCategoriesQueryHandler.Handle();
-        return Ok(result);
     }
 
     [HttpPost]
@@ -40,6 +33,28 @@ public class ProductController(
     {
         await createProductCommandHandler.Handle(command, cancellationToken);
         return Ok();
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteProductAsync(Guid id, CancellationToken cancellationToken)
+    {
+        await deleteProductByIdCommandHandler.Handle(id, cancellationToken);
+        return Ok();
+    }
+
+    [HttpPut]
+    public async Task<IActionResult> UpdateProductAsync(UpdateProductCommand product, CancellationToken cancellationToken)
+    {
+        await updateProductCommandHandler.Handle(product, cancellationToken);
+        return Ok();
+    }
+
+
+    [HttpGet("categories")]
+    public async Task<IActionResult> GetAllProductCategoriesAsync()
+    {
+        var result = await getAllProductCategoriesQueryHandler.Handle();
+        return Ok(result);
     }
 
     [HttpPost("categories")]
@@ -54,20 +69,6 @@ public class ProductController(
     {
         var mapped = mapper.Map<IEnumerable<ProductCategory>>(products);
         await updateProductCategoryCommandHandler.Handle(mapped);
-        return Ok();
-    }
-
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteProductAsync(Guid id, CancellationToken cancellationToken)
-    {
-        await deleteProductByIdCommandHandler.Handle(id, cancellationToken);
-        return Ok();
-    }
-
-    [HttpPut]
-    public async Task<IActionResult> UpdateProductAsync(Product product, CancellationToken cancellationToken)
-    {
-        await updateProductCommandHandler.Handle(product, cancellationToken);
         return Ok();
     }
 }

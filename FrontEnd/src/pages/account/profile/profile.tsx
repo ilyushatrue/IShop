@@ -3,7 +3,7 @@ import UserForm from "./user-form";
 import useApi from "../../../api/hooks/use-api.hook";
 import usersApi from "../../../api/users.api";
 import { useState } from "react";
-import ProfilePage from "../../profile-page";
+import ProfilePage from "../profile-page";
 import { updateCurrentUserState } from "../../../store/user.slice";
 import { IUser } from "../../../api/interfaces/user/user.interface";
 import { useAppSelector } from "../../../app/hooks/redux/use-app-selector";
@@ -38,18 +38,19 @@ export default function Profile() {
 			request: usersApi.getCurrentAsync,
 			onSuccess: (handler) =>
 				handler.do(({ body }) => {
-					const updatedUser = body!.user!;
+					const { email, firstName, lastName, avatarId, phone } =
+						body!;
 					dispatch(
 						updateCurrentUserState({
-							email: updatedUser.email,
-							firstName: updatedUser.firstName,
-							lastName: updatedUser.lastName,
-							avatarId: updatedUser.avatarId,
-							phone: updatedUser.phone,
+							email: email,
+							firstName: firstName,
+							lastName: lastName,
+							avatarId: avatarId,
+							phone: phone,
 							isAuthenticated: true,
 						})
 					);
-					setUser(updatedUser);
+					setUser(body!);
 				}),
 			onError: (handler) => handler.log().popup(),
 		});
