@@ -1,6 +1,5 @@
 ﻿using Flags.Domain.Enums;
 using Flags.Domain.UserRoot;
-using Flags.Domain.UserRoot.ValueObjects;
 
 namespace Flags.Application.Persistance.Repositories;
 public interface IUserRepository

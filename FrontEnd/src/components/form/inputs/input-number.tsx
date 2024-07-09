@@ -1,8 +1,12 @@
 import { TextField } from "@mui/material";
-import { Controller, FieldValues } from "react-hook-form";
-import { IFormBuilderField } from "./form-builder-field.interface";
+import { Control, Controller, FieldValues } from "react-hook-form";
+import { IFormField } from "./form-field.interface";
 
 const DECIMAL_MAX_VALUE = 79228162514264337593543950335;
+export interface IFormNumberField<T extends FieldValues> extends IFormField<T> {
+	min?: number;
+	max?: number;
+}
 export default function InputNumber<T extends FieldValues>({
 	control,
 	name,
@@ -11,11 +15,11 @@ export default function InputNumber<T extends FieldValues>({
 	variant = "filled",
 	margin = "dense",
 	required = false,
-	enabled: disabled,
+	enabled = true,
 	readonly,
 	min = -DECIMAL_MAX_VALUE,
 	max = DECIMAL_MAX_VALUE,
-}: IFormBuilderField<T> & { min?: number; max?: number }) {
+}: IFormNumberField<T> & { control: Control<T> }) {
 	return (
 		<Controller
 			key={name}
@@ -36,7 +40,7 @@ export default function InputNumber<T extends FieldValues>({
 					type="number"
 					size={size}
 					variant={variant}
-					disabled={disabled}
+					disabled={!enabled}
 					InputProps={{ readOnly: readonly }}
 					fullWidth
 					onChange={field.onChange}

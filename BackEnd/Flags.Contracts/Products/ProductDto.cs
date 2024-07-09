@@ -4,5 +4,4 @@ public record ProductDto(
     string Description,
     string ImageId,
     decimal Price,
-    string Category
-    );
+    string CategoryName);

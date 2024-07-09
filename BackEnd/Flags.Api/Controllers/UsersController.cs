@@ -1,9 +1,13 @@
+using Flags.Application;
+using Flags.Application.Products.Queries;
 using Flags.Application.Users.Command;
 using Flags.Application.Users.Queries;
 using Flags.Contracts.Authentication;
+using Flags.Contracts.Products;
 using Flags.Domain.Common.Exceptions;
 using Flags.Infrastructure.Authentication;
 using Flags.Infrastructure.Services.Cookies;
+using MapsterMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,9 +16,11 @@ namespace Flags.Api.Controllers;
 [Route("users")]
 [Authorize(Policy = CustomPolicies.ADMIN_POLICY)]
 public class UsersController(
+    IMapper mapper,
     IGetAllUsersQueryHandler getAllUsersQueryHandler,
     IGetUserByIdQueryHandler getUserByIdQueryHandler,
     IEditUserDataCommandHandler editUserDataCommandHandler,
+    IGetAllProductCategoriesQueryHandler getAllProductCategoriesQueryHandler,
     CookieManager cookieManager
 ) : ApiController
 {
@@ -34,11 +40,9 @@ public class UsersController(
 
     [AllowAnonymous]
     [HttpGet("current")]
-    public IActionResult GetCurrent(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetCurrent()
     {
-        if (User.Identity?.IsAuthenticated != true)
-            throw new NotAuthenticatedException();
-
+        AuthenticationResponse? authenticationResponse = null;
         var (firstName, lastName, phone, email, avatarId) = cookieManager.GetUserCookies();
 
         var requiredCredentials = new string?[]
@@ -48,19 +52,23 @@ public class UsersController(
             email,
         };
 
-        if (requiredCredentials.Any(x => x is null))
-            throw new NotAuthenticatedException();
-
-        Guid? avatarGuid = Guid.TryParse(avatarId, out Guid result) ? result : null;
-
-        var response = new AuthenticationResponse(
-            firstName!,
-            lastName!,
-            email!,
-            phone,
-            avatarGuid);
-
-        return Ok(response);
+        if (requiredCredentials.All(x => x is not null))
+        {
+            Guid? avatarGuid = Guid.TryParse(avatarId, out Guid result) ? result : null;
+            authenticationResponse = new AuthenticationResponse(
+                firstName!,
+                lastName!,
+                email!,
+                phone,
+                avatarGuid);
+        }
+        var categories = await getAllProductCategoriesQueryHandler.Handle();
+        var initialResponse = new InitialResponse()
+        {
+            ProductCategories = mapper.Map<IEnumerable<ProductCategoryDto>>(categories),
+            User = authenticationResponse
+        };
+        return Ok(initialResponse);
     }
 
     [HttpPut]

@@ -72,6 +72,7 @@ public static class DependencyInjection
         services.AddScoped<IMediaRepository, MediaRepository>();
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<IUserEmailConfirmationRepository, UserEmailConfirmationRepository>();
+        services.AddScoped<IProductCategoryRepository, ProductCategoryRepository>();
 
         return services;
     }
@@ -98,6 +99,9 @@ public static class DependencyInjection
         services.AddScoped<ISendResetPasswordEmailCommandHandler, SendResetPasswordEmailCommandHandler>();
         services.AddScoped<IResetPasswordCommandHandler, ResetPasswordCommandHandler>();
         services.AddScoped<ISendResetPasswordFormCommandHandler, SendResetPasswordFormCommandHandler>();
+        services.AddScoped<IGetAllProductCategoriesQueryHandler, GetAllProductCategoriesQueryHandler>();
+        services.AddScoped<ICreateProductCategoryCommandHandler, CreateProductCategoryCommandHandler>();
+        services.AddScoped<ISyncProductCategoriesCommandHandler, SyncProductCategoriesCommandHandler>();
 
         return services;
     }

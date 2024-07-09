@@ -7,6 +7,7 @@ import {
 	resetCurrentUserState,
 	updateCurrentUserState,
 } from "../store/user.slice";
+import { setInitialAppState } from "../store/global.slice";
 
 export default function Identity({
 	children,
@@ -23,10 +24,26 @@ export default function Identity({
 			.getCurrentAsync()
 			.then((res) => {
 				if (res.ok) {
+					const { user, productCategories } = res.body!;
+					if (user) {
+						const { avatarId, email, firstName, lastName, phone } =
+							user!;
+						dispatch(
+							updateCurrentUserState({
+								isAuthenticated: true,
+								avatarId: avatarId,
+								email: email,
+								firstName: firstName,
+								lastName: lastName,
+								phone: phone,
+							})
+						);
+					} else {
+						dispatch(resetCurrentUserState());
+					}
 					dispatch(
-						updateCurrentUserState({
-							isAuthenticated: true,
-							user: res.body!,
+						setInitialAppState({
+							productCategories: productCategories,
 						})
 					);
 				} else {

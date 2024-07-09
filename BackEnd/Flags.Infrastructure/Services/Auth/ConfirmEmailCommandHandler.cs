@@ -4,7 +4,6 @@ using Flags.Application.Authentication.Common;
 using Flags.Application.Persistance;
 using Flags.Application.Persistance.Repositories;
 using Flags.Domain.Common.Exceptions;
-using Flags.Domain.UserRoot;
 using Flags.Domain.UserRoot.Entities;
 using Microsoft.Extensions.Options;
 

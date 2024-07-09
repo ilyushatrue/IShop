@@ -14,7 +14,6 @@ import apiAuth from "../../../api/auth.api";
 import Dialog from "../../../components/dialog";
 import { setIsPageLoading } from "../../../store/page.slice";
 import Form from "../../../components/form/form";
-import Button from "../../../components/button";
 
 type AuthType = "phone" | "email";
 
@@ -74,32 +73,9 @@ export default function Login({ sm = false, onToRegisterClick }: IProps) {
 		});
 		dispatch(setIsPageLoading(false));
 	}
-
 	return (
 		<>
 			<Template sm={sm} avatar={<LockOutlined />} title={"Войти"}>
-				{/* <ToggleButtonGroup
-				fullWidth
-				color="primary"
-				value={authType}
-				exclusive
-				sx={{ marginY: 1 }}
-				onChange={handleAuthTypeChange}
-			>
-				<ToggleButton
-					value="email"
-					sx={{ fontSize: 11.5, borderRadius: 3 }}
-				>
-					Почта
-				</ToggleButton>
-				<ToggleButton
-					value="phone"
-					sx={{ fontSize: 11.5, borderRadius: 3 }}
-				>
-					Номер телефона
-				</ToggleButton>
-			</ToggleButtonGroup> */}
-
 				<Box sx={{ display: authType === "email" ? "block" : "none" }}>
 					<MemoizedLoginByEmailForm
 						loading={isFetching}
@@ -134,18 +110,21 @@ export default function Login({ sm = false, onToRegisterClick }: IProps) {
 				title="Изменение пароля"
 				content="На указанный адрес эл. почты будет отправлено сообщение на изменение пароля."
 			>
-				<Form<{ email: string }>
+				<Form
 					defaultValues={{ email: "" }}
 					fields={(builder) =>
 						builder.email({ name: "email", required: true })
 					}
 					minHeight={80}
 					loading={isFetching}
-					actions={([submit, reset]) => [submit, reset]}
-					// buttons={{
-					// 	position: "end",
-					// 	submit: { label: "Отправить" },
-					// }}
+					actions={([submit]) => [
+						{
+							label: "Отмена",
+							position: "left",
+							onClick: () => setIsResetPasswordDialogOn(false),
+						},
+						submit,
+					]}
 					onSubmit={(values) =>
 						handleResetPasswordAsync(values.email)
 					}

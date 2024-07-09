@@ -5,9 +5,9 @@ import { Grid, SxProps } from "@mui/material";
 import Button from "../button";
 
 type Action = {
-	disabled: boolean;
+	disabled?: boolean;
 	label: string;
-	type: "reset" | "submit" | "button";
+	type?: "reset" | "submit" | "button";
 	onClick?: () => void;
 	position: "center" | "left" | "right";
 	sx?: SxProps;
@@ -92,7 +92,13 @@ export default function Form<T extends FieldValues>({
 			ref={builderRef}
 		>
 			<Grid container display={"flex"} paddingY={"16px"}>
-				<Grid item flex={1} display={"flex"} justifyContent={"start"}>
+				<Grid
+					item
+					flex={1}
+					display={"flex"}
+					justifyContent={"start"}
+					gap={1}
+				>
 					{actionGroups["left"]?.map((action, index) => (
 						<Button
 							key={index}
@@ -105,7 +111,13 @@ export default function Form<T extends FieldValues>({
 						</Button>
 					))}
 				</Grid>
-				<Grid item flex={1} display={"flex"} justifyContent={"center"}>
+				<Grid
+					item
+					flex={1}
+					display={"flex"}
+					justifyContent={"center"}
+					gap={1}
+				>
 					{actionGroups["center"]?.map((action, index) => (
 						<Button
 							key={index}
@@ -118,7 +130,13 @@ export default function Form<T extends FieldValues>({
 						</Button>
 					))}
 				</Grid>
-				<Grid item flex={1} display={"flex"} justifyContent={"end"}>
+				<Grid
+					item
+					flex={1}
+					display={"flex"}
+					justifyContent={"end"}
+					gap={1}
+				>
 					{actionGroups["right"]?.map((action, index) => (
 						<Button
 							key={index}

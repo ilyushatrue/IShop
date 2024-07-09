@@ -1,16 +1,10 @@
 ﻿using Flags.Domain.UserRoot;
 
 namespace Flags.Infrastructure.Services.Cookies;
-public class CookieManager
+public class CookieManager(IHttpContextAccessor httpContextAccessor)
 {
-    private readonly IResponseCookies _responseCookies;
-    private readonly IRequestCookieCollection _requestCookies;
-
-    public CookieManager(IHttpContextAccessor httpContextAccessor)
-    {
-        _responseCookies = httpContextAccessor.HttpContext!.Response.Cookies;
-        _requestCookies = httpContextAccessor.HttpContext!.Request.Cookies;
-    }
+    private readonly IResponseCookies _responseCookies = httpContextAccessor.HttpContext!.Response.Cookies;
+    private readonly IRequestCookieCollection _requestCookies = httpContextAccessor.HttpContext!.Request.Cookies;
 
     public void SetUserCookies(User user)
     {

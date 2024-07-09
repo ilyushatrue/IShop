@@ -1,6 +1,5 @@
 ﻿using Flags.Application.Images.Commands;
 using Flags.Application.Images.Queries;
-using MapsterMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

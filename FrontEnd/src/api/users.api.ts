@@ -1,10 +1,10 @@
-import { IUserCredentialsRequest } from "../pages/account/profile/profile";
+import { IApiInitialResponse } from "../store/types";
 import { httpGet, httpPut } from "./api";
 import { IUser } from "./interfaces/user/user.interface";
 
 const usersApi = {
 	getCurrentAsync: async () =>
-		await httpGet<IUser>(
+		await httpGet<IApiInitialResponse>(
 			{ url: "/users/current" },
 			(r) => r.json()
 		),
@@ -12,7 +12,7 @@ const usersApi = {
 	getListAsync: async () =>
 		await httpGet<IUser[]>({ url: "/users" }, (r) => r.json()),
 
-	updateUserData: async (data: IUserCredentialsRequest) =>
+	updateUserData: async (data: IUser) =>
 		await httpPut({ url: `/users`, body: data }),
 };
 

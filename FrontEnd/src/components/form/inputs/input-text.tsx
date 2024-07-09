@@ -1,6 +1,6 @@
 import { TextField } from "@mui/material";
-import { Controller, FieldValues } from "react-hook-form";
-import { IFormBuilderField } from "./form-builder-field.interface";
+import { Control, Controller, FieldValues } from "react-hook-form";
+import { IFormField } from "./form-field.interface";
 
 export default function InputText<T extends FieldValues>({
 	control,
@@ -10,9 +10,9 @@ export default function InputText<T extends FieldValues>({
 	variant = "filled",
 	margin = "dense",
 	required = false,
-	enabled: disabled,
+	enabled = true,
 	readonly,
-}: IFormBuilderField<T>) {
+}: { control: Control<T> } & IFormField<T>) {
 	return (
 		<Controller
 			key={name}
@@ -31,12 +31,13 @@ export default function InputText<T extends FieldValues>({
 					type="text"
 					size={size}
 					variant={variant}
-					disabled={disabled}
+					disabled={!enabled}
 					InputProps={{ readOnly: readonly }}
 					fullWidth
 					onChange={field.onChange}
 					value={field.value}
 					error={!!error}
+					autoComplete="off"
 					helperText={error ? error.message : ""}
 				/>
 			)}

@@ -7,7 +7,7 @@ interface IProps {
 }
 export default function LoginByPhoneForm({ onSubmitAsync, loading }: IProps) {
 	return (
-		<Form<ILoginByPhoneRequest>
+		<Form
 			defaultValues={{
 				password: "",
 				phone: "",

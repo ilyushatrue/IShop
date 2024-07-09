@@ -1,11 +1,12 @@
 import { TextField } from "@mui/material";
 import {
+	Control,
 	Controller,
 	FieldValues,
 	Path,
 	RegisterOptions,
 } from "react-hook-form";
-import { IFormBuilderField } from "./form-builder-field.interface";
+import { IFormField } from "./form-field.interface";
 
 export function phoneNumberPipe(phone: string): string {
 	const countryDigit = "7";
@@ -57,9 +58,9 @@ export function InputPhone<T extends FieldValues>({
 	variant = "filled",
 	margin = "dense",
 	required = false,
-	enabled: disabled,
+	enabled = true,
 	readonly,
-}: IFormBuilderField<T>) {
+}: { control: Control<T> } & IFormField<T>) {
 	return (
 		<Controller
 			key={name}
@@ -81,7 +82,7 @@ export function InputPhone<T extends FieldValues>({
 					value={phoneNumberPipe(field.value)}
 					error={!!error}
 					helperText={error && error.message}
-					disabled={disabled}
+					disabled={!enabled}
 					autoComplete="tel"
 					InputProps={{ readOnly: readonly }}
 				/>

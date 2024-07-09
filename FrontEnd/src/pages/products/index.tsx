@@ -6,7 +6,7 @@ export default function ProductRouter() {
 	return (
 		<Routes>
 			<Route path="/menu" element={<ProductMenu />} />
-			<Route path="/add" element={<ProductAdd />} />
+			<Route path="/add" element={<ProductAdd  />} />
 		</Routes>
 	);
 }

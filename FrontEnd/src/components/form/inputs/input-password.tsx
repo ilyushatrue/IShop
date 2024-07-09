@@ -1,13 +1,19 @@
 import { IconButton, TextField } from "@mui/material";
 import {
+	Control,
 	Controller,
 	FieldValues,
 	Path,
 	RegisterOptions,
 } from "react-hook-form";
-import { IFormBuilderField } from "./form-builder-field.interface";
 import Icon from "../../icon";
 import { useState } from "react";
+import { IFormField } from "./form-field.interface";
+
+export interface IFormPasswordField<T extends FieldValues>
+	extends IFormField<T> {
+	validationRequired?: boolean;
+}
 
 const getValidateOptions = <T extends FieldValues>(
 	required: boolean
@@ -40,9 +46,10 @@ export default function InputPassword<T extends FieldValues>({
 	variant = "filled",
 	margin = "dense",
 	required = true,
-	enabled: disabled,
+	enabled = true,
 	readonly,
-}: IFormBuilderField<T>) {
+	validationRequired = true,
+}: { control: Control<T> } & IFormPasswordField<T>) {
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
 	const handleClickShowPassword = () => setIsPasswordVisible((show) => !show);
@@ -57,7 +64,9 @@ export default function InputPassword<T extends FieldValues>({
 			key={name}
 			control={control}
 			name={name}
-			rules={getValidateOptions(required)}
+			rules={
+				validationRequired ? getValidateOptions(required) : undefined
+			}
 			render={({ field, fieldState: { error } }) => (
 				<TextField
 					label={label + (required ? " *" : "")}
@@ -70,7 +79,7 @@ export default function InputPassword<T extends FieldValues>({
 					value={field.value}
 					error={!!error}
 					helperText={error && error.message}
-					disabled={disabled}
+					disabled={!enabled}
 					InputProps={{
 						readOnly: readonly,
 						endAdornment: (

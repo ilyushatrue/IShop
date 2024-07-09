@@ -1,11 +1,11 @@
-import { TextFieldVariants } from "@mui/material";
+import { FormControlOwnProps } from "@mui/material";
 import { FieldValues, Path } from "react-hook-form";
 
 export interface IFormField<T extends FieldValues> {
 	name: Path<T>;
 	label?: string;
 	size?: "small" | "medium";
-	variant?: TextFieldVariants;
+	variant?: FormControlOwnProps["variant"];
 	margin?: "dense" | "normal" | "none";
 	required?: boolean;
 	enabled?: boolean;

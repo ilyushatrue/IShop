@@ -1,98 +1,95 @@
 import { Box, Collapse, SxProps } from "@mui/material";
 import { ReactNode, useState } from "react";
-
 import RecursiveTreeBranch, { IRecursiveTreeBranch } from "./recursive-tree-branch";
-import RecursiveTreeActions, { IRecursiveTreeActions } from "./recursive-tree-actions";
 
-const defaultColumnSx: SxProps = {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-};
+interface IRecursiveTreeCell {
+	flex?: number;
+	width?: string | number;
+	element: ReactNode;
+}
 
 interface IRecursiveTreeRow<T> {
-    actions?: IRecursiveTreeActions<T>["actions"];
-    isActive: boolean;
-    branch: IRecursiveTreeBranch<T>;
-    height?: number | string;
-    columns?: { value: string; sx?: (defaultSx: SxProps) => SxProps }[];
-    children: ReactNode;
-    onClick: (id: number | string) => void;
-    sx?: SxProps;
+	isActive: boolean;
+	branch: IRecursiveTreeBranch<T>;
+	height?: number | string;
+	cellsRange?: {
+		sx?: SxProps;
+		width?: number | string;
+		maxWidth?: number | string;
+		minWidth?: number | string;
+		flex?: number;
+		cells: IRecursiveTreeCell[];
+	};
+	children?: ReactNode;
+	onClick: (item: T) => void;
+	onDoubleClick?: (item: T) => void;
+	sx?: SxProps;
 }
 export default function RecursiveTreeRow<T>({
-    actions,
-    children,
-    height = 50,
-    sx,
-    branch,
-    onClick,
-    isActive = false,
-    columns,
+	children,
+	height = 50,
+	sx,
+	branch,
+	onClick,
+	onDoubleClick,
+	isActive = false,
+	cellsRange,
 }: IRecursiveTreeRow<T>) {
-    const [isCollapsed, setIsCollapsed] = useState(branch.isCollapsed);
-    function toggleCollapsed() {
-        setIsCollapsed((prev) => !prev);
-    }
-    function handleMenuClick() {
-        onClick(branch.id);
-    }
+	const [isCollapsed, setIsCollapsed] = useState(branch.isCollapsed);
+	function toggleCollapsed() {
+		setIsCollapsed((prev) => !prev);
+	}
+	function handleMenuClick() {
+		onClick(branch.item);
+	}
 
-    return (
-        <>
-            <Box
-                onClick={branch.hasChildren ? toggleCollapsed : handleMenuClick}
-                minHeight={height}
-                sx={{
-                    ...sx,
-                    cursor: branch.hasChildren ? "pointer" : "default",
-                    "&:hover": { bgcolor: isActive ? undefined : "whitesmoke" },
-                }}
-                bgcolor={isActive ? "rgb(235, 245, 255)" : undefined}
-            >
-                <Box
-                    height={height}
-                    display={"flex"}
-                    alignItems={"center"}
-                >
-                    <RecursiveTreeBranch<T>
-                        {...branch}
-                        isCollapsed={isCollapsed}
-                    />
-                    {columns && (
-                        <Box
-                            display={"flex"}
-                            flex={3}
-                            height={"100%"}
-                            overflow={"hidden"}
-                        >
-                            {columns.map((column, index) => (
-                                <Box
-                                    key={index}
-                                    sx={column.sx ? column.sx(defaultColumnSx) : defaultColumnSx}
-                                    flex={1}
-                                    overflow={"hidden"}
-                                    height={"100%"}
-                                >
-                                    {column.value}
-                                </Box>
-                            ))}
-                        </Box>
-                    )}
-                    {actions && (
-                        <RecursiveTreeActions
-                            branch={branch}
-                            actions={actions}
-                        />
-                    )}
-                </Box>
-            </Box>
-            <Collapse
-                unmountOnExit
-                in={!isCollapsed}
-            >
-                {children}
-            </Collapse>
-        </>
-    );
+	return (
+		<>
+			<Box
+				onClick={branch.hasChildren ? toggleCollapsed : handleMenuClick}
+				onDoubleClick={() => onDoubleClick?.(branch.item)}
+				minHeight={height}
+				sx={{
+					...sx,
+					cursor: branch.hasChildren ? "pointer" : "default",
+					"&:hover": { bgcolor: isActive ? undefined : "whitesmoke" },
+				}}
+				bgcolor={isActive ? "rgb(235, 245, 255)" : undefined}
+			>
+				<Box minHeight={height} display={"flex"} alignItems={"center"}>
+					<RecursiveTreeBranch<T>
+						{...branch}
+						isCollapsed={isCollapsed}
+					/>
+					{cellsRange && (
+						<Box
+							display={"flex"}
+							height={"100%"}
+							minHeight={height}
+							overflow={"hidden"}
+							flex={cellsRange.flex}
+							width={cellsRange.width}
+							maxWidth={cellsRange.maxWidth}
+							minWidth={cellsRange.minWidth}
+						>
+							{cellsRange.cells.map((cell, index) => (
+								<Box
+									key={index}
+									flex={cell.flex}
+									width={cell.width}
+									overflow={"hidden"}
+									minHeight={height}
+								>
+									{cell.element}
+								</Box>
+							))}
+						</Box>
+					)}
+				</Box>
+			</Box>
+			<Collapse unmountOnExit in={!isCollapsed}>
+				{children}
+			</Collapse>
+		</>
+	);
 }

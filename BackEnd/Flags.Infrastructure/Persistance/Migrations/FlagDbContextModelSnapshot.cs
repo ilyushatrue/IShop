@@ -50,10 +50,18 @@ namespace Flags.Infrastructure.Migrations
                         .HasColumnType("INTEGER")
                         .HasColumnName("id");
 
+                    b.Property<string>("IconName")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("icon_name");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("TEXT")
                         .HasColumnName("name");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("order");
 
                     b.HasKey("Id")
                         .HasName("pk_product_categories");

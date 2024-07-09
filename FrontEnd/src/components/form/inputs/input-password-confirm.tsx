@@ -1,14 +1,15 @@
 import { IconButton, TextField } from "@mui/material";
 import {
+	Control,
 	Controller,
 	FieldValues,
 	Path,
 	PathValue,
 	RegisterOptions,
 } from "react-hook-form";
-import { IFormBuilderField } from "./form-builder-field.interface";
 import Icon from "../../icon";
 import { useState } from "react";
+import { IFormField } from "./form-field.interface";
 
 const getValidateOptions = <T extends FieldValues>(
 	required: boolean,
@@ -19,19 +20,6 @@ const getValidateOptions = <T extends FieldValues>(
 		if (value !== password) {
 			return "Пароли не совпадают";
 		}
-		if (!/(?=.*[0-9])/.test(value)) {
-			return "Отсутствуют числа";
-		}
-		// if (!/(?=.*[!@#$%^&*])/.test(value)) {
-		// 	return "Отсутствуют спецсимволы !@#$%^&*";
-		// }
-		// if (!/(?=.*[a-z])/.test(value)) {
-		// 	return "Отсутствуют буквы в нижнем регистре";
-		// }
-		// if (!/(?=.*[A-Z])/.test(value)) {
-		// 	return "Отсутствуют буквы в верхнем регистре";
-		// }
-
 		return true;
 	},
 });
@@ -46,10 +34,11 @@ export default function InputPasswordConfirm<T extends FieldValues>({
 	required = true,
 	onChange,
 	readonly,
-	enabled: disabled,
+	enabled = true,
 }: {
+	control: Control<T>;
 	onChange: () => PathValue<T, Path<T>>;
-} & IFormBuilderField<T>) {
+} & IFormField<T>) {
 	const [password, setPassword] = useState<string>("");
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
@@ -88,7 +77,7 @@ export default function InputPasswordConfirm<T extends FieldValues>({
 					value={field.value}
 					error={!!error}
 					helperText={error && error.message}
-					disabled={disabled}
+					disabled={!enabled}
 					InputProps={{
 						readOnly: readonly,
 						endAdornment: (

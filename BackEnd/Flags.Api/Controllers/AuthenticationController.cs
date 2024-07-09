@@ -7,7 +7,6 @@ using Flags.Application.Authentication.Commands.ResetPassword;
 using Flags.Application.Authentication.Commands.VerifyEmail;
 using Flags.Application.Authentication.Queries;
 using Flags.Domain.Common.Exceptions;
-using Flags.Infrastructure.Services.Auth.ResetPassword;
 using Flags.Infrastructure.Services.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

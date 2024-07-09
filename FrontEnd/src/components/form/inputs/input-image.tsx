@@ -1,22 +1,25 @@
+import { Box, FormControl, FormHelperText, Typography } from "@mui/material";
 import {
-	Box,
-	FormControl,
-	FormHelperText,
-	Typography,
-} from "@mui/material";
-import {
+	Control,
 	Controller,
 	ControllerRenderProps,
 	FieldValues,
 	Path,
 } from "react-hook-form";
-import { IFormBuilderField } from "./form-builder-field.interface";
 import useApi from "../../../api/hooks/use-api.hook";
 import { usePopup } from "../../../app/hooks/use-popup.hook";
 import { useRef } from "react";
 import { mediaApi } from "../../../api/media.api";
 import IconButton from "../../icon-button";
 import Image from "../../image";
+import { IFormField } from "./form-field.interface";
+
+export interface IFormImageField<T extends FieldValues> extends IFormField<T> {
+	id?: string;
+	shape?: "rounded" | "squared" | "circled";
+	tip?: string;
+	containerSized?: boolean;
+}
 
 export default function InputImage<T extends FieldValues>({
 	control,
@@ -27,13 +30,12 @@ export default function InputImage<T extends FieldValues>({
 	variant = "filled",
 	margin = "dense",
 	required = false,
-	enabled: disabled,
+	enabled = true,
 	readonly,
+	containerSized,
 	shape = "rounded",
-}: IFormBuilderField<T> & {
-	id?: string;
-	shape?: "rounded" | "squared" | "circled";
-}) {
+	tip,
+}: { control: Control<T> } & IFormImageField<T>) {
 	const { fetchAsync } = useApi();
 	const { popupError } = usePopup();
 	const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -62,6 +64,7 @@ export default function InputImage<T extends FieldValues>({
 			popupError("Не удалось загрузить изображение.");
 		}
 	}
+	console.log(containerSized);
 	return (
 		<Controller
 			key={name}
@@ -83,13 +86,16 @@ export default function InputImage<T extends FieldValues>({
 					error={!!error}
 					fullWidth
 					margin={margin}
+					variant={variant}
 					sx={{
 						display: "flex",
 						alignItems: "center",
-						flexDirection: "column", // This ensures label is above the image
+						flexDirection: "column",
 					}}
 				>
-					<Typography variant="caption">{label}</Typography>
+					<Typography variant="caption">
+						{label + (required ? " *" : "")}
+					</Typography>
 					<Box
 						sx={{
 							position: "relative",
@@ -102,7 +108,7 @@ export default function InputImage<T extends FieldValues>({
 									: shape === "rounded"
 									? "5%"
 									: 0,
-							marginTop: 1, // Adjust spacing between label and image
+							marginTop: 1,
 							"&:hover .overlay": { opacity: 0.7 },
 							"&:hover .editIcon": { opacity: 1 },
 						}}
@@ -132,7 +138,7 @@ export default function InputImage<T extends FieldValues>({
 								transition: "opacity 0.3s",
 							}}
 						/>
-						{field.value && !disabled ? (
+						{field.value && enabled ? (
 							<IconButton
 								buttonSx={{
 									width: "100%",
@@ -145,11 +151,13 @@ export default function InputImage<T extends FieldValues>({
 									opacity: 0,
 									transition: "opacity 0.3s",
 								}}
+								containerSized={containerSized}
+								variant={shape}
 								centered
 								fontSize={28}
 								iconName="edit"
 								onClick={handleIconClick}
-								tip="Edit Avatar"
+								tip={tip ?? "Изменить"}
 								iconSx={{ fontSize: "2rem" }}
 							/>
 						) : !field.value ? (
@@ -164,11 +172,14 @@ export default function InputImage<T extends FieldValues>({
 									color: "whitesmoke",
 									opacity: 1,
 								}}
+								color="rgba(0,0,0,0.7)"
+								containerSized={containerSized}
 								centered
+								variant={shape}
 								fontSize={28}
 								iconName="add"
 								onClick={handleIconClick}
-								tip="Edit Avatar"
+								tip={tip ?? "Добавить"}
 								iconSx={{ fontSize: "2rem" }}
 							/>
 						) : null}

@@ -3,6 +3,5 @@ public record CreateProductCommand(
     string Name,
     string? Description,
     decimal Price,
-    int categoryId,
-    Guid ImageId
-    );
+    int CategoryId,
+    Guid ImageId);

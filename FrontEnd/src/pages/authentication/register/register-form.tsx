@@ -28,11 +28,9 @@ export default function RegisterForm({
 			}}
 			minHeight={430}
 			loading={loading}
-			actions={([submit, reset]) => [submit, reset]}
-			// buttons={{
-			// 	position:"center",
-			// 	submit: { label: "Зарегистрироваться" },
-			// }}
+			actions={([submit, reset]) => [
+				{ ...submit, label: "Зарегистрироваться", position: "center" },
+			]}
 			onSubmit={onSubmitAsync}
 			fields={(builder) =>
 				builder

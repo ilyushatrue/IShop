@@ -80,13 +80,18 @@ export default function ProfilePage({
 							fullwidth
 							buttonSx={{ paddingX: 2 }}
 						/>
+						<IconButton
+							iconName="settings"
+							onClick={() => navigate("/menu")}
+							caption="Настройки меню"
+							variant="squared"
+							fullwidth
+							buttonSx={{ paddingX: 2 }}
+						/>
 					</Box>
 				</Box>
 				<Box
-					display={"flex"}
 					flex={1}
-					justifyContent={"center"}
-					paddingTop={5}
 					bgcolor={"white"}
 					borderRadius={4}
 				>

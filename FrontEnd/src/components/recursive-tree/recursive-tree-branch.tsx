@@ -17,19 +17,20 @@ const defaultTreeSx: SxProps = {
 	display: "flex",
 	alignItems: "center",
 	justifyContent: "start",
-	flex: 1.5,
 };
 
 export interface IRecursiveTreeBranch<T> {
 	id: string | number;
 	item: T;
 	title: string;
-	info: string;
-	icon: string;
+	info?: string;
+	icon?: string;
 	hasChildren: boolean;
 	indent: number;
 	isCollapsed: boolean;
-	minWidth: number;
+	minWidth: number | string;
+	width?: number | string;
+	flex?: number;
 	iconSize?: "large" | "medium" | "small";
 	sx?: (defaultSx: SxProps) => SxProps;
 }
@@ -38,6 +39,8 @@ export default function RecursiveTreeBranch<T>({
 	info,
 	hasChildren,
 	minWidth,
+	width,
+	flex,
 	icon,
 	sx,
 	iconSize = "medium",
@@ -48,6 +51,8 @@ export default function RecursiveTreeBranch<T>({
 		<Box
 			sx={sx ? sx(defaultTreeSx) : defaultTreeSx}
 			minWidth={minWidth}
+			width={width}
+			flex={flex}
 			height={"100%"}
 		>
 			{hasChildren && (
@@ -59,6 +64,8 @@ export default function RecursiveTreeBranch<T>({
 			<Box
 				display={"flex"}
 				alignItems={"center"}
+				overflow={"hidden"}
+				width={"100%"}
 				height={"100%"}
 				gap={1}
 				marginLeft={indent}
@@ -70,9 +77,22 @@ export default function RecursiveTreeBranch<T>({
 						sx={{ color: "primary.light" }}
 					/>
 				)}
-				<Box>
+				<Box
+					overflow={"hidden"}
+					width={"100%"}
+					fontSize={{ xs: 14, sm: 16 }}
+					lineHeight={{ xs: 1, sm: 1.5 }}
+				>
 					{title}
-					<Typography variant="body2" color={"grey"}>
+					<Typography
+						variant="body2"
+						color={"grey"}
+						marginTop={0.3}
+						fontSize={{ xs: 13, sm: 14 }}
+						noWrap
+						overflow={"hidden"}
+						textOverflow={"ellipsis"}
+					>
 						{info}
 					</Typography>
 				</Box>

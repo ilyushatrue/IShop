@@ -1,5 +1,5 @@
+import { IUser } from "../../../api/interfaces/user/user.interface";
 import Form from "../../../components/form/form";
-import { IUserCredentialsRequest } from "./profile";
 
 export default function UserForm({
 	onSubmitAsync,
@@ -7,8 +7,8 @@ export default function UserForm({
 	minHeight = 330,
 	loading,
 }: {
-	defaultValues: IUserCredentialsRequest;
-	onSubmitAsync: (values: IUserCredentialsRequest) => Promise<void>;
+	defaultValues: IUser;
+	onSubmitAsync: (values: IUser) => Promise<void>;
 	loading: boolean;
 	minHeight?: number;
 }) {
@@ -27,6 +27,8 @@ export default function UserForm({
 					.image({
 						name: "avatarId",
 						shape: "circled",
+						label: "Аватар",
+						containerSized: true,
 					})
 					.text({
 						name: "firstName",

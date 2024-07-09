@@ -5,8 +5,9 @@ interface IProps {
 	loading: boolean;
 }
 export default function LoginByEmailForm({ onSubmitAsync, loading }: IProps) {
+	console.log(loading);
 	return (
-		<Form<ILoginByEmailRequest>
+		<Form
 			defaultValues={{
 				password: "",
 				email: "",
@@ -14,12 +15,18 @@ export default function LoginByEmailForm({ onSubmitAsync, loading }: IProps) {
 			minHeight={210}
 			loading={loading}
 			onSubmit={onSubmitAsync}
-			actions={([submit, reset]) => [{...submit, position:"center"}]}
+			actions={([submit]) => [
+				{ ...submit, position: "center", label: "Войти" },
+			]}
 			fields={(builder) =>
-				builder.email({ name: "email", required: true }).password({
-					name: "password",
-					required: true,
-				})
+				builder
+					.email({ name: "email", required: true, enabled: !loading })
+					.password({
+						name: "password",
+						enabled: !loading,
+						validationRequired: false,
+						required: true,
+					})
 			}
 		/>
 	);

@@ -1,12 +1,20 @@
 import { MouseEventHandler } from "react";
 import Icon, { IIcon } from "./icon";
-import { Box, Button, SxProps, Tooltip, TooltipProps } from "@mui/material";
+import {
+	Box,
+	Button,
+	SxProps,
+	Tooltip,
+	TooltipProps,
+	Typography,
+} from "@mui/material";
 
 export interface IIconButton {
 	iconName: IIcon["name"];
 	tip?: TooltipProps["title"];
 	onClick: MouseEventHandler<HTMLAnchorElement>;
 	iconSx?: SxProps;
+	color?: string;
 	buttonSx?: SxProps;
 	centered?: boolean;
 	caption?: string;
@@ -14,6 +22,7 @@ export interface IIconButton {
 	variant?: "rounded" | "squared" | "circled";
 	fullwidth?: boolean;
 	fontSize?: number;
+	containerSized?: boolean;
 }
 export default function IconButton({
 	tip,
@@ -21,11 +30,13 @@ export default function IconButton({
 	onClick,
 	iconSx,
 	caption,
+	color = "black",
 	buttonSx,
 	orientation = "horizontal",
 	variant = "rounded",
 	centered,
 	fullwidth,
+	containerSized,
 	fontSize = 24,
 }: IIconButton) {
 	const isCircled = variant === "circled";
@@ -38,10 +49,9 @@ export default function IconButton({
 				fullWidth={fullwidth && !isCircled}
 				sx={{
 					...buttonSx,
-					
 					display: "flex",
 					minWidth: fontSize,
-					justifyContent: centered? "center" :"start",
+					justifyContent: centered ? "center" : "start",
 					typography: {
 						textTransform: "none",
 						fontWeight: 500,
@@ -54,8 +64,16 @@ export default function IconButton({
 							: variant === "squared"
 							? "0"
 							: 0,
-					width: isCircled ? `calc(${fontSize}px + 8px)` : undefined, // fixed width for circular button
-					height: isCircled ? `calc(${fontSize}px + 8px)` : undefined, // fixed height for circular button
+					width: containerSized
+						? "100%"
+						: isCircled
+						? `calc(${fontSize}px + 8px)`
+						: undefined,
+					height: containerSized
+						? "100%"
+						: isCircled
+						? `calc(${fontSize}px + 8px)`
+						: undefined,
 				}}
 			>
 				<Box
@@ -69,10 +87,10 @@ export default function IconButton({
 				>
 					<Icon
 						name={iconName}
-						sx={{ ...iconSx, color: "black" }}
+						sx={{ ...iconSx, color: color }}
 						fontSize={fontSize}
 					/>
-					{caption && <Box color={"black"}>{caption}</Box>}
+					{caption && <Typography fontSize={"inherit"} color={color}>{caption}</Typography>}
 				</Box>
 			</Button>
 		</Tooltip>

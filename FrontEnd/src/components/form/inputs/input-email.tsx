@@ -1,11 +1,12 @@
 import { TextField } from "@mui/material";
 import {
+	Control,
 	Controller,
 	FieldValues,
 	Path,
 	RegisterOptions,
 } from "react-hook-form";
-import { IFormBuilderField } from "./form-builder-field.interface";
+import { IFormField } from "./form-field.interface";
 
 const getValidateOptions = <T extends FieldValues>(
 	required: boolean
@@ -25,9 +26,9 @@ export default function InputEmail<T extends FieldValues>({
 	variant = "filled",
 	margin = "dense",
 	required = false,
-	enabled,
+	enabled = true,
 	readonly,
-}: IFormBuilderField<T>) {
+}: { control: Control<T> } & IFormField<T>) {
 	return (
 		<Controller
 			key={name}

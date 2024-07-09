@@ -18,13 +18,14 @@ import {
 	UseFormWatch,
 } from "react-hook-form";
 import InputEmail from "./inputs/input-email";
-import InputPassword from "./inputs/input-password";
+import InputPassword, { IFormPasswordField } from "./inputs/input-password";
 import InputText from "./inputs/input-text";
 import { InputPhone } from "./inputs/input-phone";
-import { IFormField } from "./inputs/form-field.interface";
 import InputPasswordConfirm from "./inputs/input-password-confirm";
-import InputImage from "./inputs/input-image";
-import InputNumber from "./inputs/input-number";
+import InputImage, { IFormImageField } from "./inputs/input-image";
+import InputNumber, { IFormNumberField } from "./inputs/input-number";
+import InputSelect, { IFormSelectField } from "./inputs/input-select";
+import { IFormField } from "./inputs/form-field.interface";
 
 const formStyles: CSSProperties = {
 	display: "flex",
@@ -34,21 +35,15 @@ const formStyles: CSSProperties = {
 };
 
 export type TFormBuilderRef<T extends FieldValues> = {
+	select: (props: IFormSelectField<T>) => TFormBuilderRef<T>;
 	email: (props: IFormField<T>) => TFormBuilderRef<T>;
 	text: (props: IFormField<T>) => TFormBuilderRef<T>;
-	number: (
-		props: IFormField<T> & { min?: number; max?: number }
-	) => TFormBuilderRef<T>;
-	password: (props: IFormField<T>) => TFormBuilderRef<T>;
+	number: (props: IFormNumberField<T>) => TFormBuilderRef<T>;
+	password: (props: IFormPasswordField<T>) => TFormBuilderRef<T>;
 	passwordConfirm: (
 		props: IFormField<T> & { password: Path<T> }
 	) => TFormBuilderRef<T>;
-	image: (
-		props: IFormField<T> & {
-			id?: string;
-			shape?: "circled" | "rounded" | "squared";
-		}
-	) => TFormBuilderRef<T>;
+	image: (props: IFormImageField<T>) => TFormBuilderRef<T>;
 	phone: (props: IFormField<T>) => TFormBuilderRef<T>;
 };
 
@@ -98,28 +93,31 @@ function FormBuilder<T extends FieldValues>(
 
 	const inputBuilder: TFormBuilderRef<T> = useMemo<TFormBuilderRef<T>>(
 		() => ({
+			select: (props) => {
+				addInput(
+					props.name,
+					<InputSelect {...props} control={control} />
+				);
+				return inputBuilder;
+			},
 			email: (props) => {
 				addInput(
 					props.name,
-					<InputEmail<T>
-						enabled={true}
-						{...props}
-						control={control}
-					/>
+					<InputEmail {...props} control={control} />
 				);
 				return inputBuilder;
 			},
 			password: (props) => {
 				addInput(
 					props.name,
-					<InputPassword<T> {...props} control={control} />
+					<InputPassword {...props} control={control} />
 				);
 				return inputBuilder;
 			},
 			passwordConfirm: ({ password, ...props }) => {
 				addInput(
 					props.name,
-					<InputPasswordConfirm<T>
+					<InputPasswordConfirm
 						{...props}
 						control={control}
 						onChange={() => watch(password)}
@@ -130,28 +128,28 @@ function FormBuilder<T extends FieldValues>(
 			image: (props) => {
 				addInput(
 					props.name,
-					<InputImage<T> {...props} control={control} />
+					<InputImage {...props} control={control} />
 				);
 				return inputBuilder;
 			},
 			text: (props) => {
 				addInput(
 					props.name,
-					<InputText<T> {...props} control={control} />
+					<InputText {...props} control={control} />
 				);
 				return inputBuilder;
 			},
 			number: (props) => {
 				addInput(
 					props.name,
-					<InputNumber<T> {...props} control={control} />
+					<InputNumber {...props} control={control} />
 				);
 				return inputBuilder;
 			},
 			phone: (props) => {
 				addInput(
 					props.name,
-					<InputPhone<T> {...props} control={control} />
+					<InputPhone {...props} control={control} />
 				);
 				return inputBuilder;
 			},
@@ -173,7 +171,7 @@ function FormBuilder<T extends FieldValues>(
 			{inputs.map((input) =>
 				cloneElement(input, {
 					key: input.props.name,
-					disabled: loading,
+					enabled: !loading,
 				})
 			)}
 			{children}
