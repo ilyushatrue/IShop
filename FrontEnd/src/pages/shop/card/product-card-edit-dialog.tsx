@@ -20,7 +20,7 @@ export default function ProductCardEditDialog({
 	onCancel: () => void;
 }) {
 	return (
-		<Dialog open={open}>
+		<Dialog open={open} actions={() => []}>
 			<Box width={500}>
 				<Form<IProduct>
 					loading={loading}

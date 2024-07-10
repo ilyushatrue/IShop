@@ -11,7 +11,7 @@ public class PersistanceConfiguration : IEntityTypeConfiguration<Permission>
     {
         builder.Property(x => x.Id).ValueGeneratedNever();
         var permissions = Enum
-            .GetValues<PermissionEnum>()
+            .GetValues<PermissionFlag>()
             .Select(p => Permission.Create((int)p, p.ToString()));
 
         builder.HasData(permissions);

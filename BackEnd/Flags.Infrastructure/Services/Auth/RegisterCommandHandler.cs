@@ -7,6 +7,7 @@ using Microsoft.Extensions.Options;
 using Flags.Application.Emails;
 using Flags.Domain.Common.Exceptions;
 using Flags.Application.Persistance.Repositories;
+using Flags.Application.Persistance;
 
 namespace Flags.Infrastructure.Services.Auth;
 
@@ -15,7 +16,8 @@ public class RegisterCommandHandler(
     IPasswordHasher passwordHasher,
     IEmailSender emailSender,
     IOptions<HostSettings> hostSettings,
-    IOptions<AuthenticationSettings> authenticationSettings
+    IOptions<AuthenticationSettings> authenticationSettings,
+    IDbManager dbManager
 ) : IRegisterCommandHandler
 {
     private readonly HostSettings _hostSettings = hostSettings.Value;
@@ -57,14 +59,15 @@ public class RegisterCommandHandler(
             avatarId: command.AvatarId
         );
 
-        await userRepository.CreateAsync(user);
+        userRepository.Create(user);
+        var affectedCount = await dbManager.SaveChangesAsync();
+        if (affectedCount == 0) return false;
 
         await emailSender.SendEmailAsync(
             user.Email.Value,
-        "Подтверждение эл. почты",
+            "Подтверждение эл. почты",
             $"Подтвердите свою электронную почту перейдя по <a href=\"{_hostSettings.Domain}/auth/verify-email/{user.EmailConfirmation!.ConfirmationToken}\">ссылке</a>."
         );
-
         return true;
     }
 }

@@ -49,15 +49,15 @@ export default function Register({ sm = false, onToLoginClick }: IProps) {
 				open={isEmailConfirmationDialogOn}
 				title="Подтверждение email"
 				content="На указанную электронную почту была отправлена ссылка для подтверждения учетной записи. Перейдите по ней для получения доступа к личному кабинету."
-				onCancel={() => {
+				onClose={() => {
 					setIsEmailConfirmationDialogOn(false);
 					navigate("/");
 				}}
-				onAccept={() => {
+				onOk={() => {
 					setIsEmailConfirmationDialogOn(false);
-					onToLoginClick();
 					navigate("/");
 				}}
+				actions={([ok]) => [ok]}
 			/>
 		</Template>
 	);

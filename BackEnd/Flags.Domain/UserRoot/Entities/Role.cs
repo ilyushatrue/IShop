@@ -19,5 +19,6 @@ public class Role : Entity<int>
 
     public string Name { get; private set; } = null!;
     public IReadOnlyCollection<Permission> Permissions => _permissions.AsReadOnly();
+    public IReadOnlyCollection<RolePermission>? RolePermissions { get; private set; }
     public IReadOnlyCollection<User> Users => _users.AsReadOnly();
 }

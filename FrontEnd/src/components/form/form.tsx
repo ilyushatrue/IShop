@@ -1,17 +1,7 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useRef } from "react";
 import FormBuilder, { TFormBuilderRef } from "./form-builder";
 import { DefaultValues, FieldValues, useForm } from "react-hook-form";
-import { Grid, SxProps } from "@mui/material";
-import Button from "../button";
-
-type Action = {
-	disabled?: boolean;
-	label: string;
-	type?: "reset" | "submit" | "button";
-	onClick?: () => void;
-	position: "center" | "left" | "right";
-	sx?: SxProps;
-};
+import Actions, { IAction } from "../actions";
 
 export default function Form<T extends FieldValues>({
 	defaultValues,
@@ -25,7 +15,7 @@ export default function Form<T extends FieldValues>({
 	defaultValues: DefaultValues<T>;
 	onSubmit: (values: T) => void;
 	fields: (builder: TFormBuilderRef<T>) => void;
-	actions: (actions: Action[]) => Action[];
+	actions: (actions: IAction[]) => IAction[];
 	minHeight: number | string;
 	fullwidth?: boolean;
 	loading?: boolean;
@@ -37,33 +27,6 @@ export default function Form<T extends FieldValues>({
 			reValidateMode: "onBlur",
 			defaultValues,
 		});
-	const actionGroups = useMemo(() => {
-		const actionList = actions([
-			{
-				disabled: !formState.isDirty || loading,
-				label: "Отправить",
-				type: "submit",
-				position: "right",
-				sx: {
-					minwidth: "50%",
-					textTransform: "none",
-				},
-			},
-			{
-				disabled: !formState.isDirty || loading,
-				label: "Отменить",
-				type: "reset",
-				onClick: () => reset(),
-				position: "left",
-				sx: {
-					minwidth: "50%",
-					textTransform: "none",
-				},
-			},
-		]);
-		const groups = actionList.groupBy((x) => x.position);
-		return groups;
-	}, [actions, formState.isDirty, loading, reset]);
 
 	useEffect(() => {
 		const formValues = getValues();
@@ -91,65 +54,33 @@ export default function Form<T extends FieldValues>({
 			loading={loading}
 			ref={builderRef}
 		>
-			<Grid container display={"flex"} paddingY={"16px"}>
-				<Grid
-					item
-					flex={1}
-					display={"flex"}
-					justifyContent={"start"}
-					gap={1}
-				>
-					{actionGroups["left"]?.map((action, index) => (
-						<Button
-							key={index}
-							disabled={action.disabled}
-							type={action.type}
-							sx={action.sx}
-							onClick={action.onClick}
-						>
-							{action.label}
-						</Button>
-					))}
-				</Grid>
-				<Grid
-					item
-					flex={1}
-					display={"flex"}
-					justifyContent={"center"}
-					gap={1}
-				>
-					{actionGroups["center"]?.map((action, index) => (
-						<Button
-							key={index}
-							disabled={action.disabled}
-							type={action.type}
-							sx={action.sx}
-							onClick={action.onClick}
-						>
-							{action.label}
-						</Button>
-					))}
-				</Grid>
-				<Grid
-					item
-					flex={1}
-					display={"flex"}
-					justifyContent={"end"}
-					gap={1}
-				>
-					{actionGroups["right"]?.map((action, index) => (
-						<Button
-							key={index}
-							disabled={action.disabled}
-							type={action.type}
-							sx={action.sx}
-							onClick={action.onClick}
-						>
-							{action.label}
-						</Button>
-					))}
-				</Grid>
-			</Grid>
+			<Actions
+				sx={{marginY: "16px"}}
+				actions={actions}
+				defaultActions={[
+					{
+						disabled: !formState.isDirty || loading,
+						label: "Отправить",
+						type: "submit",
+						position: "right",
+						sx: {
+							minwidth: "50%",
+							textTransform: "none",
+						},
+					},
+					{
+						disabled: !formState.isDirty || loading,
+						label: "Отменить",
+						type: "reset",
+						onClick: () => reset(),
+						position: "left",
+						sx: {
+							minwidth: "50%",
+							textTransform: "none",
+						},
+					},
+				]}
+			/>
 		</FormBuilder>
 	);
 }

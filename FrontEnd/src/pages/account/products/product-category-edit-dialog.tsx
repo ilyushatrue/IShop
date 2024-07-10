@@ -4,7 +4,6 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import CommentIcon from "@mui/icons-material/Comment";
 import Dialog from "../../../components/dialog";
 import { IProductCategory } from "../../../api/interfaces/product-categories/queries/product-category.interface";
 import Icon from "../../../components/icon";
@@ -20,7 +19,11 @@ export default function ProductCategoryEditDialog({
 	values: IProductCategory[];
 }) {
 	return (
-		<Dialog open={open} onCancel={onCancel}>
+		<Dialog
+			open={open}
+			onClose={onCancel}
+			actions={([ok]) => [{ ...ok, label: "Отмена" }]}
+		>
 			<List
 				sx={{
 					width: "100%",

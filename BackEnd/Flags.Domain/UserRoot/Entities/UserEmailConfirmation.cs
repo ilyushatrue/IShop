@@ -15,6 +15,16 @@ public class UserEmailConfirmation : Entity<Guid>
     public DateTime ExpiryDateTime { get; private set; }
     public User? User { get; }
 
+    public void UpdateToken(DateTime expiryDateTime)
+    {
+        ConfirmationToken = Guid.NewGuid();
+        if (expiryDateTime <= ExpiryDateTime)
+        {
+            throw new Exception("Новый срок действия токена меньше или равен сроку существующего.");
+        }
+        ExpiryDateTime = expiryDateTime;
+    }
+
     public void SetIsConfirmed()
     {
         IsConfirmed = true;

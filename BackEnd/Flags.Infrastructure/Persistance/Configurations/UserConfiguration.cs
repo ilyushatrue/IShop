@@ -22,11 +22,15 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .HasForeignKey<User>(x => x.AvatarId);
 
         builder
-            .HasMany(u => u.Roles)
+            .HasOne(u => u.RefreshJwt)
+            .WithOne(u => u.User)
+            .HasForeignKey<RefreshJwt>(r => r.Id)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder
+            .HasOne(u => u.Role)
             .WithMany(r => r.Users)
-            .UsingEntity<UserRole>(
-                lb => lb.HasOne(ur => ur.Role).WithMany().HasForeignKey(ur => ur.RoleId),
-                rb => rb.HasOne(ur => ur.User).WithMany().HasForeignKey(ur => ur.UserId).OnDelete(DeleteBehavior.Cascade));
+            .HasForeignKey(x => x.RoleId);
 
         builder.OwnsOne(u => u.Password, b =>
         {

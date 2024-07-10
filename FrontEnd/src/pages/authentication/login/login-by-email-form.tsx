@@ -5,7 +5,6 @@ interface IProps {
 	loading: boolean;
 }
 export default function LoginByEmailForm({ onSubmitAsync, loading }: IProps) {
-	console.log(loading);
 	return (
 		<Form
 			defaultValues={{

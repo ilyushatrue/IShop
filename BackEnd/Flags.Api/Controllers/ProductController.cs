@@ -1,7 +1,6 @@
 ﻿using Flags.Application.Products.Commands;
 using Flags.Application.Products.Queries;
 using Flags.Contracts.Products;
-using Flags.Domain.ProductRoot;
 using Flags.Domain.ProductRoot.Entities;
 using MapsterMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -48,7 +47,6 @@ public class ProductController(
         await updateProductCommandHandler.Handle(product, cancellationToken);
         return Ok();
     }
-
 
     [HttpGet("categories")]
     public async Task<IActionResult> GetAllProductCategoriesAsync()

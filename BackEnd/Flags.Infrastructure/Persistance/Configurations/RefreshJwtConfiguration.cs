@@ -12,9 +12,5 @@ public class RefreshJwtConfiguration : IEntityTypeConfiguration<RefreshJwt>
             .Property(r => r.Id)
             .HasColumnName("user_id")
             .ValueGeneratedNever();
-        builder
-            .HasOne(r => r.User)
-            .WithOne(u => u.RefreshJwt)
-            .HasForeignKey<RefreshJwt>(r => r.Id);
     }
 }

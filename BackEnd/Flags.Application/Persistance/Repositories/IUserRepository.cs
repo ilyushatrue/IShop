@@ -10,8 +10,8 @@ public interface IUserRepository
     Task<User?> GetByEmailAsync(string email);
     Task<User?> GetByPhoneAsync(string phone);
     Task<User?> GetByIdAsync(Guid id);
-    Task CreateAsync(User user);
-    Task UpdateAsync(User user);
+    void Create(User user);
+    void Update(User user);
     Task<List<User>> GetAllAsync();
-    Task<HashSet<PermissionEnum>> GetPermissionsAsync(Guid userId);
+    Task<HashSet<PermissionFlag>> GetPermissionsAsync(Guid userId);
 }

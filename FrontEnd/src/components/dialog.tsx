@@ -1,57 +1,62 @@
-import { Box, DialogProps, Dialog as MuiDialog } from "@mui/material";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
-import { useMemo } from "react";
-import Button from "./button";
+import { DialogProps, Dialog as MuiDialog } from "@mui/material";
+import {
+	DialogActions,
+	DialogContent,
+	DialogContentText,
+	DialogTitle,
+} from "@mui/material";
+import { useEffect, useCallback } from "react";
+import Actions, { IAction } from "./actions";
 
 function Dialog({
-	onCancel,
-	onAccept,
+	actions,
 	title,
 	children,
+	open,
 	content,
+	onOk,
 	...props
 }: DialogProps & {
-	onCancel?: () => void;
-	onAccept?: () => void;
+	actions?: (defaultActions: IAction[]) => IAction[];
+	onOk?: () => void;
 }) {
-	const actions = useMemo(() => {
-		const actionMap: any = {};
-		if (onCancel) {
-			actionMap.cancel = {
-				title: "Нет",
-				name: "cancel",
-				icon: "cancel",
-				onClick: onCancel,
-			};
-		}
-		if (onAccept) {
-			actionMap.accept = {
-				title: "Да",
-				name: "accept",
-				icon: "done",
-				onClick: onAccept,
-			};
-		}
-		return Object.keys(actionMap).map(
-			(action) => actionMap[action as keyof typeof actionMap]
-		);
-	}, [onCancel, onAccept]);
+	const handleEnterKeyPress = useCallback(
+		(event: KeyboardEvent) => {
+			if (event.key === "Enter") {
+				onOk?.();
+			}
+		},
+		[onOk]
+	);
+
+	useEffect(() => {
+		window.addEventListener("keydown", handleEnterKeyPress);
+		return () => {
+			window.removeEventListener("keydown", handleEnterKeyPress);
+		};
+	}, [handleEnterKeyPress]);
 
 	return (
-		<MuiDialog {...props} onClose={onCancel}>
+		<MuiDialog {...props} open={open}>
 			<DialogTitle>{title}</DialogTitle>
 			<DialogContent>
 				<DialogContentText>{content}</DialogContentText>
+				{children}
 			</DialogContent>
-			<Box sx={{ px: 3 }}>{children}</Box>
-			<DialogActions>
-				{actions.map(({ icon, onClick, title }, index) => (
-					<Button onClick={onClick}>{title}</Button>
-				))}
-			</DialogActions>
+			{actions && (
+				<DialogActions>
+					<Actions
+						defaultActions={[
+							{
+								label: "Понятно",
+								position: "right",
+								onClick: onOk,
+							},
+						]}
+						actions={actions}
+					/>
+				</DialogActions>
+			)}
 		</MuiDialog>
 	);
 }

@@ -40,9 +40,7 @@ export default function Products({ products, ...props }: IProps) {
 			]);
 		}
 		return actions;
-	}, [isAuth]);
-
-
+	}, [isAuth, products]);
 
 	return (
 		<Box {...props} display={"flex"} justifyContent={"center"}>
@@ -63,15 +61,27 @@ export default function Products({ products, ...props }: IProps) {
 				title="Удалить товар"
 				content="Вы действительно хотите удалить товар?"
 				open={!!productToDeleteId}
-				onAccept={() => {
-					const id = productToDeleteId;
-					setProductToDeleteId("");
-					fetchAsync({
-						request: () => productsApi.deleteByIdAsync(id),
-						onError: (handler) => handler.log().popup(),
-					});
-				}}
-				onCancel={() => setProductToDeleteId("")}
+				onClose={() => setProductToDeleteId("")}
+				actions={([ok]) => [
+					{
+						label: "Не хочу",
+						onClick: () => setProductToDeleteId(""),
+						position: "left",
+					},
+					{
+						...ok,
+						label: "Хочу!",
+						onClick: () => {
+							const id = productToDeleteId;
+							setProductToDeleteId("");
+							fetchAsync({
+								request: () => productsApi.deleteByIdAsync(id),
+								onError: (handler) => handler.log().popup(),
+							});
+						},
+						position: "left",
+					},
+				]}
 			/>
 			{productToEdit && (
 				<ProductCardEditDialog

@@ -22,6 +22,7 @@ public class JwtTokenGenerator(
         var claims = new[]
         {
             new Claim(CustomClaims.USER_ID, user.Id.ToString()),
+            new Claim(ClaimTypes.Role, user.Role!.Name),
             new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
             new Claim(JwtRegisteredClaimNames.GivenName, user.FirstName),
             new Claim(JwtRegisteredClaimNames.FamilyName, user.LastName),
@@ -38,4 +39,3 @@ public class JwtTokenGenerator(
         return new JwtSecurityTokenHandler().WriteToken(securityToken);
     }
 }
-  

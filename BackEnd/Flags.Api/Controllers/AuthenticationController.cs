@@ -1,11 +1,12 @@
 ﻿using Flags.Application.AppSettings;
+using Flags.Application.Authentication.Commands.ConfirmEmail;
 using Flags.Application.Authentication.Commands.Login;
 using Flags.Application.Authentication.Commands.Logout;
 using Flags.Application.Authentication.Commands.RefreshJwt;
 using Flags.Application.Authentication.Commands.Register;
 using Flags.Application.Authentication.Commands.ResetPassword;
 using Flags.Application.Authentication.Commands.VerifyEmail;
-using Flags.Application.Authentication.Queries;
+using Flags.Application.Authentication.Queries.Login;
 using Flags.Domain.Common.Exceptions;
 using Flags.Infrastructure.Services.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -27,6 +28,7 @@ public class AuthenticationController(
     ISendResetPasswordEmailCommandHandler sendResetPasswordEmailCommandHandler,
     IResetPasswordCommandHandler resetPasswordCommandHandler,
     ISendResetPasswordFormCommandHandler sendResetPasswordFormCommandHandler,
+    ISendEmailConfirmEmailCommandHandler sendEmailConfirmEmailCommandHandler,
     IOptions<ClientSettings> clientSettings,
     CookieManager cookieManager
     ) : ApiController
@@ -98,6 +100,13 @@ public class AuthenticationController(
     {
         var formHtml = await sendResetPasswordFormCommandHandler.Handle(token);
         return Content(formHtml, "text/html", Encoding.UTF8);
+    }
+
+    [HttpGet("send-email-confirm-email")]
+    public async Task<IActionResult> SendEmailConfirmEmail([FromQuery] string email)
+    {
+        await sendEmailConfirmEmailCommandHandler.Handle(email);
+        return Ok();
     }
 
     [HttpPost("reset-password")]

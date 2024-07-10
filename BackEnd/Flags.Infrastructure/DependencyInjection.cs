@@ -36,6 +36,7 @@ using Flags.Application.Authentication.Commands.ResetPassword;
 using Flags.Infrastructure.Services.Auth.ResetPassword;
 using Flags.Application.Persistance.Repositories;
 using Flags.Application.Persistance;
+using Flags.Application.Authentication.Commands.ConfirmEmail;
 
 namespace Flags.Infrastructure;
 
@@ -102,6 +103,7 @@ public static class DependencyInjection
         services.AddScoped<IGetAllProductCategoriesQueryHandler, GetAllProductCategoriesQueryHandler>();
         services.AddScoped<ICreateProductCategoryCommandHandler, CreateProductCategoryCommandHandler>();
         services.AddScoped<ISyncProductCategoriesCommandHandler, SyncProductCategoriesCommandHandler>();
+        services.AddScoped<ISendEmailConfirmEmailCommandHandler, SendEmailConfirmEmailCommandHandler>();
 
         return services;
     }
@@ -115,7 +117,6 @@ public static class DependencyInjection
         configuration.Bind(nameof(JwtSettings), jwtSettings);
         services.AddSingleton(Options.Create(jwtSettings));
         services.Configure<RefreshJwtSettings>(configuration.GetSection(nameof(RefreshJwtSettings)));
-        services.Configure<AuthorizationSettings>(configuration.GetSection(nameof(AuthorizationSettings)));
         services.Configure<FileSettings>(configuration.GetSection(nameof(FileSettings)));
         services.Configure<EmailSettings>(configuration.GetSection(nameof(EmailSettings)));
         services.Configure<ClientSettings>(configuration.GetSection(nameof(ClientSettings)));
@@ -151,14 +152,15 @@ public static class DependencyInjection
         services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
         services.AddAuthorizationBuilder()
             .AddPolicy(CustomPolicies.ADMIN_POLICY, policy => policy
+                .RequireRole("Admin"))
+            .AddPolicy(CustomPolicies.EDIT_POLICY, policy => policy
                 .AddRequirements(new PermissionRequirement(
                 [
-                    PermissionEnum.Create,
-                    PermissionEnum.Read,
-                    PermissionEnum.Delete,
-                    PermissionEnum.Update
+                    PermissionFlag.Create,
+                    PermissionFlag.Read,
+                    PermissionFlag.Delete,
+                    PermissionFlag.Update
                 ])));
-
         return services;
     }
 }

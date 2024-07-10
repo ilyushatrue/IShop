@@ -12,7 +12,10 @@ export type ApiResponse<T> = {
 	status: Response["status"];
 	ok: Response["ok"];
 	body?: T;
-	errors: string[];
+	errors: {
+		message: string,
+		name: string
+	}[];
 };
 
 const fetchPipe = async (
@@ -60,12 +63,12 @@ const handleResponse = async <TOut>(
 		apiResponse.status = response!.status;
 		apiResponse.body = successResult;
 	} else {
-		const { detail, status } = (await response?.json()) ?? {
+		const { message, name, status } = (await response?.json()) ?? {
 			detail: "Ошибка сервера...",
 			status: 500,
 		};
 		apiResponse.status = status;
-		apiResponse.errors = [detail];
+		apiResponse.errors = [{ message, name }];
 	}
 	return apiResponse;
 };

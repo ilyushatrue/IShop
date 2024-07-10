@@ -172,34 +172,28 @@ export default function ProductCategories() {
 				<>
 					{editCategory.action === "delete" ? (
 						<Dialog
+							actions={([ok]) => [
+								{
+									label: "Нет",
+									onClick: () => setEditCategory(undefined),
+									position: "left",
+								},
+								{
+									...ok,
+									label: "Да",
+									onClick: () =>
+										handleEditCategory(
+											editCategory.category
+										),
+									position: "right",
+								},
+							]}
 							open
 							title="Вы уверены?"
 							content="Вы действительно хотите удалить категорию?"
-						>
-							<Box
-								sx={{
-									display: "flex",
-									justifyContent: "space-between",
-								}}
-							>
-								<Button
-									onClick={() => setEditCategory(undefined)}
-								>
-									Нет
-								</Button>
-								<Button
-									onClick={() =>
-										handleEditCategory(
-											editCategory.category
-										)
-									}
-								>
-									Да
-								</Button>
-							</Box>
-						</Dialog>
+						/>
 					) : (
-						<Dialog open={!!editCategory}>
+						<Dialog open={!!editCategory} actions={()=>[]}>
 							<Box width={500}>
 								<Form
 									loading={isFetching}

@@ -35,6 +35,11 @@ const apiAuth = {
 			anonymous: true,
 			body: email
 		}),
+
+	sendEmailConfirmEmailAsync: async (email: string) => {
+		const queryString = `?email=${email}`
+		return await httpGet({ url: `${baseUrl}/send-email-confirm-email${queryString}`, anonymous: true })
+	}
 };
 
 export default apiAuth;

@@ -22,7 +22,7 @@ public class ConfirmEmailCommandHandler(
             throw new Exception("Не удалось подтвердить электронную почту :(");
 
         if (emailConfirmation.IsConfirmed)
-            throw new InvalidUsageException("Email уже подтвержден ☺");
+            throw new InvalidUsageException("Email уже подтвержден ☺", "email-already-confirmed");
 
         if (DateTime.UtcNow > emailConfirmation.ExpiryDateTime)
             throw new ExpirationException("Время действия ссылки вышло.");

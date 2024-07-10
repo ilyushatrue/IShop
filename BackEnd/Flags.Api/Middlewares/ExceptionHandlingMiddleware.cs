@@ -47,7 +47,7 @@ namespace Flags.Api.Middlewares
             }
             catch (InvalidUsageException ex)
             {
-                await HandleExceptionAsync(httpContext, StatusCodes.Status400BadRequest, ex.Message);
+                await HandleExceptionAsync(httpContext, StatusCodes.Status400BadRequest, ex.Message, ex.ErrorName);
             }
             catch (UniquenessViolationExeption ex)
             {
@@ -64,7 +64,7 @@ namespace Flags.Api.Middlewares
             }
         }
 
-        private async Task HandleExceptionAsync(HttpContext httpContext, int statusCode, string exceptionMessage)
+        private async Task HandleExceptionAsync(HttpContext httpContext, int statusCode, string exceptionMessage, string? exceptionName = null)
         {
             _logger.LogError(exceptionMessage);
             HttpResponse response = httpContext.Response;
@@ -77,11 +77,11 @@ namespace Flags.Api.Middlewares
             }
             else
             {
-                await GenarateJsonErrorResponse(httpContext, exceptionMessage, response);
+                await GenarateJsonErrorResponse(httpContext, exceptionMessage, exceptionName ?? "", response);
             }
         }
 
-        private static async Task GenarateJsonErrorResponse(HttpContext httpContext, string exceptionMessage, HttpResponse response)
+        private static async Task GenarateJsonErrorResponse(HttpContext httpContext, string exceptionMessage, string exceptionName, HttpResponse response)
         {
             response.ContentType = "application/json; charset=utf-8";
 
@@ -89,7 +89,8 @@ namespace Flags.Api.Middlewares
             {
                 title = "Возникла ошибка при выполнении запроса.",
                 status = response.StatusCode,
-                detail = exceptionMessage,
+                message = exceptionMessage,
+                name = exceptionName,
                 traceId = httpContext.TraceIdentifier
             };
 

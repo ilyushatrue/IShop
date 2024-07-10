@@ -11,9 +11,9 @@ import { useAppDispatch } from "../../../app/hooks/redux/use-app-dispatch";
 import { redirect } from "../../../app/helpers/redirect";
 import useApi from "../../../api/hooks/use-api.hook";
 import apiAuth from "../../../api/auth.api";
-import Dialog from "../../../components/dialog";
 import { setIsPageLoading } from "../../../store/page.slice";
-import Form from "../../../components/form/form";
+import ResetPasswordDialog from "./reset-password-dialog";
+import EmailConfirmAlreadySentDialog from "./email-confirm-already-sent-dialog";
 
 type AuthType = "phone" | "email";
 
@@ -29,6 +29,13 @@ export default function Login({ sm = false, onToRegisterClick }: IProps) {
 	const [authType, setAuthType] = useState<AuthType>("email");
 	const [isResetPasswordDialogOn, setIsResetPasswordDialogOn] =
 		useState(false);
+	const [
+		isEmailAlreadyConfirmedDialogOn,
+		setIsEmailAlreadyConfirmedDialogOn,
+	] = useState<{
+		is: boolean;
+		email?: string;
+	}>({ is: false });
 	const { fetchAsync, isFetching } = useApi();
 	const dispatch = useAppDispatch();
 
@@ -54,7 +61,19 @@ export default function Login({ sm = false, onToRegisterClick }: IProps) {
 		await fetchAsync({
 			request: async () => await apiAuth.loginByEmailAsync(request),
 			onSuccess: (handler) => handler.do(() => redirect("/account")),
-			onError: (handler) => handler.log().popup(),
+			onError: (handler) =>
+				handler
+					.log()
+					.popup()
+					.do((error) => {
+						console.log(error);
+						if (error.name === "email-not-confirmed") {
+							setIsEmailAlreadyConfirmedDialogOn({
+								is: true,
+								email: request.email,
+							});
+						}
+					}),
 		});
 		dispatch(setIsPageLoading(false));
 	}
@@ -67,7 +86,22 @@ export default function Login({ sm = false, onToRegisterClick }: IProps) {
 				await apiAuth.sendResetPasswordEmailAsync(email),
 			onSuccess: (handler) =>
 				handler.popup(
-					"Сообщение о смене пароля доставлено на эл. почту"
+					"Сообщение о смене пароля отправлено на эл. почту"
+				),
+			onError: (handler) => handler.log().popup(),
+		});
+		dispatch(setIsPageLoading(false));
+	}
+
+	async function handleResendEmailAsync(email: string) {
+		dispatch(setIsPageLoading(true));
+		setIsEmailAlreadyConfirmedDialogOn((prev) => ({ ...prev, is: false }));
+		await fetchAsync({
+			request: async () =>
+				await apiAuth.sendEmailConfirmEmailAsync(email),
+			onSuccess: (handler) =>
+				handler.popup(
+					"Сообщение о смене пароля отправлено на эл. почту"
 				),
 			onError: (handler) => handler.log().popup(),
 		});
@@ -105,31 +139,27 @@ export default function Login({ sm = false, onToRegisterClick }: IProps) {
 					</Link>
 				</Typography>
 			</Template>
-			<Dialog
+			<ResetPasswordDialog
+				onSubmit={handleResetPasswordAsync}
+				loading={isFetching}
+				onClose={() => setIsResetPasswordDialogOn(false)}
 				open={isResetPasswordDialogOn}
-				title="Изменение пароля"
-				content="На указанный адрес эл. почты будет отправлено сообщение на изменение пароля."
-			>
-				<Form
-					defaultValues={{ email: "" }}
-					fields={(builder) =>
-						builder.email({ name: "email", required: true })
-					}
-					minHeight={80}
-					loading={isFetching}
-					actions={([submit]) => [
-						{
-							label: "Отмена",
-							position: "left",
-							onClick: () => setIsResetPasswordDialogOn(false),
-						},
-						submit,
-					]}
-					onSubmit={(values) =>
-						handleResetPasswordAsync(values.email)
-					}
-				/>
-			</Dialog>
+			/>
+			<EmailConfirmAlreadySentDialog
+				email={isEmailAlreadyConfirmedDialogOn.email}
+				onEmailResendRequest={() =>
+					handleResendEmailAsync(
+						isEmailAlreadyConfirmedDialogOn.email!
+					)
+				}
+				onClose={() =>
+					setIsEmailAlreadyConfirmedDialogOn((prev) => ({
+						...prev,
+						is: false,
+					}))
+				}
+				open={isEmailAlreadyConfirmedDialogOn.is}
+			/>
 		</>
 	);
 }

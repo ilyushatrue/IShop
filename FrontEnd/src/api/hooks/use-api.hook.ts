@@ -5,7 +5,7 @@ import { usePopup } from "../../app/hooks/use-popup.hook";
 type TApiErrorHandler<T> = {
 	log: () => TApiErrorHandler<T>;
 	popup: (message?: string) => TApiErrorHandler<T>;
-	do: (action: (error: any) => void) => TApiErrorHandler<T>;
+	do: (action: (error: { message: string, name: string }) => void) => TApiErrorHandler<T>;
 };
 
 type TApiSuccessHandler<T> = {
@@ -74,11 +74,11 @@ export default function useApi() {
 				return errorHandler;
 			},
 			popup: (message) => {
-				popupError(apiResult.errors[0]);
+				popupError(apiResult.errors[0].message ?? message);
 				return errorHandler;
 			},
 			do: (action) => {
-				action(apiResult);
+				action(apiResult.errors[0]);
 				return errorHandler;
 			},
 		};

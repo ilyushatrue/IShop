@@ -16,16 +16,16 @@ public class UserRepository(FlagDbContext dbContext) : IUserRepository
         return await dbContext.Users.Where(x => x.Phone != null).AnyAsync(u => u.Phone!.Value == phone);
     }
 
-    public async Task CreateAsync(User user)
+    public void Create(User user)
     {
         dbContext.Add(user);
-        await dbContext.SaveChangesAsync();
     }
 
     public async Task<User?> GetByEmailAsync(string email)
     {
         return await dbContext.Users
             .Include(u => u.RefreshJwt)
+            .Include(u => u.Role)
             .Include(u => u.EmailConfirmation)
             .SingleOrDefaultAsync(u => u.Email.Value == email);
     }
@@ -39,6 +39,7 @@ public class UserRepository(FlagDbContext dbContext) : IUserRepository
     {
         return await dbContext.Users
             .AsNoTracking()
+            .Include(u => u.Role)
             .Include(u => u.RefreshJwt)
             .Where(u => u.Phone != null)
             .SingleOrDefaultAsync(u => u.Phone!.Value == phone);
@@ -46,30 +47,31 @@ public class UserRepository(FlagDbContext dbContext) : IUserRepository
 
     public async Task<User?> GetByIdAsync(Guid id)
     {
-        return await dbContext.Users.SingleOrDefaultAsync(u => u.Id == id);
+        return await dbContext.Users
+            .Include(u => u.Role)
+            .SingleOrDefaultAsync(u => u.Id == id);
     }
 
-    public async Task<HashSet<PermissionEnum>> GetPermissionsAsync(Guid userId)
+    public async Task<HashSet<PermissionFlag>> GetPermissionsAsync(Guid userId)
     {
         var roles = await dbContext.Users
             .AsNoTracking()
-            .Include(u => u.Roles)
-            .ThenInclude(r => r.Permissions)
+            .Include(u => u.Role)
+            .ThenInclude(r => r!.Permissions)
             .Where(u => u.Id == userId)
-            .Select(u => u.Roles)
+            .Select(u => u.Role)
             .ToArrayAsync();
 
         return roles
-            .SelectMany(u => u)
-            .SelectMany(u => u.Permissions)
-            .Select(p => (PermissionEnum)p.Id)
+            .Select(u => u)
+            .SelectMany(u => u!.Permissions)
+            .Select(p => (PermissionFlag)p.Id)
             .ToHashSet();
     }
 
-    public async Task UpdateAsync(User user)
+    public void Update(User user)
     {
         dbContext.Update(user);
-        await dbContext.SaveChangesAsync();
     }
 
     public async Task<bool> CheckUserExistsByIdAsync(Guid id)

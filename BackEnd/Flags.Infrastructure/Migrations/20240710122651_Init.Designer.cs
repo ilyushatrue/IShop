@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Flags.Infrastructure.Migrations
 {
     [DbContext(typeof(FlagDbContext))]
-    [Migration("20240708070222_ProductCategory2")]
-    partial class ProductCategory2
+    [Migration("20240710122651_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -140,12 +140,12 @@ namespace Flags.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = 3,
+                            Id = 4,
                             Name = "Update"
                         },
                         new
                         {
-                            Id = 4,
+                            Id = 8,
                             Name = "Delete"
                         });
                 });
@@ -197,6 +197,11 @@ namespace Flags.Infrastructure.Migrations
                         {
                             Id = 2,
                             Name = "User"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Seller"
                         });
                 });
 
@@ -243,25 +248,6 @@ namespace Flags.Infrastructure.Migrations
                     b.ToTable("user_email_confirmations", (string)null);
                 });
 
-            modelBuilder.Entity("Flags.Domain.UserRoot.Entities.UserRole", b =>
-                {
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("TEXT")
-                        .HasColumnName("user_id");
-
-                    b.Property<int>("RoleId")
-                        .HasColumnType("INTEGER")
-                        .HasColumnName("role_id");
-
-                    b.HasKey("UserId", "RoleId")
-                        .HasName("pk_user_roles");
-
-                    b.HasIndex("RoleId")
-                        .HasDatabaseName("ix_user_roles_role_id");
-
-                    b.ToTable("user_roles", (string)null);
-                });
-
             modelBuilder.Entity("Flags.Domain.UserRoot.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -282,12 +268,19 @@ namespace Flags.Infrastructure.Migrations
                         .HasColumnType("TEXT")
                         .HasColumnName("last_name");
 
+                    b.Property<int>("RoleId")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("role_id");
+
                     b.HasKey("Id")
                         .HasName("pk_users");
 
                     b.HasIndex("AvatarId")
                         .IsUnique()
                         .HasDatabaseName("ix_users_avatar_id");
+
+                    b.HasIndex("RoleId")
+                        .HasDatabaseName("ix_users_role_id");
 
                     b.ToTable("users", (string)null);
                 });
@@ -327,19 +320,23 @@ namespace Flags.Infrastructure.Migrations
 
             modelBuilder.Entity("Flags.Domain.UserRoot.Entities.RolePermission", b =>
                 {
-                    b.HasOne("Flags.Domain.UserRoot.Entities.Permission", null)
-                        .WithMany()
+                    b.HasOne("Flags.Domain.UserRoot.Entities.Permission", "Permission")
+                        .WithMany("RolePermissions")
                         .HasForeignKey("PermissionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_role_permissions_permissions_permission_id");
 
-                    b.HasOne("Flags.Domain.UserRoot.Entities.Role", null)
-                        .WithMany()
+                    b.HasOne("Flags.Domain.UserRoot.Entities.Role", "Role")
+                        .WithMany("RolePermissions")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_role_permissions_roles_role_id");
+
+                    b.Navigation("Permission");
+
+                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("Flags.Domain.UserRoot.Entities.UserEmailConfirmation", b =>
@@ -354,33 +351,19 @@ namespace Flags.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Flags.Domain.UserRoot.Entities.UserRole", b =>
-                {
-                    b.HasOne("Flags.Domain.UserRoot.Entities.Role", "Role")
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_user_roles_roles_role_id");
-
-                    b.HasOne("Flags.Domain.UserRoot.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_user_roles_users_user_id");
-
-                    b.Navigation("Role");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Flags.Domain.UserRoot.User", b =>
                 {
                     b.HasOne("Flags.Domain.MediaEntity.Media", "Avatar")
                         .WithOne("User")
                         .HasForeignKey("Flags.Domain.UserRoot.User", "AvatarId")
                         .HasConstraintName("fk_users_media_avatar_id");
+
+                    b.HasOne("Flags.Domain.UserRoot.Entities.Role", "Role")
+                        .WithMany("Users")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_users_roles_role_id");
 
                     b.OwnsOne("Flags.Domain.UserRoot.ValueObjects.Email", "Email", b1 =>
                         {
@@ -460,11 +443,25 @@ namespace Flags.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Phone");
+
+                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("Flags.Domain.MediaEntity.Media", b =>
                 {
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Flags.Domain.UserRoot.Entities.Permission", b =>
+                {
+                    b.Navigation("RolePermissions");
+                });
+
+            modelBuilder.Entity("Flags.Domain.UserRoot.Entities.Role", b =>
+                {
+                    b.Navigation("RolePermissions");
+
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("Flags.Domain.UserRoot.User", b =>

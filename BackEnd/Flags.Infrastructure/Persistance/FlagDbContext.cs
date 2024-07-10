@@ -11,8 +11,8 @@ using Microsoft.Extensions.Options;
 namespace Flags.Infrastructure.Persistance;
 
 public class FlagDbContext(
-    DbContextOptions<FlagDbContext> options,
-    IOptions<AuthorizationSettings> authorizationOptions) : DbContext(options)
+    IOptions<AuthorizationSettings> authorizationOptions,
+    DbContextOptions<FlagDbContext> options) : DbContext(options)
 {
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -28,6 +28,7 @@ public class FlagDbContext(
     public DbSet<User> Users { get; set; } = null!;
     public DbSet<RefreshJwt> RefreshJwts { get; set; } = null!;
     public DbSet<Role> Roles { get; set; } = null!;
+    public DbSet<RolePermission> RolePermissions { get; set; } = null!;
     public DbSet<Permission> Permissions { get; set; } = null!;
     public DbSet<Media> Media { get; set; } = null!;
     public DbSet<Product> Products { get; set; } = null!;

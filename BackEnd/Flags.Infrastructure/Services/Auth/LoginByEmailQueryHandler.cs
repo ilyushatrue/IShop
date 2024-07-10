@@ -1,7 +1,7 @@
 using Flags.Application.AppSettings;
 using Flags.Application.Authentication.Commands.Login;
 using Flags.Application.Authentication.Common;
-using Flags.Application.Authentication.Queries;
+using Flags.Application.Authentication.Queries.Login;
 using Flags.Application.Persistance.Repositories;
 using Flags.Domain.Common.Exceptions;
 using Flags.Domain.UserRoot.Entities;
@@ -32,7 +32,7 @@ public class LoginByEmailQueryHandler(
             throw new InvalidCredentialsException("Неверный логин или пароль!");
 
         if (!user.EmailConfirmation!.IsConfirmed)
-            throw new InvalidUsageException("Вы не подтвердили свою эл. почту!");
+            throw new InvalidUsageException("Вы не подтвердили свою эл. почту!", "email-not-confirmed");
 
         var jwtAccessToken = jwtTokenGenerator.GenerateAccessToken(user);
 
