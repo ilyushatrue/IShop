@@ -1,24 +1,44 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import useApi from "../../../api/hooks/use-api.hook";
 import { IProduct } from "../../../api/interfaces/product/product.interface";
 import productsApi from "../../../api/endpoints/products.api";
 import Products from "../products";
 import ShopPage from "../shop-page";
+import { Pagination, PaginationItem } from "@mui/material";
 
 export default function Clothes() {
-	const { fetchAsync } = useApi({ triggerPage: true });
+	const path = "/category/clothes/";
+	const { id } = useParams<{ id: string }>();
 	const navigate = useNavigate();
+	const { fetchAsync } = useApi({ triggerPage: true });
 	const [products, setProducts] = useState<IProduct[]>([]);
-
+	const [pageProps, setPageProps] = useState<{
+		totalPages: number;
+		currentPage: number;
+		pageSize: number;
+	}>({ totalPages: 1, currentPage: 1, pageSize: 12 });
 	useEffect(() => {
+		if (!id) {
+			navigate("1");
+			return;
+		}
 		fetchAsync({
-			request: () => productsApi.getByCategoryAsync(1, 1, 10),
+			request: () => productsApi.getByCategoryAsync(1, +id, 12),
 			onSuccess: (handler) =>
-				handler.do((res) => setProducts(res.body!.pageItems!)),
+				handler.do((res) => {
+					const { currentPage, pageItems, pageSize, totalPages } =
+						res.body!;
+					setProducts(pageItems);
+					setPageProps({
+						currentPage: currentPage,
+						pageSize: pageSize,
+						totalPages: totalPages,
+					});
+				}),
 			onError: (handler) => handler.do(() => navigate("/not-found")),
 		});
-	}, []);
+	}, [id]);
 
 	function handleProductUpdate(product: IProduct) {
 		const updatedProducts = [...products];
@@ -26,7 +46,6 @@ export default function Clothes() {
 		updatedProducts[productIndex] = product;
 		setProducts(updatedProducts);
 	}
-
 	return (
 		<ShopPage>
 			<Products
@@ -35,6 +54,18 @@ export default function Clothes() {
 				onDelete={(id) =>
 					setProducts((prev) => [...prev].filter((p) => p.id !== id))
 				}
+			/>
+			<Pagination
+				sx={{ display: "flex", justifyContent: "end" }}
+				page={pageProps.currentPage}
+				count={pageProps.totalPages}
+				renderItem={(item) => (
+					<PaginationItem
+						component={Link}
+						to={`${path}${item.page?.toString() ?? "1"}`}
+						{...item}
+					/>
+				)}
 			/>
 		</ShopPage>
 	);

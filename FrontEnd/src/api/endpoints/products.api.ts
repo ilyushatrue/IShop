@@ -3,7 +3,7 @@ import { ICreateProductCategoryCommand } from "../interfaces/product-categories/
 import { IProductCategory } from "../interfaces/product-categories/queries/product-category.interface";
 import { ICreateProductCommand } from "../interfaces/product/commands/create-product-command.interface";
 import { IProduct } from "../interfaces/product/product.interface";
-import { IPager } from "../interfaces/paged-list";
+import { IPager } from "../interfaces/pager.interface";
 
 const baseUrl = "/products";
 

@@ -11,7 +11,6 @@ interface IProps {
 	sm: boolean;
 }
 export default function Routes({ sm }: IProps) {
-	console.log("routes");
 	return (
 		<>
 			<NavBar sm={sm} />
