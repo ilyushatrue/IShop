@@ -9,36 +9,32 @@ const apiAuth = {
 	loginByEmailAsync: async (request: ILoginByEmailRequest) =>
 		await httpPost({
 			url: `${baseUrl}/login-by-email`,
-			anonymous: true,
 			body: request,
 		}),
 
 	loginByPhoneAsync: async (request: ILoginByPhoneRequest) =>
 		await httpPost({
 			url: `${baseUrl}/login-by-phone`,
-			anonymous: true,
 			body: request,
 		}),
 
 	registerAsync: async (request: IRegisterRequest) =>
 		await httpPost({
 			url: `${baseUrl}/register`,
-			anonymous: true,
 			body: request,
 		}),
 
-	logoutAsync: async () => await httpPost({ url: `${baseUrl}/logout` }),
+	logoutAsync: async () => await httpPost({ url: `${baseUrl}/logout`, authenticate: true }),
 
 	sendResetPasswordEmailAsync: async (email: string) =>
 		await httpPost({
 			url: `${baseUrl}/send-reset-password-email`,
-			anonymous: true,
 			body: email
 		}),
 
 	sendEmailConfirmEmailAsync: async (email: string) => {
 		const queryString = `?email=${email}`
-		return await httpGet({ url: `${baseUrl}/send-email-confirm-email${queryString}`, anonymous: true })
+		return await httpGet({ url: `${baseUrl}/send-email-confirm-email${queryString}` })
 	}
 };
 

@@ -10,7 +10,7 @@ export default function InputText<T extends FieldValues>({
 	variant = "filled",
 	margin = "dense",
 	required = false,
-	enabled = true,
+	disabled,
 	readonly,
 }: { control: Control<T> } & IFormField<T>) {
 	return (
@@ -31,7 +31,7 @@ export default function InputText<T extends FieldValues>({
 					type="text"
 					size={size}
 					variant={variant}
-					disabled={!enabled}
+					disabled={disabled}
 					InputProps={{ readOnly: readonly }}
 					fullWidth
 					onChange={field.onChange}

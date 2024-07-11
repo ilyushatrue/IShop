@@ -19,7 +19,7 @@ export default function Profile() {
 		phone: userState.phone,
 	});
 	const dispatch = useAppDispatch();
-	const { fetchAsync, isFetching } = useApi();
+	const { fetchAsync, isFetching } = useApi({ triggerPage: true });
 
 	async function handleFormSubmitAsync(user: IUser) {
 		let updated = false;
@@ -57,7 +57,7 @@ export default function Profile() {
 	}
 
 	return (
-		<ProfilePage isLoading={isFetching}>
+		<ProfilePage mainBoxProps={{ sx: { padding: 2 } }}>
 			<Box
 				width={500}
 				marginX={"auto"}

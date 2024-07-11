@@ -1,24 +1,25 @@
-import { Box, BoxProps, Grid } from "@mui/material";
+import { Grid } from "@mui/material";
 import { IProduct } from "../../api/interfaces/product/product.interface";
 import { useMemo, useState } from "react";
 import useApi from "../../api/hooks/use-api.hook";
 import { useAppSelector } from "../../app/hooks/redux/use-app-selector";
 import ProductCard, { ICardAction } from "./card/product-card";
 import Dialog from "../../components/dialog";
-import productsApi from "../../api/products.api";
 import ProductCardEditDialog from "./card/product-card-edit-dialog";
+import productsApi from "../../api/products.api";
 
-interface IProps extends BoxProps {
+interface IProps {
 	products: IProduct[];
+	onDelete: (productId: string) => void;
 }
-export default function Products({ products, ...props }: IProps) {
+export default function Products({ products, onDelete }: IProps) {
 	const [productToDeleteId, setProductToDeleteId] = useState("");
 	const [productToEdit, setProductToEdit] = useState<IProduct>();
 	const isAuth = useAppSelector((state) => state.user.isAuthenticated);
 	const categories = useAppSelector(
 		(state) => state.global.productCategories
 	);
-	const { fetchAsync, isFetching } = useApi();
+	const { fetchAsync, isFetching } = useApi({ triggerPage: true });
 	const cardActions: ICardAction[] = useMemo(() => {
 		let actions: ICardAction[] = [
 			{
@@ -42,8 +43,18 @@ export default function Products({ products, ...props }: IProps) {
 		return actions;
 	}, [isAuth, products]);
 
+	async function handleDeleteProductAsync() {
+		const id = productToDeleteId;
+		setProductToDeleteId("");
+		fetchAsync({
+			request: () => productsApi.deleteByIdAsync(id),
+			onSuccess: () => onDelete(id),
+			onError: (handler) => handler.log().popup(),
+		});
+	}
+	console.log(productToDeleteId);
 	return (
-		<Box {...props} display={"flex"} justifyContent={"center"}>
+		<>
 			<Grid container rowSpacing={4} width={"100%"} height={"100%"}>
 				{products.map((p, index) => (
 					<Grid item xs={12} sm={6} md={4} lg={3} key={index}>
@@ -57,32 +68,26 @@ export default function Products({ products, ...props }: IProps) {
 					</Grid>
 				))}
 			</Grid>
-			<Dialog
-				title="Удалить товар"
-				content="Вы действительно хотите удалить товар?"
-				open={!!productToDeleteId}
-				onClose={() => setProductToDeleteId("")}
-				actions={([ok]) => [
-					{
-						label: "Не хочу",
-						onClick: () => setProductToDeleteId(""),
-						position: "left",
-					},
-					{
-						...ok,
-						label: "Хочу!",
-						onClick: () => {
-							const id = productToDeleteId;
-							setProductToDeleteId("");
-							fetchAsync({
-								request: () => productsApi.deleteByIdAsync(id),
-								onError: (handler) => handler.log().popup(),
-							});
+			{!!productToDeleteId && (
+				<Dialog
+					title="Удалить товар"
+					content="Вы действительно хотите удалить товар?"
+					open={!!productToDeleteId}
+					onClose={() => setProductToDeleteId("")}
+					onOk={handleDeleteProductAsync}
+					actions={([ok]) => [
+						{
+							label: "Не хочу",
+							position: "left",
+							onClick: () => setProductToDeleteId(""),
 						},
-						position: "left",
-					},
-				]}
-			/>
+						{
+							...ok,
+							label: "Хочу!",
+						},
+					]}
+				/>
+			)}
 			{productToEdit && (
 				<ProductCardEditDialog
 					categories={categories}
@@ -93,6 +98,6 @@ export default function Products({ products, ...props }: IProps) {
 					onCancel={() => setProductToEdit(undefined)}
 				/>
 			)}
-		</Box>
+		</>
 	);
 }

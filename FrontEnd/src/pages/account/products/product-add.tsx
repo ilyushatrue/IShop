@@ -11,7 +11,7 @@ import ProductCategoryEditDialog from "./product-category-edit-dialog";
 import { useAppSelector } from "../../../app/hooks/redux/use-app-selector";
 
 export default function ProductAdd() {
-	const { fetchAsync, isFetching } = useApi();
+	const { fetchAsync, isFetching } = useApi({ triggerPage: true });
 	const categories = useAppSelector(
 		(state) => state.global.productCategories
 	);
@@ -37,10 +37,9 @@ export default function ProductAdd() {
 			onError: (handler) => handler.log().popup(),
 		});
 	}
-	console.log(categories);
-	if (!categories || !categories.length) return null;
+	if (!categories) return null;
 	return (
-		<ProfilePage>
+		<ProfilePage mainBoxProps={{ padding: 2 }}>
 			<Box width={500} marginX={"auto"}>
 				<Form
 					loading={isFetching}

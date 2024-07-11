@@ -55,18 +55,15 @@ export default function Form<T extends FieldValues>({
 			ref={builderRef}
 		>
 			<Actions
-				sx={{marginY: "16px"}}
+				sx={{ marginY: "16px" }}
 				actions={actions}
 				defaultActions={[
 					{
-						disabled: !formState.isDirty || loading,
+						disabled:
+							!formState.isDirty || !formState.isValid || loading,
 						label: "Отправить",
 						type: "submit",
 						position: "right",
-						sx: {
-							minwidth: "50%",
-							textTransform: "none",
-						},
 					},
 					{
 						disabled: !formState.isDirty || loading,
@@ -74,10 +71,6 @@ export default function Form<T extends FieldValues>({
 						type: "reset",
 						onClick: () => reset(),
 						position: "left",
-						sx: {
-							minwidth: "50%",
-							textTransform: "none",
-						},
 					},
 				]}
 			/>

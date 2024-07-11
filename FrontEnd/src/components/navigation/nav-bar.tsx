@@ -8,6 +8,7 @@ import { useAppSelector } from "../../app/hooks/redux/use-app-selector";
 import useApi from "../../api/hooks/use-api.hook";
 import { setIsPageLoading } from "../../store/page.slice";
 import apiAuth from "../../api/auth.api";
+import { resetCurrentUserState } from "../../store/user.slice";
 
 export interface INavBar {
 	sm?: boolean;
@@ -15,9 +16,11 @@ export interface INavBar {
 export default function NavBar({ sm = false }: INavBar) {
 	const navigate = useNavigate();
 	const tabs = useAppSelector((state) => state.page.tabs);
-	const { fetchAsync, isFetching } = useApi();
+	const { fetchAsync } = useApi({ triggerPage: true });
 	const dispatch = useAppDispatch();
-	const { isAuthenticated } = useAppSelector((state) => state.user);
+	const isAuthenticated = useAppSelector(
+		(state) => state.user.isAuthenticated
+	);
 
 	const selectedItemIndex = useMemo<number | null>(() => {
 		const index = tabs.findIndex((tab) => tab.active);
@@ -53,7 +56,7 @@ export default function NavBar({ sm = false }: INavBar) {
 			tip: "Аккаунт",
 			sx: { bgcolor: "primary.main" },
 		}),
-		[]
+		[isAuthenticated]
 	);
 	async function handleLogout() {
 		dispatch(setIsPageLoading(true));
@@ -62,7 +65,7 @@ export default function NavBar({ sm = false }: INavBar) {
 			onSuccess: (handler) =>
 				handler.do(() => {
 					navigate("/auth");
-					window.location.reload();
+					dispatch(resetCurrentUserState());
 				}),
 			onError: (handler) => handler.log().popup(),
 		});

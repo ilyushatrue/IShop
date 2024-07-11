@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ApiResponse } from "../api";
 import { usePopup } from "../../app/hooks/use-popup.hook";
+import { useAppDispatch } from "../../app/hooks/redux/use-app-dispatch";
+import { setIsPageLoading } from "../../store/page.slice";
 
 type TApiErrorHandler<T> = {
 	log: () => TApiErrorHandler<T>;
@@ -23,9 +25,20 @@ type TTryFetch<TOut> = {
 	onError?: (handler: TApiErrorHandler<ApiResponse<TOut>>) => void;
 };
 
-export default function useApi() {
+type TUseApiProps = {
+	triggerPage?: boolean
+}
+
+export default function useApi({ triggerPage }: TUseApiProps) {
+	const dispatch = useAppDispatch()
 	const [isFetching, setIsFetching] = useState(false);
 	const { popupError, popupSuccess } = usePopup();
+
+	useEffect(() => {
+		if (triggerPage) {
+			dispatch(setIsPageLoading(isFetching))
+		}
+	}, [dispatch, isFetching, triggerPage])
 
 	const fetchAsync = async <TOut>({
 		request,

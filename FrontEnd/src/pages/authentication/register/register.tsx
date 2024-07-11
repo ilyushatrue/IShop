@@ -20,7 +20,7 @@ export default function Register({ sm = false, onToLoginClick }: IProps) {
 	const navigate = useNavigate();
 	const [isEmailConfirmationDialogOn, setIsEmailConfirmationDialogOn] =
 		useState(false);
-	const { fetchAsync, isFetching } = useApi();
+		const { fetchAsync, isFetching } = useApi({ triggerPage: true });
 
 	async function handleRegisterAsync(request: IRegisterRequest) {
 		dispatch(setIsPageLoading(true));

@@ -10,7 +10,7 @@ export default function Authentication({ sm = false }: IProps) {
 	const [hasAccount, setHasAccount] = useState(true);
 
 	return (
-		<Page isLoading={false}>
+		<Page >
 			{hasAccount ? (
 				<Login sm={sm} onToRegisterClick={() => setHasAccount(false)} />
 			) : (

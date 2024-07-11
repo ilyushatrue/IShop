@@ -30,6 +30,9 @@ public class LoginByPhoneQueryHandler(
         if (!passwordsMatch)
             throw new InvalidCredentialsException($"Неверный логин или пароль.");
 
+        if (!user.EmailConfirmation!.IsConfirmed)
+            throw new InvalidUsageException("Вы не подтвердили свою эл. почту!", "email-not-confirmed");
+
         var jwtAccessToken = jwtTokenGenerator.GenerateAccessToken(user);
 
         if (user.RefreshJwt is null)

@@ -34,7 +34,7 @@ export default function InputPasswordConfirm<T extends FieldValues>({
 	required = true,
 	onChange,
 	readonly,
-	enabled = true,
+	disabled,
 }: {
 	control: Control<T>;
 	onChange: () => PathValue<T, Path<T>>;
@@ -77,7 +77,7 @@ export default function InputPasswordConfirm<T extends FieldValues>({
 					value={field.value}
 					error={!!error}
 					helperText={error && error.message}
-					disabled={!enabled}
+					disabled={disabled}
 					InputProps={{
 						readOnly: readonly,
 						endAdornment: (

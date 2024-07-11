@@ -8,18 +8,17 @@ import IconButton from "../../../components/icon-button";
 import { useNavigate } from "react-router-dom";
 
 export default function ProductMenu() {
-	const { fetchAsync, isFetching } = useApi();
-	const [products, setProducts] = useState<IProduct[]>();
+	const { fetchAsync } = useApi({ triggerPage: true });
+	const [products, setProducts] = useState<IProduct[]>([]);
 	const navigate = useNavigate();
 
 	useEffect(() => {
 		fetchAsync({
 			request: () => productsApi.getAllAsync(),
-			onSuccess: (handler) => handler.do((res) => setProducts(res.body)),
+			onSuccess: (handler) => handler.do((res) => setProducts(res.body!)),
 			onError: (handler) => handler.log().popup(),
 		});
 	}, []);
-	if (!products || isFetching) return null;
 	return (
 		<ProfilePage>
 			<Box display={"flex"}>

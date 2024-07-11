@@ -16,7 +16,6 @@ import IconButton from "../../../components/icon-button";
 import { reload } from "../../../app/helpers/reload";
 import Icon from "../../../components/icon";
 import MenuDeleteCell from "./menu-delete-cell";
-import Button from "../../../components/button";
 
 export default function ProductCategories() {
 	const defaultCategory = useRef<IProductCategory>({
@@ -25,7 +24,7 @@ export default function ProductCategories() {
 		name: "",
 		order: 0,
 	});
-	const { fetchAsync, isFetching } = useApi();
+	const { fetchAsync, isFetching } = useApi({ triggerPage: true });
 	const [editCategory, setEditCategory] = useState<{
 		category: IProductCategory;
 		action: "create" | "edit" | "delete";
@@ -110,9 +109,9 @@ export default function ProductCategories() {
 		setCategories(updatedCategories);
 		setEditCategory(undefined);
 	}
-	if (!categories || !categories.length) return null;
+	if (!categories) return null;
 	return (
-		<ProfilePage isLoading={isFetching}>
+		<ProfilePage>
 			<Box sx={{ bgcolor: "primary.light", padding: 1 }}>
 				<IconButton
 					iconName="add"
@@ -158,7 +157,7 @@ export default function ProductCategories() {
 					icon: (x) => x.iconName,
 					minWidth: 300,
 					flex: 1,
-					title: (x) => `${x.id}. ${x.name}`,
+					title: (x) => `${x.name}`,
 				}}
 				columnsRange={{
 					columns: [
@@ -193,7 +192,7 @@ export default function ProductCategories() {
 							content="Вы действительно хотите удалить категорию?"
 						/>
 					) : (
-						<Dialog open={!!editCategory} actions={()=>[]}>
+						<Dialog open={!!editCategory} actions={() => []}>
 							<Box width={500}>
 								<Form
 									loading={isFetching}

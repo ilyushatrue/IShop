@@ -26,7 +26,7 @@ export default function InputEmail<T extends FieldValues>({
 	variant = "filled",
 	margin = "dense",
 	required = false,
-	enabled = true,
+	disabled,
 	readonly,
 }: { control: Control<T> } & IFormField<T>) {
 	return (
@@ -42,7 +42,7 @@ export default function InputEmail<T extends FieldValues>({
 					type="email"
 					variant={variant}
 					margin={margin}
-					disabled={!enabled}
+					disabled={disabled}
 					InputProps={{ readOnly: readonly }}
 					autoComplete="email"
 					fullWidth

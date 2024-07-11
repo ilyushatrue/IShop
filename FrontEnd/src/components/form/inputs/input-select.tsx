@@ -31,7 +31,7 @@ export default function InputSelect<T extends FieldValues>({
 	variant = "filled",
 	margin = "dense",
 	required = false,
-	enabled = true,
+	disabled,
 	readonly,
 }: { control: Control<T> } & IFormSelectField<T>) {
 	const ITEM_HEIGHT = 48;
@@ -68,7 +68,7 @@ export default function InputSelect<T extends FieldValues>({
 					fullWidth
 					variant={variant}
 					margin={margin}
-					disabled={!enabled}
+					disabled={disabled}
 					size={size}
 					error={!!error}
 				>

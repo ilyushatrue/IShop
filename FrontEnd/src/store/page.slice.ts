@@ -1,7 +1,7 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 interface IPageState {
-	isLoading: boolean;
+	loading: boolean;
 	displayWidth: number;
 	navbar: {
 		height: number;
@@ -13,7 +13,7 @@ interface IPageState {
 	}[];
 }
 const menuItems: IPageState = {
-	isLoading: false,
+	loading: false,
 	displayWidth: 1440,
 	navbar: {
 		height: 112,
@@ -48,7 +48,7 @@ const pageSlice = createSlice({
 	name: "page",
 	reducers: {
 		setIsPageLoading(state, action: PayloadAction<boolean>) {
-			state.isLoading = action.payload;
+			state.loading = action.payload;
 		},
 		setActiveTab(state, action: PayloadAction<string | undefined>) {
 			const item = state.tabs.find((x) => x.href === action?.payload);

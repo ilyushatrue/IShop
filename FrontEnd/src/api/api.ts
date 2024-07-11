@@ -3,7 +3,7 @@ import { StatusCodes } from "./enums/status-codes.enum";
 
 type ApiRequest = {
 	url: string;
-	anonymous?: boolean;
+	authenticate?: boolean;
 	body?: any;
 	props?: (requestInit: RequestInit) => RequestInit;
 };
@@ -37,7 +37,7 @@ const fetchPipe = async (
 		if (response.status === 401 && attempt === 1) {
 			const jwtResponse = await post({
 				url: "/auth/refresh-jwt",
-				anonymous: true,
+				authenticate: false,
 			});
 			if (jwtResponse?.ok) continue;
 			else break;
@@ -104,9 +104,9 @@ const httpGet = async <TOut>(
 	request: ApiRequest,
 	onResponse?: (response: Response) => Promise<TOut>
 ): Promise<ApiResponse<TOut>> => {
-	const response = request.anonymous
-		? await get(request)
-		: await fetchPipe(() => get(request));
+	const response = request.authenticate
+		? await fetchPipe(() => get(request))
+		: await get(request);
 	return handleResponse(response, onResponse);
 };
 
@@ -114,9 +114,9 @@ const httpPost = async <TOut = undefined>(
 	request: ApiRequest,
 	onResponse?: (response: Response) => Promise<TOut>
 ): Promise<ApiResponse<TOut>> => {
-	const response = request.anonymous
-		? await post(request)
-		: await fetchPipe(() => post(request));
+	const response = request.authenticate
+		? await fetchPipe(() => post(request))
+		: await post(request);
 	return handleResponse(response, onResponse);
 };
 
@@ -124,9 +124,9 @@ const httpDelete = async <TOut = undefined>(
 	request: ApiRequest,
 	onResponse?: (response: Response) => Promise<TOut>
 ): Promise<ApiResponse<TOut>> => {
-	const response = request.anonymous
-		? await remove(request)
-		: await fetchPipe(() => remove(request));
+	const response = request.authenticate
+		? await fetchPipe(() => remove(request))
+		: await remove(request);
 	return handleResponse(response, onResponse);
 };
 
@@ -134,9 +134,9 @@ const httpPut = async <TOut = undefined>(
 	request: ApiRequest,
 	onResponse?: (response: Response) => Promise<TOut>
 ): Promise<ApiResponse<TOut>> => {
-	const response = request.anonymous
-		? await put(request)
-		: await fetchPipe(() => put(request));
+	const response = request.authenticate
+		? await fetchPipe(() => put(request))
+		: await put(request);
 	return handleResponse(response, onResponse);
 };
 

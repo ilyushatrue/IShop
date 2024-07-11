@@ -1,17 +1,21 @@
 import React from "react";
 import { LockOutlined } from "@mui/icons-material";
-import { Box, Link, Typography } from "@mui/material";
+import {
+	Box,
+	Link,
+	ToggleButton,
+	ToggleButtonGroup,
+	Typography,
+} from "@mui/material";
 import { useState } from "react";
 import Template from "../base/template";
 import LoginByEmailForm from "./login-by-email-form";
 import LoginByPhoneForm from "./login-by-phone-form";
 import { ILoginByEmailRequest } from "../../../api/contracts/authentication/login-by-email-request.interface";
 import { ILoginByPhoneRequest } from "../../../api/contracts/authentication/login-by-phone-request.interface";
-import { useAppDispatch } from "../../../app/hooks/redux/use-app-dispatch";
 import { redirect } from "../../../app/helpers/redirect";
 import useApi from "../../../api/hooks/use-api.hook";
 import apiAuth from "../../../api/auth.api";
-import { setIsPageLoading } from "../../../store/page.slice";
 import ResetPasswordDialog from "./reset-password-dialog";
 import EmailConfirmAlreadySentDialog from "./email-confirm-already-sent-dialog";
 
@@ -36,8 +40,7 @@ export default function Login({ sm = false, onToRegisterClick }: IProps) {
 		is: boolean;
 		email?: string;
 	}>({ is: false });
-	const { fetchAsync, isFetching } = useApi();
-	const dispatch = useAppDispatch();
+	const { fetchAsync, isFetching } = useApi({ triggerPage: true });
 
 	const handleAuthTypeChange = (
 		event: React.MouseEvent<HTMLElement>,
@@ -47,17 +50,14 @@ export default function Login({ sm = false, onToRegisterClick }: IProps) {
 	};
 
 	async function handleLoginByPhoneAsync(request: ILoginByPhoneRequest) {
-		dispatch(setIsPageLoading(true));
 		await fetchAsync({
 			request: async () => await apiAuth.loginByPhoneAsync(request),
 			onSuccess: (handler) => handler.do(() => redirect("/account")),
 			onError: (handler) => handler.log().popup(),
 		});
-		dispatch(setIsPageLoading(false));
 	}
 
 	async function handleLoginByEmailAsync(request: ILoginByEmailRequest) {
-		dispatch(setIsPageLoading(true));
 		await fetchAsync({
 			request: async () => await apiAuth.loginByEmailAsync(request),
 			onSuccess: (handler) => handler.do(() => redirect("/account")),
@@ -75,11 +75,9 @@ export default function Login({ sm = false, onToRegisterClick }: IProps) {
 						}
 					}),
 		});
-		dispatch(setIsPageLoading(false));
 	}
 
 	async function handleResetPasswordAsync(email: string) {
-		dispatch(setIsPageLoading(true));
 		setIsResetPasswordDialogOn(false);
 		await fetchAsync({
 			request: async () =>
@@ -90,11 +88,9 @@ export default function Login({ sm = false, onToRegisterClick }: IProps) {
 				),
 			onError: (handler) => handler.log().popup(),
 		});
-		dispatch(setIsPageLoading(false));
 	}
 
 	async function handleResendEmailAsync(email: string) {
-		dispatch(setIsPageLoading(true));
 		setIsEmailAlreadyConfirmedDialogOn((prev) => ({ ...prev, is: false }));
 		await fetchAsync({
 			request: async () =>
@@ -105,11 +101,45 @@ export default function Login({ sm = false, onToRegisterClick }: IProps) {
 				),
 			onError: (handler) => handler.log().popup(),
 		});
-		dispatch(setIsPageLoading(false));
 	}
 	return (
 		<>
 			<Template sm={sm} avatar={<LockOutlined />} title={"Войти"}>
+				<ToggleButtonGroup
+					fullWidth
+					color="primary"
+					value={authType}
+					exclusive
+					sx={{ marginY: 1 }}
+					onChange={handleAuthTypeChange}
+				>
+					<ToggleButton
+						value="email"
+						sx={{
+							fontSize: 12,
+							fontWeight: 600,
+							borderRadius: 3,
+							"&.Mui-selected": {
+								typography: { fontWeight: 800 },
+							},
+						}}
+					>
+						Почта
+					</ToggleButton>
+					<ToggleButton
+						value="phone"
+						sx={{
+							fontSize: 12,
+							fontWeight: 600,
+							borderRadius: 3,
+							"&.Mui-selected": {
+								typography: { fontWeight: 800 },
+							},
+						}}
+					>
+						Номер телефона
+					</ToggleButton>
+				</ToggleButtonGroup>
 				<Box sx={{ display: authType === "email" ? "block" : "none" }}>
 					<MemoizedLoginByEmailForm
 						loading={isFetching}

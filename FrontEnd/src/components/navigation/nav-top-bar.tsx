@@ -18,9 +18,6 @@ export default function NavTopBar({ menuItems, avatar, value }: IProps) {
 	const navbarHeight = useAppSelector((state) => state.page.navbar);
 	const displayWidth = useAppSelector((state) => state.page.displayWidth);
 	const navigate = useNavigate();
-	const isAuthenticated = useAppSelector(
-		(state) => state.user.isAuthenticated
-	);
 
 	return (
 		<Box

@@ -58,7 +58,7 @@ export function InputPhone<T extends FieldValues>({
 	variant = "filled",
 	margin = "dense",
 	required = false,
-	enabled = true,
+	disabled,
 	readonly,
 }: { control: Control<T> } & IFormField<T>) {
 	return (
@@ -82,7 +82,7 @@ export function InputPhone<T extends FieldValues>({
 					value={phoneNumberPipe(field.value)}
 					error={!!error}
 					helperText={error && error.message}
-					disabled={!enabled}
+					disabled={disabled}
 					autoComplete="tel"
 					InputProps={{ readOnly: readonly }}
 				/>

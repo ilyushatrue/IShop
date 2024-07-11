@@ -25,12 +25,12 @@ public class UsersController(
         return Ok(result);
     }
 
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetUserByIdAsync(Guid id, CancellationToken cancellationToken)
-    {
-        var result = await getUserByIdQueryHandler.Handle(id, cancellationToken);
-        return Ok(result);
-    }
+    //[HttpGet("{id}")]
+    //public async Task<IActionResult> GetUserByIdAsync(Guid id, CancellationToken cancellationToken)
+    //{
+    //    var result = await getUserByIdQueryHandler.Handle(id, cancellationToken);
+    //    return Ok(result);
+    //}
 
     [AllowAnonymous]
     [HttpGet("current")]

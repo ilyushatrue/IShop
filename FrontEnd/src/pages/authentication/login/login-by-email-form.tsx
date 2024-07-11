@@ -18,14 +18,10 @@ export default function LoginByEmailForm({ onSubmitAsync, loading }: IProps) {
 				{ ...submit, position: "center", label: "Войти" },
 			]}
 			fields={(builder) =>
-				builder
-					.email({ name: "email", required: true, enabled: !loading })
-					.password({
-						name: "password",
-						enabled: !loading,
-						validationRequired: false,
-						required: true,
-					})
+				builder.email({ name: "email", required: true }).password({
+					name: "password",
+					validationRequired: false,
+				})
 			}
 		/>
 	);

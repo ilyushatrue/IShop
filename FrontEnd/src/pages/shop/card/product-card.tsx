@@ -22,7 +22,6 @@ export default function ProductCard({
 }) {
 	const imagesPath = getConstant("API_URL");
 
-console.log(id)
 	return (
 		<Card
 			src={imagesPath + "/media/image/" + imageId}

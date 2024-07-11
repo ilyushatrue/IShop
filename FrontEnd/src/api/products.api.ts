@@ -15,19 +15,19 @@ const productsApi = {
 	getAllCategories: async () => await httpGet<IProductCategory[]>({ url: `${baseUrl}/categories` }, response => response.json()),
 
 	createAsync: async (product: ICreateProductCommand) =>
-		await httpPost({ url: baseUrl, body: product }),
+		await httpPost({ url: baseUrl, body: product, authenticate: true, }),
 
 	createCategoryAsync: async (category: ICreateProductCategoryCommand) =>
-		await httpPost({ url: `${baseUrl}/categories`, body: category }),
+		await httpPost({ url: `${baseUrl}/categories`, body: category, authenticate: true, }),
 
 	syncCategoriesAsync: async (categories: IProductCategory[]) =>
-		await httpPut({ url: `${baseUrl}/categories`, body: categories }),
+		await httpPut({ url: `${baseUrl}/categories`, body: categories, authenticate: true, }),
 
 	deleteByIdAsync: async (id: string) =>
-		await httpDelete({ url: `${baseUrl}/${id}` }),
+		await httpDelete({ url: `${baseUrl}/${id}`, authenticate: true, }),
 
 	updateAsync: async (product: IProduct) =>
-		await httpPut({ url: baseUrl, body: product }),
+		await httpPut({ url: baseUrl, body: product, authenticate: true, }),
 };
 
 export default productsApi;

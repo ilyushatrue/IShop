@@ -8,6 +8,7 @@ using Flags.Application.Authentication.Commands.ResetPassword;
 using Flags.Application.Authentication.Commands.VerifyEmail;
 using Flags.Application.Authentication.Queries.Login;
 using Flags.Domain.Common.Exceptions;
+using Flags.Infrastructure.Authentication;
 using Flags.Infrastructure.Services.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,7 +18,6 @@ using System.Text;
 namespace Flags.Api.Controllers;
 
 [Route("auth")]
-[AllowAnonymous]
 public class AuthenticationController(
     IRegisterCommandHandler registerCommandHandler,
     IRefreshJwtCommandHandler refreshJwtCommandHandler,
@@ -35,6 +35,7 @@ public class AuthenticationController(
 {
     private readonly ClientSettings _clientSettings = clientSettings.Value;
 
+    [AllowAnonymous]
     [HttpPost("register")]
     public async Task<IActionResult> Register(RegisterCommand command, CancellationToken cancellationToken)
     {
@@ -42,6 +43,7 @@ public class AuthenticationController(
         return Ok();
     }
 
+    [AllowAnonymous]
     [HttpPost("refresh-jwt")]
     public async Task<IActionResult> RefreshJwt(CancellationToken cancellationToken)
     {
@@ -56,11 +58,21 @@ public class AuthenticationController(
         return Ok();
     }
 
-
+    [AllowAnonymous]
     [HttpPost("login-by-email")]
     public async Task<IActionResult> LoginByEmail(LoginByEmailQuery query, CancellationToken cancellationToken)
     {
         var authResult = await loginByEmailQueryHandler.Handle(query, cancellationToken);
+        cookieManager.SetUserCookies(authResult.User);
+        cookieManager.SetJwtAccessTokenCookie(authResult.JwtAccessToken);
+        return Ok();
+    }
+
+    [AllowAnonymous]
+    [HttpPost("login-by-phone")]
+    public async Task<IActionResult> LoginByPhone(LoginByPhoneQuery query, CancellationToken cancellationToken)
+    {
+        var authResult = await loginByPhoneQueryHandler.Handle(query.Phone, query.Password, cancellationToken);
         cookieManager.SetUserCookies(authResult.User);
         cookieManager.SetJwtAccessTokenCookie(authResult.JwtAccessToken);
         return Ok();
@@ -79,15 +91,7 @@ public class AuthenticationController(
         return Ok();
     }
 
-    [HttpPost("login-by-phone")]
-    public async Task<IActionResult> LoginByPhone(LoginByPhoneQuery query, CancellationToken cancellationToken)
-    {
-        var authResult = await loginByPhoneQueryHandler.Handle(query.Phone, query.Password, cancellationToken);
-        cookieManager.SetUserCookies(authResult.User);
-        cookieManager.SetJwtAccessTokenCookie(authResult.JwtAccessToken);
-        return Ok();
-    }
-
+    [AllowAnonymous]
     [HttpPost("send-reset-password-email")]
     public async Task<IActionResult> SendResetPasswordEmail([FromBody] string email)
     {
@@ -95,6 +99,7 @@ public class AuthenticationController(
         return Ok();
     }
 
+    [AllowAnonymous]
     [HttpGet("send-reset-password-form")]
     public async Task<IActionResult> SendResetPasswordForm([FromQuery] string token)
     {
@@ -102,6 +107,7 @@ public class AuthenticationController(
         return Content(formHtml, "text/html", Encoding.UTF8);
     }
 
+    [AllowAnonymous]
     [HttpGet("send-email-confirm-email")]
     public async Task<IActionResult> SendEmailConfirmEmail([FromQuery] string email)
     {
@@ -109,6 +115,7 @@ public class AuthenticationController(
         return Ok();
     }
 
+    [AllowAnonymous]
     [HttpPost("reset-password")]
     public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordCommand command)
     {
@@ -116,7 +123,7 @@ public class AuthenticationController(
         return Content(responseHtml, "text/html", Encoding.UTF8);
     }
 
-
+    [AllowAnonymous]
     [HttpGet("verify-email/{emailConfirationToken}")]
     public async Task<IActionResult> VerifyEmail(Guid emailConfirationToken)
     {

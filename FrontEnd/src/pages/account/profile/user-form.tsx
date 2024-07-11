@@ -39,10 +39,13 @@ export default function UserForm({
 						name: "lastName",
 						label: "Фамилия",
 					})
+					.phone({
+						name: "phone",
+					})
 					.email({
 						name: "email",
 						required: true,
-						enabled: false,
+						disabled: true,
 					})
 			}
 		/>

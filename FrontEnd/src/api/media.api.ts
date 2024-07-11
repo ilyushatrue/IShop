@@ -6,7 +6,7 @@ export const mediaApi = {
 		httpPost(
 			{
 				url: `${baseUrl}/image/`,
-
+				authenticate: true,
 				props: (def) => ({
 					...def,
 					body: file,

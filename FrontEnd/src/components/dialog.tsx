@@ -22,6 +22,7 @@ function Dialog({
 }) {
 	const handleEnterKeyPress = useCallback(
 		(event: KeyboardEvent) => {
+			event.preventDefault();
 			if (event.key === "Enter") {
 				onOk?.();
 			}

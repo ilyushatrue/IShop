@@ -15,7 +15,7 @@ export default function InputNumber<T extends FieldValues>({
 	variant = "filled",
 	margin = "dense",
 	required = false,
-	enabled = true,
+	disabled,
 	readonly,
 	min = -DECIMAL_MAX_VALUE,
 	max = DECIMAL_MAX_VALUE,
@@ -40,7 +40,7 @@ export default function InputNumber<T extends FieldValues>({
 					type="number"
 					size={size}
 					variant={variant}
-					disabled={!enabled}
+					disabled={disabled}
 					InputProps={{ readOnly: readonly }}
 					fullWidth
 					onChange={field.onChange}

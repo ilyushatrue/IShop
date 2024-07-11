@@ -39,8 +39,9 @@ public class UserRepository(FlagDbContext dbContext) : IUserRepository
     {
         return await dbContext.Users
             .AsNoTracking()
-            .Include(u => u.Role)
             .Include(u => u.RefreshJwt)
+            .Include(u => u.Role)
+            .Include(u => u.EmailConfirmation)
             .Where(u => u.Phone != null)
             .SingleOrDefaultAsync(u => u.Phone!.Value == phone);
     }

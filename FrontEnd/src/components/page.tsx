@@ -1,24 +1,16 @@
-import { LinearProgress, SxProps } from "@mui/material";
-import { Box } from "@mui/system";
-import { ReactNode, useEffect } from "react";
+import { Box, BoxProps, LinearProgress } from "@mui/material";
 
 import { useAppDispatch } from "../app/hooks/redux/use-app-dispatch";
 import { setActiveTab } from "../store/page.slice";
 import { useLocation } from "react-router-dom";
 import { useAppSelector } from "../app/hooks/redux/use-app-selector";
+import { useEffect } from "react";
 
-export interface IPage {
-	isLoading?: boolean;
-	children?: ReactNode;
-	sx?: SxProps;
-	tabName?: string;
-}
-
-export default function Page({ children, sx }: IPage) {
+export default function Page({ children, ...props }: BoxProps) {
 	const dispatch = useAppDispatch();
-	const isLoading = useAppSelector((state) => state.page.isLoading);
-	const navbarHeight = useAppSelector((state) => state.page.navbar.height);
-	const displayWidth = useAppSelector((state) => state.page.displayWidth);
+	const { displayWidth, loading, navbar } = useAppSelector(
+		(state) => state.page
+	);
 	const { pathname } = useLocation();
 
 	useEffect(() => {
@@ -30,14 +22,18 @@ export default function Page({ children, sx }: IPage) {
 			display={"flex"}
 			flexDirection={"column"}
 			alignItems={"center"}
-			style={{ marginTop: navbarHeight }}
+			style={{ marginTop: navbar.height }}
 		>
-			{isLoading && (
-				<Box width={"100%"}>
-					<LinearProgress />
-				</Box>
+			{loading && (
+				<LinearProgress
+					sx={{
+						position: "fixed",
+						top: navbar.height,
+						width: "100%",
+					}}
+				/>
 			)}
-			<Box maxWidth={displayWidth} width={"100%"} sx={sx}>
+			<Box {...props} maxWidth={displayWidth} width={"100%"}>
 				{children}
 			</Box>
 		</Box>

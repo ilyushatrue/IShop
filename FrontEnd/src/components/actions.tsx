@@ -37,7 +37,7 @@ export default function Actions({
 						key={index}
 						disabled={action.disabled}
 						type={action.type}
-						sx={action.sx}
+						sx={{ flex: 1, ...action.sx }}
 						onClick={action.onClick}
 					>
 						{action.label}
@@ -56,7 +56,7 @@ export default function Actions({
 						key={index}
 						disabled={action.disabled}
 						type={action.type}
-						sx={action.sx}
+						sx={{ flex: 1, ...action.sx }}
 						onClick={action.onClick}
 					>
 						{action.label}
@@ -69,7 +69,7 @@ export default function Actions({
 						key={index}
 						disabled={action.disabled}
 						type={action.type}
-						sx={action.sx}
+						sx={{ flex: 1, ...action.sx }}
 						onClick={action.onClick}
 					>
 						{action.label}

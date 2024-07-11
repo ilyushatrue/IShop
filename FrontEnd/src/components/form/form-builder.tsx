@@ -101,6 +101,7 @@ function FormBuilder<T extends FieldValues>(
 				return inputBuilder;
 			},
 			email: (props) => {
+				console.log(props);
 				addInput(
 					props.name,
 					<InputEmail {...props} control={control} />
@@ -171,7 +172,7 @@ function FormBuilder<T extends FieldValues>(
 			{inputs.map((input) =>
 				cloneElement(input, {
 					key: input.props.name,
-					enabled: !loading,
+					disabled: input.props.disabled || loading,
 				})
 			)}
 			{children}

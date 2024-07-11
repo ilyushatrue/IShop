@@ -10,12 +10,14 @@ export default function LoginByPhoneForm({ onSubmitAsync, loading }: IProps) {
 		<Form
 			defaultValues={{
 				password: "",
-				phone: "",
+				phone: "7",
 			}}
 			onSubmit={onSubmitAsync}
 			minHeight={210}
 			loading={loading}
-			actions={([submit, reset]) => [submit, reset]}
+			actions={([submit]) => [
+				{ ...submit, position: "center", label: "Войти" },
+			]}
 			fields={(builder) =>
 				builder
 					.phone({
@@ -23,6 +25,7 @@ export default function LoginByPhoneForm({ onSubmitAsync, loading }: IProps) {
 					})
 					.password({
 						name: "password",
+						validationRequired: false,
 					})
 			}
 		/>

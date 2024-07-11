@@ -30,13 +30,13 @@ export default function InputImage<T extends FieldValues>({
 	variant = "filled",
 	margin = "dense",
 	required = false,
-	enabled = true,
+	disabled,
 	readonly,
 	containerSized,
 	shape = "rounded",
 	tip,
 }: { control: Control<T> } & IFormImageField<T>) {
-	const { fetchAsync } = useApi();
+	const { fetchAsync } = useApi({});
 	const { popupError } = usePopup();
 	const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -138,7 +138,7 @@ export default function InputImage<T extends FieldValues>({
 								transition: "opacity 0.3s",
 							}}
 						/>
-						{field.value && enabled ? (
+						{field.value && !disabled ? (
 							<IconButton
 								buttonSx={{
 									width: "100%",

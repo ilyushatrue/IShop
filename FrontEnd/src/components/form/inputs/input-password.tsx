@@ -46,7 +46,7 @@ export default function InputPassword<T extends FieldValues>({
 	variant = "filled",
 	margin = "dense",
 	required = true,
-	enabled = true,
+	disabled,
 	readonly,
 	validationRequired = true,
 }: { control: Control<T> } & IFormPasswordField<T>) {
@@ -79,7 +79,7 @@ export default function InputPassword<T extends FieldValues>({
 					value={field.value}
 					error={!!error}
 					helperText={error && error.message}
-					disabled={!enabled}
+					disabled={disabled}
 					InputProps={{
 						readOnly: readonly,
 						endAdornment: (
