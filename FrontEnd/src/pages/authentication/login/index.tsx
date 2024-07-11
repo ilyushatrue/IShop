@@ -15,7 +15,7 @@ import { ILoginByEmailRequest } from "../../../api/contracts/authentication/logi
 import { ILoginByPhoneRequest } from "../../../api/contracts/authentication/login-by-phone-request.interface";
 import { redirect } from "../../../app/helpers/redirect";
 import useApi from "../../../api/hooks/use-api.hook";
-import apiAuth from "../../../api/auth.api";
+import apiAuth from "../../../api/endpoints/auth.api";
 import ResetPasswordDialog from "./reset-password-dialog";
 import EmailConfirmAlreadySentDialog from "./email-confirm-already-sent-dialog";
 

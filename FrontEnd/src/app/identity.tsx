@@ -2,13 +2,13 @@ import { ReactElement, useEffect, useState } from "react";
 import { useAppDispatch } from "./hooks/redux/use-app-dispatch";
 import { CircularProgress } from "@mui/material";
 import getConstant from "./infrastructure/constant-provider";
-import usersApi from "../api/users.api";
+import usersApi from "../api/endpoints/users.api";
 import {
 	resetCurrentUserState,
 	updateCurrentUserState,
 } from "../store/user.slice";
 import { setInitialAppState } from "../store/global.slice";
-import { initApi } from "../api/init.api";
+import { initApi } from "../api/endpoints/init.api";
 
 export default function Identity({
 	children,

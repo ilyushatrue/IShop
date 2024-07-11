@@ -1,4 +1,4 @@
-import { IGlobalState } from "../store/types";
+import { IGlobalState } from "../../store/types";
 import { httpGet } from "./api";
 
 export const initApi = {

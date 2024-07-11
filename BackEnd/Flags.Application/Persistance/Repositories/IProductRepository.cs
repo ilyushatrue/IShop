@@ -7,6 +7,6 @@ public interface IProductRepository
     void Create(Product product);
     void Update(Product product);
     Task DeleteByIdAsync(Guid id);
-    Task<List<Product>> GetAllAsync();
-    Task<List<Product>> GetAllByCategoryAsync(int categoryId);
+    Task<List<Product>> GetAllAsync(int currentPage, int pageSize);
+    Task<List<Product>> GetListByCategoryAsync(int categoryId, int currentPage, int pageSize);
 }

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Box } from "@mui/material";
 import useApi from "../../../api/hooks/use-api.hook";
-import { mediaApi } from "../../../api/media.api";
+import { mediaApi } from "../../../api/endpoints/media.api";
 import IconButton from "../../../components/icon-button";
 import { usePopup } from "../../../app/hooks/use-popup.hook";
 import Avatar from "../../../components/avatar";

@@ -1,11 +1,11 @@
 import { Grid, SxProps } from "@mui/material";
 import Button from "./button";
-import { useMemo } from "react";
+import { MouseEvent, useMemo } from "react";
 export interface IAction {
 	disabled?: boolean;
 	label: string;
 	type?: "reset" | "submit" | "button";
-	onClick?: () => void;
+	onClick?: (e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) => void;
 	position: "center" | "left" | "right";
 	sx?: SxProps;
 }

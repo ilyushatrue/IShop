@@ -1,2 +1,4 @@
 ﻿namespace Flags.Application.Products.Queries;
-public record GetAllProductsQuery(int? CategoryId = null);
+public record GetAllProductsQuery(
+    int CurrentPage,
+    int PageSize);

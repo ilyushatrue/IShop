@@ -6,7 +6,7 @@ import RegisterForm from "./register-form";
 import { useAppDispatch } from "../../../app/hooks/redux/use-app-dispatch";
 import useApi from "../../../api/hooks/use-api.hook";
 import { setIsPageLoading } from "../../../store/page.slice";
-import apiAuth from "../../../api/auth.api";
+import apiAuth from "../../../api/endpoints/auth.api";
 import { useState } from "react";
 import Dialog from "../../../components/dialog";
 import { useNavigate } from "react-router-dom";
@@ -20,7 +20,7 @@ export default function Register({ sm = false, onToLoginClick }: IProps) {
 	const navigate = useNavigate();
 	const [isEmailConfirmationDialogOn, setIsEmailConfirmationDialogOn] =
 		useState(false);
-		const { fetchAsync, isFetching } = useApi({ triggerPage: true });
+	const { fetchAsync, isFetching } = useApi({ triggerPage: true });
 
 	async function handleRegisterAsync(request: IRegisterRequest) {
 		dispatch(setIsPageLoading(true));
@@ -46,6 +46,10 @@ export default function Register({ sm = false, onToLoginClick }: IProps) {
 				</Link>
 			</Typography>
 			<Dialog
+				onEnterKeyPress={() => {
+					setIsEmailConfirmationDialogOn(false);
+					navigate("/");
+				}}
 				open={isEmailConfirmationDialogOn}
 				title="Подтверждение email"
 				content="На указанную электронную почту была отправлена ссылка для подтверждения учетной записи. Перейдите по ней для получения доступа к личному кабинету."

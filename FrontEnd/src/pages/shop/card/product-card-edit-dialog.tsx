@@ -1,13 +1,19 @@
-import Dialog from "../../../components/dialog";
 import Form from "../../../components/form/form";
 import { IProduct } from "../../../api/interfaces/product/product.interface";
-import { Box } from "@mui/material";
+import { Box, Dialog } from "@mui/material";
 import { IProductCategory } from "../../../api/interfaces/product-categories/queries/product-category.interface";
 
 export default function ProductCardEditDialog({
 	open,
 	loading,
-	defaultValues,
+	defaultValues = {
+		categoryId: 0,
+		description: "",
+		id: "",
+		imageId: "",
+		name: "",
+		price: 0,
+	},
 	categories,
 	onSubmit,
 	onCancel,
@@ -20,8 +26,8 @@ export default function ProductCardEditDialog({
 	onCancel: () => void;
 }) {
 	return (
-		<Dialog open={open} actions={() => []} >
-			<Box width={500}>
+		<Dialog open={open} onClose={onCancel}>
+			<Box width={"100%"} minWidth={400} maxWidth={500} paddingX={2}>
 				<Form<IProduct>
 					loading={loading}
 					defaultValues={defaultValues}
@@ -61,7 +67,10 @@ export default function ProductCardEditDialog({
 					}
 					actions={([submit, reset]) => [
 						{
-							onClick: onCancel,
+							onClick: () => {
+								console.log(23);
+								onCancel();
+							},
 							position: "left",
 							label: "Отменить",
 						},

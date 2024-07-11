@@ -1,7 +1,8 @@
-﻿using Flags.Domain.ProductRoot;
+﻿using Flags.Application.Common;
+using Flags.Domain.ProductRoot;
 
 namespace Flags.Application.Products.Queries;
 public interface IGetAllProductsQueryHandler
 {
-    Task<IEnumerable<Product>> Handle(GetAllProductsQuery query);
+    Task<Pager<Product>> Handle(GetAllProductsQuery query);
 }

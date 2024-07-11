@@ -5,13 +5,16 @@ using Flags.Application.Products.Queries;
 using Flags.Domain.ProductRoot;
 
 namespace Flags.Infrastructure.Services.Products;
-public class GetAllProductsQueryHandler(
+public class GetProductsByCategoryQueryHandler(
     IDbManager dbManager,
-    IProductRepository productRepository) : IGetAllProductsQueryHandler
+    IProductRepository productRepository) : IGetProductsByCategoryQueryHandler
 {
-    public async Task<Pager<Product>> Handle(GetAllProductsQuery query)
+    public async Task<Pager<Product>> Handle(GetProductsByCategoryQuery query)
     {
-        var recordsCount = await dbManager.CountRecordsAsync<Product>();
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(query.CategoryId);
+
+        var recordsCount = await dbManager.CountRecordsAsync<Product>(
+            predicate: p => p.CategoryId == query.CategoryId);
 
         var pager = new Pager<Product>(
             [],
@@ -22,7 +25,8 @@ public class GetAllProductsQueryHandler(
         if (recordsCount == 0)
             return pager;
 
-        pager.PageItems = await productRepository.GetAllAsync(
+        pager.PageItems = await productRepository.GetListByCategoryAsync(
+            query.CategoryId,
             pager.CurrentPage,
             pager.PageSize);
 

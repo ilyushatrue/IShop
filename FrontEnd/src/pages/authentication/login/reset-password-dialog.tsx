@@ -1,4 +1,4 @@
-import Dialog from "../../../components/dialog";
+import { Dialog } from "@mui/material";
 import Form from "../../../components/form/form";
 
 export default function ResetPasswordDialog({

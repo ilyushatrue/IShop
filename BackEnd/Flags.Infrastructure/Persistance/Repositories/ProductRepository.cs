@@ -19,17 +19,25 @@ public class ProductRepository(FlagDbContext dbContext) : IProductRepository
         dbContext.Products.Remove(entity);
     }
 
-    public async Task<List<Product>> GetAllByCategoryAsync(int categoryId)
+    public async Task<List<Product>> GetListByCategoryAsync(int categoryId, int currentPage, int pageSize)
     {
+        var offset = (currentPage - 1) * pageSize;
+
         return await dbContext.Products
             .Where(p => p.CategoryId == categoryId)
+            .Skip(offset)
+            .Take(pageSize)
             .Include(p => p.Category)
             .ToListAsync();
     }
 
-    public async Task<List<Product>> GetAllAsync()
+    public async Task<List<Product>> GetAllAsync(int currentPage, int pageSize)
     {
+        var offset = (currentPage - 1) * pageSize;
+
         return await dbContext.Products
+            .Skip(offset)
+            .Take(pageSize)
             .Include(p => p.Category)
             .ToListAsync();
     }

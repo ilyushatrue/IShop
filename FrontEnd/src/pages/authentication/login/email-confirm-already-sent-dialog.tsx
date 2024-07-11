@@ -15,6 +15,7 @@ export default function EmailConfirmAlreadySentDialog({
 	return (
 		<Dialog
 			open={open}
+			onEnterKeyPress={onClose}
 			title={"Ожидание подтверждения эл. почты"}
 			content={`На почту ${email} была отправлена ссылка на подтверждение учетной записи. Перейдите по ней.`}
 			onClose={onClose}

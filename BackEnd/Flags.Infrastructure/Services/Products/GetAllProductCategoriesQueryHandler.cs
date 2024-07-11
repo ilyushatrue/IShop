@@ -3,7 +3,8 @@ using Flags.Application.Products.Queries;
 using Flags.Domain.ProductRoot.Entities;
 
 namespace Flags.Infrastructure.Services.Products;
-public class GetAllProductCategoriesQueryHandler(IProductCategoryRepository productCategoryRepository) : IGetAllProductCategoriesQueryHandler
+public class GetAllProductCategoriesQueryHandler(
+    IProductCategoryRepository productCategoryRepository) : IGetAllProductCategoriesQueryHandler
 {
     public async Task<IEnumerable<ProductCategory>> Handle()
     {

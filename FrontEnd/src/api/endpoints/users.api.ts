@@ -1,5 +1,5 @@
 import { httpGet, httpPut } from "./api";
-import { IUser } from "./interfaces/user/user.interface";
+import { IUser } from "../interfaces/user/user.interface";
 
 const usersApi = {
 	getCurrentAsync: async () =>

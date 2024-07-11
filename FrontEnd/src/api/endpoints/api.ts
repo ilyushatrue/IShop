@@ -1,5 +1,5 @@
-import getConstant from "../app/infrastructure/constant-provider";
-import { StatusCodes } from "./enums/status-codes.enum";
+import getConstant from "../../app/infrastructure/constant-provider";
+import { StatusCodes } from "../enums/status-codes.enum";
 
 type ApiRequest = {
 	url: string;

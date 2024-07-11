@@ -5,8 +5,14 @@ import {
 	DialogContentText,
 	DialogTitle,
 } from "@mui/material";
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, KeyboardEvent } from "react";
 import Actions, { IAction } from "./actions";
+
+type DialogPropsEx = DialogProps & {
+	actions?: (defaultActions: IAction[]) => IAction[];
+	onOk: () => void;
+	onEnterKeyPress: (event: React.KeyboardEvent<HTMLButtonElement>) => void;
+};
 
 function Dialog({
 	actions,
@@ -15,27 +21,28 @@ function Dialog({
 	open,
 	content,
 	onOk,
+	onEnterKeyPress,
 	...props
-}: DialogProps & {
-	actions?: (defaultActions: IAction[]) => IAction[];
-	onOk?: () => void;
-}) {
+}: DialogPropsEx) {
 	const handleEnterKeyPress = useCallback(
-		(event: KeyboardEvent) => {
-			event.preventDefault();
+		(event: globalThis.KeyboardEvent) => {
 			if (event.key === "Enter") {
-				onOk?.();
+				onEnterKeyPress(
+					event as unknown as KeyboardEvent<HTMLButtonElement>
+				);
 			}
 		},
-		[onOk]
+		[onEnterKeyPress]
 	);
 
 	useEffect(() => {
-		window.addEventListener("keydown", handleEnterKeyPress);
+		if (open) {
+			window.addEventListener("keydown", handleEnterKeyPress);
+		}
 		return () => {
 			window.removeEventListener("keydown", handleEnterKeyPress);
 		};
-	}, [handleEnterKeyPress]);
+	}, [handleEnterKeyPress, open]);
 
 	return (
 		<MuiDialog {...props} open={open}>

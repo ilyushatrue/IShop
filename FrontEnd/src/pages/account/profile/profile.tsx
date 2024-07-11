@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
 import UserForm from "./user-form";
 import useApi from "../../../api/hooks/use-api.hook";
-import usersApi from "../../../api/users.api";
+import usersApi from "../../../api/endpoints/users.api";
 import { useState } from "react";
 import ProfilePage from "../profile-page";
 import { updateCurrentUserState } from "../../../store/user.slice";

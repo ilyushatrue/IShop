@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import useApi from "../../../api/hooks/use-api.hook";
 import ProfilePage from "../profile-page";
 import { Box } from "@mui/material";
-import productsApi from "../../../api/products.api";
+import productsApi from "../../../api/endpoints/products.api";
 import { IProduct } from "../../../api/interfaces/product/product.interface";
 import IconButton from "../../../components/icon-button";
 import { useNavigate } from "react-router-dom";
@@ -14,8 +14,8 @@ export default function ProductMenu() {
 
 	useEffect(() => {
 		fetchAsync({
-			request: () => productsApi.getAllAsync(),
-			onSuccess: (handler) => handler.do((res) => setProducts(res.body!)),
+			request: () => productsApi.getAllAsync(1, 10),
+			onSuccess: (handler) => handler.do((res) =>setProducts(res.body!.pageItems!)),
 			onError: (handler) => handler.log().popup(),
 		});
 	}, []);

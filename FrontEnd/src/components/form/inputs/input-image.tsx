@@ -9,7 +9,7 @@ import {
 import useApi from "../../../api/hooks/use-api.hook";
 import { usePopup } from "../../../app/hooks/use-popup.hook";
 import { useRef } from "react";
-import { mediaApi } from "../../../api/media.api";
+import { mediaApi } from "../../../api/endpoints/media.api";
 import IconButton from "../../icon-button";
 import Image from "../../image";
 import { IFormField } from "./form-field.interface";

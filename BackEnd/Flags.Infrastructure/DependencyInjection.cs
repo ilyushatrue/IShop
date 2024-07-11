@@ -104,6 +104,7 @@ public static class DependencyInjection
         services.AddScoped<ICreateProductCategoryCommandHandler, CreateProductCategoryCommandHandler>();
         services.AddScoped<ISyncProductCategoriesCommandHandler, SyncProductCategoriesCommandHandler>();
         services.AddScoped<ISendEmailConfirmEmailCommandHandler, SendEmailConfirmEmailCommandHandler>();
+        services.AddScoped<IGetProductsByCategoryQueryHandler, GetProductsByCategoryQueryHandler>();
 
         return services;
     }

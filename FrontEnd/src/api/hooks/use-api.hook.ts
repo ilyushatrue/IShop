@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ApiResponse } from "../api";
+import { ApiResponse } from "../endpoints/api";
 import { usePopup } from "../../app/hooks/use-popup.hook";
 import { useAppDispatch } from "../../app/hooks/redux/use-app-dispatch";
 import { setIsPageLoading } from "../../store/page.slice";

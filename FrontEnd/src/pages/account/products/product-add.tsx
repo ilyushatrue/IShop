@@ -1,13 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import useApi from "../../../api/hooks/use-api.hook";
-import productsApi from "../../../api/products.api";
+import productsApi from "../../../api/endpoints/products.api";
 import Form from "../../../components/form/form";
 import ProfilePage from "../profile-page";
 import { Box } from "@mui/material";
 import { ICreateProductCommand } from "../../../api/interfaces/product/commands/create-product-command.interface";
-import { useMemo, useState } from "react";
-import IconButton from "../../../components/icon-button";
-import ProductCategoryEditDialog from "./product-category-edit-dialog";
+import { useMemo } from "react";
 import { useAppSelector } from "../../../app/hooks/redux/use-app-selector";
 
 export default function ProductAdd() {
@@ -15,7 +13,6 @@ export default function ProductAdd() {
 	const categories = useAppSelector(
 		(state) => state.global.productCategories
 	);
-	const [isCategoryEditOn, setIsCategoryEditOn] = useState(false);
 	const navigate = useNavigate();
 	const defaultValues = useMemo<ICreateProductCommand>(
 		() => ({
@@ -82,19 +79,6 @@ export default function ProductAdd() {
 								})),
 								name: "categoryId",
 								label: "Категория",
-								endAdornment: (
-									<IconButton
-										centered
-										iconName="add"
-										color="rgba(0,0,0,0.7)"
-										onClick={(e) => {
-											e.preventDefault();
-											setIsCategoryEditOn(true);
-										}}
-										iconSx={{ color: "gray" }}
-										buttonSx={{ mr: 2 }}
-									/>
-								),
 								required: true,
 							})
 					}
@@ -102,11 +86,6 @@ export default function ProductAdd() {
 					onSubmit={handleSubmitAsync}
 				/>
 			</Box>
-			<ProductCategoryEditDialog
-				values={categories}
-				open={isCategoryEditOn}
-				onCancel={() => setIsCategoryEditOn(false)}
-			/>
 		</ProfilePage>
 	);
 }

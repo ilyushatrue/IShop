@@ -1,5 +1,5 @@
 import useApi from "../../../api/hooks/use-api.hook";
-import productsApi from "../../../api/products.api";
+import productsApi from "../../../api/endpoints/products.api";
 import ProfilePage from "../profile-page";
 import { useMemo, useRef, useState } from "react";
 import { useAppSelector } from "../../../app/hooks/redux/use-app-selector";
@@ -10,7 +10,7 @@ import { IProductCategory } from "../../../api/interfaces/product-categories/que
 import MenuEditCell from "./menu-edit-cell";
 import Dialog from "../../../components/dialog";
 import Form from "../../../components/form/form";
-import { Box } from "@mui/material";
+import { Box, Dialog as MuiDialog } from "@mui/material";
 import Fab from "../../../components/fab";
 import IconButton from "../../../components/icon-button";
 import { reload } from "../../../app/helpers/reload";
@@ -171,6 +171,12 @@ export default function ProductCategories() {
 				<>
 					{editCategory.action === "delete" ? (
 						<Dialog
+							onEnterKeyPress={() =>
+								handleEditCategory(editCategory.category)
+							}
+							onOk={() =>
+								handleEditCategory(editCategory.category)
+							}
 							actions={([ok]) => [
 								{
 									label: "Нет",
@@ -180,11 +186,6 @@ export default function ProductCategories() {
 								{
 									...ok,
 									label: "Да",
-									onClick: () =>
-										handleEditCategory(
-											editCategory.category
-										),
-									position: "right",
 								},
 							]}
 							open
@@ -192,7 +193,7 @@ export default function ProductCategories() {
 							content="Вы действительно хотите удалить категорию?"
 						/>
 					) : (
-						<Dialog open={!!editCategory} actions={() => []}>
+						<MuiDialog open={!!editCategory}>
 							<Box width={500}>
 								<Form
 									loading={isFetching}
@@ -231,7 +232,7 @@ export default function ProductCategories() {
 									}
 								/>
 							</Box>
-						</Dialog>
+						</MuiDialog>
 					)}
 				</>
 			)}

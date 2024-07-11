@@ -1,4 +1,5 @@
-﻿using Flags.Application.Products.Commands;
+﻿using Flags.Application.Common;
+using Flags.Application.Products.Commands;
 using Flags.Application.Products.Queries;
 using Flags.Contracts.Products;
 using Flags.Domain.ProductRoot.Entities;
@@ -11,6 +12,7 @@ namespace Flags.Api.Controllers;
 [Route("products")]
 public class ProductController(
     IGetAllProductsQueryHandler getAllProductsQueryHandler,
+    IGetProductsByCategoryQueryHandler getProductsByCategoryQueryHandler,
     ICreateProductCommandHandler createProductCommandHandler,
     ICreateProductCategoryCommandHandler createProductCategoryCommandHandler,
     ISyncProductCategoriesCommandHandler updateProductCategoryCommandHandler,
@@ -21,10 +23,37 @@ public class ProductController(
 {
     [AllowAnonymous]
     [HttpGet]
-    public async Task<IActionResult> GetAllProductsAsync(int? categoryId = null)
+    public async Task<IActionResult> GetAllProductsAsync(
+        [FromQuery] int page,
+        [FromQuery] int pageSize)
     {
-        var result = await getAllProductsQueryHandler.Handle(new(categoryId));
-        return Ok(mapper.Map<IEnumerable<ProductDto>>(result));
+        var result = await getAllProductsQueryHandler.Handle(new(page, pageSize));
+        var pagedList = new Pager<ProductDto>()
+        {
+            PageItems = mapper.Map<IEnumerable<ProductDto>>(result.PageItems),
+            TotalPages = result.TotalPages,
+            CurrentPage = result.CurrentPage,
+            PageSize = result.PageSize
+        };
+        return Ok(pagedList);
+    }
+
+    [AllowAnonymous]
+    [HttpGet("by-category")]
+    public async Task<IActionResult> GetProductsByCategory(
+        [FromQuery] int categoryId,
+        [FromQuery] int page,
+        [FromQuery] int pageSize)
+    {
+        var result = await getProductsByCategoryQueryHandler.Handle(new(categoryId, page, pageSize));
+        var pagedList = new Pager<ProductDto>()
+        {
+            PageItems = mapper.Map<IEnumerable<ProductDto>>(result.PageItems),
+            TotalPages = result.TotalPages,
+            CurrentPage = result.CurrentPage,
+            PageSize = result.PageSize
+        };
+        return Ok(pagedList);
     }
 
     [HttpPost]
