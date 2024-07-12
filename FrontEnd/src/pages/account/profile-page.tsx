@@ -46,7 +46,7 @@ export default function ProfilePage({
 					>
 						{menuItems.map((item) => (
 							<IconButton
-								iconName="person"
+								iconName={item.iconName}
 								onClick={() => navigate(item.url)}
 								caption={item.title}
 								variant="squared"
@@ -54,62 +54,6 @@ export default function ProfilePage({
 								buttonSx={{ paddingX: 2 }}
 							/>
 						))}
-						{/* <IconButton
-							iconName="person"
-							onClick={() => navigate("/account")}
-							caption="Мой профиль"
-							variant="squared"
-							fullwidth
-							buttonSx={{ paddingX: 2 }}
-						/>
-						<IconButton
-							iconName="local_shipping"
-							onClick={() => navigate("/purchases")}
-							caption="Покупки"
-							variant="squared"
-							fullwidth
-							buttonSx={{ paddingX: 2 }}
-						/>
-						<IconButton
-							iconName="shopping_bag"
-							onClick={() => navigate("/cart")}
-							caption="Корзина"
-							variant="squared"
-							fullwidth
-							buttonSx={{ paddingX: 2 }}
-						/>
-						<IconButton
-							iconName="add_circle"
-							onClick={() => navigate("/products/menu")}
-							caption="Добавить товар"
-							variant="squared"
-							fullwidth
-							buttonSx={{ paddingX: 2 }}
-						/>
-						<IconButton
-							iconName="people"
-							onClick={() => navigate("/users")}
-							caption="Пользователи"
-							variant="squared"
-							fullwidth
-							buttonSx={{ paddingX: 2 }}
-						/>
-						<IconButton
-							iconName="category"
-							onClick={() => navigate("/categories")}
-							caption="Категории товаров"
-							variant="squared"
-							fullwidth
-							buttonSx={{ paddingX: 2 }}
-						/>
-						<IconButton
-							iconName="settings"
-							onClick={() => navigate("/settings")}
-							caption="Настройки меню"
-							variant="squared"
-							fullwidth
-							buttonSx={{ paddingX: 2 }}
-						/> */}
 					</Box>
 				</Box>
 				<Box

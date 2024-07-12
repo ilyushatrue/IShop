@@ -12,7 +12,7 @@ public class MenuItemConfiguration(
     {
         builder.HasData(
             menuSettings.Items
-                .Select(item => MenuItem.Create(item.Name, item.Title, item.Url, item.Order))
+                .Select(item => MenuItem.Create(item.Name, item.Title, item.Url, item.IconName, item.Order))
             );
 
         builder

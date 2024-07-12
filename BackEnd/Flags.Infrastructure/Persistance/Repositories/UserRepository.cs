@@ -65,7 +65,7 @@ public class UserRepository(FlagDbContext dbContext) : IUserRepository
 
         return roles
             .Select(u => u)
-            .SelectMany(u => u!.Permissions)
+            .SelectMany(u => u!.Permissions!)
             .Select(p => (PermissionFlag)p.Id)
             .ToHashSet();
     }
