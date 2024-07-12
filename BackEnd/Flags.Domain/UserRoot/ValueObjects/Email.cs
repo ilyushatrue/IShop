@@ -21,14 +21,23 @@ public class Email : ValueObject
     public static Email Create(string input)
     {
         if (!ValidateFilled(input))
-            throw new InvalidCredentialsException("Email не введен.");
+            throw new ValidationException(
+                "email-validation-exception",
+                "Email не введен.",
+                "Email обязателен!");
 
         var email = input.Trim();
         if (!ValidateLength(email))
-            throw new InvalidCredentialsException($"Превышено максимальное количество символов email ({EMAIL_MAX_LENGTH}).");
+            throw new ValidationException(
+                "email-validation-exception",
+                $"Превышено максимальное количество символов email ({EMAIL_MAX_LENGTH}).",
+                $"Превышено максимальное количество символов email ({EMAIL_MAX_LENGTH}).");
 
         if (!ValidateFormat(email))
-            throw new InvalidCredentialsException("Email не корректен.");
+            throw new ValidationException(
+                "email-validation-exception",
+                $"Email {input} не корректен.",
+                "Email не корректен.");
 
         return new Email(email);
     }

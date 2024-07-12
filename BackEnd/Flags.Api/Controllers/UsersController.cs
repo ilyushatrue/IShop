@@ -1,20 +1,26 @@
+using Flags.Application.Products.Queries;
+using Flags.Application;
 using Flags.Application.Users.Command;
 using Flags.Application.Users.Queries;
-using Flags.Contracts.Authentication;
+using Flags.Contracts.Products;
 using Flags.Domain.Common.Exceptions;
 using Flags.Infrastructure.Authentication;
 using Flags.Infrastructure.Services.Cookies;
+using MapsterMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Flags.Contracts.Authentication;
 
 namespace Flags.Api.Controllers;
 
 [Route("users")]
 [Authorize(Policy = CustomPolicies.ADMIN_POLICY)]
 public class UsersController(
+    IMapper mapper,
     IGetAllUsersQueryHandler getAllUsersQueryHandler,
     IGetUserByIdQueryHandler getUserByIdQueryHandler,
     IEditUserDataCommandHandler editUserDataCommandHandler,
+    IGetAllProductCategoriesQueryHandler getAllProductCategoriesQueryHandler,
     CookieManager cookieManager
 ) : ApiController
 {
@@ -34,33 +40,23 @@ public class UsersController(
 
     [AllowAnonymous]
     [HttpGet("current")]
-    public IActionResult GetCurrent()
+    public async Task<IActionResult> GetCurrent(CancellationToken cancellationToken)
     {
         if (User.Identity?.IsAuthenticated != true)
-            throw new NotAuthenticatedException();
+            throw new NotAuthenticatedException("not-authenticated", "Пользователь не аутентифицирован");
 
-        var (firstName, lastName, phone, email, avatarId) = cookieManager.GetUserCookies();
+        var userId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "UserId")!.Value;
 
-        var requiredCredentials = new string?[]
+        var userTask = getUserByIdQueryHandler.Handle(Guid.Parse(userId), cancellationToken);
+        var categoriesTask = getAllProductCategoriesQueryHandler.Handle();
+
+        var initialResponse = new InitialResponse()
         {
-            firstName,
-            lastName,
-            email,
+            ProductCategories = mapper.Map<IEnumerable<ProductCategoryDto>>(await categoriesTask),
+            User = mapper.Map<UserInitialDto>(await userTask),
         };
+        return Ok(initialResponse);
 
-        if (requiredCredentials.Any(x => x is null))
-            throw new NotAuthenticatedException();
-
-        Guid? avatarGuid = Guid.TryParse(avatarId, out Guid result) ? result : null;
-
-        var response = new AuthenticationResponse(
-            firstName!,
-            lastName!,
-            email!,
-            phone,
-            avatarGuid);
-
-        return Ok(response);
     }
 
     [HttpPut]
@@ -68,6 +64,6 @@ public class UsersController(
     {
         var result = await editUserDataCommandHandler.Handle(user, cancellationToken);
         cookieManager.SetUserCookies(result);
-        return Ok();
+        return Ok(result);
     }
 }

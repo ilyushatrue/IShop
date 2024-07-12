@@ -12,7 +12,10 @@ public class GetUserByIdQueryHandler(
     public async Task<User> Handle(Guid id, CancellationToken cancellationToken)
     {
         var result = await userRepository.GetByIdAsync(id) ??
-            throw new NotFoundException($"Пользователя с id={id} не существует");
+            throw new NotFoundException(
+                "get-user-by-id",
+                $"Пользователя с id={id} не существует",
+                "Что-то пошло не так. Обратитесь к администратору.");
 
         return result;
     }

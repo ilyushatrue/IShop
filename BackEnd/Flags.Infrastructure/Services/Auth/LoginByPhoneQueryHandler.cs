@@ -23,15 +23,24 @@ public class LoginByPhoneQueryHandler(
         phone = Phone.Trim(phone);
 
         var user = await userRepository.GetByPhoneAsync(phone) ??
-            throw new NotFoundException($"Пользователь с номером телефона {phone} не найден.");
+            throw new NotFoundException(
+                "login-by-phone",
+                $"Пользователь с номером телефона {phone} не найден.",
+                "Неверный логин или пароль");
 
         var passwordsMatch = passwordHasher.Verify(password, user.Password.Value);
 
         if (!passwordsMatch)
-            throw new InvalidCredentialsException($"Неверный логин или пароль.");
+            throw new InvalidCredentialsException(
+                "login-by-phone",
+                "Неверный пароль",
+                $"Неверный логин или пароль.");
 
         if (!user.EmailConfirmation!.IsConfirmed)
-            throw new InvalidUsageException("Вы не подтвердили свою эл. почту!", "email-not-confirmed");
+            throw new InvalidUsageException(
+                "email-not-confirmed",
+                $"Эл. почта {user.Email.Value} не подтверждена.",
+                "Вы не подтвердили свою эл. почту!");
 
         var jwtAccessToken = jwtTokenGenerator.GenerateAccessToken(user);
 

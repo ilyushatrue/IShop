@@ -8,6 +8,7 @@ namespace Flags.Domain.UserRoot;
 
 public class User : AggregateRoot<Guid>
 {
+    private readonly List<UserFavoriteProduct> _favoriteProducts = [];
     private User() : base(Guid.NewGuid()) { }
     private User(
         Guid id,
@@ -75,6 +76,7 @@ public class User : AggregateRoot<Guid>
     public RefreshJwt? RefreshJwt { get; private set; }
     public Media? Avatar { get; }
     public UserEmailConfirmation? EmailConfirmation { get; private set; }
+    public IReadOnlyCollection<UserFavoriteProduct>? FavoriteProducts => _favoriteProducts.AsReadOnly();
 
     public void ChangePassword(Password password) => Password = password;
     public void SetRefreshToken(RefreshJwt refreshJwt) => RefreshJwt = refreshJwt;

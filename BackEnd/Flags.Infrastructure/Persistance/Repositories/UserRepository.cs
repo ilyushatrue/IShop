@@ -49,7 +49,7 @@ public class UserRepository(FlagDbContext dbContext) : IUserRepository
     public async Task<User?> GetByIdAsync(Guid id)
     {
         return await dbContext.Users
-            .Include(u => u.Role)
+            .Include(u => u.Role).ThenInclude(r => r!.MemuItems)
             .SingleOrDefaultAsync(u => u.Id == id);
     }
 

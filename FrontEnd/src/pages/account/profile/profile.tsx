@@ -22,24 +22,12 @@ export default function Profile() {
 	const { fetchAsync, isFetching } = useApi({ triggerPage: true });
 
 	async function handleFormSubmitAsync(user: IUser) {
-		let updated = false;
 		await fetchAsync({
 			request: () => usersApi.updateUserData(user),
 			onSuccess: (handler) =>
-				handler.popup("Данные успешно обновлены!").do(() => {
-					updated = true;
-				}),
-			onError: (handler) => handler.log().popup(),
-		});
-
-		if (!updated) return;
-
-		await fetchAsync({
-			request: usersApi.getCurrentAsync,
-			onSuccess: (handler) =>
-				handler.do(({ body }) => {
-					const { email, firstName, lastName, avatarId, phone } =
-						body!;
+				handler.popup("Данные успешно обновлены!").do((res) => {
+					const { avatarId, email, firstName, lastName, phone } =
+						res.body!;
 					dispatch(
 						updateCurrentUserState({
 							email: email,
@@ -50,7 +38,7 @@ export default function Profile() {
 							isAuthenticated: true,
 						})
 					);
-					setUser(body!);
+					setUser(res.body!);
 				}),
 			onError: (handler) => handler.log().popup(),
 		});

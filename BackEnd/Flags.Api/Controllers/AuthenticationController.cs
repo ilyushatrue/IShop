@@ -8,7 +8,6 @@ using Flags.Application.Authentication.Commands.ResetPassword;
 using Flags.Application.Authentication.Commands.VerifyEmail;
 using Flags.Application.Authentication.Queries.Login;
 using Flags.Domain.Common.Exceptions;
-using Flags.Infrastructure.Authentication;
 using Flags.Infrastructure.Services.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -50,7 +49,7 @@ public class AuthenticationController(
         var email = Request.Cookies["user-email"];
 
         if (string.IsNullOrWhiteSpace(email))
-            throw new NotAuthenticatedException();
+            throw new NotAuthenticatedException("not-authenticated", "Пользователь не аутентифицирован");
 
         var result = await refreshJwtCommandHandler.Handle(email, cancellationToken);
         cookieManager.SetUserCookies(result.User);
@@ -81,7 +80,7 @@ public class AuthenticationController(
     [HttpPost("logout")]
     public async Task<IActionResult> Logout(CancellationToken cancellationToken)
     {
-        var userId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "UserId")?.Value;
+        var userId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "UserId")!.Value;
 
         if (!Guid.TryParse(userId, out Guid id))
             throw new Exception("Непредвиденная ошибка при выходе из учетной записи. Обратитесь к администратору.");

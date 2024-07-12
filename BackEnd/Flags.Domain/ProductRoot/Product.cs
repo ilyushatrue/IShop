@@ -20,7 +20,10 @@ public class Product : AggregateRoot<Guid>
 
     public void Update(string name, decimal price, Guid imageId, int categoryId, string? description)
     {
-        if (price < 0) throw new ValidationException("Цена не может быть ниже 0.");
+        if (price < 0) throw new ValidationException(
+            "validation-exception",
+            $"Цена {price} не может быть ниже 0.",
+            "Цена не может быть ниже 0.");
 
         Name = name;
         Price = price;

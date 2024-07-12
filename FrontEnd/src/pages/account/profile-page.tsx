@@ -19,6 +19,7 @@ export default function ProfilePage({
 }: IProps) {
 	const navbarHeight = useAppSelector((state) => state.page.navbar.height);
 	const navigate = useNavigate();
+	const menuItems = useAppSelector((state) => state.global.menuItems);
 
 	return (
 		<Page {...props}>
@@ -43,7 +44,17 @@ export default function ProfilePage({
 						alignItems={"start"}
 						gap={2}
 					>
-						<IconButton
+						{menuItems.map((item) => (
+							<IconButton
+								iconName="person"
+								onClick={() => navigate(item.url)}
+								caption={item.title}
+								variant="squared"
+								fullwidth
+								buttonSx={{ paddingX: 2 }}
+							/>
+						))}
+						{/* <IconButton
 							iconName="person"
 							onClick={() => navigate("/account")}
 							caption="Мой профиль"
@@ -98,7 +109,7 @@ export default function ProfilePage({
 							variant="squared"
 							fullwidth
 							buttonSx={{ paddingX: 2 }}
-						/>
+						/> */}
 					</Box>
 				</Box>
 				<Box

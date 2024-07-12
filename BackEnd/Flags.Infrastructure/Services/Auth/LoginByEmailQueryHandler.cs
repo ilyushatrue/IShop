@@ -24,15 +24,24 @@ public class LoginByEmailQueryHandler(
         CancellationToken cancellationToken)
     {
         var user = await userRepository.GetByEmailAsync(query.Email.Trim()) ??
-            throw new NotFoundException($"Пользователя с email {query.Email.Trim()} не существует.");
+            throw new NotFoundException(
+                "login-by-email",
+                $"Пользователя с email {query.Email.Trim()} не существует.",
+                "Неверный логин или пароль!");
 
         var passwordsMatch = passwordHasher.Verify(query.Password, user.Password.Value);
 
         if (!passwordsMatch)
-            throw new InvalidCredentialsException("Неверный логин или пароль!");
+            throw new InvalidCredentialsException(
+                "login-by-email",
+                "Неверный логин или пароль!",
+                "Неверный логин или пароль!");
 
         if (!user.EmailConfirmation!.IsConfirmed)
-            throw new InvalidUsageException("Вы не подтвердили свою эл. почту!", "email-not-confirmed");
+            throw new InvalidUsageException(
+                "email-not-confirmed",
+                "Эл. почта не подтвержена!",
+                "Вы не подтвердили свою эл. почту!");
 
         var jwtAccessToken = jwtTokenGenerator.GenerateAccessToken(user);
 

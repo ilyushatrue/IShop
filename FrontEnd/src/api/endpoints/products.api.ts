@@ -32,6 +32,9 @@ const productsApi = {
 
 	updateAsync: async (product: IProduct) =>
 		await httpPut({ url: baseUrl, body: product, authenticate: true, }),
+
+	toFavoritesAsync: async (productId: string) =>
+		await httpPost({ url: `${baseUrl}/to-favorites/${productId}`, authenticate: true })
 };
 
 export default productsApi;

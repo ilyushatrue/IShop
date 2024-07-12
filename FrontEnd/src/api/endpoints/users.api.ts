@@ -1,9 +1,10 @@
 import { httpGet, httpPut } from "./api";
 import { IUser } from "../interfaces/user/user.interface";
+import { IApiInitialResponse } from "../interfaces/api-initial-response.interface";
 
 const usersApi = {
 	getCurrentAsync: async () =>
-		await httpGet<IUser>(
+		await httpGet<IApiInitialResponse>(
 			{ url: "/users/current", authenticate: true, },
 			(r) => r.json()
 		),
@@ -12,7 +13,7 @@ const usersApi = {
 		await httpGet<IUser[]>({ url: "/users", authenticate: true, }, (r) => r.json()),
 
 	updateUserData: async (data: IUser) =>
-		await httpPut({ url: `/users`, body: data, authenticate: true, }),
+		await httpPut<IUser>({ url: `/users`, body: data, authenticate: true, }),
 };
 
 export default usersApi;

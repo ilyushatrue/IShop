@@ -9,10 +9,16 @@ public class SendResetPasswordFormCommandHandler(
     public async Task<string> Handle(string token)
     {
         if (!Guid.TryParse(token, out Guid guid))
-            throw new NotFoundException("Не удалось изменить пароль. Обратитесь к администратору.");
+            throw new NotFoundException(
+                "send-reset-password",
+                $"Не удалось спарсить токен {token}",
+                "Не удалось изменить пароль. Обратитесь к администратору.");
 
         if (!await emailConfirmationRepository.ValidateTokenAsync(guid))
-            throw new NotFoundException("Не удалось изменить пароль. Обратитесь к администратору.");
+            throw new NotFoundException(
+                "send-reset-password",
+                $"Токен {token} не прошел валидацию.",
+                "Не удалось изменить пароль. Обратитесь к администратору.");
 
         return $@"
             <!DOCTYPE html>

@@ -14,13 +14,22 @@ public class ResetPasswordCommandHandler(
     public async Task<string> Handle(ResetPasswordCommand command)
     {
         if (!Guid.TryParse(command.Token, out Guid guid))
-            throw new NotFoundException("Не удалось изменить пароль. Обратитесь к администратору.");
+            throw new NotFoundException(
+                "reset-password",
+                $"Не удалось спарсить guid={guid}",
+                "Не удалось изменить пароль. Обратитесь к администратору.");
 
         if (!await emailConfirmationRepository.ValidateTokenAsync(guid))
-            throw new NotFoundException("Ссылка не действительна.");
+            throw new NotFoundException(
+                "reset-password",
+                "Ссылка не действительна.",
+                "Ссылка не действительна.");
 
         var emailConfirmation = await emailConfirmationRepository.GetByTokenAsync(guid) ??
-            throw new NotFoundException("Не удалось изменить пароль. Обратитесь к администратору.");
+            throw new NotFoundException(
+                "reset-password",
+                $"Email по токену подтверждения {guid} не найден.",
+                "Не удалось изменить пароль. Обратитесь к администратору.");
 
         var passwordHash = passwordHasher.Generate(command.NewPassword);
         var newPassword = Password.Create(passwordHash);

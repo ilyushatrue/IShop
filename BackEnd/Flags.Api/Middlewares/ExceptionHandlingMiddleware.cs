@@ -23,48 +23,48 @@ namespace Flags.Api.Middlewares
             }
             catch (NotAuthenticatedException ex)
             {
-                await HandleExceptionAsync(httpContext, StatusCodes.Status401Unauthorized, ex.Message);
+                await HandleExceptionAsync(httpContext, StatusCodes.Status401Unauthorized, ex.Name, ex.Message, ex.UserMessage);
             }
             catch (ValidationException ex)
             {
-                await HandleExceptionAsync(httpContext, StatusCodes.Status400BadRequest, ex.Message);
+                await HandleExceptionAsync(httpContext, StatusCodes.Status400BadRequest, ex.Name, ex.Message, ex.UserMessage);
             }
             catch (NotFoundException ex)
             {
-                await HandleExceptionAsync(httpContext, StatusCodes.Status404NotFound, ex.Message);
+                await HandleExceptionAsync(httpContext, StatusCodes.Status404NotFound, ex.Name, ex.Message, ex.UserMessage);
             }
             catch (InvalidCredentialsException ex)
             {
-                await HandleExceptionAsync(httpContext, StatusCodes.Status400BadRequest, ex.Message);
-            }
-            catch (ArgumentNullException ex)
-            {
-                await HandleExceptionAsync(httpContext, StatusCodes.Status400BadRequest, ex.Message);
+                await HandleExceptionAsync(httpContext, StatusCodes.Status400BadRequest, ex.Name, ex.Message, ex.UserMessage);
             }
             catch (ExpirationException ex)
             {
-                await HandleExceptionAsync(httpContext, StatusCodes.Status406NotAcceptable, ex.Message);
+                await HandleExceptionAsync(httpContext, StatusCodes.Status406NotAcceptable, ex.Name, ex.Message, ex.UserMessage);
             }
             catch (InvalidUsageException ex)
             {
-                await HandleExceptionAsync(httpContext, StatusCodes.Status400BadRequest, ex.Message, ex.ErrorName);
+                await HandleExceptionAsync(httpContext, StatusCodes.Status400BadRequest, ex.Name, ex.Message, ex.UserMessage);
             }
             catch (UniquenessViolationExeption ex)
             {
-                await HandleExceptionAsync(httpContext, StatusCodes.Status400BadRequest, ex.Message);
+                await HandleExceptionAsync(httpContext, StatusCodes.Status400BadRequest, ex.Name, ex.Message, ex.UserMessage);
+            }
+            catch (ArgumentNullException ex)
+            {
+                await HandleExceptionAsync(httpContext, StatusCodes.Status400BadRequest, "argument-null-exception", ex.Message, "");
             }
             catch (Exception ex)
             {
-                await HandleExceptionAsync(httpContext, StatusCodes.Status500InternalServerError, ex.Message);
+                await HandleExceptionAsync(httpContext, StatusCodes.Status500InternalServerError, "internal-server-error", ex.Message, "");
             }
 
             if (httpContext.Response.StatusCode == StatusCodes.Status403Forbidden)
             {
-                await HandleExceptionAsync(httpContext, StatusCodes.Status403Forbidden, "Недостаточно прав");
+                await HandleExceptionAsync(httpContext, StatusCodes.Status403Forbidden, "no-permission", "Недостаточно прав", "Недостаточно прав");
             }
         }
 
-        private async Task HandleExceptionAsync(HttpContext httpContext, int statusCode, string exceptionMessage, string? exceptionName = null)
+        private async Task HandleExceptionAsync(HttpContext httpContext, int statusCode, string exceptionName, string exceptionMessage, string? userMessage = null)
         {
             _logger.LogError(exceptionMessage);
             HttpResponse response = httpContext.Response;
@@ -73,15 +73,15 @@ namespace Flags.Api.Middlewares
             var acceptHeader = httpContext.Request.Headers.Accept.ToString();
             if (acceptHeader.Contains("text/html"))
             {
-                await GenerateHtmlErrorResponse(exceptionMessage, response);
+                await GenerateHtmlErrorResponse(response, userMessage);
             }
             else
             {
-                await GenarateJsonErrorResponse(httpContext, exceptionMessage, exceptionName ?? "", response);
+                await GenarateJsonErrorResponse(httpContext, response, exceptionName, userMessage);
             }
         }
 
-        private static async Task GenarateJsonErrorResponse(HttpContext httpContext, string exceptionMessage, string exceptionName, HttpResponse response)
+        private static async Task GenarateJsonErrorResponse(HttpContext httpContext, HttpResponse response, string exceptionName, string? userMessage = null)
         {
             response.ContentType = "application/json; charset=utf-8";
 
@@ -89,7 +89,7 @@ namespace Flags.Api.Middlewares
             {
                 title = "Возникла ошибка при выполнении запроса.",
                 status = response.StatusCode,
-                message = exceptionMessage,
+                message = userMessage,
                 name = exceptionName,
                 traceId = httpContext.TraceIdentifier
             };
@@ -104,7 +104,7 @@ namespace Flags.Api.Middlewares
             await response.WriteAsync(result, Encoding.UTF8);
         }
 
-        private async Task GenerateHtmlErrorResponse(string exceptionMessage, HttpResponse response)
+        private async Task GenerateHtmlErrorResponse(HttpResponse response, string? userMessage = null)
         {
             response.ContentType = "text/html";
 
@@ -152,7 +152,7 @@ namespace Flags.Api.Middlewares
                             <div class=""container"">
                                 <h1>Упс... Ошибочка вышла!</h1>
                                     <div class=""container_body"">
-                                    <p>{exceptionMessage}</p>
+                                    <p>{userMessage ?? ""}</p>
                                     <p>
                                         Напишите разработчику о проблеме 
                                         <span class=""email"">{_emailSettings.SenderEmail}</span>

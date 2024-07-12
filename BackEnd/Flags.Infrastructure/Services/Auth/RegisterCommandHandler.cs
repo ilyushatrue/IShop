@@ -27,7 +27,10 @@ public class RegisterCommandHandler(
     {
         var email = command.Email.Trim();
         if (await userRepository.CheckUserWithEmailExistsAsync(email))
-            throw new UniquenessViolationExeption("Эл. почта уже занята.");
+            throw new UniquenessViolationExeption(
+                "email-already-exists",
+                $"Эл. почта {email} уже занята.",
+                "Эл. почта уже занята.");
 
         string? phone = null;
         if (!string.IsNullOrWhiteSpace(command.Phone))
@@ -35,12 +38,15 @@ public class RegisterCommandHandler(
             phone = Phone.Trim(command.Phone);
             if (Phone.Validate(phone))
             {
-                if (await userRepository.CheckUserWithPhoneExistsAsync(command.Phone.Trim()))
-                    throw new UniquenessViolationExeption("Номер телефона уже занят.");
+                if (await userRepository.CheckUserWithPhoneExistsAsync(phone))
+                    throw new UniquenessViolationExeption(
+                        "phone-already-exists",
+                        $"Номер телефона {phone} уже занят.",
+                        "Номер телефона уже занят.");
             }
             else
             {
-                throw new ValidationException("Некорректный номер телефона");
+                throw new ValidationException("register", $"Некорректный номер телефона {phone}", "Некорректный номер телефона");
             }
         }
 

@@ -1,5 +1,6 @@
 ﻿using Flags.Application.Common;
 using Flags.Application.Products.Commands;
+using Flags.Application.Products.Commands.MakeProductFavorite;
 using Flags.Application.Products.Queries;
 using Flags.Contracts.Products;
 using Flags.Domain.ProductRoot.Entities;
@@ -19,6 +20,7 @@ public class ProductController(
     IDeleteProductByIdCommandHandler deleteProductByIdCommandHandler,
     IGetAllProductCategoriesQueryHandler getAllProductCategoriesQueryHandler,
     IUpdateProductCommandHandler updateProductCommandHandler,
+    IMakeProductFavoriteCommandHandler makeProductFavoriteCommandHandler,
     IMapper mapper) : ApiController
 {
     [AllowAnonymous]
@@ -54,6 +56,15 @@ public class ProductController(
             PageSize = result.PageSize
         };
         return Ok(pagedList);
+    }
+
+    [AllowAnonymous]
+    [HttpPost("to-favorites/{productId}")]
+    public async Task<IActionResult> MakeProductFavorite(Guid productId)
+    {
+        var userId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "UserId")!.Value;
+        var result = await makeProductFavoriteCommandHandler.Handle(new(Guid.Parse(userId), productId));
+        return Ok(result);
     }
 
     [HttpPost]

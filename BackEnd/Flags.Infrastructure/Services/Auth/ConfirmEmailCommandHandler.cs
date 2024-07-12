@@ -1,6 +1,7 @@
 ﻿using Flags.Application.AppSettings;
 using Flags.Application.Authentication.Commands.VerifyEmail;
 using Flags.Application.Authentication.Common;
+using Flags.Application.Common;
 using Flags.Application.Persistance;
 using Flags.Application.Persistance.Repositories;
 using Flags.Domain.Common.Exceptions;
@@ -12,10 +13,12 @@ public class ConfirmEmailCommandHandler(
     IJwtTokenGenerator jwtTokenGenerator,
     IUserEmailConfirmationRepository emailConfirmationRepository,
     IOptions<RefreshJwtSettings> refreshJwtSettings,
-    IDbManager dbManager
+    IDbManager dbManager,
+    IDateTimeProvider dateTimeProvider
     ) : IConfirmEmailCommandHandler
 {
     private readonly RefreshJwtSettings _refreshJwtSettings = refreshJwtSettings.Value;
+    private readonly DateTime _utcNow = dateTimeProvider.UtcNow;
     public async Task<AuthenticationResult> Handle(Guid emailConfirationToken)
     {
         var emailConfirmation = await emailConfirmationRepository.GetByTokenAsync(emailConfirationToken) ??
@@ -24,8 +27,8 @@ public class ConfirmEmailCommandHandler(
         if (emailConfirmation.IsConfirmed)
             throw new InvalidUsageException("Email уже подтвержден ☺", "email-already-confirmed");
 
-        if (DateTime.UtcNow > emailConfirmation.ExpiryDateTime)
-            throw new ExpirationException("Время действия ссылки вышло.");
+        if (_utcNow > emailConfirmation.ExpiryDateTime)
+            throw new ExpirationException("expiration-exception", $"Время действия ссылки вышло. {_utcNow} > {emailConfirmation.ExpiryDateTime}", "Время действия ссылки вышло.");
 
         emailConfirmation.SetIsConfirmed();
 

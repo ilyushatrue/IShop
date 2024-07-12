@@ -21,7 +21,10 @@ public class SendEmailConfirmEmailCommandHandler(
     {
         email = email.Trim();
         var user = await userRepository.GetByEmailAsync(email) ??
-            throw new NotFoundException("Пользователя с такой эл. почтой не существует.");
+            throw new NotFoundException(
+                "send-email-confirm-email",
+                $"Пользователя с эл. почтой {email} не существует.",
+                "Не удалось отправить сообщение.");
 
         var emailConfirmationTokenExpiry = DateTime.UtcNow.AddHours(_authenticationSettings.EmailConfirmationTokenExpiryHours);
 

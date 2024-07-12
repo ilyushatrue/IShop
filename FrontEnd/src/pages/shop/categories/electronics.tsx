@@ -23,6 +23,7 @@ export default function Electronics() {
 			navigate("1");
 			return;
 		}
+		if (isNaN(+id)) return;
 		fetchAsync({
 			request: () => productsApi.getByCategoryAsync(2, +id!, 12),
 			onSuccess: (handler) =>

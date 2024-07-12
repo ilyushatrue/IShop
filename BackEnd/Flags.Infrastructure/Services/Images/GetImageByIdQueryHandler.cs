@@ -15,7 +15,9 @@ public class GetImageByIdQueryHandler(
     {
         var folderPath = fileSettings.Value.UploadPath;
         var image = await mediaRepository.GetByIdAsync(request.Id) ??
-            throw new NotFoundException("Изображение не найдено.");
+            throw new NotFoundException(
+                "get-image-by-id",
+                $"Изображение с id={request.Id} не найдено.");
 
         var fullPath = Path.Combine(folderPath, image.Uri);
 

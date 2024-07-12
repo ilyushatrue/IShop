@@ -12,7 +12,10 @@ public class EditUserDataCommandHandler(
     public async Task<User> Handle(EditUserDataCommand command, CancellationToken cancellationToken)
     {
         var user = await userRepository.GetByEmailAsync(command.Email) ??
-            throw new NotFoundException($"Пользователь с эл. почтой {command.Email} не найден.");
+            throw new NotFoundException(
+                "edit-user-data",
+                $"Пользователь с эл. почтой {command.Email} не найден.",
+                "Что-то пошло не так. Обратитесь к администратору.");
 
         user.Update(command.FirstName, command.LastName, command.Phone, command.Email, command.AvatarId);
         userRepository.Update(user);

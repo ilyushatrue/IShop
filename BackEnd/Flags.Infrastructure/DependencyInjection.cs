@@ -37,6 +37,9 @@ using Flags.Infrastructure.Services.Auth.ResetPassword;
 using Flags.Application.Persistance.Repositories;
 using Flags.Application.Persistance;
 using Flags.Application.Authentication.Commands.ConfirmEmail;
+using Flags.Application.Products.Commands.MakeProductFavorite;
+using Flags.Application.MenuItems.Queries;
+using Flags.Infrastructure.Services.MenuItems;
 
 namespace Flags.Infrastructure;
 
@@ -74,41 +77,60 @@ public static class DependencyInjection
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<IUserEmailConfirmationRepository, UserEmailConfirmationRepository>();
         services.AddScoped<IProductCategoryRepository, ProductCategoryRepository>();
-
+        services.AddScoped<IUserFavoriteProductRepository, UserFavoriteProductRepository>();
+        services.AddScoped<IMenuItemRepository, MenuItemRepository>();
         return services;
     }
 
     public static IServiceCollection AddServices(
     this IServiceCollection services)
     {
+        #region C
+        services.AddScoped<IConfirmEmailCommandHandler, ConfirmEmailCommandHandler>();
+        services.AddScoped<ICreateImageCommandHandler, CreateImageCommandHandler>();
+        services.AddScoped<ICreateProductCategoryCommandHandler, CreateProductCategoryCommandHandler>();
+        services.AddScoped<ICreateProductCommandHandler, CreateProductCommandHandler>();
+        #endregion
+        #region D
+        services.AddScoped<IDeleteProductByIdCommandHandler, DeleteProductByIdCommandHandler>();
+        #endregion
+        #region E
+        services.AddScoped<IEditUserDataCommandHandler, EditUserDataCommandHandler>();
+        services.AddScoped<IEmailSender, EmailSender>();
+        #endregion
+        #region G
+        services.AddScoped<IGetAllProductCategoriesQueryHandler, GetAllProductCategoriesQueryHandler>();
+        services.AddScoped<IGetAllProductsQueryHandler, GetAllProductsQueryHandler>();
+        services.AddScoped<IGetAllUsersQueryHandler, GetAllUsersQueryHandler>();
+        services.AddScoped<IGetMenuItemsQueryHandler, GetMenuItemsQueryHandler>();
+        services.AddScoped<IGetImageByIdQueryHandler, GetImageByIdQueryHandler>();
+        services.AddScoped<IGetProductsByCategoryQueryHandler, GetProductsByCategoryQueryHandler>();
+        services.AddScoped<IGetUserByIdQueryHandler, GetUserByIdQueryHandler>();
+        #endregion
+        #region L
         services.AddScoped<ILoginByEmailQueryHandler, LoginByEmailQueryHandler>();
         services.AddScoped<ILoginByPhoneQueryHandler, LoginByPhoneQueryHandler>();
         services.AddScoped<ILogoutCommandHandler, LogoutCommandHandler>();
+        #endregion
+        #region M
+        services.AddScoped<IMakeProductFavoriteCommandHandler, MakeProductFavoriteCommandHandler>();
+        #endregion
+        #region R
         services.AddScoped<IRefreshJwtCommandHandler, RefreshJwtCommandHandler>();
         services.AddScoped<IRegisterCommandHandler, RegisterCommandHandler>();
-        services.AddScoped<ICreateImageCommandHandler, CreateImageCommandHandler>();
-        services.AddScoped<IGetImageByIdQueryHandler, GetImageByIdQueryHandler>();
-        services.AddScoped<IEditUserDataCommandHandler, EditUserDataCommandHandler>();
-        services.AddScoped<IGetAllUsersQueryHandler, GetAllUsersQueryHandler>();
-        services.AddScoped<IGetUserByIdQueryHandler, GetUserByIdQueryHandler>();
-        services.AddScoped<IGetAllProductsQueryHandler, GetAllProductsQueryHandler>();
-        services.AddScoped<ICreateProductCommandHandler, CreateProductCommandHandler>();
-        services.AddScoped<IDeleteProductByIdCommandHandler, DeleteProductByIdCommandHandler>();
-        services.AddScoped<IUpdateProductCommandHandler, UpdateProductCommandHandler>();
-        services.AddScoped<IEmailSender, EmailSender>();
-        services.AddScoped<IConfirmEmailCommandHandler, ConfirmEmailCommandHandler>();
-        services.AddScoped<ISendResetPasswordEmailCommandHandler, SendResetPasswordEmailCommandHandler>();
         services.AddScoped<IResetPasswordCommandHandler, ResetPasswordCommandHandler>();
-        services.AddScoped<ISendResetPasswordFormCommandHandler, SendResetPasswordFormCommandHandler>();
-        services.AddScoped<IGetAllProductCategoriesQueryHandler, GetAllProductCategoriesQueryHandler>();
-        services.AddScoped<ICreateProductCategoryCommandHandler, CreateProductCategoryCommandHandler>();
-        services.AddScoped<ISyncProductCategoriesCommandHandler, SyncProductCategoriesCommandHandler>();
+        #endregion
+        #region S
         services.AddScoped<ISendEmailConfirmEmailCommandHandler, SendEmailConfirmEmailCommandHandler>();
-        services.AddScoped<IGetProductsByCategoryQueryHandler, GetProductsByCategoryQueryHandler>();
-
+        services.AddScoped<ISendResetPasswordEmailCommandHandler, SendResetPasswordEmailCommandHandler>();
+        services.AddScoped<ISendResetPasswordFormCommandHandler, SendResetPasswordFormCommandHandler>();
+        services.AddScoped<ISyncProductCategoriesCommandHandler, SyncProductCategoriesCommandHandler>();
+        #endregion
+        #region U
+        services.AddScoped<IUpdateProductCommandHandler, UpdateProductCommandHandler>();
+        #endregion
         return services;
     }
-
 
     public static IServiceCollection AddAuth(
         this IServiceCollection services,
@@ -123,6 +145,7 @@ public static class DependencyInjection
         services.Configure<ClientSettings>(configuration.GetSection(nameof(ClientSettings)));
         services.Configure<HostSettings>(configuration.GetSection(nameof(HostSettings)));
         services.Configure<AuthenticationSettings>(configuration.GetSection(nameof(AuthenticationSettings)));
+        services.Configure<MenuSettings>(configuration.GetSection(nameof(MenuSettings)));
         services.AddSingleton<IPasswordHasher, PasswordHasher>();
         services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
         services.AddAuthentication(defaultScheme: JwtBearerDefaults.AuthenticationScheme)

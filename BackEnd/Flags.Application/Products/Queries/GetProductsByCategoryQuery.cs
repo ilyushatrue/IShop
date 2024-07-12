@@ -1,6 +1,4 @@
-﻿using Flags.Application.Common;
-
-namespace Flags.Application.Products.Queries;
+﻿namespace Flags.Application.Products.Queries;
 public record GetProductsByCategoryQuery(
     int CategoryId,
     int CurrentPage,

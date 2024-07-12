@@ -1,5 +1,7 @@
 ﻿namespace Flags.Domain.Common.Exceptions;
 
-public class ValidationException(string? message = null) : Exception(message ?? "Данные не корректны.")
+public class ValidationException(string name, string logMessage, string? userMessage = null) : Exception(logMessage)
 {
+    public string Name { get; private set; } = name;
+    public string? UserMessage { get; private set; } = userMessage;
 }

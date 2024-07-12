@@ -1,5 +1,6 @@
 using Flags.Application.AppSettings;
 using Flags.Domain.MediaEntity;
+using Flags.Domain.MenuItemEntity;
 using Flags.Domain.ProductRoot;
 using Flags.Domain.ProductRoot.Entities;
 using Flags.Domain.UserRoot;
@@ -12,6 +13,7 @@ namespace Flags.Infrastructure.Persistance;
 
 public class FlagDbContext(
     IOptions<AuthorizationSettings> authorizationOptions,
+    IOptions<MenuSettings> menuSettings,
     DbContextOptions<FlagDbContext> options) : DbContext(options)
 {
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -23,6 +25,7 @@ public class FlagDbContext(
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(FlagDbContext).Assembly);
         modelBuilder.ApplyConfiguration(new RolePermissionConfiguration(authorizationOptions.Value));
+        modelBuilder.ApplyConfiguration(new MenuItemConfiguration(menuSettings.Value));
     }
 
     public DbSet<User> Users { get; set; } = null!;
@@ -34,4 +37,7 @@ public class FlagDbContext(
     public DbSet<Product> Products { get; set; } = null!;
     public DbSet<ProductCategory> ProductCategories { get; set; } = null!;
     public DbSet<UserEmailConfirmation> UserEmailConfirmations { get; set; } = null!;
+    public DbSet<UserFavoriteProduct> UserFavoriteProducts { get; set; } = null!;
+    public DbSet<MenuItem> MenuItems { get; set; } = null!;
+    public DbSet<RoleMenuItem> RoleMenuItems { get; set; } = null!;
 }

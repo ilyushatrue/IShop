@@ -15,7 +15,10 @@ public class ProductRepository(FlagDbContext dbContext) : IProductRepository
     public async Task DeleteByIdAsync(Guid id)
     {
         var entity = await dbContext.Products.FirstOrDefaultAsync(p => p.Id == id) ??
-            throw new NotFoundException("Товара не существует.");
+            throw new NotFoundException(
+                "product-delete-by-id",
+                $"Товара с id={id} не существует.",
+                "Товара не существует.");
         dbContext.Products.Remove(entity);
     }
 
@@ -50,6 +53,9 @@ public class ProductRepository(FlagDbContext dbContext) : IProductRepository
     public async Task<Product> GetByIdAsync(Guid id)
     {
         return await dbContext.Products.SingleOrDefaultAsync(x => x.Id == id) ??
-            throw new NotFoundException("Товара не существует.");
+            throw new NotFoundException(
+                "product-get-by-id",
+                $"Товара с id={id} не существует.",
+                "Товара не существует.");
     }
 }

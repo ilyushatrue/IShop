@@ -1,5 +1,7 @@
 ﻿namespace Flags.Domain.Common.Exceptions;
-public class InvalidUsageException(string message, string errorName) : Exception(message)
+
+public class InvalidUsageException(string name, string logMessage, string? userMessage = null) : Exception(logMessage)
 {
-    public string ErrorName { get; } = errorName;
+    public string Name { get; private set; } = name;
+    public string? UserMessage { get; private set; } = userMessage;
 }

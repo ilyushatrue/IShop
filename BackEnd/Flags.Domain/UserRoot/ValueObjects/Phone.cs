@@ -18,10 +18,13 @@ public class Phone
         if (Validate(trimmedInput))
             return new Phone(trimmedInput);
         else
-            throw new ValidationException("Неверный номер телефона");
+            throw new ValidationException(
+                "validation-exception",
+                $"Некорректный номер телефона {trimmedInput}!",
+                "Некорректный номер телефона!");
     }
 
-    public static string Trim(string phoneNumber) => 
+    public static string Trim(string phoneNumber) =>
         Regex.Replace(phoneNumber, @"\D", "").Trim();
 
 
