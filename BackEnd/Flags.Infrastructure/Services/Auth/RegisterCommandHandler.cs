@@ -8,6 +8,7 @@ using Flags.Application.Emails;
 using Flags.Domain.Common.Exceptions;
 using Flags.Application.Persistance.Repositories;
 using Flags.Application.Persistance;
+using Flags.Domain.Enums;
 
 namespace Flags.Infrastructure.Services.Auth;
 
@@ -61,6 +62,7 @@ public class RegisterCommandHandler(
             email: email,
             phone: phone,
             passwordHash: passwordHash,
+            role: RoleFlag.User,
             emailConfirmationTokenExpiry: emailConfirmationTokenExpiry,
             avatarId: command.AvatarId
         );

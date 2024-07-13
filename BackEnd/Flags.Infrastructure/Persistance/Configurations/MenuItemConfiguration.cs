@@ -1,4 +1,5 @@
 ﻿using Flags.Application.AppSettings;
+using Flags.Domain.Enums;
 using Flags.Domain.MenuItemEntity;
 using Flags.Domain.UserRoot.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +13,7 @@ public class MenuItemConfiguration(
     {
         builder.HasData(
             menuSettings.Items
-                .Select(item => MenuItem.Create(item.Name, item.Title, item.Url, item.IconName, item.Order))
+                .Select(item => MenuItem.Create((int)Enum.Parse<MenuItemEnum>(item.Name), item.Name, item.Title, item.Url, item.IconName, item.Order))
             );
 
         builder

@@ -6,6 +6,7 @@ import ProtectedRoutes from "./protected-routes";
 import NavBar from "../components/navigation/nav-bar";
 import Test from "../pages/test/test";
 import ShopCategoryRoutes from "../pages/shop";
+import Cart from "../pages/account/cart";
 
 interface IProps {
 	sm: boolean;
@@ -21,6 +22,7 @@ export default function Routes({ sm }: IProps) {
 				<Route path="/category/*" element={<ShopCategoryRoutes />} />
 				<Route path="/not-found" element={<NotFound />} />
 				<Route path="/no-access" element={<NotFound />} />
+				<Route path="/cart/*" element={<Cart />} />
 				<Route path="*" element={<ProtectedRoutes />} />
 			</ReactRoutes>
 		</>

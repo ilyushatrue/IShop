@@ -16,6 +16,9 @@ public class FlagDbContext(
     IOptions<MenuSettings> menuSettings,
     DbContextOptions<FlagDbContext> options) : DbContext(options)
 {
+    private readonly AuthorizationSettings _authorizationOptions = authorizationOptions.Value;
+    private readonly MenuSettings _menuSettings = menuSettings.Value;
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         base.OnConfiguring(optionsBuilder);
@@ -24,8 +27,8 @@ public class FlagDbContext(
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(FlagDbContext).Assembly);
-        modelBuilder.ApplyConfiguration(new RolePermissionConfiguration(authorizationOptions.Value));
-        modelBuilder.ApplyConfiguration(new MenuItemConfiguration(menuSettings.Value));
+        modelBuilder.ApplyConfiguration(new RolePermissionConfiguration(_authorizationOptions));
+        modelBuilder.ApplyConfiguration(new MenuItemConfiguration(_menuSettings));
     }
 
     public DbSet<User> Users { get; set; } = null!;

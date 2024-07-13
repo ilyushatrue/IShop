@@ -23,14 +23,14 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder
             .HasOne(u => u.RefreshJwt)
-            .WithOne(u => u.User)
+            .WithOne(r => r.User)
             .HasForeignKey<RefreshJwt>(r => r.Id)
             .OnDelete(DeleteBehavior.Cascade);
 
         builder
             .HasOne(u => u.Role)
             .WithMany(r => r.Users)
-            .HasForeignKey(x => x.RoleId);
+            .HasForeignKey(u => u.RoleId);
 
         builder.OwnsOne(u => u.Password, b =>
         {

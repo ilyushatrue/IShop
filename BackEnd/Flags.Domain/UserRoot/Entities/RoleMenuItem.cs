@@ -5,12 +5,12 @@ public class RoleMenuItem
 {
     public RoleMenuItem() { }
 
-    public RoleMenuItem(int roleId, Guid menuItemId)
+    public RoleMenuItem(int roleId, int menuItemId)
     {
         MenuItemId = menuItemId;
         RoleId = roleId;
     }
-    public Guid MenuItemId { get; private set; }
+    public int MenuItemId { get; private set; }
     public int RoleId { get; private set; }
 
     public MenuItem? MenuItem { get; private set; }

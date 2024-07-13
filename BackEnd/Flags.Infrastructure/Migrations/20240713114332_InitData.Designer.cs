@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Flags.Infrastructure.Migrations
 {
     [DbContext(typeof(FlagDbContext))]
-    [Migration("20240710122651_Init")]
-    partial class Init
+    [Migration("20240713114332_InitData")]
+    partial class InitData
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -44,6 +44,99 @@ namespace Flags.Infrastructure.Migrations
                         .HasName("pk_media");
 
                     b.ToTable("media", (string)null);
+                });
+
+            modelBuilder.Entity("Flags.Domain.MenuItemEntity.MenuItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("id");
+
+                    b.Property<string>("IconName")
+                        .IsRequired()
+                        .HasColumnType("TEXT")
+                        .HasColumnName("icon_name");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT")
+                        .HasColumnName("name");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("order");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("TEXT")
+                        .HasColumnName("title");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("TEXT")
+                        .HasColumnName("url");
+
+                    b.HasKey("Id")
+                        .HasName("pk_menu_items");
+
+                    b.ToTable("menu_items", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            IconName = "person",
+                            Name = "Profile",
+                            Order = 1,
+                            Title = "Мой профиль",
+                            Url = "/profile"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            IconName = "sell",
+                            Name = "Purchases",
+                            Order = 2,
+                            Title = "Покупки",
+                            Url = "/purchases"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            IconName = "shopping_bag",
+                            Name = "Cart",
+                            Order = 3,
+                            Title = "Корзина",
+                            Url = "/cart"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            IconName = "inventory",
+                            Name = "Products",
+                            Order = 4,
+                            Title = "Товары",
+                            Url = "/products"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            IconName = "people",
+                            Name = "Users",
+                            Order = 5,
+                            Title = "Пользователи",
+                            Url = "/users"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            IconName = "settings",
+                            Name = "Settings",
+                            Order = 6,
+                            Title = "Настройки",
+                            Url = "/settings"
+                        });
                 });
 
             modelBuilder.Entity("Flags.Domain.ProductRoot.Entities.ProductCategory", b =>
@@ -140,12 +233,12 @@ namespace Flags.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = 4,
+                            Id = 3,
                             Name = "Update"
                         },
                         new
                         {
-                            Id = 8,
+                            Id = 4,
                             Name = "Delete"
                         });
                 });
@@ -200,9 +293,28 @@ namespace Flags.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = 4,
+                            Id = 3,
                             Name = "Seller"
                         });
+                });
+
+            modelBuilder.Entity("Flags.Domain.UserRoot.Entities.RoleMenuItem", b =>
+                {
+                    b.Property<int>("RoleId")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("role_id");
+
+                    b.Property<int>("MenuItemId")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("menu_item_id");
+
+                    b.HasKey("RoleId", "MenuItemId")
+                        .HasName("pk_role_menu_items");
+
+                    b.HasIndex("MenuItemId")
+                        .HasDatabaseName("ix_role_menu_items_menu_item_id");
+
+                    b.ToTable("role_menu_items", (string)null);
                 });
 
             modelBuilder.Entity("Flags.Domain.UserRoot.Entities.RolePermission", b =>
@@ -222,6 +334,38 @@ namespace Flags.Infrastructure.Migrations
                         .HasDatabaseName("ix_role_permissions_permission_id");
 
                     b.ToTable("role_permissions", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 2
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 1
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 3
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 4
+                        },
+                        new
+                        {
+                            RoleId = 2,
+                            PermissionId = 1
+                        },
+                        new
+                        {
+                            RoleId = 3,
+                            PermissionId = 1
+                        });
                 });
 
             modelBuilder.Entity("Flags.Domain.UserRoot.Entities.UserEmailConfirmation", b =>
@@ -246,6 +390,25 @@ namespace Flags.Infrastructure.Migrations
                         .HasName("pk_user_email_confirmations");
 
                     b.ToTable("user_email_confirmations", (string)null);
+                });
+
+            modelBuilder.Entity("Flags.Domain.UserRoot.Entities.UserFavoriteProduct", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("user_id");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("product_id");
+
+                    b.HasKey("UserId", "ProductId")
+                        .HasName("pk_user_favorite_products");
+
+                    b.HasIndex("ProductId")
+                        .HasDatabaseName("ix_user_favorite_products_product_id");
+
+                    b.ToTable("user_favorite_products", (string)null);
                 });
 
             modelBuilder.Entity("Flags.Domain.UserRoot.User", b =>
@@ -318,6 +481,27 @@ namespace Flags.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Flags.Domain.UserRoot.Entities.RoleMenuItem", b =>
+                {
+                    b.HasOne("Flags.Domain.MenuItemEntity.MenuItem", "MenuItem")
+                        .WithMany("RoleMenuItems")
+                        .HasForeignKey("MenuItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_role_menu_items_menu_items_menu_item_id");
+
+                    b.HasOne("Flags.Domain.UserRoot.Entities.Role", "Role")
+                        .WithMany("RoleMenuItems")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_role_menu_items_roles_role_id");
+
+                    b.Navigation("MenuItem");
+
+                    b.Navigation("Role");
+                });
+
             modelBuilder.Entity("Flags.Domain.UserRoot.Entities.RolePermission", b =>
                 {
                     b.HasOne("Flags.Domain.UserRoot.Entities.Permission", "Permission")
@@ -347,6 +531,27 @@ namespace Flags.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_user_email_confirmations_users_id");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Flags.Domain.UserRoot.Entities.UserFavoriteProduct", b =>
+                {
+                    b.HasOne("Flags.Domain.ProductRoot.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_user_favorite_products_products_product_id");
+
+                    b.HasOne("Flags.Domain.UserRoot.User", "User")
+                        .WithMany("FavoriteProducts")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_user_favorite_products_users_user_id");
+
+                    b.Navigation("Product");
 
                     b.Navigation("User");
                 });
@@ -452,6 +657,11 @@ namespace Flags.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Flags.Domain.MenuItemEntity.MenuItem", b =>
+                {
+                    b.Navigation("RoleMenuItems");
+                });
+
             modelBuilder.Entity("Flags.Domain.UserRoot.Entities.Permission", b =>
                 {
                     b.Navigation("RolePermissions");
@@ -459,6 +669,8 @@ namespace Flags.Infrastructure.Migrations
 
             modelBuilder.Entity("Flags.Domain.UserRoot.Entities.Role", b =>
                 {
+                    b.Navigation("RoleMenuItems");
+
                     b.Navigation("RolePermissions");
 
                     b.Navigation("Users");
@@ -467,6 +679,8 @@ namespace Flags.Infrastructure.Migrations
             modelBuilder.Entity("Flags.Domain.UserRoot.User", b =>
                 {
                     b.Navigation("EmailConfirmation");
+
+                    b.Navigation("FavoriteProducts");
 
                     b.Navigation("RefreshJwt");
                 });

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -7,7 +8,7 @@
 namespace Flags.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class InitData : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -24,6 +25,23 @@ namespace Flags.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("pk_media", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "menu_items",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    name = table.Column<string>(type: "TEXT", nullable: false),
+                    title = table.Column<string>(type: "TEXT", nullable: false),
+                    url = table.Column<string>(type: "TEXT", nullable: false),
+                    order = table.Column<int>(type: "INTEGER", nullable: false),
+                    icon_name = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_menu_items", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -89,6 +107,30 @@ namespace Flags.Infrastructure.Migrations
                         name: "fk_products_product_categories_category_id",
                         column: x => x.category_id,
                         principalTable: "product_categories",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "role_menu_items",
+                columns: table => new
+                {
+                    menu_item_id = table.Column<int>(type: "INTEGER", nullable: false),
+                    role_id = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_role_menu_items", x => new { x.role_id, x.menu_item_id });
+                    table.ForeignKey(
+                        name: "fk_role_menu_items_menu_items_menu_item_id",
+                        column: x => x.menu_item_id,
+                        principalTable: "menu_items",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "fk_role_menu_items_roles_role_id",
+                        column: x => x.role_id,
+                        principalTable: "roles",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -185,6 +227,43 @@ namespace Flags.Infrastructure.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "user_favorite_products",
+                columns: table => new
+                {
+                    user_id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    product_id = table.Column<Guid>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_user_favorite_products", x => new { x.user_id, x.product_id });
+                    table.ForeignKey(
+                        name: "fk_user_favorite_products_products_product_id",
+                        column: x => x.product_id,
+                        principalTable: "products",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "fk_user_favorite_products_users_user_id",
+                        column: x => x.user_id,
+                        principalTable: "users",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "menu_items",
+                columns: new[] { "id", "icon_name", "name", "order", "title", "url" },
+                values: new object[,]
+                {
+                    { 1, "person", "Profile", 1, "Мой профиль", "/profile" },
+                    { 2, "sell", "Purchases", 2, "Покупки", "/purchases" },
+                    { 3, "shopping_bag", "Cart", 3, "Корзина", "/cart" },
+                    { 4, "inventory", "Products", 4, "Товары", "/products" },
+                    { 5, "people", "Users", 5, "Пользователи", "/users" },
+                    { 6, "settings", "Settings", 6, "Настройки", "/settings" }
+                });
+
             migrationBuilder.InsertData(
                 table: "permissions",
                 columns: new[] { "id", "name" },
@@ -192,11 +271,9 @@ namespace Flags.Infrastructure.Migrations
                 {
                     { 1, "Read" },
                     { 2, "Create" },
-                    { 4, "Update" },
-                    { 8, "Delete" }
+                    { 3, "Update" },
+                    { 4, "Delete" }
                 });
-
-
 
             migrationBuilder.InsertData(
                 table: "roles",
@@ -205,20 +282,20 @@ namespace Flags.Infrastructure.Migrations
                 {
                     { 1, "Admin" },
                     { 2, "User" },
-                    { 4, "Seller" }
+                    { 3, "Seller" }
                 });
 
             migrationBuilder.InsertData(
                 table: "role_permissions",
-                columns: new[] { "role_id", "permission_id" },
+                columns: new[] { "permission_id", "role_id" },
                 values: new object[,]
                 {
                     { 1, 1 },
-                    { 1, 2 },
-                    { 1, 4},
-                    { 1, 8 },
                     { 2, 1 },
+                    { 3, 1 },
                     { 4, 1 },
+                    { 1, 2 },
+                    { 1, 3 }
                 });
 
             migrationBuilder.CreateIndex(
@@ -232,9 +309,19 @@ namespace Flags.Infrastructure.Migrations
                 column: "image_id");
 
             migrationBuilder.CreateIndex(
+                name: "ix_role_menu_items_menu_item_id",
+                table: "role_menu_items",
+                column: "menu_item_id");
+
+            migrationBuilder.CreateIndex(
                 name: "ix_role_permissions_permission_id",
                 table: "role_permissions",
                 column: "permission_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_user_favorite_products_product_id",
+                table: "user_favorite_products",
+                column: "product_id");
 
             migrationBuilder.CreateIndex(
                 name: "ix_user_email",
@@ -265,10 +352,10 @@ namespace Flags.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "products");
+                name: "refresh_jwts");
 
             migrationBuilder.DropTable(
-                name: "refresh_jwts");
+                name: "role_menu_items");
 
             migrationBuilder.DropTable(
                 name: "role_permissions");
@@ -277,13 +364,22 @@ namespace Flags.Infrastructure.Migrations
                 name: "user_email_confirmations");
 
             migrationBuilder.DropTable(
-                name: "product_categories");
+                name: "user_favorite_products");
+
+            migrationBuilder.DropTable(
+                name: "menu_items");
 
             migrationBuilder.DropTable(
                 name: "permissions");
 
             migrationBuilder.DropTable(
+                name: "products");
+
+            migrationBuilder.DropTable(
                 name: "users");
+
+            migrationBuilder.DropTable(
+                name: "product_categories");
 
             migrationBuilder.DropTable(
                 name: "media");

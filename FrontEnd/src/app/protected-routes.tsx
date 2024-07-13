@@ -9,6 +9,7 @@ import Purchases from "../pages/account/purchases";
 import FavoriteProducts from "../pages/account/favorite-products";
 import ProductCategories from "../pages/account/product-categories";
 import Settings from "../pages/settings";
+import Profile from "../pages/account/profile/profile";
 
 export default function ProtectedRoutes() {
 	const isAuthenticated = useAppSelector(
@@ -28,10 +29,10 @@ export default function ProtectedRoutes() {
 				<Route path="/users/*" element={<Users />} />
 				<Route path="/products/*" element={<ProductRouter />} />
 				<Route path="/purchases/*" element={<Purchases />} />
-				<Route path="/cart/*" element={<Cart />} />
 				<Route path="/favorite/*" element={<FavoriteProducts />} />
-				<Route path="/account/*" element={<AccountRoutes />} />
 				<Route path="/settings/*" element={<Settings />} />
+				<Route path="/profile/*" element={<Profile />} />
+				<Route path="/*" element={<AccountRoutes />} />
 				<Route path="*" element={<NotFound />} />
 			</Routes>
 		);

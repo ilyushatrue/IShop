@@ -9,6 +9,8 @@ public class UserMappingConfig : IRegister
     public void Register(TypeAdapterConfig config)
     {
         config.NewConfig<User, UserInitialDto>()
+            .Map(dto => dto.Email, src => src.Email.Value)
+            .Map(dto => dto.Phone, src => src.Phone.Value)
             .Map(dto => dto.MenuItems, src => src.Role!.MemuItems);
     }
 }

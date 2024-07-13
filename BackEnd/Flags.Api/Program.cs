@@ -22,7 +22,6 @@ public class Program
             .AddPresentation()
             .AddInfrastructure(builder.Configuration);
 
-        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(options =>
         {
@@ -30,7 +29,6 @@ public class Program
         });
         var app = builder.Build();
 
-        // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
@@ -42,7 +40,6 @@ public class Program
 
         app.UseCors("CORS");
         app.UseMiddleware<ExceptionHandlingMiddleware>();
-        //app.UseExceptionHandler("/error");
         app.UseHttpsRedirection();
         app.UseCookiePolicy(new CookiePolicyOptions
         {

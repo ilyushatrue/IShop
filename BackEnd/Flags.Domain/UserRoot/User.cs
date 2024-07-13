@@ -17,13 +17,13 @@ public class User : AggregateRoot<Guid>
         string? phone,
         string email,
         string passwordHash,
+        RoleFlag role,
         DateTime emailConfirmationTokenExpiry,
         Guid? avatarId = null) : this()
     {
         Id = id;
-        Update(firstName, lastName, phone, email, avatarId);
+        Update(firstName, lastName, phone, email, role, avatarId);
         UpdatePassword(passwordHash);
-        RoleId = (int)RoleFlag.User;
         EmailConfirmation = new(id, Guid.NewGuid(), emailConfirmationTokenExpiry);
     }
 
@@ -33,7 +33,13 @@ public class User : AggregateRoot<Guid>
         Password = password;
     }
 
-    public void Update(string firstName, string lastName, string? phone, string email, Guid? avatarId)
+    public void Update(
+        string firstName,
+        string lastName,
+        string? phone,
+        string email,
+        RoleFlag role,
+        Guid? avatarId)
     {
         var emailObj = Email.Create(email);
         var phoneObj = phone is not null ? Phone.Create(phone) : null;
@@ -41,6 +47,7 @@ public class User : AggregateRoot<Guid>
         LastName = lastName;
         Phone = phoneObj;
         Email = emailObj;
+        RoleId = (int)role;
         AvatarId = avatarId;
     }
 
@@ -51,6 +58,7 @@ public class User : AggregateRoot<Guid>
         string? phone,
         string email,
         string passwordHash,
+        RoleFlag role,
         DateTime emailConfirmationTokenExpiry,
         Guid? avatarId)
     {
@@ -61,6 +69,7 @@ public class User : AggregateRoot<Guid>
             phone,
             email,
             passwordHash,
+            role,
             emailConfirmationTokenExpiry,
             avatarId);
     }
@@ -72,6 +81,7 @@ public class User : AggregateRoot<Guid>
     public Email Email { get; private set; } = null!;
     public Password Password { get; private set; } = null!;
     public Guid? AvatarId { get; private set; }
+
     public Role? Role { get; private set; }
     public RefreshJwt? RefreshJwt { get; private set; }
     public Media? Avatar { get; }

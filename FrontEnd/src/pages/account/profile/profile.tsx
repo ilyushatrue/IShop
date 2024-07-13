@@ -16,7 +16,7 @@ export default function Profile() {
 		email: userState.email!,
 		firstName: userState.firstName!,
 		lastName: userState.lastName!,
-		phone: userState.phone,
+		phone: userState.phone ?? "",
 	});
 	const dispatch = useAppDispatch();
 	const { fetchAsync, isFetching } = useApi({ triggerPage: true });

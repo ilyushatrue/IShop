@@ -69,6 +69,7 @@ public static class DependencyInjection
         services.AddDbContext<FlagDbContext>(options => options
             .UseSqlite($"Data Source={dbPath}")
             .UseSnakeCaseNamingConvention());
+        services.AddHostedService<DataInitializationService>();
 
         services.AddScoped<IDbManager, DbManager>();
         services.AddScoped<IUserRepository, UserRepository>();
@@ -146,6 +147,8 @@ public static class DependencyInjection
         services.Configure<HostSettings>(configuration.GetSection(nameof(HostSettings)));
         services.Configure<AuthenticationSettings>(configuration.GetSection(nameof(AuthenticationSettings)));
         services.Configure<MenuSettings>(configuration.GetSection(nameof(MenuSettings)));
+        services.Configure<AuthorizationSettings>(configuration.GetSection(nameof(AuthorizationSettings)));
+        services.Configure<AdminSettings>(configuration.GetSection(nameof(AdminSettings)));
         services.AddSingleton<IPasswordHasher, PasswordHasher>();
         services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
         services.AddAuthentication(defaultScheme: JwtBearerDefaults.AuthenticationScheme)
@@ -179,12 +182,10 @@ public static class DependencyInjection
                 .RequireRole("Admin"))
             .AddPolicy(CustomPolicies.EDIT_POLICY, policy => policy
                 .AddRequirements(new PermissionRequirement(
-                [
                     PermissionFlag.Create,
                     PermissionFlag.Read,
                     PermissionFlag.Delete,
-                    PermissionFlag.Update
-                ])));
+                    PermissionFlag.Update)));
         return services;
     }
 }

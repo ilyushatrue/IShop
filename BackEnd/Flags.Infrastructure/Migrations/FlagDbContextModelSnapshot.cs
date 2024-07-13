@@ -3,7 +3,6 @@ using System;
 using Flags.Infrastructure.Persistance;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,11 +10,9 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Flags.Infrastructure.Migrations
 {
     [DbContext(typeof(FlagDbContext))]
-    [Migration("20240712094151_MenuItems2")]
-    partial class MenuItems2
+    partial class FlagDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.4");
@@ -48,9 +45,9 @@ namespace Flags.Infrastructure.Migrations
 
             modelBuilder.Entity("Flags.Domain.MenuItemEntity.MenuItem", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("id");
 
                     b.Property<string>("IconName")
@@ -85,54 +82,54 @@ namespace Flags.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("9a2793dc-bd0b-45ca-a879-4f4ab65a3da6"),
+                            Id = 1,
                             IconName = "person",
-                            Name = "account",
+                            Name = "Profile",
                             Order = 1,
                             Title = "Мой профиль",
-                            Url = "/account"
+                            Url = "/profile"
                         },
                         new
                         {
-                            Id = new Guid("2d35805b-97b0-4695-872d-ac2e18561d54"),
+                            Id = 2,
                             IconName = "sell",
-                            Name = "purchases",
+                            Name = "Purchases",
                             Order = 2,
                             Title = "Покупки",
                             Url = "/purchases"
                         },
                         new
                         {
-                            Id = new Guid("4a33a997-a77a-4224-b73c-373ad3a608f1"),
+                            Id = 3,
                             IconName = "shopping_bag",
-                            Name = "cart",
+                            Name = "Cart",
                             Order = 3,
                             Title = "Корзина",
                             Url = "/cart"
                         },
                         new
                         {
-                            Id = new Guid("af76877e-b592-41c1-be1c-25bbb05fbca3"),
+                            Id = 4,
                             IconName = "inventory",
-                            Name = "products",
+                            Name = "Products",
                             Order = 4,
                             Title = "Товары",
                             Url = "/products"
                         },
                         new
                         {
-                            Id = new Guid("cc7c483d-ab7d-426a-8b78-bebde0f43155"),
+                            Id = 5,
                             IconName = "people",
-                            Name = "users",
+                            Name = "Users",
                             Order = 5,
                             Title = "Пользователи",
                             Url = "/users"
                         },
                         new
                         {
-                            Id = new Guid("3dd3e83f-46c2-43ed-8523-ba4c4d7ba761"),
+                            Id = 6,
                             IconName = "settings",
-                            Name = "settings",
+                            Name = "Settings",
                             Order = 6,
                             Title = "Настройки",
                             Url = "/settings"
@@ -233,12 +230,12 @@ namespace Flags.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = 4,
+                            Id = 3,
                             Name = "Update"
                         },
                         new
                         {
-                            Id = 8,
+                            Id = 4,
                             Name = "Delete"
                         });
                 });
@@ -293,7 +290,7 @@ namespace Flags.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = 4,
+                            Id = 3,
                             Name = "Seller"
                         });
                 });
@@ -304,8 +301,8 @@ namespace Flags.Infrastructure.Migrations
                         .HasColumnType("INTEGER")
                         .HasColumnName("role_id");
 
-                    b.Property<Guid>("MenuItemId")
-                        .HasColumnType("TEXT")
+                    b.Property<int>("MenuItemId")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("menu_item_id");
 
                     b.HasKey("RoleId", "MenuItemId")
@@ -334,6 +331,38 @@ namespace Flags.Infrastructure.Migrations
                         .HasDatabaseName("ix_role_permissions_permission_id");
 
                     b.ToTable("role_permissions", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 2
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 1
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 3
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 4
+                        },
+                        new
+                        {
+                            RoleId = 2,
+                            PermissionId = 1
+                        },
+                        new
+                        {
+                            RoleId = 3,
+                            PermissionId = 1
+                        });
                 });
 
             modelBuilder.Entity("Flags.Domain.UserRoot.Entities.UserEmailConfirmation", b =>

@@ -25,7 +25,7 @@ export default function Products({ products, onDelete, onUpdate }: IProps) {
 		let actions: ICardAction[] = [
 			{
 				iconName: "favorite_outline",
-				onClick: (id) => console.log(id),
+				onClick: handleDeleteProductAsync,
 			},
 		];
 		if (isAuth) {
@@ -44,7 +44,15 @@ export default function Products({ products, onDelete, onUpdate }: IProps) {
 		return actions;
 	}, [isAuth, products]);
 
-	async function handleDeleteProductAsync() {
+	async function handleDeleteProductAsync(productId: string) {
+		fetchAsync({
+			request: () => productsApi.toFavoritesAsync(productId),
+			onSuccess: () => onDelete(productId),
+			onError: (handler) => handler.log().popup(),
+		});
+	}
+
+	async function handleToFavoritesAsync() {
 		const id = productToDeleteId;
 		setProductToDeleteId("");
 		fetchAsync({
@@ -80,11 +88,13 @@ export default function Products({ products, onDelete, onUpdate }: IProps) {
 			</Grid>
 			<Dialog
 				title="Удалить товар"
-				onEnterKeyPress={handleDeleteProductAsync}
+				onEnterKeyPress={() =>
+					handleDeleteProductAsync(productToDeleteId)
+				}
 				content="Вы действительно хотите удалить товар?"
 				open={!!productToDeleteId}
 				onClose={() => setProductToDeleteId("")}
-				onOk={handleDeleteProductAsync}
+				onOk={() => handleDeleteProductAsync(productToDeleteId)}
 				actions={([ok]) => [
 					{
 						label: "Не хочу",

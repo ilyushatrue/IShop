@@ -23,7 +23,7 @@ public class Password
             throw new ValidationException(
                 "validation-exception",
                 $"Превышена допустимая длина пароля ({HASH_LENGTH}).",
-                $"Превышена допустимая длина пароля ({HASH_LENGTH}).");
+                $"Что-то пошло не так. Обратитесь к администратору.");
 
         return new Password(password);
     }
