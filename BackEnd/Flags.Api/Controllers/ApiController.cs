@@ -7,5 +7,5 @@ namespace Flags.Api.Controllers;
 [Authorize]
 public class ApiController : ControllerBase
 {
-
+    
 }

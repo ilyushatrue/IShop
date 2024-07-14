@@ -1,6 +1,6 @@
 namespace Flags.Domain.Common.Models;
 
-public abstract class Entity<T> : IEquatable<Entity<T>> where T : notnull
+public abstract class Entity<T> : IEntity<T>, IEquatable<Entity<T>> where T : notnull
 {
 	public T Id { get; protected set; } = default!;
 

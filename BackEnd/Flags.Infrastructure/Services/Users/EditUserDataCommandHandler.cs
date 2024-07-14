@@ -3,6 +3,7 @@ using Flags.Domain.UserRoot;
 using Flags.Domain.Common.Exceptions;
 using Flags.Application.Persistance.Repositories;
 using Flags.Application.Persistance;
+using Microsoft.EntityFrameworkCore;
 
 namespace Flags.Infrastructure.Services.Users;
 public class EditUserDataCommandHandler(
@@ -11,7 +12,7 @@ public class EditUserDataCommandHandler(
 {
     public async Task<User> Handle(EditUserDataCommand command, CancellationToken cancellationToken)
     {
-        var user = await userRepository.GetByEmailAsync(command.Email) ??
+        var user = await userRepository.GetByEmailAsync(command.Email, x => x.) ??
             throw new NotFoundException(
                 "edit-user-data",
                 $"Пользователь с эл. почтой {command.Email} не найден.",

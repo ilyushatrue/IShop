@@ -1,24 +1,16 @@
-using Flags.Application.AppSettings;
 using Flags.Domain.MediaEntity;
 using Flags.Domain.MenuItemEntity;
 using Flags.Domain.ProductRoot;
 using Flags.Domain.ProductRoot.Entities;
 using Flags.Domain.UserRoot;
 using Flags.Domain.UserRoot.Entities;
-using Flags.Infrastructure.Persistance.Configurations;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 
 namespace Flags.Infrastructure.Persistance;
 
 public class FlagDbContext(
-    IOptions<AuthorizationSettings> authorizationOptions,
-    IOptions<MenuSettings> menuSettings,
     DbContextOptions<FlagDbContext> options) : DbContext(options)
 {
-    private readonly AuthorizationSettings _authorizationOptions = authorizationOptions.Value;
-    private readonly MenuSettings _menuSettings = menuSettings.Value;
-
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         base.OnConfiguring(optionsBuilder);
@@ -27,8 +19,6 @@ public class FlagDbContext(
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(FlagDbContext).Assembly);
-        modelBuilder.ApplyConfiguration(new RolePermissionConfiguration(_authorizationOptions));
-        modelBuilder.ApplyConfiguration(new MenuItemConfiguration(_menuSettings));
     }
 
     public DbSet<User> Users { get; set; } = null!;

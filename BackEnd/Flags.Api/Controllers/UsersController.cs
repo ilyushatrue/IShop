@@ -10,6 +10,7 @@ using MapsterMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Flags.Contracts.Authentication;
+using Flags.Domain.Enums;
 
 namespace Flags.Api.Controllers;
 
@@ -60,9 +61,11 @@ public class UsersController(
     }
 
     [HttpPut]
-    public async Task<IActionResult> EditUserData([FromBody] EditUserDataCommand user, CancellationToken cancellationToken)
+    public async Task<IActionResult> UpdateUserData([FromBody] EditUserDataCommand user, CancellationToken cancellationToken)
     {
-        var result = await editUserDataCommandHandler.Handle(user, cancellationToken);
+        var role = Enum.Parse<RoleFlag>(HttpContext.User.Claims.FirstOrDefault(x => x.Type == "RoleId")!.Value);
+        var command = new EditUserDataCommand(user.FirstName, user.LastName, user.Email, user.Phone, role, user.AvatarId);
+        var result = await editUserDataCommandHandler.Handle(command, cancellationToken);
         cookieManager.SetUserCookies(result);
         return Ok(result);
     }

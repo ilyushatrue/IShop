@@ -18,11 +18,5 @@ public class RoleConfiguration : IEntityTypeConfiguration<Role>
                 lb => lb.HasOne(rp => rp.Permission).WithMany(p => p.RolePermissions).HasForeignKey(rp => rp.PermissionId),
                 rb => rb.HasOne(rp => rp.Role).WithMany(r => r.RolePermissions).HasForeignKey(rp => rp.RoleId)
             );
-
-        var roles = Enum
-            .GetValues<RoleFlag>()
-            .Select(r => Role.Create((int)r, r.ToString()));
-
-        builder.HasData(roles);
     }
 }

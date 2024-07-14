@@ -1,16 +1,22 @@
+using Flags.Domain.Enums;
+using System.Security;
+
 namespace Flags.Domain.UserRoot.Entities;
 
 public class RolePermission
 {
     private RolePermission() { }
-    private RolePermission(int roleId, int permissionId)
+    private RolePermission(RoleFlag role, PermissionFlag permission)
     {
-        RoleId = roleId;
-        PermissionId = permissionId;
+        RoleId = (int)role;
+        PermissionId = (int)permission;
     }
 
-    public static RolePermission Create(int roleId, int permissionId) =>
-        new(roleId, permissionId);
+    public static RolePermission Create(RoleFlag role, PermissionFlag permission) =>
+        new(role, permission);
+    public static IEnumerable<RolePermission> CreateRange(RoleFlag role, params PermissionFlag[] permissions) =>
+        permissions.Select(permission => new RolePermission(role, permission));
+
 
     public int RoleId { get; private set; }
     public int PermissionId { get; private set; }

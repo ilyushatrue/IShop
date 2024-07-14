@@ -179,7 +179,7 @@ public static class DependencyInjection
         services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
         services.AddAuthorizationBuilder()
             .AddPolicy(CustomPolicies.ADMIN_POLICY, policy => policy
-                .RequireRole("Admin"))
+                .RequireRole(RoleFlag.Admin.ToString()))
             .AddPolicy(CustomPolicies.EDIT_POLICY, policy => policy
                 .AddRequirements(new PermissionRequirement(
                     PermissionFlag.Create,

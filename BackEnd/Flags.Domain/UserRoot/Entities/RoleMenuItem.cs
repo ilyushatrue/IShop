@@ -1,18 +1,19 @@
-﻿using Flags.Domain.MenuItemEntity;
+﻿using Flags.Domain.Enums;
+using Flags.Domain.MenuItemEntity;
 
 namespace Flags.Domain.UserRoot.Entities;
 public class RoleMenuItem
 {
     public RoleMenuItem() { }
 
-    public RoleMenuItem(int roleId, int menuItemId)
+    public RoleMenuItem(RoleFlag role, MenuItemEnum menuItem)
     {
-        MenuItemId = menuItemId;
-        RoleId = roleId;
+        RoleId = (int)role;
+        MenuItemId = (int)menuItem;
     }
-    public int MenuItemId { get; private set; }
     public int RoleId { get; private set; }
+    public int MenuItemId { get; private set; }
 
-    public MenuItem? MenuItem { get; private set; }
     public Role? Role { get; private set; }
+    public MenuItem? MenuItem { get; private set; }
 }

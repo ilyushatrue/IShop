@@ -3,6 +3,7 @@ using System.Text.Json;
 using System.Text;
 using Microsoft.Extensions.Options;
 using Flags.Application.AppSettings;
+using System.Text.Json.Serialization;
 
 namespace Flags.Api.Middlewares
 {
@@ -96,6 +97,7 @@ namespace Flags.Api.Middlewares
 
             var options = new JsonSerializerOptions
             {
+                ReferenceHandler = ReferenceHandler.Preserve,
                 Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
                 WriteIndented = true
             };

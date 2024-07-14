@@ -3,12 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
-
 namespace Flags.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitData : Migration
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -115,8 +113,8 @@ namespace Flags.Infrastructure.Migrations
                 name: "role_menu_items",
                 columns: table => new
                 {
-                    menu_item_id = table.Column<int>(type: "INTEGER", nullable: false),
-                    role_id = table.Column<int>(type: "INTEGER", nullable: false)
+                    role_id = table.Column<int>(type: "INTEGER", nullable: false),
+                    menu_item_id = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -249,53 +247,6 @@ namespace Flags.Infrastructure.Migrations
                         principalTable: "users",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.InsertData(
-                table: "menu_items",
-                columns: new[] { "id", "icon_name", "name", "order", "title", "url" },
-                values: new object[,]
-                {
-                    { 1, "person", "Profile", 1, "Мой профиль", "/profile" },
-                    { 2, "sell", "Purchases", 2, "Покупки", "/purchases" },
-                    { 3, "shopping_bag", "Cart", 3, "Корзина", "/cart" },
-                    { 4, "inventory", "Products", 4, "Товары", "/products" },
-                    { 5, "people", "Users", 5, "Пользователи", "/users" },
-                    { 6, "settings", "Settings", 6, "Настройки", "/settings" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "permissions",
-                columns: new[] { "id", "name" },
-                values: new object[,]
-                {
-                    { 1, "Read" },
-                    { 2, "Create" },
-                    { 3, "Update" },
-                    { 4, "Delete" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "roles",
-                columns: new[] { "id", "name" },
-                values: new object[,]
-                {
-                    { 1, "Admin" },
-                    { 2, "User" },
-                    { 3, "Seller" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "role_permissions",
-                columns: new[] { "permission_id", "role_id" },
-                values: new object[,]
-                {
-                    { 1, 1 },
-                    { 2, 1 },
-                    { 3, 1 },
-                    { 4, 1 },
-                    { 1, 2 },
-                    { 1, 3 }
                 });
 
             migrationBuilder.CreateIndex(

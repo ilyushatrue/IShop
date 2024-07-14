@@ -44,8 +44,9 @@ export default function ProfilePage({
 						alignItems={"start"}
 						gap={2}
 					>
-						{menuItems.map((item) => (
+						{menuItems.map((item, index) => (
 							<IconButton
+								key={index}
 								iconName={item.iconName}
 								onClick={() => navigate(item.url)}
 								caption={item.title}

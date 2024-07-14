@@ -31,7 +31,7 @@ export default function Profile() {
 					dispatch(
 						updateCurrentUserState({
 							email: email,
-							firstName: firstName,
+							firstName: firstName, 
 							lastName: lastName,
 							avatarId: avatarId,
 							phone: phone,

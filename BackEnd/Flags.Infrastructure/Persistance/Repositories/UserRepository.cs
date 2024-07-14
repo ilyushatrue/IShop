@@ -21,7 +21,7 @@ public class UserRepository(FlagDbContext dbContext) : IUserRepository
         dbContext.Add(user);
     }
 
-    public async Task<User?> GetByEmailAsync(string email)
+    public async Task<User?> GetByEmailAsync(string email, Func<DbContext, string> func)
     {
         return await dbContext.Users
             .Include(u => u.RefreshJwt)

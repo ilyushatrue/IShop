@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Flags.Domain.Common.Models;
 using Flags.Domain.MenuItemEntity;
 
@@ -18,6 +19,7 @@ public class Role : Entity<int>
     public string Name { get; private set; } = null!;
     public ICollection<Permission>? Permissions { get; private set; }
     public ICollection<RolePermission>? RolePermissions { get; private set; }
+    [JsonIgnore]
     public ICollection<User>? Users { get; private set; }
     public ICollection<RoleMenuItem>? RoleMenuItems { get; private set; }
     public ICollection<MenuItem>? MemuItems { get; private set; }

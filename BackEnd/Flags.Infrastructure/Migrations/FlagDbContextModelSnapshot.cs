@@ -78,62 +78,6 @@ namespace Flags.Infrastructure.Migrations
                         .HasName("pk_menu_items");
 
                     b.ToTable("menu_items", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            IconName = "person",
-                            Name = "Profile",
-                            Order = 1,
-                            Title = "Мой профиль",
-                            Url = "/profile"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            IconName = "sell",
-                            Name = "Purchases",
-                            Order = 2,
-                            Title = "Покупки",
-                            Url = "/purchases"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            IconName = "shopping_bag",
-                            Name = "Cart",
-                            Order = 3,
-                            Title = "Корзина",
-                            Url = "/cart"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            IconName = "inventory",
-                            Name = "Products",
-                            Order = 4,
-                            Title = "Товары",
-                            Url = "/products"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            IconName = "people",
-                            Name = "Users",
-                            Order = 5,
-                            Title = "Пользователи",
-                            Url = "/users"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            IconName = "settings",
-                            Name = "Settings",
-                            Order = 6,
-                            Title = "Настройки",
-                            Url = "/settings"
-                        });
                 });
 
             modelBuilder.Entity("Flags.Domain.ProductRoot.Entities.ProductCategory", b =>
@@ -216,28 +160,6 @@ namespace Flags.Infrastructure.Migrations
                         .HasName("pk_permissions");
 
                     b.ToTable("permissions", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Read"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Create"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Update"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Name = "Delete"
-                        });
                 });
 
             modelBuilder.Entity("Flags.Domain.UserRoot.Entities.RefreshJwt", b =>
@@ -276,23 +198,6 @@ namespace Flags.Infrastructure.Migrations
                         .HasName("pk_roles");
 
                     b.ToTable("roles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Admin"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "User"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Seller"
-                        });
                 });
 
             modelBuilder.Entity("Flags.Domain.UserRoot.Entities.RoleMenuItem", b =>
@@ -331,38 +236,6 @@ namespace Flags.Infrastructure.Migrations
                         .HasDatabaseName("ix_role_permissions_permission_id");
 
                     b.ToTable("role_permissions", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            RoleId = 1,
-                            PermissionId = 2
-                        },
-                        new
-                        {
-                            RoleId = 1,
-                            PermissionId = 1
-                        },
-                        new
-                        {
-                            RoleId = 1,
-                            PermissionId = 3
-                        },
-                        new
-                        {
-                            RoleId = 1,
-                            PermissionId = 4
-                        },
-                        new
-                        {
-                            RoleId = 2,
-                            PermissionId = 1
-                        },
-                        new
-                        {
-                            RoleId = 3,
-                            PermissionId = 1
-                        });
                 });
 
             modelBuilder.Entity("Flags.Domain.UserRoot.Entities.UserEmailConfirmation", b =>

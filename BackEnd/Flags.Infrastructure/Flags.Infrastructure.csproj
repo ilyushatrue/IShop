@@ -17,7 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Migrations\" />
     <Folder Include="Persistance\DB\" />
     <Folder Include="Persistance\Migrations\" />
   </ItemGroup>
