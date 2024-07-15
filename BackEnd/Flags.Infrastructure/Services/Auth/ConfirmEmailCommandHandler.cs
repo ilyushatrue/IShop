@@ -1,5 +1,5 @@
 ﻿using Flags.Application.AppSettings;
-using Flags.Application.Authentication.Commands.VerifyEmail;
+using Flags.Application.Authentication.Commands.ConfirmEmail;
 using Flags.Application.Authentication.Common;
 using Flags.Application.Common;
 using Flags.Application.Persistance;
@@ -19,9 +19,9 @@ public class ConfirmEmailCommandHandler(
 {
     private readonly RefreshJwtSettings _refreshJwtSettings = refreshJwtSettings.Value;
     private readonly DateTime _utcNow = dateTimeProvider.UtcNow;
-    public async Task<AuthenticationResult> Handle(Guid emailConfirationToken)
+    public async Task<AuthenticationResult> Handle(Guid emailConfirationToken, CancellationToken cancellationToken)
     {
-        var emailConfirmation = await emailConfirmationRepository.GetByTokenAsync(emailConfirationToken) ??
+        var emailConfirmation = await emailConfirmationRepository.GetByTokenAsync(emailConfirationToken, cancellationToken) ??
             throw new Exception("Не удалось подтвердить электронную почту :(");
 
         if (emailConfirmation.IsConfirmed)
@@ -37,7 +37,7 @@ public class ConfirmEmailCommandHandler(
         var jwtAccessToken = jwtTokenGenerator.GenerateAccessToken(user);
         user.SetRefreshToken(RefreshJwt.Create(user.Id, _refreshJwtSettings.ExpiryDays));
 
-        await dbManager.SaveChangesAsync();
+        await dbManager.SaveChangesAsync(cancellationToken);
         return new AuthenticationResult(user, jwtAccessToken);
     }
 }

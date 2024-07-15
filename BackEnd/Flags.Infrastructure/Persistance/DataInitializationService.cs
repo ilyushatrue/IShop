@@ -1,6 +1,5 @@
 ﻿using Flags.Application.AppSettings;
 using Flags.Application.Authentication.Common;
-using Flags.Domain.Common.Models;
 using Flags.Domain.Enums;
 using Flags.Domain.MenuItemEntity;
 using Flags.Domain.UserRoot;
@@ -18,19 +17,19 @@ public class DataInitializationService(IServiceProvider serviceProvider) : IHost
     public async Task StartAsync(CancellationToken cancellationToken)
     {
         using var scope = serviceProvider.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<FlagDbContext>();
+        var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         var adminSettings = scope.ServiceProvider.GetRequiredService<IOptions<AdminSettings>>().Value;
         var passwordHasher = scope.ServiceProvider.GetRequiredService<IPasswordHasher>();
 
         using var transaction = await dbContext.Database.BeginTransactionAsync(cancellationToken);
         try
         {
-            await EnsureAdminUserCreated(dbContext, adminSettings, passwordHasher);
-            await CreatePermissions(dbContext);
-            await CreateRoles(dbContext);
-            await CreateRolePermissions(dbContext);
-            await CreateMenuItems(dbContext);
-            await CreateRoleMenuItems(dbContext);
+            await EnsureAdminUserCreated(dbContext, adminSettings, passwordHasher, cancellationToken);
+            await CreatePermissions(dbContext, cancellationToken);
+            await CreateRoles(dbContext, cancellationToken);
+            await CreateRolePermissions(dbContext, cancellationToken);
+            await CreateMenuItems(dbContext, cancellationToken);
+            await CreateRoleMenuItems(dbContext, cancellationToken);
 
             await dbContext.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
@@ -41,7 +40,7 @@ public class DataInitializationService(IServiceProvider serviceProvider) : IHost
         }
     }
 
-    private async Task CreateRolePermissions(FlagDbContext dbContext)
+    private async Task CreateRolePermissions(AppDbContext dbContext, CancellationToken cancellationToken)
     {
         var adminPermissions = RolePermission.CreateRange(
             RoleFlag.Admin,
@@ -63,7 +62,7 @@ public class DataInitializationService(IServiceProvider serviceProvider) : IHost
 
         RolePermission[] rolePermissions = [.. adminPermissions, .. visitorPermissions, .. sellerPermissions];
 
-        var dbSet = await dbContext.RolePermissions.ToListAsync();
+        var dbSet = await dbContext.RolePermissions.ToListAsync(cancellationToken);
         var recordsToDelete = dbSet
             .Where(dbRecord => rolePermissions
                 .All(newRecord =>
@@ -82,42 +81,17 @@ public class DataInitializationService(IServiceProvider serviceProvider) : IHost
         dbContext.RolePermissions.RemoveRange(recordsToDelete);
     }
 
-    private static async Task SyncronizeData<T, TId>(FlagDbContext dbContext, IEnumerable<T> overwriteData) where TId : notnull where T : Entity<TId>
-    {
-        var dbSet = await dbContext.Set<T>().ToListAsync();
-        var recordsToDelete = dbSet
-            .Where(dbRecord => overwriteData.All(newRecord => !newRecord.Id.Equals(dbRecord.Id)))
-            .ToArray();
-        var commonRecords = dbSet
-            .Except(recordsToDelete)
-            .OrderBy(x => x.Id)
-            .ToArray();
-        var recordsToAdd = overwriteData
-            .Where(newRecord => commonRecords.All(dbRecord => !newRecord.Id.Equals(dbRecord.Id)))
-            .ToArray();
-
-        var updateData = overwriteData
-            .Where(data => commonRecords.Any(cr => cr.Id.Equals(data.Id)));
-
-        foreach (var record in commonRecords)
-            dbContext.Entry(record).State = EntityState.Detached;
-
-        dbContext.UpdateRange(updateData);
-        dbContext.RemoveRange(recordsToDelete);
-        dbContext.AddRange(recordsToAdd);
-    }
-
-    private async Task CreatePermissions(FlagDbContext dbContext)
+    private static async Task CreatePermissions(AppDbContext dbContext, CancellationToken cancellationToken)
     {
         var permissions = Enum
             .GetValues<PermissionFlag>()
             .Select(p => Permission.Create((int)p, p.ToString()))
             .ToArray();
 
-        await SyncronizeData<Permission, int>(dbContext, permissions);
+        await dbContext.SyncronizeRecordsAsync<Permission, int>(permissions, cancellationToken);
     }
 
-    private async Task CreateRoleMenuItems(FlagDbContext dbContext)
+    private async Task CreateRoleMenuItems(AppDbContext dbContext, CancellationToken cancellationToken)
     {
         var adminMenuItems = Enum
             .GetValues<MenuItemEnum>()
@@ -137,7 +111,7 @@ public class DataInitializationService(IServiceProvider serviceProvider) : IHost
 
         List<RoleMenuItem> menuItems = [.. adminMenuItems, .. sellerMenuItems, .. userMenuItems];
 
-        var dbSet = await dbContext.RoleMenuItems.ToListAsync();
+        var dbSet = await dbContext.RoleMenuItems.ToListAsync(cancellationToken);
         var recordsToDelete = dbSet
             .Where(dbRecord => menuItems
                 .All(newRecord =>
@@ -156,16 +130,16 @@ public class DataInitializationService(IServiceProvider serviceProvider) : IHost
         dbContext.RoleMenuItems.RemoveRange(recordsToDelete);
     }
 
-    private async Task CreateRoles(FlagDbContext dbContext)
+    private static async Task CreateRoles(AppDbContext dbContext, CancellationToken cancellationToken)
     {
         var roles = Enum
           .GetValues<RoleFlag>()
           .Select(r => Role.Create((int)r, r.ToString()));
 
-        await SyncronizeData<Role, int>(dbContext, roles);
+        await dbContext.SyncronizeRecordsAsync<Role, int>(roles, cancellationToken);
     }
 
-    private async Task CreateMenuItems(FlagDbContext dbContext)
+    private async Task CreateMenuItems(AppDbContext dbContext, CancellationToken cancellationToken)
     {
         List<MenuItem> menuItems = [
             MenuItem.Create((int)MenuItemEnum.Profile, "Profile", "Мой профиль", "/profile", "person", 1),
@@ -176,14 +150,14 @@ public class DataInitializationService(IServiceProvider serviceProvider) : IHost
             MenuItem.Create((int)MenuItemEnum.Settings, "Settings", "Настройки", "/settings", "settings", 6),
         ];
 
-        await SyncronizeData<MenuItem, int>(dbContext, menuItems);
+        await dbContext.SyncronizeRecordsAsync<MenuItem, int>(menuItems, cancellationToken);
     }
 
     public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
 
-    private async Task EnsureAdminUserCreated(FlagDbContext dbContext, AdminSettings adminSettings, IPasswordHasher passwordHasher)
+    private static async Task EnsureAdminUserCreated(AppDbContext dbContext, AdminSettings adminSettings, IPasswordHasher passwordHasher, CancellationToken cancellationToken)
     {
-        var adminExists = await dbContext.Users.AnyAsync(u => u.Email.Value == adminSettings.Email);
+        var adminExists = await dbContext.Users.AnyAsync(u => u.Email.Value == adminSettings.Email, cancellationToken);
         if (adminExists) return;
 
         var passwordHash = passwordHasher.Generate(adminSettings.Password);

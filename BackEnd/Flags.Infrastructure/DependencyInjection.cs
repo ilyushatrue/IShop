@@ -20,7 +20,6 @@ using Flags.Application.Authentication.Common;
 using Flags.Application.Authentication.Commands.Logout;
 using Flags.Application.Authentication.Commands.RefreshJwt;
 using Flags.Application.Authentication.Commands.Register;
-using Flags.Application.Authentication.Commands.Login;
 using Flags.Application.Users.Queries;
 using Flags.Application.Users.Command;
 using Flags.Application.Images.Queries;
@@ -31,7 +30,6 @@ using Flags.Infrastructure.Services.Products;
 using Flags.Application.Products.Commands;
 using Flags.Application.Emails;
 using Flags.Infrastructure.Services.Emails;
-using Flags.Application.Authentication.Commands.VerifyEmail;
 using Flags.Application.Authentication.Commands.ResetPassword;
 using Flags.Infrastructure.Services.Auth.ResetPassword;
 using Flags.Application.Persistance.Repositories;
@@ -40,6 +38,7 @@ using Flags.Application.Authentication.Commands.ConfirmEmail;
 using Flags.Application.Products.Commands.MakeProductFavorite;
 using Flags.Application.MenuItems.Queries;
 using Flags.Infrastructure.Services.MenuItems;
+using Flags.Application.Authentication.Queries.Login;
 
 namespace Flags.Infrastructure;
 
@@ -66,7 +65,7 @@ public static class DependencyInjection
         var rootPath = Directory.GetParent(apiPath)!.FullName;
         var dbPath = rootPath + "\\Flags.Infrastructure\\Persistance\\DB\\flags.sql";
 
-        services.AddDbContext<FlagDbContext>(options => options
+        services.AddDbContext<AppDbContext>(options => options
             .UseSqlite($"Data Source={dbPath}")
             .UseSnakeCaseNamingConvention());
         services.AddHostedService<DataInitializationService>();

@@ -1,4 +1,3 @@
-using Flags.Domain.Enums;
 using Flags.Domain.UserRoot.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

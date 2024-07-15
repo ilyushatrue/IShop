@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Flags.Infrastructure.Persistance.Repositories;
 
-public class ProductRepository(FlagDbContext dbContext) : IProductRepository
+public class ProductRepository(AppDbContext dbContext) : IProductRepository
 {
     public void Create(Product product)
     {

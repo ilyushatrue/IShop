@@ -1,12 +1,13 @@
 ﻿using Flags.Application.Authentication.Commands.ResetPassword;
 using Flags.Application.Persistance.Repositories;
 using Flags.Domain.Common.Exceptions;
+using Flags.Infrastructure.Persistance;
 
 namespace Flags.Infrastructure.Services.Auth.ResetPassword;
 public class SendResetPasswordFormCommandHandler(
     IUserEmailConfirmationRepository emailConfirmationRepository) : ISendResetPasswordFormCommandHandler
 {
-    public async Task<string> Handle(string token)
+    public async Task<string> Handle(string token, CancellationToken cancellationToken)
     {
         if (!Guid.TryParse(token, out Guid guid))
             throw new NotFoundException(
@@ -14,7 +15,7 @@ public class SendResetPasswordFormCommandHandler(
                 $"Не удалось спарсить токен {token}",
                 "Не удалось изменить пароль. Обратитесь к администратору.");
 
-        if (!await emailConfirmationRepository.ValidateTokenAsync(guid))
+        if (!await emailConfirmationRepository.ValidateTokenAsync(guid, cancellationToken))
             throw new NotFoundException(
                 "send-reset-password",
                 $"Токен {token} не прошел валидацию.",

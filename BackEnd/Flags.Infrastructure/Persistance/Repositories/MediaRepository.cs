@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Flags.Infrastructure.Persistance.Repositories;
 public class MediaRepository(
-    FlagDbContext dbContext) : IMediaRepository
+    AppDbContext dbContext) : IMediaRepository
 {
     public async Task<int> CreateAsync(Guid fileName, string uri, string extension, int fileSize)
     {

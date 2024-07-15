@@ -5,30 +5,28 @@ using Microsoft.EntityFrameworkCore;
 namespace Flags.Infrastructure.Persistance.Repositories;
 
 public class RefreshJwtRepository(
-    FlagDbContext dbContext) : IRefreshJwtRepository
+    AppDbContext dbContext) : IRefreshJwtRepository
 {
-    public async Task<int> CreateAsync(RefreshJwt token)
+    public void Create(RefreshJwt token)
     {
         dbContext.RefreshJwts.Add(token);
-        return await dbContext.SaveChangesAsync();
     }
 
-    public void DeleteAsync(RefreshJwt token)
+    public void Delete(RefreshJwt token)
     {
         dbContext.Remove(token);
     }
 
-    public async Task<RefreshJwt?> GetByIdAsync(Guid userId)
+    public async Task<RefreshJwt?> GetByIdAsync(Guid userId, CancellationToken cancellationToken)
     {
         return await dbContext.RefreshJwts
             .Where(x => x.Id == userId)
             .Include(x => x.User)
-            .SingleOrDefaultAsync();
+            .SingleOrDefaultAsync(cancellationToken);
     }
 
-    public async Task<int> UpdateAsync(RefreshJwt token)
+    public void Update(RefreshJwt token )
     {
         dbContext.Update(token);
-        return await dbContext.SaveChangesAsync();
     }
 }

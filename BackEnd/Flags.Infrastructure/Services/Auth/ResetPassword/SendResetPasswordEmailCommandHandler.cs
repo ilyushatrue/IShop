@@ -13,7 +13,7 @@ public class SendResetPasswordEmailCommandHandler(
     IOptions<HostSettings> hostSettings) : ISendResetPasswordEmailCommandHandler
 {
     private readonly HostSettings _hostSettings = hostSettings.Value;
-    public async Task Handle(string userEmail)
+    public async Task Handle(string userEmail, CancellationToken cancellationToken)
     {
         userEmail = userEmail.Trim();
         if (!Email.Validate(userEmail))
@@ -22,7 +22,7 @@ public class SendResetPasswordEmailCommandHandler(
                 $"Эл. почта {userEmail} не корректна.",
                 "Эл. почта не корректна.");
 
-        var user = await userRepository.GetByEmailAsync(userEmail) ??
+        var user = await userRepository.GetByEmailAsync(userEmail, cancellationToken) ??
             throw new NotFoundException(
                 "send-reset-password",
                 $"Пользователя с email {userEmail} не существует.",

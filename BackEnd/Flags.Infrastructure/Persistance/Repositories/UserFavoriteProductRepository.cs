@@ -2,7 +2,7 @@
 
 namespace Flags.Infrastructure.Persistance.Repositories;
 public class UserFavoriteProductRepository(
-    FlagDbContext dbContext) : IUserFavoriteProductRepository
+    AppDbContext dbContext) : IUserFavoriteProductRepository
 {
     public void Create(Guid userId, Guid productId)
     {

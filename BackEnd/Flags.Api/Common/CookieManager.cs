@@ -1,6 +1,6 @@
 ﻿using Flags.Domain.UserRoot;
 
-namespace Flags.Infrastructure.Services.Cookies;
+namespace Flags.Api.Common;
 public class CookieManager(IHttpContextAccessor httpContextAccessor)
 {
     private readonly IResponseCookies _responseCookies = httpContextAccessor.HttpContext!.Response.Cookies;

@@ -1,6 +1,6 @@
 using Flags.Contracts.MenuItems;
 
-namespace Flags.Contracts.Authentication;
+namespace Flags.Contracts.Users;
 
 public record UserInitialDto(
     string FirstName,

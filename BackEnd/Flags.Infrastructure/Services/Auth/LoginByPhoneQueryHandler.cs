@@ -1,6 +1,7 @@
 using Flags.Application.AppSettings;
-using Flags.Application.Authentication.Commands.Login;
 using Flags.Application.Authentication.Common;
+using Flags.Application.Authentication.Queries.Login;
+using Flags.Application.Persistance;
 using Flags.Application.Persistance.Repositories;
 using Flags.Domain.Common.Exceptions;
 using Flags.Domain.UserRoot.Entities;
@@ -10,6 +11,7 @@ using Microsoft.Extensions.Options;
 namespace Flags.Infrastructure.Services.Auth;
 
 public class LoginByPhoneQueryHandler(
+    IDbManager dbManager,
     IUserRepository userRepository,
     IJwtTokenGenerator jwtTokenGenerator,
     IRefreshJwtRepository refreshJwtRepository,
@@ -22,7 +24,7 @@ public class LoginByPhoneQueryHandler(
     {
         phone = Phone.Trim(phone);
 
-        var user = await userRepository.GetByPhoneAsync(phone) ??
+        var user = await userRepository.GetByPhoneAsync(phone, cancellationToken) ??
             throw new NotFoundException(
                 "login-by-phone",
                 $"Пользователь с номером телефона {phone} не найден.",
@@ -47,13 +49,13 @@ public class LoginByPhoneQueryHandler(
         if (user.RefreshJwt is null)
         {
             var refreshJwt = RefreshJwt.Create(user.Id, _refreshJwtSettings.ExpiryDays);
-            await refreshJwtRepository.CreateAsync(refreshJwt);
+            refreshJwtRepository.Create(refreshJwt);
         }
         else
         {
-            await refreshJwtRepository.UpdateAsync(user.RefreshJwt);
+            refreshJwtRepository.Update(user.RefreshJwt);
         }
-
+        await dbManager.SaveChangesAsync(cancellationToken);
         return new AuthenticationResult(user, jwtAccessToken);
     }
 }

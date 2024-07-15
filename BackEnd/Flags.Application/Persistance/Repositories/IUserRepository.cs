@@ -1,18 +1,17 @@
 ﻿using Flags.Domain.Enums;
 using Flags.Domain.UserRoot;
-using Microsoft.EntityFrameworkCore;
 
 namespace Flags.Application.Persistance.Repositories;
 public interface IUserRepository
 {
-    Task<bool> CheckUserExistsByIdAsync(Guid id);
-    Task<bool> CheckUserWithEmailExistsAsync(string email);
-    Task<bool> CheckUserWithPhoneExistsAsync(string phone);
-    Task<User?> GetByEmailAsync(string email, Func<DbContext, string> func);
-    Task<User?> GetByPhoneAsync(string phone);
-    Task<User?> GetByIdAsync(Guid id);
+    Task<bool> CheckUserExistsByIdAsync(Guid id, CancellationToken cancellationToken);
+    Task<bool> CheckUserWithEmailExistsAsync(string email, CancellationToken cancellationToken);
+    Task<bool> CheckUserWithPhoneExistsAsync(string phone, CancellationToken cancellationToken);
+    Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken);
+    Task<User?> GetByPhoneAsync(string phone, CancellationToken cancellationToken);
+    Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
     void Create(User user);
     void Update(User user);
-    Task<List<User>> GetAllAsync();
+    Task<List<User>> GetAllAsync(CancellationToken cancellationToken);
     Task<HashSet<PermissionFlag>> GetPermissionsAsync(Guid userId);
 }

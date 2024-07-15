@@ -8,12 +8,12 @@ public class MakeProductFavoriteCommandHandler(
     IUserFavoriteProductRepository userFavoriteProductRepository,
     IDbManager dbManager) : IMakeProductFavoriteCommandHandler
 {
-    public async Task<bool> Handle(MakeProductFavoriteCommand command)
+    public async Task<bool> Handle(MakeProductFavoriteCommand command, CancellationToken cancellationToken) 
     {
         try
         {
             userFavoriteProductRepository.Create(command.UserId, command.ProductId);
-            var result = await dbManager.SaveChangesAsync();
+            var result = await dbManager.SaveChangesAsync(cancellationToken);
             return result > 0;
         }
         catch (Exception ex)

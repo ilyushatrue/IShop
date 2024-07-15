@@ -12,7 +12,7 @@ public class UpdateProductCommandHandler(
         var dbProduct = await productRepository.GetByIdAsync(product.Id);
         dbProduct.Update(product.Name, product.Price, product.ImageId, product.CategoryId, product.Description);
         productRepository.Update(dbProduct);
-        var affectedRecords = await dbManager.SaveChangesAsync();
+        var affectedRecords = await dbManager.SaveChangesAsync(cancellationToken);
         return affectedRecords > 0;
     }
 }

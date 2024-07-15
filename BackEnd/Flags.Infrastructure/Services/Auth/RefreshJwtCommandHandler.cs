@@ -5,10 +5,12 @@ using Flags.Domain.Common.Exceptions;
 using Microsoft.Extensions.Options;
 using Flags.Application.AppSettings;
 using Flags.Application.Persistance.Repositories;
+using Flags.Application.Persistance;
 
 namespace Flags.Infrastructure.Services.Auth;
 
 public class RefreshJwtCommandHandler(
+    IDbManager dbManager,
     IJwtTokenGenerator jwtTokenGenerator,
     IRefreshJwtRepository refreshJwtRepository,
     IUserRepository userRepository,
@@ -21,7 +23,7 @@ public class RefreshJwtCommandHandler(
         if (!Email.Validate(email))
             throw new ValidationException("refresh-jwt", $"Некорректный адрес эл. почты {email}.");
 
-        var user = await userRepository.GetByEmailAsync(email) ??
+        var user = await userRepository.GetByEmailAsync(email, cancellationToken) ??
             throw new NotFoundException("refresh-jwt", $"Пользователь с эл. почтой {email} не найден.");
 
         if (user.RefreshJwt is null)
@@ -32,9 +34,10 @@ public class RefreshJwtCommandHandler(
         if (user.RefreshJwt.ExpiryDatetime <= DateTime.Now)
         {
             user.RefreshJwt.Update(_refreshJwtSettings.ExpiryDays);
-            await refreshJwtRepository.UpdateAsync(user.RefreshJwt);
+            refreshJwtRepository.Update(user.RefreshJwt);
         }
 
+        await dbManager.SaveChangesAsync(cancellationToken);
         return new AuthenticationResult(
             user,
             newJwtAccessToken);

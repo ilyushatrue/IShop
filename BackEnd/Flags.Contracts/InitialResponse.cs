@@ -1,7 +1,7 @@
-﻿using Flags.Contracts.Authentication;
-using Flags.Contracts.Products;
+﻿using Flags.Contracts.Products;
+using Flags.Contracts.Users;
 
-namespace Flags.Application;
+namespace Flags.Contracts;
 public class InitialResponse
 {
     public UserInitialDto User { get; set; } = null!;

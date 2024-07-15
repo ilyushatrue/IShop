@@ -1,4 +1,4 @@
-﻿using Flags.Contracts.Authentication;
+﻿using Flags.Contracts.Users;
 using Flags.Domain.UserRoot;
 using Mapster;
 

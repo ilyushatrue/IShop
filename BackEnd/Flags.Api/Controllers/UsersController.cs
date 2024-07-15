@@ -5,12 +5,13 @@ using Flags.Application.Users.Queries;
 using Flags.Contracts.Products;
 using Flags.Domain.Common.Exceptions;
 using Flags.Infrastructure.Authentication;
-using Flags.Infrastructure.Services.Cookies;
 using MapsterMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Flags.Contracts.Authentication;
 using Flags.Domain.Enums;
+using Flags.Api.Common;
+using Flags.Contracts.Users;
+using Flags.Contracts;
 
 namespace Flags.Api.Controllers;
 
@@ -67,6 +68,6 @@ public class UsersController(
         var command = new EditUserDataCommand(user.FirstName, user.LastName, user.Email, user.Phone, role, user.AvatarId);
         var result = await editUserDataCommandHandler.Handle(command, cancellationToken);
         cookieManager.SetUserCookies(result);
-        return Ok(result);
+        return Ok(mapper.Map<UserInitialDto>(result));
     }
 }

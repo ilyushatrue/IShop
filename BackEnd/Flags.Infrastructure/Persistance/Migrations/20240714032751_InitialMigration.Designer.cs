@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Flags.Infrastructure.Migrations
 {
-    [DbContext(typeof(FlagDbContext))]
+    [DbContext(typeof(AppDbContext))]
     [Migration("20240714032751_InitialMigration")]
     partial class InitialMigration
     {

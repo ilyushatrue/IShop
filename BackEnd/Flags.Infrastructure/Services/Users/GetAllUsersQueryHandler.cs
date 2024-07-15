@@ -10,7 +10,7 @@ public class GetAllUsersQueryHandler(
 {
     public async Task<List<User>> Handle(CancellationToken cancellationToken)
     {
-        var users = await userRepository.GetAllAsync();
+        var users = await userRepository.GetAllAsync(cancellationToken);
         return users;
     }
 }

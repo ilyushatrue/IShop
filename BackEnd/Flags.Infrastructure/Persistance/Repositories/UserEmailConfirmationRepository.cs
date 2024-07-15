@@ -3,25 +3,27 @@ using Flags.Domain.UserRoot.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Flags.Infrastructure.Persistance.Repositories;
-public class UserEmailConfirmationRepository(FlagDbContext dbContext) : IUserEmailConfirmationRepository
+public class UserEmailConfirmationRepository(AppDbContext dbContext) : IUserEmailConfirmationRepository
 {
-    public async Task<int> CreateAsync(UserEmailConfirmation emailConfirmation)
+    public void Create(UserEmailConfirmation emailConfirmation)
     {
         dbContext.UserEmailConfirmations.Add(emailConfirmation);
-        return await dbContext.SaveChangesAsync();
     }
 
-    public async Task<UserEmailConfirmation?> GetByTokenAsync(Guid emailConfirmationToken)
+    public async Task<UserEmailConfirmation?> GetByTokenAsync(Guid emailConfirmationToken, CancellationToken cancellationToken)
     {
         return await dbContext.UserEmailConfirmations
+            .Where(x => x.ConfirmationToken == emailConfirmationToken)
             .Include(x => x.User!.RefreshJwt)
-            .SingleOrDefaultAsync(x => x.ConfirmationToken == emailConfirmationToken);
+            .SingleOrDefaultAsync(cancellationToken);
     }
 
-    public async Task<bool> ValidateTokenAsync(Guid emailConfirmationToken)
+    public async Task<bool> ValidateTokenAsync(Guid emailConfirmationToken, CancellationToken cancellationToken)
     {
-        return await dbContext.UserEmailConfirmations.AnyAsync(cc => 
-            cc.ConfirmationToken == emailConfirmationToken 
-            && cc.ExpiryDateTime > DateTime.UtcNow);
+        return await dbContext.UserEmailConfirmations
+            .Where(cc =>
+                cc.ConfirmationToken == emailConfirmationToken
+                && cc.ExpiryDateTime > DateTime.UtcNow)
+            .AnyAsync(cancellationToken);
     }
 }

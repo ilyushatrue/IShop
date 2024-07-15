@@ -1,5 +1,4 @@
 using Flags.Domain.Enums;
-using System.Security;
 
 namespace Flags.Domain.UserRoot.Entities;
 

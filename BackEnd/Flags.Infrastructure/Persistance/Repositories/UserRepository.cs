@@ -4,16 +4,19 @@ using Flags.Domain.UserRoot;
 using Microsoft.EntityFrameworkCore;
 
 namespace Flags.Infrastructure.Persistance.Repositories;
-public class UserRepository(FlagDbContext dbContext) : IUserRepository
+public class UserRepository(AppDbContext dbContext) : IUserRepository
 {
-    public async Task<bool> CheckUserWithEmailExistsAsync(string email)
+    public async Task<bool> CheckUserWithEmailExistsAsync(string email, CancellationToken cancellationToken)
     {
-        return await dbContext.Users.AnyAsync(u => u.Email.Value == email);
+        return await dbContext.Users
+            .AnyAsync(u => u.Email.Value == email, cancellationToken);
     }
 
-    public async Task<bool> CheckUserWithPhoneExistsAsync(string phone)
+    public async Task<bool> CheckUserWithPhoneExistsAsync(string phone, CancellationToken cancellationToken)
     {
-        return await dbContext.Users.Where(x => x.Phone != null).AnyAsync(u => u.Phone!.Value == phone);
+        return await dbContext.Users
+            .Where(x => x.Phone != null)
+            .AnyAsync(u => u.Phone!.Value == phone, cancellationToken);
     }
 
     public void Create(User user)
@@ -21,21 +24,21 @@ public class UserRepository(FlagDbContext dbContext) : IUserRepository
         dbContext.Add(user);
     }
 
-    public async Task<User?> GetByEmailAsync(string email, Func<DbContext, string> func)
+    public async Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken)
     {
         return await dbContext.Users
             .Include(u => u.RefreshJwt)
             .Include(u => u.Role)
             .Include(u => u.EmailConfirmation)
-            .SingleOrDefaultAsync(u => u.Email.Value == email);
+            .SingleOrDefaultAsync(u => u.Email.Value == email, cancellationToken);
     }
 
-    public async Task<List<User>> GetAllAsync()
+    public async Task<List<User>> GetAllAsync(CancellationToken cancellationToken)
     {
-        return await dbContext.Users.ToListAsync();
+        return await dbContext.Users.ToListAsync(cancellationToken);
     }
 
-    public async Task<User?> GetByPhoneAsync(string phone)
+    public async Task<User?> GetByPhoneAsync(string phone, CancellationToken cancellationToken)
     {
         return await dbContext.Users
             .AsNoTracking()
@@ -43,14 +46,14 @@ public class UserRepository(FlagDbContext dbContext) : IUserRepository
             .Include(u => u.Role)
             .Include(u => u.EmailConfirmation)
             .Where(u => u.Phone != null)
-            .SingleOrDefaultAsync(u => u.Phone!.Value == phone);
+            .SingleOrDefaultAsync(u => u.Phone!.Value == phone, cancellationToken);
     }
 
-    public async Task<User?> GetByIdAsync(Guid id)
+    public async Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         return await dbContext.Users
             .Include(u => u.Role).ThenInclude(r => r!.MemuItems)
-            .SingleOrDefaultAsync(u => u.Id == id);
+            .SingleOrDefaultAsync(u => u.Id == id, cancellationToken);
     }
 
     public async Task<HashSet<PermissionFlag>> GetPermissionsAsync(Guid userId)
@@ -75,8 +78,8 @@ public class UserRepository(FlagDbContext dbContext) : IUserRepository
         dbContext.Update(user);
     }
 
-    public async Task<bool> CheckUserExistsByIdAsync(Guid id)
+    public async Task<bool> CheckUserExistsByIdAsync(Guid id, CancellationToken cancellationToken)
     {
-        return await dbContext.Users.AnyAsync(u => u.Id == id);
+        return await dbContext.Users.AnyAsync(u => u.Id == id, cancellationToken);
     }
 }

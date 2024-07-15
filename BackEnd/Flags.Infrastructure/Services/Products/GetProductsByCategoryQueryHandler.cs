@@ -9,12 +9,12 @@ public class GetProductsByCategoryQueryHandler(
     IDbManager dbManager,
     IProductRepository productRepository) : IGetProductsByCategoryQueryHandler
 {
-    public async Task<Pager<Product>> Handle(GetProductsByCategoryQuery query)
+    public async Task<Pager<Product>> Handle(GetProductsByCategoryQuery query, CancellationToken cancellationToken)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(query.CategoryId);
 
         var recordsCount = await dbManager.CountRecordsAsync<Product>(
-            predicate: p => p.CategoryId == query.CategoryId);
+            predicate: p => p.CategoryId == query.CategoryId, cancellationToken);
 
         var pager = new Pager<Product>(
             [],

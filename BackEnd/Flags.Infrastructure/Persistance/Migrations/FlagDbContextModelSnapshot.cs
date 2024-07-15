@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Flags.Infrastructure.Migrations
 {
-    [DbContext(typeof(FlagDbContext))]
+    [DbContext(typeof(AppDbContext))]
     partial class FlagDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

@@ -2,7 +2,7 @@ namespace Flags.Infrastructure.Persistance.Extensions;
 
 public static class PersistanceExtensions
 {
-	public static async Task<TReturn> ExecuteWithTransactionAsync<TReturn>(this FlagDbContext dbContext, Func<Task<TReturn>> function)
+	public static async Task<TReturn> ExecuteWithTransactionAsync<TReturn>(this AppDbContext dbContext, Func<Task<TReturn>> function)
 	{
 		await using var transaction = await dbContext.Database.BeginTransactionAsync();
 		try

@@ -8,10 +8,10 @@ public class SyncProductCategoriesCommandHandler(
     IDbManager dbManager,
     IProductCategoryRepository productCategoryRepository) : ISyncProductCategoriesCommandHandler
 {
-    public async Task<bool> Handle(IEnumerable<ProductCategory> categories)
+    public async Task<bool> Handle(IEnumerable<ProductCategory> categories, CancellationToken cancellationToken)
     {
         await productCategoryRepository.SyncAsync(categories);
-        var result = await dbManager.SaveChangesAsync();
+        var result = await dbManager.SaveChangesAsync(cancellationToken);
         return result > 0;
     }
 }

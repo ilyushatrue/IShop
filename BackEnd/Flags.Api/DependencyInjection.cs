@@ -1,5 +1,5 @@
-﻿using Flags.Api.Common.Mapping;
-using Flags.Infrastructure.Services.Cookies;
+﻿using Flags.Api.Common;
+using Flags.Api.Common.Mapping;
 
 namespace Flags.Api;
 

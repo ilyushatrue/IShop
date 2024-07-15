@@ -1,5 +1,5 @@
 using Flags.Application.Authentication.Common;
-using Flags.Contracts.Authentication;
+using Flags.Contracts.Users;
 using Mapster;
 
 namespace Flags.Api.Common.Mapping;

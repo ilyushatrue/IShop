@@ -11,7 +11,7 @@ public class ResetPasswordCommandHandler(
     IDbManager dbManager,
     IPasswordHasher passwordHasher) : IResetPasswordCommandHandler
 {
-    public async Task<string> Handle(ResetPasswordCommand command)
+    public async Task<string> Handle(ResetPasswordCommand command, CancellationToken cancellationToken)
     {
         if (!Guid.TryParse(command.Token, out Guid guid))
             throw new NotFoundException(
@@ -19,13 +19,13 @@ public class ResetPasswordCommandHandler(
                 $"Не удалось спарсить guid={guid}",
                 "Не удалось изменить пароль. Обратитесь к администратору.");
 
-        if (!await emailConfirmationRepository.ValidateTokenAsync(guid))
+        if (!await emailConfirmationRepository.ValidateTokenAsync(guid, cancellationToken))
             throw new NotFoundException(
                 "reset-password",
                 "Ссылка не действительна.",
                 "Ссылка не действительна.");
 
-        var emailConfirmation = await emailConfirmationRepository.GetByTokenAsync(guid) ??
+        var emailConfirmation = await emailConfirmationRepository.GetByTokenAsync(guid, cancellationToken) ??
             throw new NotFoundException(
                 "reset-password",
                 $"Email по токену подтверждения {guid} не найден.",
@@ -40,7 +40,7 @@ public class ResetPasswordCommandHandler(
 
         emailConfirmation.SetIsConfirmed();
 
-        await dbManager.SaveChangesAsync();
+        await dbManager.SaveChangesAsync(cancellationToken);
 
         var responseHtml =
             $@"

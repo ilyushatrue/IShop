@@ -27,9 +27,10 @@ public class ProductController(
     [HttpGet]
     public async Task<IActionResult> GetAllProductsAsync(
         [FromQuery] int page,
-        [FromQuery] int pageSize)
+        [FromQuery] int pageSize,
+        CancellationToken cancellationToken)
     {
-        var result = await getAllProductsQueryHandler.Handle(new(page, pageSize));
+        var result = await getAllProductsQueryHandler.Handle(new(page, pageSize), cancellationToken);
         var pagedList = new Pager<ProductDto>()
         {
             PageItems = mapper.Map<IEnumerable<ProductDto>>(result.PageItems),
@@ -45,9 +46,10 @@ public class ProductController(
     public async Task<IActionResult> GetProductsByCategory(
         [FromQuery] int categoryId,
         [FromQuery] int page,
-        [FromQuery] int pageSize)
+        [FromQuery] int pageSize,
+        CancellationToken cancellationToken)
     {
-        var result = await getProductsByCategoryQueryHandler.Handle(new(categoryId, page, pageSize));
+        var result = await getProductsByCategoryQueryHandler.Handle(new(categoryId, page, pageSize), cancellationToken);
         var pagedList = new Pager<ProductDto>()
         {
             PageItems = mapper.Map<IEnumerable<ProductDto>>(result.PageItems),
@@ -60,10 +62,10 @@ public class ProductController(
 
     [AllowAnonymous]
     [HttpPost("to-favorites/{productId}")]
-    public async Task<IActionResult> MakeProductFavorite(Guid productId)
+    public async Task<IActionResult> MakeProductFavorite(Guid productId, CancellationToken cancellationToken)
     {
         var userId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "UserId")!.Value;
-        var result = await makeProductFavoriteCommandHandler.Handle(new(Guid.Parse(userId), productId));
+        var result = await makeProductFavoriteCommandHandler.Handle(new(Guid.Parse(userId), productId), cancellationToken);
         return Ok(result);
     }
 
@@ -96,17 +98,17 @@ public class ProductController(
     }
 
     [HttpPost("categories")]
-    public async Task<IActionResult> CreateProductCategoryAsync(CreateProductCategoryCommand command)
+    public async Task<IActionResult> CreateProductCategoryAsync(CreateProductCategoryCommand command, CancellationToken cancellationToken)
     {
-        await createProductCategoryCommandHandler.Handle(command);
+        await createProductCategoryCommandHandler.Handle(command, cancellationToken);
         return Ok();
     }
 
     [HttpPut("categories")]
-    public async Task<IActionResult> SyncProductCategoriesAsync(IEnumerable<ProductCategoryDto> products)
+    public async Task<IActionResult> SyncProductCategoriesAsync(IEnumerable<ProductCategoryDto> products, CancellationToken cancellationToken)
     {
         var mapped = mapper.Map<IEnumerable<ProductCategory>>(products);
-        await updateProductCategoryCommandHandler.Handle(mapped);
+        await updateProductCategoryCommandHandler.Handle(mapped, cancellationToken);
         return Ok();
     }
 }

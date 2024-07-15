@@ -9,9 +9,9 @@ public class GetAllProductsQueryHandler(
     IDbManager dbManager,
     IProductRepository productRepository) : IGetAllProductsQueryHandler
 {
-    public async Task<Pager<Product>> Handle(GetAllProductsQuery query)
+    public async Task<Pager<Product>> Handle(GetAllProductsQuery query, CancellationToken cancellationToken)
     {
-        var recordsCount = await dbManager.CountRecordsAsync<Product>();
+        var recordsCount = await dbManager.CountRecordsAsync<Product>(cancellationToken);
 
         var pager = new Pager<Product>(
             [],

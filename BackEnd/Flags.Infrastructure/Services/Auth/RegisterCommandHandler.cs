@@ -27,7 +27,7 @@ public class RegisterCommandHandler(
     public async Task<bool> Handle(RegisterCommand command, CancellationToken cancellationToken)
     {
         var email = command.Email.Trim();
-        if (await userRepository.CheckUserWithEmailExistsAsync(email))
+        if (await userRepository.CheckUserWithEmailExistsAsync(email, cancellationToken))
             throw new UniquenessViolationExeption(
                 "email-already-exists",
                 $"Эл. почта {email} уже занята.",
@@ -39,7 +39,7 @@ public class RegisterCommandHandler(
             phone = Phone.Trim(command.Phone);
             if (Phone.Validate(phone))
             {
-                if (await userRepository.CheckUserWithPhoneExistsAsync(phone))
+                if (await userRepository.CheckUserWithPhoneExistsAsync(phone, cancellationToken))
                     throw new UniquenessViolationExeption(
                         "phone-already-exists",
                         $"Номер телефона {phone} уже занят.",
@@ -68,7 +68,7 @@ public class RegisterCommandHandler(
         );
 
         userRepository.Create(user);
-        var affectedCount = await dbManager.SaveChangesAsync();
+        var affectedCount = await dbManager.SaveChangesAsync(cancellationToken);
         if (affectedCount == 0) return false;
 
         await emailSender.SendEmailAsync(

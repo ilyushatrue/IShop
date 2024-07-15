@@ -3,7 +3,7 @@
 namespace Flags.Application.Persistance.Repositories;
 public interface IUserEmailConfirmationRepository
 {
-    Task<int> CreateAsync(UserEmailConfirmation emailConfirmation);
-    Task<UserEmailConfirmation?> GetByTokenAsync(Guid emailConfirmationToken);
-    Task<bool> ValidateTokenAsync(Guid emailConfirmationToken);
+    void Create(UserEmailConfirmation emailConfirmation);
+    Task<UserEmailConfirmation?> GetByTokenAsync(Guid emailConfirmationToken, CancellationToken cancellationToken);
+    Task<bool> ValidateTokenAsync(Guid emailConfirmationToken, CancellationToken cancellationToken);
 }

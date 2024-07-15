@@ -12,7 +12,7 @@ public class CreateProductCommandHandler(
     {
         var product = Product.Create(Guid.NewGuid(), command.Name, command.Price, command.ImageId, command.CategoryId, command.Description);
         productRepository.Create(product);
-        var result = await dbManager.SaveChangesAsync();
+        var result = await dbManager.SaveChangesAsync(cancellationToken);
         return result > 0;
     }
 }

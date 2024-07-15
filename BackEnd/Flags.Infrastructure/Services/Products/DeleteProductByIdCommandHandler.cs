@@ -10,7 +10,7 @@ public class DeleteProductByIdCommandHandler(
     public async Task<bool> Handle(Guid id, CancellationToken cancellationToken)
     {
         await productRepository.DeleteByIdAsync(id);
-        var result = await dbManager.SaveChangesAsync();
+        var result = await dbManager.SaveChangesAsync(cancellationToken);
         return result > 0;
     }
 }

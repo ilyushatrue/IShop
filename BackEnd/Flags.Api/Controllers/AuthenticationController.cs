@@ -1,14 +1,12 @@
-﻿using Flags.Application.AppSettings;
+﻿using Flags.Api.Common;
+using Flags.Application.AppSettings;
 using Flags.Application.Authentication.Commands.ConfirmEmail;
-using Flags.Application.Authentication.Commands.Login;
 using Flags.Application.Authentication.Commands.Logout;
 using Flags.Application.Authentication.Commands.RefreshJwt;
 using Flags.Application.Authentication.Commands.Register;
 using Flags.Application.Authentication.Commands.ResetPassword;
-using Flags.Application.Authentication.Commands.VerifyEmail;
 using Flags.Application.Authentication.Queries.Login;
 using Flags.Domain.Common.Exceptions;
-using Flags.Infrastructure.Services.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -92,43 +90,43 @@ public class AuthenticationController(
 
     [AllowAnonymous]
     [HttpPost("send-reset-password-email")]
-    public async Task<IActionResult> SendResetPasswordEmail([FromBody] string email)
+    public async Task<IActionResult> SendResetPasswordEmail([FromBody] string email, CancellationToken cancellationToken)
     {
-        await sendResetPasswordEmailCommandHandler.Handle(email);
+        await sendResetPasswordEmailCommandHandler.Handle(email, cancellationToken);
         return Ok();
     }
 
     [AllowAnonymous]
     [HttpGet("send-reset-password-form")]
-    public async Task<IActionResult> SendResetPasswordForm([FromQuery] string token)
+    public async Task<IActionResult> SendResetPasswordForm([FromQuery] string token, CancellationToken cancellationToken)
     {
-        var formHtml = await sendResetPasswordFormCommandHandler.Handle(token);
+        var formHtml = await sendResetPasswordFormCommandHandler.Handle(token, cancellationToken);
         return Content(formHtml, "text/html", Encoding.UTF8);
     }
 
     [AllowAnonymous]
     [HttpGet("send-email-confirm-email")]
-    public async Task<IActionResult> SendEmailConfirmEmail([FromQuery] string email)
+    public async Task<IActionResult> SendEmailConfirmEmail([FromQuery] string email, CancellationToken cancellationToken)
     {
-        await sendEmailConfirmEmailCommandHandler.Handle(email);
+        await sendEmailConfirmEmailCommandHandler.Handle(email, cancellationToken);
         return Ok();
     }
 
     [AllowAnonymous]
     [HttpPost("reset-password")]
-    public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordCommand command)
+    public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordCommand command, CancellationToken cancellationToken)
     {
-        var responseHtml = await resetPasswordCommandHandler.Handle(command);
+        var responseHtml = await resetPasswordCommandHandler.Handle(command, cancellationToken);
         return Content(responseHtml, "text/html", Encoding.UTF8);
     }
 
     [AllowAnonymous]
     [HttpGet("verify-email/{emailConfirationToken}")]
-    public async Task<IActionResult> VerifyEmail(Guid emailConfirationToken)
+    public async Task<IActionResult> VerifyEmail(Guid emailConfirationToken, CancellationToken cancellationToken)
     {
         HttpContext.Response.ContentType = "text/html";
 
-        var result = await confirmEmailCommandHandler.Handle(emailConfirationToken);
+        var result = await confirmEmailCommandHandler.Handle(emailConfirationToken, cancellationToken);
 
         cookieManager.SetUserCookies(result.User);
         cookieManager.SetJwtAccessTokenCookie(result.JwtAccessToken);

@@ -4,8 +4,8 @@ namespace Flags.Application.Persistance.Repositories;
 
 public interface IRefreshJwtRepository
 {
-    Task<RefreshJwt?> GetByIdAsync(Guid userId);
-    Task<int> UpdateAsync(RefreshJwt token);
-    Task<int> CreateAsync(RefreshJwt token);
-    void DeleteAsync(RefreshJwt token);
+    Task<RefreshJwt?> GetByIdAsync(Guid userId, CancellationToken cancellationToken);
+    void Update(RefreshJwt token);
+    void Create(RefreshJwt token);
+    void Delete(RefreshJwt token);
 }

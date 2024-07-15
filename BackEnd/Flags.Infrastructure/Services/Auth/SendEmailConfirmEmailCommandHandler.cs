@@ -17,10 +17,10 @@ public class SendEmailConfirmEmailCommandHandler(
     private readonly AuthenticationSettings _authenticationSettings = authenticationSettings.Value;
     private readonly HostSettings _hostSettings = hostSettings.Value;
 
-    public async Task<bool> Handle(string email)
+    public async Task<bool> Handle(string email, CancellationToken cancellationToken)
     {
         email = email.Trim();
-        var user = await userRepository.GetByEmailAsync(email) ??
+        var user = await userRepository.GetByEmailAsync(email, cancellationToken) ??
             throw new NotFoundException(
                 "send-email-confirm-email",
                 $"Пользователя с эл. почтой {email} не существует.",
@@ -29,7 +29,7 @@ public class SendEmailConfirmEmailCommandHandler(
         var emailConfirmationTokenExpiry = DateTime.UtcNow.AddHours(_authenticationSettings.EmailConfirmationTokenExpiryHours);
 
         user.UpdateEmailConfirmationToken(emailConfirmationTokenExpiry);
-        await dbManager.SaveChangesAsync();
+        await dbManager.SaveChangesAsync(cancellationToken);
 
         await emailSender.SendEmailAsync(
             user.Email.Value,
