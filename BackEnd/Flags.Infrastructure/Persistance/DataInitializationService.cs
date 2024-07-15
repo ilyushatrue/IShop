@@ -2,6 +2,7 @@
 using Flags.Application.Authentication.Common;
 using Flags.Domain.Enums;
 using Flags.Domain.MenuItemEntity;
+using Flags.Domain.ProductRoot.Entities;
 using Flags.Domain.UserRoot;
 using Flags.Domain.UserRoot.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -30,6 +31,7 @@ public class DataInitializationService(IServiceProvider serviceProvider) : IHost
             await CreateRolePermissions(dbContext, cancellationToken);
             await CreateMenuItems(dbContext, cancellationToken);
             await CreateRoleMenuItems(dbContext, cancellationToken);
+            //await CreateProductCategories(dbContext, cancellationToken);
 
             await dbContext.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
@@ -38,6 +40,17 @@ public class DataInitializationService(IServiceProvider serviceProvider) : IHost
         {
             await transaction.RollbackAsync(cancellationToken);
         }
+    }
+
+    private async Task CreateProductCategories(AppDbContext dbContext, CancellationToken cancellationToken)
+    {
+        List<ProductCategory> productCategories = [
+            new ProductCategory("clothes", "Одежда и обувь", 1, null, "checkroom"),
+            new ProductCategory("electronics", "Электроника", 2, null, "devices"),
+            new ProductCategory("yard", "Дом и сад", 3, null, "deck"),
+            new ProductCategory("child-care", "Детские товары", 4, null, "child_care")
+        ];
+        await dbContext.SyncronizeRecordsAsync<ProductCategory, int>(productCategories, cancellationToken);
     }
 
     private async Task CreateRolePermissions(AppDbContext dbContext, CancellationToken cancellationToken)
@@ -145,7 +158,7 @@ public class DataInitializationService(IServiceProvider serviceProvider) : IHost
             MenuItem.Create((int)MenuItemEnum.Profile, "Profile", "Мой профиль", "/profile", "person", 1),
             MenuItem.Create((int)MenuItemEnum.Purchases, "Purchases", "Покупки", "/purchases", "sell", 2),
             MenuItem.Create((int)MenuItemEnum.Cart, "Cart", "Корзина", "/cart", "shopping_bag", 3),
-            MenuItem.Create((int)MenuItemEnum.Products, "Products", "Товары", "/products", "inventory", 4),
+            MenuItem.Create((int)MenuItemEnum.Products, "Products", "Товары", "/categories", "category", 4),
             MenuItem.Create((int)MenuItemEnum.Users, "Users", "Пользователи", "/users", "people", 5),
             MenuItem.Create((int)MenuItemEnum.Settings, "Settings", "Настройки", "/settings", "settings", 6),
         ];

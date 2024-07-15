@@ -43,7 +43,7 @@ export default function RecursiveTreeBranch<T>({
 	flex,
 	icon,
 	sx,
-	iconSize = "medium",
+	iconSize = "large",
 	indent,
 	isCollapsed,
 }: IRecursiveTreeBranch<T>) {

@@ -20,7 +20,8 @@ export default function MenuDeleteCell({ isLoading, onClick }: IProps) {
 					iconName="delete"
 					centered
 					variant="circled"
-					fontSize={24}
+					fontSize={21}
+					color="red"
 					onClick={(e) => {
 						e.stopPropagation();
 						onClick();

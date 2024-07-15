@@ -5,7 +5,7 @@ import ProductAdd from "./product-add";
 export default function ProductRouter() {
 	return (
 		<Routes>
-			<Route path="/menu" element={<ProductMenu />} />
+			<Route path="/" element={<ProductMenu />} />
 			<Route path="/add" element={<ProductAdd  />} />
 		</Routes>
 	);

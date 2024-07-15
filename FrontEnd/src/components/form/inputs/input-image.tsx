@@ -64,7 +64,7 @@ export default function InputImage<T extends FieldValues>({
 			popupError("Не удалось загрузить изображение.");
 		}
 	}
-	console.log(containerSized);
+	
 	return (
 		<Controller
 			key={name}

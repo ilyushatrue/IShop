@@ -1,6 +1,6 @@
 import { httpGet, httpPost, httpPut, httpDelete } from "./api";
 import { ICreateProductCategoryCommand } from "../interfaces/product-categories/commands/create-product-category-command.interface";
-import { IProductCategory } from "../interfaces/product-categories/queries/product-category.interface";
+import { IProductCategory } from "../interfaces/product-categories/product-category.interface";
 import { ICreateProductCommand } from "../interfaces/product/commands/create-product-command.interface";
 import { IProduct } from "../interfaces/product/product.interface";
 import { IPager } from "../interfaces/pager.interface";

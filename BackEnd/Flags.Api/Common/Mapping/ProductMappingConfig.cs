@@ -14,6 +14,11 @@ public class ProductMappingConfig : IRegister
 
         config.NewConfig<ProductCategory, ProductCategoryDto>();
         config.NewConfig<ProductCategoryDto, ProductCategory>()
-            .ConstructUsing(dto => new ProductCategory(dto.Name, dto.Order, dto.IconName));
+            .ConstructUsing(dto => new ProductCategory(
+                dto.Name,
+                dto.Title,
+                dto.Order,
+                dto.ParentId,
+                dto.IconName));
     }
 }

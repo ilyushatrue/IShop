@@ -8,6 +8,7 @@ public class GetAllProductCategoriesQueryHandler(
 {
     public async Task<IEnumerable<ProductCategory>> Handle()
     {
-        return await productCategoryRepository.GetAllAsync();
+        var categories = await productCategoryRepository.GetAllAsync();
+        return categories;
     }
 }

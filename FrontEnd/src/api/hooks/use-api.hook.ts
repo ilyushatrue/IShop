@@ -87,7 +87,8 @@ export default function useApi({ triggerPage }: TUseApiProps) {
 				return errorHandler;
 			},
 			popup: (message) => {
-				popupError(apiResult.errors[0].message ?? message);
+				const apiMessage = apiResult.errors[0].message
+				popupError(apiMessage ? apiMessage : message ?  message : "Что-то пошло не так. Обратитесь к администратору.");
 				return errorHandler;
 			},
 			do: (action) => {

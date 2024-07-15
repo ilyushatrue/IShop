@@ -1,5 +1,4 @@
 using Flags.Application.Products.Queries;
-using Flags.Application;
 using Flags.Application.Users.Command;
 using Flags.Application.Users.Queries;
 using Flags.Contracts.Products;
@@ -58,7 +57,6 @@ public class UsersController(
             User = mapper.Map<UserInitialDto>(await userTask),
         };
         return Ok(initialResponse);
-
     }
 
     [HttpPut]

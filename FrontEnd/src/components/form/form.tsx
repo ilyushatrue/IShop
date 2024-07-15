@@ -37,11 +37,12 @@ export default function Form<T extends FieldValues>({
 		) {
 			reset(defaultValues);
 		}
-	}, [defaultValues, getValues, reset]);
+	}, [defaultValues, getValues, reset, formState.isValid]);
 
 	useEffect(() => {
 		fields(builderRef.current!);
 	}, [fields]);
+
 
 	return (
 		<FormBuilder<T>

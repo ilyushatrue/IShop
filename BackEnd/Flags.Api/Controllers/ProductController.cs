@@ -98,17 +98,18 @@ public class ProductController(
     }
 
     [HttpPost("categories")]
-    public async Task<IActionResult> CreateProductCategoryAsync(CreateProductCategoryCommand command, CancellationToken cancellationToken)
+    public async Task<IActionResult> CreateProductCategoryAsync([FromBody] CreateProductCategoryCommand command, CancellationToken cancellationToken)
     {
         await createProductCategoryCommandHandler.Handle(command, cancellationToken);
         return Ok();
     }
 
     [HttpPut("categories")]
-    public async Task<IActionResult> SyncProductCategoriesAsync(IEnumerable<ProductCategoryDto> products, CancellationToken cancellationToken)
+    public async Task<IActionResult> SyncProductCategoriesAsync([FromBody] ProductCategoryDto[] categoryDtos, CancellationToken cancellationToken)
     {
-        var mapped = mapper.Map<IEnumerable<ProductCategory>>(products);
-        await updateProductCategoryCommandHandler.Handle(mapped, cancellationToken);
+        var categories = mapper.Map<IEnumerable<ProductCategory>>(categoryDtos);
+        var syncCommand = new SyncProductCategoriesCommand(categories);
+        await updateProductCategoryCommandHandler.Handle(syncCommand, cancellationToken);
         return Ok();
     }
 }

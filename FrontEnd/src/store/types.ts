@@ -1,5 +1,5 @@
 import { IMenuItem } from "../api/interfaces/menu-items/menu-item.interface";
-import { IProductCategory } from "../api/interfaces/product-categories/queries/product-category.interface";
+import { IProductCategory } from "../api/interfaces/product-categories/product-category.interface";
 
 export interface IUserState {
 	firstName: string | null;

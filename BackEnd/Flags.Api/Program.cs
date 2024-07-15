@@ -2,6 +2,7 @@ using Flags.Api.Middlewares;
 using Flags.Infrastructure;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.OpenApi.Models;
+using System.Text.Json.Serialization;
 
 namespace Flags.Api;
 
@@ -20,7 +21,13 @@ public class Program
                     .AllowAnyHeader();
             }))
             .AddPresentation()
-            .AddInfrastructure(builder.Configuration);
+            .AddInfrastructure(builder.Configuration)
+            .AddControllers()
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles; 
+                options.JsonSerializerOptions.WriteIndented = true;
+            });
 
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(options =>
@@ -48,6 +55,7 @@ public class Program
         app.UseAuthentication();
         app.UseAuthorization();
         app.MapControllers();
+
         app.Run();
     }
 }

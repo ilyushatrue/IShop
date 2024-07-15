@@ -3,6 +3,7 @@ using System;
 using Flags.Infrastructure.Persistance;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Flags.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class FlagDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240715032858_ProductCategory")]
+    partial class ProductCategory
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.4");
@@ -462,7 +465,7 @@ namespace Flags.Infrastructure.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_users_roles_role_id");
 
-                    b.OwnsOne("Flags.Domain.UserRoot.User.Email#Flags.Domain.UserRoot.ValueObjects.Email", "Email", b1 =>
+                    b.OwnsOne("Flags.Domain.UserRoot.ValueObjects.Email", "Email", b1 =>
                         {
                             b1.Property<Guid>("UserId")
                                 .HasColumnType("TEXT")
@@ -479,14 +482,14 @@ namespace Flags.Infrastructure.Migrations
                                 .IsUnique()
                                 .HasDatabaseName("ix_user_email");
 
-                            b1.ToTable("users", (string)null);
+                            b1.ToTable("users");
 
                             b1.WithOwner()
                                 .HasForeignKey("UserId")
                                 .HasConstraintName("fk_users_users_id");
                         });
 
-                    b.OwnsOne("Flags.Domain.UserRoot.User.Password#Flags.Domain.UserRoot.ValueObjects.Password", "Password", b1 =>
+                    b.OwnsOne("Flags.Domain.UserRoot.ValueObjects.Password", "Password", b1 =>
                         {
                             b1.Property<Guid>("UserId")
                                 .HasColumnType("TEXT")
@@ -499,14 +502,14 @@ namespace Flags.Infrastructure.Migrations
 
                             b1.HasKey("UserId");
 
-                            b1.ToTable("users", (string)null);
+                            b1.ToTable("users");
 
                             b1.WithOwner()
                                 .HasForeignKey("UserId")
                                 .HasConstraintName("fk_users_users_id");
                         });
 
-                    b.OwnsOne("Flags.Domain.UserRoot.User.Phone#Flags.Domain.UserRoot.ValueObjects.Phone", "Phone", b1 =>
+                    b.OwnsOne("Flags.Domain.UserRoot.ValueObjects.Phone", "Phone", b1 =>
                         {
                             b1.Property<Guid>("UserId")
                                 .HasColumnType("TEXT")
@@ -524,7 +527,7 @@ namespace Flags.Infrastructure.Migrations
                                 .HasDatabaseName("ix_user_phone")
                                 .HasFilter("[phone] IS NOT NULL");
 
-                            b1.ToTable("users", (string)null);
+                            b1.ToTable("users");
 
                             b1.WithOwner()
                                 .HasForeignKey("UserId")

@@ -12,23 +12,14 @@ public class ProductCategoryRepository(AppDbContext dbContext) : IProductCategor
 
     public async Task<List<ProductCategory>> GetAllAsync()
     {
-        return await dbContext.ProductCategories.ToListAsync();
+        return await dbContext.ProductCategories
+            .Where(pc => pc.ParentId == null)
+            .Include(pc => pc.Children)
+            .ToListAsync();
     }
 
-    public async Task SyncAsync(IEnumerable<ProductCategory> categories)
+    public async Task SyncAsync(IEnumerable<ProductCategory> categories, CancellationToken cancellationToken)
     {
-        var dbCategories = await dbContext.ProductCategories.ToListAsync();
-
-        var recordsToDelete = dbCategories.Where(dbCat => categories.All(inputCat => inputCat.Id != dbCat.Id));
-        var commonRecords = dbCategories.Except(recordsToDelete).ToArray();
-        var recordsToAdd = categories.Where(inputCat => commonRecords.All(dbCat => inputCat.Id != dbCat.Id));
-
-        dbContext.ProductCategories.RemoveRange(recordsToDelete);
-        dbContext.ProductCategories.AddRange(recordsToAdd);
-        foreach (var dbCat in commonRecords)
-        {
-            var inputCat = categories.First(c => c.Id == dbCat.Id);
-            dbCat.Update(inputCat.Name, inputCat.Order, inputCat.IconName);
-        }
+        await dbContext.SyncronizeRecordsAsync<ProductCategory, int>(categories, cancellationToken);
     }
 }

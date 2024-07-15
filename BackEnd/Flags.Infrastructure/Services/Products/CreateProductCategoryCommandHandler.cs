@@ -10,7 +10,13 @@ public class CreateProductCategoryCommandHandler(
 {
     public async Task<bool> Handle(CreateProductCategoryCommand command, CancellationToken cancellationToken)
     {
-        var productCategory = new ProductCategory(command.Name, command.Order, command.IconName);
+        var productCategory = new ProductCategory(
+            command.Name,
+            command.Title,
+            command.Order,
+            command.ParentId,
+            command.IconName);
+
         productCategoryRepository.CreateAsync(productCategory);
         var result = await dbManager.SaveChangesAsync(cancellationToken);
         return result > 0;

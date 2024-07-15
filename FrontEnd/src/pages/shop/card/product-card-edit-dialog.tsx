@@ -1,7 +1,7 @@
 import Form from "../../../components/form/form";
 import { IProduct } from "../../../api/interfaces/product/product.interface";
 import { Box, Dialog } from "@mui/material";
-import { IProductCategory } from "../../../api/interfaces/product-categories/queries/product-category.interface";
+import { IProductCategory } from "../../../api/interfaces/product-categories/product-category.interface";
 
 export default function ProductCardEditDialog({
 	open,

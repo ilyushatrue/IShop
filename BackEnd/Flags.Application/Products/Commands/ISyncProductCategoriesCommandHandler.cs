@@ -1,7 +1,5 @@
-﻿using Flags.Domain.ProductRoot.Entities;
-
-namespace Flags.Application.Products.Commands;
+﻿namespace Flags.Application.Products.Commands;
 public interface ISyncProductCategoriesCommandHandler
 {
-    Task<bool> Handle(IEnumerable<ProductCategory> categories, CancellationToken cancellationToken);
+    Task<bool> Handle(SyncProductCategoriesCommand command, CancellationToken cancellationToken);
 }

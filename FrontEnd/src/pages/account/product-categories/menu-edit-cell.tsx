@@ -20,7 +20,7 @@ export default function MenuEditCell({ isLoading, onClick }: IProps) {
 					iconName={"edit"}
 					centered
 					variant="circled"
-					fontSize={24}
+					fontSize={21}
 					onClick={(e) => {
 						e.stopPropagation();
 						onClick();

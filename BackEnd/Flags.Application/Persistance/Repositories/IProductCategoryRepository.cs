@@ -5,5 +5,5 @@ public interface IProductCategoryRepository
 {
     Task<List<ProductCategory>> GetAllAsync();
     void CreateAsync(ProductCategory productCategory);
-    Task SyncAsync(IEnumerable<ProductCategory> categories);
+    Task SyncAsync(IEnumerable<ProductCategory> categories, CancellationToken cancellationToken);
 }

@@ -8,6 +8,7 @@ import {
 	updateCurrentUserState,
 } from "../store/user.slice";
 import { setInitialAppState } from "../store/global.slice";
+import { IProductCategory } from "../api/interfaces/product-categories/product-category.interface";
 
 export default function Identity({
 	children,
@@ -19,12 +20,23 @@ export default function Identity({
 	const [serverIsDead, setServerIsDead] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
 
+	const setCategoryParentNull = (parent: IProductCategory) => {
+		console.log(parent.name);
+		parent.children?.map((child) => {
+			child.parent = null;
+			setCategoryParentNull(child);
+			return child;
+		});
+		parent.parent = null;
+		return parent;
+	};
 	useEffect(() => {
 		usersApi
 			.getCurrentAsync()
 			.then((res) => {
 				if (res.ok) {
 					const { productCategories, user } = res.body!;
+
 					const {
 						avatarId,
 						email,
@@ -39,7 +51,9 @@ export default function Identity({
 							menuItems: menuItems.sort(
 								(a, b) => a.order - b.order
 							),
-							productCategories: productCategories,
+							productCategories: productCategories.map((pc) =>
+								setCategoryParentNull(pc)
+							),
 						})
 					);
 					dispatch(
