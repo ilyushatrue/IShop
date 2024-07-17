@@ -12,17 +12,21 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
         dbContext.Products.Add(product);
     }
 
-    public async Task DeleteByIdAsync(Guid id)
+    public async Task DeleteRangeByIdAsync(Guid[] ids, CancellationToken cancellationToken)
     {
-        var entity = await dbContext.Products.FirstOrDefaultAsync(p => p.Id == id) ??
+        List<Product> entities = await dbContext.Products.Where(p => ids.Contains(p.Id)).ToListAsync(cancellationToken);
+        if (entities.Count != ids.Length)
+        {
+            var idsString = string.Join(", ", ids.Select(id => $"id={id}"));
             throw new NotFoundException(
                 "product-delete-by-id",
-                $"Товара с id={id} не существует.",
-                "Товара не существует.");
-        dbContext.Products.Remove(entity);
+                $"Товаров с {idsString} не существует.",
+                "Не удалось удалить выбранные товары.");
+        }
+        dbContext.Products.RemoveRange(entities);
     }
 
-    public async Task<List<Product>> GetListByCategoryAsync(int categoryId, int currentPage, int pageSize)
+    public async Task<List<Product>> GetListByCategoryAsync(int categoryId, int currentPage, int pageSize, CancellationToken cancellationToken)
     {
         var offset = (currentPage - 1) * pageSize;
 
@@ -31,10 +35,10 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
             .Skip(offset)
             .Take(pageSize)
             .Include(p => p.Category)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
     }
 
-    public async Task<List<Product>> GetAllAsync(int currentPage, int pageSize)
+    public async Task<List<Product>> GetAllAsync(int currentPage, int pageSize, CancellationToken cancellationToken)
     {
         var offset = (currentPage - 1) * pageSize;
 
@@ -42,7 +46,7 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
             .Skip(offset)
             .Take(pageSize)
             .Include(p => p.Category)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
     }
 
     public void Update(Product product)
@@ -50,9 +54,9 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
         dbContext.Update(product);
     }
 
-    public async Task<Product> GetByIdAsync(Guid id)
+    public async Task<Product> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
-        return await dbContext.Products.SingleOrDefaultAsync(x => x.Id == id) ??
+        return await dbContext.Products.SingleOrDefaultAsync(x => x.Id == id, cancellationToken) ??
             throw new NotFoundException(
                 "product-get-by-id",
                 $"Товара с id={id} не существует.",

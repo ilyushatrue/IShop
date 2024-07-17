@@ -31,7 +31,7 @@ export default function ResetPasswordDialog({
 				loading={loading}
 				actions={([submit]) => [
 					{
-						label: "Отмена",
+						value: "Отмена",
 						position: "left",
 						onClick: onClose,
 					},

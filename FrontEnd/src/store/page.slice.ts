@@ -37,7 +37,7 @@ const menuItems: IPageState = {
 		},
 		{
 			label: "Детские товары",
-			href: "/category/children-care",
+			href: "/category/child-care",
 			active: false,
 		},
 	],

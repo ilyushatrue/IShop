@@ -23,7 +23,7 @@ export default function Users() {
 	}, []);
 
 	return (
-		<ProfilePage>
+		<ProfilePage title="Пользователи">
 			<>
 				{users.map((user, index) => (
 					<div

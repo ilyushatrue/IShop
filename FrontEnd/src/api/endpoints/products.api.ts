@@ -30,11 +30,18 @@ const productsApi = {
 	deleteByIdAsync: async (id: string) =>
 		await httpDelete({ url: `${baseUrl}/${id}`, authenticate: true, }),
 
+	deleteRangeByIdAsync: async (ids: string[]) =>
+		await httpDelete({ url: `${baseUrl}`, authenticate: true, body: ids }),
+
 	updateAsync: async (product: IProduct) =>
 		await httpPut({ url: baseUrl, body: product, authenticate: true, }),
 
-	toFavoritesAsync: async (productId: string) =>
-		await httpPost({ url: `${baseUrl}/to-favorites/${productId}`, authenticate: true })
+	toFavoritesAsync: async (productId: string, value: boolean) => {
+		const queryString = `?productId=${productId}&value=${value}`
+		return await httpPost({
+			url: `${baseUrl}/to-favorites${queryString}`, authenticate: true
+		})
+	}
 };
 
 export default productsApi;

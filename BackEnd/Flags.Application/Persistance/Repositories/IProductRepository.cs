@@ -3,10 +3,10 @@
 namespace Flags.Application.Persistance.Repositories;
 public interface IProductRepository
 {
-    Task<Product> GetByIdAsync(Guid id);
+    Task<Product> GetByIdAsync(Guid id, CancellationToken cancellationToken);
     void Create(Product product);
     void Update(Product product);
-    Task DeleteByIdAsync(Guid id);
-    Task<List<Product>> GetAllAsync(int currentPage, int pageSize);
-    Task<List<Product>> GetListByCategoryAsync(int categoryId, int currentPage, int pageSize);
+    Task DeleteRangeByIdAsync(Guid[] ids, CancellationToken cancellationToken);
+    Task<List<Product>> GetAllAsync(int currentPage, int pageSize, CancellationToken cancellationToken);
+    Task<List<Product>> GetListByCategoryAsync(int categoryId, int currentPage, int pageSize, CancellationToken cancellationToken);
 }

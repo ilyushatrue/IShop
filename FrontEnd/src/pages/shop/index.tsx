@@ -15,8 +15,8 @@ export default function ShopCategoryRoutes() {
 			<Route path="/electronics/:id" element={<Electronics />} />
 			<Route path="/yard/" element={<Yard />} />
 			<Route path="/yard/:id" element={<Yard />} />
-			<Route path="/children-care/" element={<ChilrdenCare />} />
-			<Route path="/children-care/:id" element={<ChilrdenCare />} />
+			<Route path="/child-care/" element={<ChilrdenCare />} />
+			<Route path="/child-care/:id" element={<ChilrdenCare />} />
 		</Routes>
 	);
 }

@@ -2,13 +2,20 @@ import { useNavigate } from "react-router-dom";
 import useApi from "../../../api/hooks/use-api.hook";
 import productsApi from "../../../api/endpoints/products.api";
 import Form from "../../../components/form/form";
-import ProfilePage from "../profile-page";
-import { Box } from "@mui/material";
+import { Box, Dialog } from "@mui/material";
 import { ICreateProductCommand } from "../../../api/interfaces/product/commands/create-product-command.interface";
 import { useMemo } from "react";
 import { useAppSelector } from "../../../app/hooks/redux/use-app-selector";
 
-export default function ProductAdd() {
+export default function ProductAddDialog({
+	open,
+	onClose,
+	onSubmit,
+}: {
+	open: boolean;
+	onClose: () => void;
+	onSubmit: (values: ICreateProductCommand) => void;
+}) {
 	const { fetchAsync, isFetching } = useApi({ triggerPage: true });
 	const categories = useAppSelector(
 		(state) => state.global.productCategories
@@ -24,20 +31,11 @@ export default function ProductAdd() {
 		}),
 		[]
 	);
-	async function handleSubmitAsync(values: ICreateProductCommand) {
-		await fetchAsync({
-			request: async () => await productsApi.createAsync(values),
-			onSuccess: (handler) =>
-				handler
-					.popup("Новый товар добавлен.")
-					.do(() => navigate("/products/menu")),
-			onError: (handler) => handler.log().popup(),
-		});
-	}
+	
 	if (!categories) return null;
 	return (
-		<ProfilePage mainBoxProps={{ padding: 2 }}>
-			<Box width={500} marginX={"auto"}>
+		<Dialog open={open} onClose={onClose}>
+			<Box width={500} marginX={"auto"} sx={{paddingX:2}}>
 				<Form
 					loading={isFetching}
 					defaultValues={defaultValues}
@@ -45,7 +43,7 @@ export default function ProductAdd() {
 						{
 							...submit,
 							position: "center",
-							label: "Добавить товар",
+							value: "Добавить товар",
 						},
 					]}
 					fields={(builder) =>
@@ -75,7 +73,7 @@ export default function ProductAdd() {
 							.select({
 								options: categories.map((c) => ({
 									key: c.id,
-									value: c.name,
+									value: c.title,
 								})),
 								name: "categoryId",
 								label: "Категория",
@@ -83,9 +81,9 @@ export default function ProductAdd() {
 							})
 					}
 					minHeight={500}
-					onSubmit={handleSubmitAsync}
+					onSubmit={onSubmit}
 				/>
 			</Box>
-		</ProfilePage>
+		</Dialog>
 	);
 }

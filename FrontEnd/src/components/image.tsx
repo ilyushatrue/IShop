@@ -28,5 +28,5 @@ export default function Image({
 		</Box>
 	);
 
-	return <img src={getImageSrc()} alt={""} width={size} height={size} />;
+	return <img src={getImageSrc()} alt={""} style={{maxWidth: size, maxHeight:size }}/>;
 }

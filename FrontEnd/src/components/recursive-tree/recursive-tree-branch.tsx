@@ -1,6 +1,5 @@
-import { Box, SxProps, Typography, styled } from "@mui/material";
+import { Box, Icon, SxProps, Typography, styled } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import Icon from "../icon";
 
 const ExpandMore = styled((props: { className?: string }) => (
 	<ExpandMoreIcon className={props.className} />
@@ -43,7 +42,7 @@ export default function RecursiveTreeBranch<T>({
 	flex,
 	icon,
 	sx,
-	iconSize = "large",
+	iconSize = "medium",
 	indent,
 	isCollapsed,
 }: IRecursiveTreeBranch<T>) {
@@ -71,11 +70,9 @@ export default function RecursiveTreeBranch<T>({
 				marginLeft={indent}
 			>
 				{icon && (
-					<Icon
-						fontSize={iconSize}
-						name={icon}
-						sx={{ color: "primary.light" }}
-					/>
+					<Icon fontSize={iconSize} sx={{ color: "primary.light" }}>
+						{icon}
+					</Icon>
 				)}
 				<Box
 					overflow={"hidden"}

@@ -1,13 +1,20 @@
-import { ReactNode } from "react";
-import IconButton, { IIconButton } from "../icon-button";
+import { MouseEvent, ReactNode } from "react";
+import IconButton, { IIconButton } from "../buttons/icon-button";
 
 interface IProps {
 	src: string;
 	children: ReactNode;
 	height: number | string;
 	actions: IIconButton[];
+	onClick: (e: MouseEvent<HTMLDivElement>) => void;
 }
-export default function Card({ children, src, height, actions }: IProps) {
+export default function Card({
+	children,
+	src,
+	height,
+	actions,
+	onClick,
+}: IProps) {
 	return (
 		<div
 			style={{
@@ -16,6 +23,7 @@ export default function Card({ children, src, height, actions }: IProps) {
 			}}
 		>
 			<div
+				onClick={onClick}
 				style={{
 					display: "flex",
 					alignItems: "center",
@@ -26,6 +34,7 @@ export default function Card({ children, src, height, actions }: IProps) {
 					borderRadius: 20,
 					overflow: "hidden",
 					boxShadow: "0px 0px 10px rgba(0,0,0,0.1)",
+					cursor: "pointer",
 				}}
 			>
 				<img

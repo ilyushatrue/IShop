@@ -21,13 +21,11 @@ export default function Identity({
 	const [isLoading, setIsLoading] = useState(true);
 
 	const setCategoryParentNull = (parent: IProductCategory) => {
-		console.log(parent.name);
 		parent.children?.map((child) => {
 			child.parent = null;
 			setCategoryParentNull(child);
 			return child;
 		});
-		parent.parent = null;
 		return parent;
 	};
 	useEffect(() => {
@@ -44,6 +42,7 @@ export default function Identity({
 						lastName,
 						phone,
 						menuItems,
+						favoriteProducts,
 					} = user!;
 
 					dispatch(
@@ -62,6 +61,7 @@ export default function Identity({
 							avatarId: avatarId,
 							email: email,
 							firstName: firstName,
+							favoriteProducts: favoriteProducts,
 							lastName: lastName,
 							phone: phone,
 						})

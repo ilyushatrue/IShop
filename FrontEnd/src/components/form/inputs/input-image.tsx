@@ -10,7 +10,7 @@ import useApi from "../../../api/hooks/use-api.hook";
 import { usePopup } from "../../../app/hooks/use-popup.hook";
 import { useRef } from "react";
 import { mediaApi } from "../../../api/endpoints/media.api";
-import IconButton from "../../icon-button";
+import IconButton from "../../buttons/icon-button";
 import Image from "../../image";
 import { IFormField } from "./form-field.interface";
 
@@ -157,7 +157,7 @@ export default function InputImage<T extends FieldValues>({
 								fontSize={28}
 								iconName="edit"
 								onClick={handleIconClick}
-								tip={tip ?? "Изменить"}
+								tooltip={tip ?? "Изменить"}
 								iconSx={{ fontSize: "2rem" }}
 							/>
 						) : !field.value ? (
@@ -179,7 +179,7 @@ export default function InputImage<T extends FieldValues>({
 								fontSize={28}
 								iconName="add"
 								onClick={handleIconClick}
-								tip={tip ?? "Добавить"}
+								tooltip={tip ?? "Добавить"}
 								iconSx={{ fontSize: "2rem" }}
 							/>
 						) : null}

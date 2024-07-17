@@ -1,38 +1,181 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import useApi from "../../../api/hooks/use-api.hook";
 import ProfilePage from "../profile-page";
 import { Box } from "@mui/material";
 import productsApi from "../../../api/endpoints/products.api";
 import { IProduct } from "../../../api/interfaces/product/product.interface";
-import IconButton from "../../../components/icon-button";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useAppSelector } from "../../../app/hooks/redux/use-app-selector";
+import { IProductCategory } from "../../../api/interfaces/product-categories/product-category.interface";
+import { ICreateProductCommand } from "../../../api/interfaces/product/commands/create-product-command.interface";
+import ProductAddDialog from "./product-add-dialog";
+import { reload } from "../../../app/helpers/reload";
+import EnhancedTable from "./product-table";
+import IconButton from "../../../components/buttons/icon-button";
+import Dialog from "../../../components/dialog";
 
 export default function ProductMenu() {
+	const [isDeleteDialogOn, setIsDeleteDialogOn] = useState(false);
 	const { fetchAsync } = useApi({ triggerPage: true });
 	const [products, setProducts] = useState<IProduct[]>([]);
+	const rowsPerPageOptions = [10, 25, 100];
+	const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[0]);
+	const [page, setPage] = useState(0);
+	const selectedIds = useRef<string[]>([]);
+	const [isAddProductDialogOn, setIsAddProductDialogOn] = useState(false);
+	const location = useLocation();
 	const navigate = useNavigate();
+	const appcategories = useAppSelector(
+		(state) => state.global.productCategories
+	);
+
+	const categoryId = useMemo(() => {
+		const parts = location.pathname.split("/").filter((part) => part);
+		const categories = parts.slice(1);
+		if (!categories.length) return 0;
+		let curr: IProductCategory[] = appcategories;
+		let item: IProductCategory;
+		if (categories[0] === "add") return 0;
+
+		const getresult = (
+			cat: string,
+			categories: IProductCategory[]
+		): IProductCategory => {
+			return categories.find((x) => x.name === cat)!;
+		};
+		categories.forEach((category) => {
+			item = getresult(category, curr);
+			curr = item.children;
+		});
+		return item!.id;
+	}, [location]);
 
 	useEffect(() => {
 		fetchAsync({
-			request: () => productsApi.getAllAsync(1, 10),
-			onSuccess: (handler) => handler.do((res) =>setProducts(res.body!.pageItems!)),
+			request: () =>
+				categoryId
+					? productsApi.getByCategoryAsync(
+							categoryId,
+							page,
+							rowsPerPage
+					  )
+					: productsApi.getAllAsync(page, rowsPerPage),
+			onSuccess: (handler) =>
+				handler.do((res) => setProducts(res.body!.pageItems!)),
 			onError: (handler) => handler.log().popup(),
 		});
 	}, []);
+
+	function closeAddProductDialog() {
+		setIsAddProductDialogOn(false);
+	}
+
+	function openAddProductDialog() {
+		setIsAddProductDialogOn(true);
+	}
+
+	async function handleSubmitAsync(values: ICreateProductCommand) {
+		closeAddProductDialog();
+		await fetchAsync({
+			request: async () => await productsApi.createAsync(values),
+			onSuccess: (handler) =>
+				handler.popup("Новый товар добавлен.").do(reload),
+			onError: (handler) => handler.log().popup(),
+		});
+	}
+
+	const handleChangeRowsPerPage = (
+		event: React.ChangeEvent<HTMLInputElement>
+	) => {
+		setRowsPerPage(parseInt(event.target.value, 10));
+		setPage(0);
+	};
+
+	const handleChangePage = (event: unknown, newPage: number) => {
+		setPage(newPage);
+	};
+	async function handleDeleteProductAsync(productIds: string[]) {
+		fetchAsync({
+			request: () => productsApi.deleteRangeByIdAsync(productIds),
+			onSuccess: () =>
+				setProducts((prev) =>
+					prev.filter((x) => !productIds.includes(x.id))
+				),
+			onError: (handler) => handler.log().popup(),
+		});
+	}
+	const closeDeleteDialog = () => setIsDeleteDialogOn(false);
+	const openDeleteDialog = () => setIsDeleteDialogOn(true);
 	return (
-		<ProfilePage>
-			<Box display={"flex"}>
-				<Box>Добавить товар</Box>
+		<ProfilePage title={"Продукты"}>
+			<Box height={50} mt={1} ml={1}>
 				<IconButton
-					iconName="add"
-					onClick={() => navigate("/products/add")}
+					color="secondary.light"
+					variant="rounded"
+					iconName="arrow_back"
+					onClick={() => navigate("/categories")}
+					caption="К категориям"
 				/>
-				<Box>
-					{products?.map((product, index) => (
-						<Box key={index}>{product.name}</Box>
-					))}
-				</Box>
 			</Box>
+			<EnhancedTable
+				onSelect={(ids) => (selectedIds.current = ids)}
+				rowsPerPage={rowsPerPage}
+				rows={products}
+				title={"Товары"}
+				rowsPerPageOptions={rowsPerPageOptions}
+				onPageChange={handleChangePage}
+				onRowsPerPageChange={handleChangeRowsPerPage}
+				page={page}
+				actions={([del, add, filter]) => [
+					{
+						...del,
+						componentProps: {
+							...filter.componentProps,
+							onClick: openDeleteDialog,
+						},
+					},
+					{
+						...add,
+						componentProps: {
+							...filter.componentProps,
+							onClick: openAddProductDialog,
+						},
+					},
+					{
+						...filter,
+						componentProps: {
+							...filter.componentProps,
+							onClick: () => console.log(selectedIds.current),
+						},
+					},
+				]}
+			/>
+			<ProductAddDialog
+				onClose={closeAddProductDialog}
+				onSubmit={handleSubmitAsync}
+				open={isAddProductDialogOn}
+			/>
+			<Dialog
+				title="Удалить товары"
+				onEnterKeyPress={() =>
+					handleDeleteProductAsync(selectedIds.current)
+				}
+				content="Вы действительно хотите удалить выбранные товары?"
+				open={isDeleteDialogOn}
+				onClose={closeDeleteDialog}
+				onOk={() => handleDeleteProductAsync(selectedIds.current)}
+				actions={([ok]) => [
+					{
+						value: "Не хочу",
+						position: "left",
+						onClick: closeDeleteDialog,
+					},
+					{
+						...ok,
+						value: "Хочу!",
+					},
+				]}
+			/>
 		</ProfilePage>
 	);
 }

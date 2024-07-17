@@ -6,9 +6,9 @@ namespace Flags.Infrastructure.Services.Products;
 public class GetAllProductCategoriesQueryHandler(
     IProductCategoryRepository productCategoryRepository) : IGetAllProductCategoriesQueryHandler
 {
-    public async Task<IEnumerable<ProductCategory>> Handle()
+    public async Task<IEnumerable<ProductCategory>> Handle(CancellationToken cancellationToken)
     {
-        var categories = await productCategoryRepository.GetAllAsync();
+        var categories = await productCategoryRepository.GetAllAsync(cancellationToken);
         return categories;
     }
 }

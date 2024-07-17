@@ -76,7 +76,6 @@ export default function RecursiveTree<T>({
 					const hasChildren =
 						tree.children !== undefined &&
 						tree.children(item).length > 0;
-					console.log(hasChildren)
 					return (
 						<Box key={index}>
 							<RecursiveTreeRow<T>

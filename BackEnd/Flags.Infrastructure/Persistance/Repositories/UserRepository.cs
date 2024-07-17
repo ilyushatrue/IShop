@@ -27,10 +27,11 @@ public class UserRepository(AppDbContext dbContext) : IUserRepository
     public async Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken)
     {
         return await dbContext.Users
+            .Where(u => u.Email.Value == email)
             .Include(u => u.RefreshJwt)
             .Include(u => u.Role)
             .Include(u => u.EmailConfirmation)
-            .SingleOrDefaultAsync(u => u.Email.Value == email, cancellationToken);
+            .SingleOrDefaultAsync(cancellationToken);
     }
 
     public async Task<List<User>> GetAllAsync(CancellationToken cancellationToken)
@@ -42,18 +43,22 @@ public class UserRepository(AppDbContext dbContext) : IUserRepository
     {
         return await dbContext.Users
             .AsNoTracking()
+            .Where(u => u.Phone != null && u.Phone!.Value == phone)
             .Include(u => u.RefreshJwt)
             .Include(u => u.Role)
             .Include(u => u.EmailConfirmation)
-            .Where(u => u.Phone != null)
-            .SingleOrDefaultAsync(u => u.Phone!.Value == phone, cancellationToken);
+            .SingleOrDefaultAsync(cancellationToken);
     }
 
     public async Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         return await dbContext.Users
-            .Include(u => u.Role).ThenInclude(r => r!.MemuItems)
-            .SingleOrDefaultAsync(u => u.Id == id, cancellationToken);
+            .Where(u => u.Id == id)
+            .Include(u => u.FavoriteProducts)!
+                .ThenInclude(fp => fp.Product)
+            .Include(u => u.Role)
+                .ThenInclude(r => r!.MemuItems)
+            .SingleOrDefaultAsync(cancellationToken);
     }
 
     public async Task<HashSet<PermissionFlag>> GetPermissionsAsync(Guid userId)

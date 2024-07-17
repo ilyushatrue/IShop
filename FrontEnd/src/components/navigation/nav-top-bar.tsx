@@ -1,10 +1,9 @@
 import NavTabs from "./tabs/nav-tabs";
-import { Box } from "@mui/material";
+import { Box, Icon } from "@mui/material";
 import NavAvatar, { IAvatar } from "./nav-avatar";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../app/hooks/redux/use-app-selector";
-import IconButton from "../icon-button";
-import Icon from "../icon";
+import IconButton from "../buttons/icon-button";
 
 interface IProps {
 	menuItems: {
@@ -15,8 +14,7 @@ interface IProps {
 	value: number | null;
 }
 export default function NavTopBar({ menuItems, avatar, value }: IProps) {
-	const navbarHeight = useAppSelector((state) => state.page.navbar);
-	const displayWidth = useAppSelector((state) => state.page.displayWidth);
+	const { navbar, displayWidth } = useAppSelector((state) => state.page);
 	const navigate = useNavigate();
 
 	return (
@@ -29,7 +27,7 @@ export default function NavTopBar({ menuItems, avatar, value }: IProps) {
 			display={"flex"}
 			alignItems={"start"}
 			justifyContent={"center"}
-			height={navbarHeight}
+			height={navbar.height}
 			bgcolor={"white"}
 			boxShadow={"0px 0px 120px rgba(0,0,0,0.1)"}
 		>
@@ -51,7 +49,7 @@ export default function NavTopBar({ menuItems, avatar, value }: IProps) {
 							borderRadius={"24px"}
 							width={600}
 						>
-							<Icon name="search" sx={{ mr: 2 }} />
+							<Icon sx={{ mr: 2 }}>search</Icon>
 						</Box>
 						<IconButton
 							orientation="vertical"
@@ -65,7 +63,7 @@ export default function NavTopBar({ menuItems, avatar, value }: IProps) {
 							caption="Избранное"
 							iconName="favorite"
 							iconSx={{ color: "black" }}
-							onClick={() => navigate("/favorite")}
+							onClick={() => navigate("/favorites")}
 						/>
 						<IconButton
 							orientation="vertical"

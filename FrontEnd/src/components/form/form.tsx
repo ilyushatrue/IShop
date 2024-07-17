@@ -43,7 +43,6 @@ export default function Form<T extends FieldValues>({
 		fields(builderRef.current!);
 	}, [fields]);
 
-
 	return (
 		<FormBuilder<T>
 			watch={watch}
@@ -60,17 +59,20 @@ export default function Form<T extends FieldValues>({
 				actions={actions}
 				defaultActions={[
 					{
-						disabled:
-							!formState.isDirty || !formState.isValid || loading,
-						label: "Отправить",
-						type: "submit",
+						componentProps: {
+							disabled: !formState.isDirty || loading,
+							type: "submit",
+						},
+						value: "Отправить",
 						position: "right",
 					},
 					{
-						disabled: !formState.isDirty || loading,
-						label: "Отменить",
-						type: "reset",
-						onClick: () => reset(),
+						componentProps: {
+							disabled: !formState.isDirty || loading,
+							type: "reset",
+							onClick: () => reset(),
+						},
+						value: "Отменить",
 						position: "left",
 					},
 				]}

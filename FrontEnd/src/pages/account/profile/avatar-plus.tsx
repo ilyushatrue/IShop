@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Box } from "@mui/material";
 import useApi from "../../../api/hooks/use-api.hook";
 import { mediaApi } from "../../../api/endpoints/media.api";
-import IconButton from "../../../components/icon-button";
+import IconButton from "../../../components/buttons/icon-button";
 import { usePopup } from "../../../app/hooks/use-popup.hook";
 import Avatar from "../../../components/avatar";
 
@@ -56,13 +56,13 @@ export default function AvatarPlus({
 		<Box
 			height={200}
 			width={200}
-			position="relative" // Разместите контент в относительном положении
+			position="relative" 
 			borderRadius="50%"
 			overflow="hidden"
 			sx={{
 				"&:hover .overlay": { opacity: 0.7 },
 				"&:hover .editIcon": { opacity: 1 },
-			}} // Установим эффекты hover
+			}} 
 		>
 			<Avatar imageId={imageUrl} size={"100%"} />
 
@@ -95,7 +95,7 @@ export default function AvatarPlus({
 				}}
 				iconName="edit"
 				onClick={handleIconClick}
-				tip="Edit Avatar"
+				tooltip="Редактировать"
 				iconSx={{ fontSize: "2rem" }}
 			/>
 

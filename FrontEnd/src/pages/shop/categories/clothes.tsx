@@ -6,9 +6,14 @@ import productsApi from "../../../api/endpoints/products.api";
 import Products from "../products";
 import ShopPage from "../shop-page";
 import { Pagination, PaginationItem } from "@mui/material";
+import { useAppSelector } from "../../../app/hooks/redux/use-app-selector";
 
 export default function Clothes() {
-	const path = "/category/clothes/";
+	const categoryName = "clothes";
+	const path = `/category/${categoryName}/`;
+	const category = useAppSelector((state) =>
+		state.global.productCategories.find((x) => x.name === categoryName)
+	)!;
 	const { id } = useParams<{ id: string }>();
 	const navigate = useNavigate();
 	const { fetchAsync } = useApi({ triggerPage: true });
@@ -24,7 +29,7 @@ export default function Clothes() {
 			return;
 		}
 		fetchAsync({
-			request: () => productsApi.getByCategoryAsync(1, +id, 12),
+			request: () => productsApi.getByCategoryAsync(category.id, +id, 12),
 			onSuccess: (handler) =>
 				handler.do((res) => {
 					const { currentPage, pageItems, pageSize, totalPages } =

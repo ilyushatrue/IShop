@@ -3,7 +3,7 @@ import ProfilePage from "../profile-page";
 
 export default function Cart() {
 	return (
-		<ProfilePage>
+		<ProfilePage title="Корзина">
 			<div>Cart</div>
 		</ProfilePage>
 	);

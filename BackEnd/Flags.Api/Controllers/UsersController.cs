@@ -49,7 +49,7 @@ public class UsersController(
         var userId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "UserId")!.Value;
 
         var userTask = getUserByIdQueryHandler.Handle(Guid.Parse(userId), cancellationToken);
-        var categoriesTask = getAllProductCategoriesQueryHandler.Handle();
+        var categoriesTask = getAllProductCategoriesQueryHandler.Handle(cancellationToken);
 
         var initialResponse = new InitialResponse()
         {
@@ -66,6 +66,6 @@ public class UsersController(
         var command = new EditUserDataCommand(user.FirstName, user.LastName, user.Email, user.Phone, role, user.AvatarId);
         var result = await editUserDataCommandHandler.Handle(command, cancellationToken);
         cookieManager.SetUserCookies(result);
-        return Ok(mapper.Map<UserInitialDto>(result));
+        return Ok();
     }
 }

@@ -155,12 +155,13 @@ public class DataInitializationService(IServiceProvider serviceProvider) : IHost
     private async Task CreateMenuItems(AppDbContext dbContext, CancellationToken cancellationToken)
     {
         List<MenuItem> menuItems = [
-            MenuItem.Create((int)MenuItemEnum.Profile, "Profile", "Мой профиль", "/profile", "person", 1),
-            MenuItem.Create((int)MenuItemEnum.Purchases, "Purchases", "Покупки", "/purchases", "sell", 2),
-            MenuItem.Create((int)MenuItemEnum.Cart, "Cart", "Корзина", "/cart", "shopping_bag", 3),
-            MenuItem.Create((int)MenuItemEnum.Products, "Products", "Товары", "/categories", "category", 4),
-            MenuItem.Create((int)MenuItemEnum.Users, "Users", "Пользователи", "/users", "people", 5),
-            MenuItem.Create((int)MenuItemEnum.Settings, "Settings", "Настройки", "/settings", "settings", 6),
+            MenuItem.Create((int)MenuItemEnum.Profile, MenuItemEnum.Profile.ToString(), "Мой профиль", "/profile", "person", 1),
+            MenuItem.Create((int)MenuItemEnum.Purchases, MenuItemEnum.Purchases.ToString(), "Покупки", "/purchases", "sell", 2),
+            MenuItem.Create((int)MenuItemEnum.Favorites, MenuItemEnum.Favorites.ToString(), "Избранное", "/favorites", "favorite", 3),
+            MenuItem.Create((int)MenuItemEnum.Cart, MenuItemEnum.Cart.ToString(), "Корзина", "/cart", "shopping_bag", 4),
+            MenuItem.Create((int)MenuItemEnum.Products, MenuItemEnum.Products.ToString(), "Товары", "/categories", "dataset", 5),
+            MenuItem.Create((int)MenuItemEnum.Users, MenuItemEnum.Users.ToString(), "Пользователи", "/users", "people", 6),
+            MenuItem.Create((int)MenuItemEnum.Settings, MenuItemEnum.Settings.ToString(), "Настройки", "/settings", "settings", 7),
         ];
 
         await dbContext.SyncronizeRecordsAsync<MenuItem, int>(menuItems, cancellationToken);

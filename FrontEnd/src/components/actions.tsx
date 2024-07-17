@@ -1,14 +1,16 @@
-import { Grid, SxProps } from "@mui/material";
-import Button from "./button";
-import { MouseEvent, useMemo } from "react";
+import { ElementType, useMemo } from "react";
+import { Box, ButtonProps, Grid, SxProps, Tooltip } from "@mui/material";
+import Button from "./buttons/button";
+
 export interface IAction {
-	disabled?: boolean;
-	label: string;
-	type?: "reset" | "submit" | "button";
-	onClick?: (e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) => void;
+	value: string;
 	position: "center" | "left" | "right";
-	sx?: SxProps;
+	tooltip?: string;
+	display?: "none" | "inherit";
+	componentProps?: ButtonProps;
+	component?: ElementType<ButtonProps>;
 }
+
 export default function Actions({
 	sx,
 	defaultActions = [],
@@ -32,17 +34,22 @@ export default function Actions({
 				justifyContent={"start"}
 				gap={1}
 			>
-				{actionGroups["left"]?.map((action, index) => (
-					<Button
-						key={index}
-						disabled={action.disabled}
-						type={action.type}
-						sx={{ flex: 1, ...action.sx }}
-						onClick={action.onClick}
-					>
-						{action.label}
-					</Button>
-				))}
+				{actionGroups["left"]?.map((action, index) => {
+					const Component = action.component || Button;
+					return (
+						<Tooltip
+							title={action.tooltip}
+							key={index}
+							sx={{ display: action.display }}
+						>
+							<Box>
+								<Component {...action.componentProps}>
+									{action.value}
+								</Component>
+							</Box>
+						</Tooltip>
+					);
+				})}
 			</Grid>
 			<Grid
 				item
@@ -51,30 +58,40 @@ export default function Actions({
 				justifyContent={"center"}
 				gap={1}
 			>
-				{actionGroups["center"]?.map((action, index) => (
-					<Button
-						key={index}
-						disabled={action.disabled}
-						type={action.type}
-						sx={{ flex: 1, ...action.sx }}
-						onClick={action.onClick}
-					>
-						{action.label}
-					</Button>
-				))}
+				{actionGroups["center"]?.map((action, index) => {
+					const Component = action.component || Button;
+					return (
+						<Tooltip
+							title={action.tooltip}
+							key={index}
+							sx={{ display: action.display }}
+						>
+							<Box>
+								<Component {...action.componentProps}>
+									{action.value}
+								</Component>
+							</Box>
+						</Tooltip>
+					);
+				})}
 			</Grid>
 			<Grid item flex={1} display={"flex"} justifyContent={"end"} gap={1}>
-				{actionGroups["right"]?.map((action, index) => (
-					<Button
-						key={index}
-						disabled={action.disabled}
-						type={action.type}
-						sx={{ flex: 1, ...action.sx }}
-						onClick={action.onClick}
-					>
-						{action.label}
-					</Button>
-				))}
+				{actionGroups["right"]?.map((action, index) => {
+					const Component = action.component || Button;
+					return (
+						<Tooltip
+							title={action.tooltip}
+							key={index}
+							sx={{ display: action.display }}
+						>
+							<Box>
+								<Component {...action.componentProps}>
+									{action.value}
+								</Component>
+							</Box>
+						</Tooltip>
+					);
+				})}
 			</Grid>
 		</Grid>
 	);

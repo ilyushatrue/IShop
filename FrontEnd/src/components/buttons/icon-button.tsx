@@ -1,17 +1,10 @@
 import { MouseEventHandler } from "react";
-import Icon, { IIcon } from "./icon";
-import {
-	Box,
-	Button,
-	SxProps,
-	Tooltip,
-	TooltipProps,
-	Typography,
-} from "@mui/material";
+import { Box, Button, Icon, SxProps, Tooltip, Typography } from "@mui/material";
 
 export interface IIconButton {
-	iconName: IIcon["name"];
-	tip?: TooltipProps["title"];
+	iconName: string;
+	tooltip?: string;
+	disabled?: boolean;
 	onClick: MouseEventHandler<HTMLAnchorElement>;
 	iconSx?: SxProps;
 	color?: string;
@@ -25,9 +18,10 @@ export interface IIconButton {
 	containerSized?: boolean;
 }
 export default function IconButton({
-	tip,
+	tooltip,
 	iconName,
 	onClick,
+	disabled,
 	iconSx,
 	caption,
 	color = "black",
@@ -41,10 +35,11 @@ export default function IconButton({
 }: IIconButton) {
 	const isCircled = variant === "circled";
 	return (
-		<Tooltip title={tip}>
+		<Tooltip title={tooltip}>
 			<Button
 				className="editIcon"
 				onClick={onClick}
+				disabled={disabled}
 				href=""
 				fullWidth={fullwidth && !isCircled}
 				sx={{
@@ -54,11 +49,10 @@ export default function IconButton({
 					justifyContent: centered ? "center" : "start",
 					typography: {
 						textTransform: "none",
-						fontWeight: 500,
 					},
 					borderRadius:
 						variant === "rounded"
-							? "16px"
+							? "10px"
 							: isCircled
 							? "50%"
 							: variant === "squared"
@@ -85,11 +79,9 @@ export default function IconButton({
 						orientation === "horizontal" ? "row" : "column"
 					}
 				>
-					<Icon
-						name={iconName}
-						sx={{ ...iconSx, color: color }}
-						fontSize={fontSize}
-					/>
+					<Icon sx={{ ...iconSx, color: color, fontSize: fontSize }}>
+						{iconName}
+					</Icon>
 					{caption && (
 						<Typography fontSize={fontSize * 0.6} color={color}>
 							{caption}

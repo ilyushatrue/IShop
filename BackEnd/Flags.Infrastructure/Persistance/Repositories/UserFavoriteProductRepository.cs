@@ -8,4 +8,9 @@ public class UserFavoriteProductRepository(
     {
         dbContext.UserFavoriteProducts.Add(new(userId, productId));
     }
+
+    public void Delete(Guid userId, Guid productId)
+    {
+        dbContext.UserFavoriteProducts.Remove(new(userId, productId));
+    }
 }

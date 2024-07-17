@@ -17,7 +17,7 @@ export default function UserForm({
 			defaultValues={defaultValues}
 			minHeight={minHeight}
 			actions={([submit, reset]) => [
-				{ ...submit, label: "Сохранить" },
+				{ ...submit, value: "Сохранить" },
 				reset,
 			]}
 			onSubmit={onSubmitAsync}

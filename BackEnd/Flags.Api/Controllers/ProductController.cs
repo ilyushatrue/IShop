@@ -7,6 +7,7 @@ using Flags.Domain.ProductRoot.Entities;
 using MapsterMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading;
 
 namespace Flags.Api.Controllers;
 
@@ -17,7 +18,7 @@ public class ProductController(
     ICreateProductCommandHandler createProductCommandHandler,
     ICreateProductCategoryCommandHandler createProductCategoryCommandHandler,
     ISyncProductCategoriesCommandHandler updateProductCategoryCommandHandler,
-    IDeleteProductByIdCommandHandler deleteProductByIdCommandHandler,
+    IDeleteProductsByIdCommandHandler deleteProductByIdCommandHandler,
     IGetAllProductCategoriesQueryHandler getAllProductCategoriesQueryHandler,
     IUpdateProductCommandHandler updateProductCommandHandler,
     IMakeProductFavoriteCommandHandler makeProductFavoriteCommandHandler,
@@ -60,12 +61,12 @@ public class ProductController(
         return Ok(pagedList);
     }
 
-    [AllowAnonymous]
-    [HttpPost("to-favorites/{productId}")]
-    public async Task<IActionResult> MakeProductFavorite(Guid productId, CancellationToken cancellationToken)
+    [HttpPost("to-favorites")]
+    public async Task<IActionResult> MakeProductFavorite([FromQuery] Guid productId, [FromQuery] bool value, CancellationToken cancellationToken)
     {
         var userId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "UserId")!.Value;
-        var result = await makeProductFavoriteCommandHandler.Handle(new(Guid.Parse(userId), productId), cancellationToken);
+        var command = new MakeProductFavoriteCommand(Guid.Parse(userId), productId, value);
+        var result = await makeProductFavoriteCommandHandler.Handle(command, cancellationToken);
         return Ok(result);
     }
 
@@ -76,10 +77,10 @@ public class ProductController(
         return Ok();
     }
 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteProductAsync(Guid id, CancellationToken cancellationToken)
+    [HttpDelete]
+    public async Task<IActionResult> DeleteProductRangeByIdAsync([FromBody] Guid[] ids, CancellationToken cancellationToken)
     {
-        await deleteProductByIdCommandHandler.Handle(id, cancellationToken);
+        await deleteProductByIdCommandHandler.Handle(new(ids), cancellationToken);
         return Ok();
     }
 
@@ -91,9 +92,9 @@ public class ProductController(
     }
 
     [HttpGet("categories")]
-    public async Task<IActionResult> GetAllProductCategoriesAsync()
+    public async Task<IActionResult> GetAllProductCategoriesAsync(CancellationToken cancellationToken)
     {
-        var result = await getAllProductCategoriesQueryHandler.Handle();
+        var result = await getAllProductCategoriesQueryHandler.Handle(cancellationToken);
         return Ok(result);
     }
 

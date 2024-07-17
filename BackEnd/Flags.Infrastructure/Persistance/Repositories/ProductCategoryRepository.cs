@@ -10,12 +10,12 @@ public class ProductCategoryRepository(AppDbContext dbContext) : IProductCategor
         dbContext.ProductCategories.Add(productCategory);
     }
 
-    public async Task<List<ProductCategory>> GetAllAsync()
+    public async Task<List<ProductCategory>> GetAllAsync(CancellationToken cancellationToken)
     {
         return await dbContext.ProductCategories
             .Where(pc => pc.ParentId == null)
             .Include(pc => pc.Children)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
     }
 
     public async Task SyncAsync(IEnumerable<ProductCategory> categories, CancellationToken cancellationToken)

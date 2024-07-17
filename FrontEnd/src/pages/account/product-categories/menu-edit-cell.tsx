@@ -1,5 +1,5 @@
 import { Box, CircularProgress } from "@mui/material";
-import IconButton from "../../../components/icon-button";
+import IconButton from "../../../components/buttons/icon-button"; 
 
 interface IProps {
 	isLoading: boolean;

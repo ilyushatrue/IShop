@@ -3,7 +3,7 @@ import ProfilePage from "../profile-page";
 
 export default function Purchases() {
 	return (
-		<ProfilePage>
+		<ProfilePage title="Покупки">
 			<div>Purchases</div>
 		</ProfilePage>
 	);

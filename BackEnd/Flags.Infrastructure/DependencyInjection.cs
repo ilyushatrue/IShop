@@ -92,7 +92,7 @@ public static class DependencyInjection
         services.AddScoped<ICreateProductCommandHandler, CreateProductCommandHandler>();
         #endregion
         #region D
-        services.AddScoped<IDeleteProductByIdCommandHandler, DeleteProductByIdCommandHandler>();
+        services.AddScoped<IDeleteProductsByIdCommandHandler, DeleteProductsByIdCommandHandler>();
         #endregion
         #region E
         services.AddScoped<IEditUserDataCommandHandler, EditUserDataCommandHandler>();

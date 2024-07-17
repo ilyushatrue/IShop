@@ -1,4 +1,4 @@
-import { IconButton, TextField } from "@mui/material";
+import { Icon, IconButton, TextField } from "@mui/material";
 import {
 	Control,
 	Controller,
@@ -6,7 +6,6 @@ import {
 	Path,
 	RegisterOptions,
 } from "react-hook-form";
-import Icon from "../../icon";
 import { useState } from "react";
 import { IFormField } from "./form-field.interface";
 
@@ -90,15 +89,15 @@ export default function InputPassword<T extends FieldValues>({
 								size="small"
 							>
 								{isPasswordVisible ? (
-									<Icon name="visibility_off" />
+									<Icon>visibility_off</Icon>
 								) : (
-									<Icon name="visibility" />
+									<Icon>visibility</Icon>
 								)}
 							</IconButton>
 						),
 					}}
 				>
-					<Icon name="visibility" sx={{ height: 50, width: 50 }} />
+					<Icon sx={{ height: 50, width: 50 }}>visibility</Icon>
 				</TextField>
 			)}
 		/>

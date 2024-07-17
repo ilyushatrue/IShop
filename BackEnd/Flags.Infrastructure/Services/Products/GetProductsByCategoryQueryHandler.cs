@@ -28,7 +28,8 @@ public class GetProductsByCategoryQueryHandler(
         pager.PageItems = await productRepository.GetListByCategoryAsync(
             query.CategoryId,
             pager.CurrentPage,
-            pager.PageSize);
+            pager.PageSize,
+            cancellationToken);
 
         return pager;
     }

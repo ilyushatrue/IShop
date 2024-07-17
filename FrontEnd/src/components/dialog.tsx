@@ -56,9 +56,11 @@ function Dialog({
 					<Actions
 						defaultActions={[
 							{
-								label: "Понятно",
+								value: "Понятно",
 								position: "right",
-								onClick: onOk,
+								componentProps: {
+									onClick: onOk,
+								},
 							},
 						]}
 						actions={actions}

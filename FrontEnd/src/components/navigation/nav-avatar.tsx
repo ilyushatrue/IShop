@@ -1,6 +1,5 @@
-import { IconButton, Menu, MenuItem, SxProps, Tooltip } from "@mui/material";
+import { Icon, IconButton, Menu, MenuItem, SxProps, Tooltip } from "@mui/material";
 import { useState } from "react";
-import Icon, { IIcon } from "../icon";
 import { useAppSelector } from "../../app/hooks/redux/use-app-selector";
 import Avatar from "../avatar";
 
@@ -10,7 +9,7 @@ export interface IAvatar {
 	tip: string;
 	menuItems: {
 		label: string;
-		icon: IIcon["name"];
+		icon: string;
 		sx: SxProps;
 		onClick: () => void;
 	}[];
@@ -81,7 +80,7 @@ export default function NavAvatar({ tip, menuItems }: IAvatar) {
 						}}
 						key={index}
 					>
-						<Icon name={item.icon} sx={item.sx} />
+						<Icon sx={item.sx}>{item.icon}</Icon>
 						{item.label}
 					</MenuItem>
 				))}

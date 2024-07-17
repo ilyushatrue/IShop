@@ -9,6 +9,7 @@ const GradientButton = styled(MuiButton)({
 	boxShadow: "0 3px 5px 2px rgba(227, 141, 79, .3)",
 	color: "white",
 	textTransform: "none",
+	
 });
 
 export default function Button({ ...props }: ButtonProps) {

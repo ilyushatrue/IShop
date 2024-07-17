@@ -72,16 +72,16 @@ export default function ProductCardEditDialog({
 								onCancel();
 							},
 							position: "left",
-							label: "Отменить",
+							value: "Отменить",
 						},
 						{
 							...reset,
 							position: "right",
-							label: "Сбросить",
+							value: "Сбросить",
 						},
 						{
 							...submit,
-							label: "Сохранить",
+							value: "Сохранить",
 						},
 					]}
 					minHeight={500}
