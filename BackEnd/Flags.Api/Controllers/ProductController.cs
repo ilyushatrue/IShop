@@ -7,7 +7,6 @@ using Flags.Domain.ProductRoot.Entities;
 using MapsterMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading;
 
 namespace Flags.Api.Controllers;
 
@@ -22,6 +21,7 @@ public class ProductController(
     IGetAllProductCategoriesQueryHandler getAllProductCategoriesQueryHandler,
     IUpdateProductCommandHandler updateProductCommandHandler,
     IMakeProductFavoriteCommandHandler makeProductFavoriteCommandHandler,
+    IMakeProductRangeFavoriteCommandHandler makeProductRangeFavoriteCommandHandler,
     IMapper mapper) : ApiController
 {
     [AllowAnonymous]
@@ -67,6 +67,15 @@ public class ProductController(
         var userId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "UserId")!.Value;
         var command = new MakeProductFavoriteCommand(Guid.Parse(userId), productId, value);
         var result = await makeProductFavoriteCommandHandler.Handle(command, cancellationToken);
+        return Ok(result);
+    }
+    
+    [HttpPost("to-favorites-range")]
+    public async Task<IActionResult> MakeProductRangeFavorite([FromBody] MakeProductRangeItemFavoriteCommand[] commands, CancellationToken cancellationToken)
+    {
+        var userId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "UserId")!.Value;
+        var command = new MakeProductRangeFavoriteCommand(Guid.Parse(userId), commands);
+        var result = await makeProductRangeFavoriteCommandHandler.Handle(command, cancellationToken);
         return Ok(result);
     }
 

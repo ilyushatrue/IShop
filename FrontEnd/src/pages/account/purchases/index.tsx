@@ -1,10 +1,11 @@
 import React from "react";
 import ProfilePage from "../profile-page";
+import ProfileProtectedPage from "../profile-protected-page";
 
 export default function Purchases() {
 	return (
-		<ProfilePage title="Покупки">
+		<ProfileProtectedPage title="Покупки">
 			<div>Purchases</div>
-		</ProfilePage>
+		</ProfileProtectedPage>
 	);
 }

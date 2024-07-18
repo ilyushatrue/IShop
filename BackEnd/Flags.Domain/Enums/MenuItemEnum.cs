@@ -7,5 +7,4 @@ public enum MenuItemEnum
     Cart,
     Products,
     Users, 
-    Settings
 }

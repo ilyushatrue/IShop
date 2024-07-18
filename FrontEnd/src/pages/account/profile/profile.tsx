@@ -2,10 +2,10 @@ import { Box } from "@mui/material";
 import UserForm from "./user-form";
 import useApi from "../../../api/hooks/use-api.hook";
 import usersApi from "../../../api/endpoints/users.api";
-import ProfilePage from "../profile-page";
 import { IUser } from "../../../api/interfaces/user/user.interface";
 import { useAppSelector } from "../../../app/hooks/redux/use-app-selector";
 import { reload } from "../../../app/helpers/reload";
+import ProfileProtectedPage from "../profile-protected-page";
 
 export default function Profile() {
 	const userState = useAppSelector((state) => state.user);
@@ -21,7 +21,7 @@ export default function Profile() {
 	}
 
 	return (
-		<ProfilePage title="Мой профиль">
+		<ProfileProtectedPage title="Мой профиль">
 			<Box
 				width={500}
 				marginX={"auto"}
@@ -42,6 +42,6 @@ export default function Profile() {
 					}}
 				/>
 			</Box>
-		</ProfilePage>
+		</ProfileProtectedPage>
 	);
 }

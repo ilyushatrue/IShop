@@ -51,7 +51,7 @@ const pageSlice = createSlice({
 			state.loading = action.payload;
 		},
 		setActiveTab(state, action: PayloadAction<string | undefined>) {
-			const item = state.tabs.find((x) => x.href === action?.payload);
+			const item = state.tabs.slice().reverse().find((x) => x.href === action?.payload?.substring(0, x.href.length));
 			state.tabs.map((x) => {
 				x.active = false;
 				return x;

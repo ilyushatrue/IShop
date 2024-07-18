@@ -102,7 +102,7 @@ public static class DependencyInjection
         services.AddScoped<IGetAllProductCategoriesQueryHandler, GetAllProductCategoriesQueryHandler>();
         services.AddScoped<IGetAllProductsQueryHandler, GetAllProductsQueryHandler>();
         services.AddScoped<IGetAllUsersQueryHandler, GetAllUsersQueryHandler>();
-        services.AddScoped<IGetMenuItemsQueryHandler, GetMenuItemsQueryHandler>();
+        services.AddScoped<IGetMenuItemsByRoleQueryHandler, GetMenuItemsByRoleQueryHandler>();
         services.AddScoped<IGetImageByIdQueryHandler, GetImageByIdQueryHandler>();
         services.AddScoped<IGetProductsByCategoryQueryHandler, GetProductsByCategoryQueryHandler>();
         services.AddScoped<IGetUserByIdQueryHandler, GetUserByIdQueryHandler>();
@@ -114,6 +114,7 @@ public static class DependencyInjection
         #endregion
         #region M
         services.AddScoped<IMakeProductFavoriteCommandHandler, MakeProductFavoriteCommandHandler>();
+        services.AddScoped<IMakeProductRangeFavoriteCommandHandler, MakeProductRangeFavoriteCommandHandler>();
         #endregion
         #region R
         services.AddScoped<IRefreshJwtCommandHandler, RefreshJwtCommandHandler>();

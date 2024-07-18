@@ -4,6 +4,7 @@ import useApi from "../../../api/hooks/use-api.hook";
 import usersApi from "../../../api/endpoints/users.api";
 import { useNavigate } from "react-router-dom";
 import ProfilePage from "../profile-page";
+import ProfileProtectedPage from "../profile-protected-page";
 export default function Users() {
 	const [users, setUsers] = useState<any[]>([]);
 	const navigate = useNavigate();
@@ -23,7 +24,7 @@ export default function Users() {
 	}, []);
 
 	return (
-		<ProfilePage title="Пользователи">
+		<ProfileProtectedPage title="Пользователи">
 			<>
 				{users.map((user, index) => (
 					<div
@@ -40,6 +41,6 @@ export default function Users() {
 					</div>
 				))}
 			</>
-		</ProfilePage>
+		</ProfileProtectedPage>
 	);
 }

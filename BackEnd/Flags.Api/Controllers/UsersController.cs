@@ -11,6 +11,9 @@ using Flags.Domain.Enums;
 using Flags.Api.Common;
 using Flags.Contracts.Users;
 using Flags.Contracts;
+using Flags.Application.MenuItems.Queries;
+using Flags.Contracts.MenuItems;
+using Flags.Domain.UserRoot;
 
 namespace Flags.Api.Controllers;
 
@@ -22,6 +25,7 @@ public class UsersController(
     IGetUserByIdQueryHandler getUserByIdQueryHandler,
     IEditUserDataCommandHandler editUserDataCommandHandler,
     IGetAllProductCategoriesQueryHandler getAllProductCategoriesQueryHandler,
+    IGetMenuItemsByRoleQueryHandler getMenuItemsByRoleQueryHandler,
     CookieManager cookieManager
 ) : ApiController
 {
@@ -43,18 +47,26 @@ public class UsersController(
     [HttpGet("current")]
     public async Task<IActionResult> GetCurrent(CancellationToken cancellationToken)
     {
-        if (User.Identity?.IsAuthenticated != true)
-            throw new NotAuthenticatedException("not-authenticated", "Пользователь не аутентифицирован");
+        var userId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "UserId")?.Value;
 
-        var userId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "UserId")!.Value;
+        var userRoleId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "RoleId")?.Value;
+        var userRole = userRoleId == null ? RoleFlag.Visitor : Enum.Parse<RoleFlag>(userRoleId);
+        var getMenuItemsByRoleQuery = new GetMenuItemsByRoleQuery(userRole);
 
-        var userTask = getUserByIdQueryHandler.Handle(Guid.Parse(userId), cancellationToken);
+        var menuItemsTask = getMenuItemsByRoleQueryHandler.Handle(getMenuItemsByRoleQuery, cancellationToken);
         var categoriesTask = getAllProductCategoriesQueryHandler.Handle(cancellationToken);
+
+        Task<User>? userTask = null;
+        if (userId != null)
+        {
+            userTask = getUserByIdQueryHandler.Handle(Guid.Parse(userId), cancellationToken);
+        }
 
         var initialResponse = new InitialResponse()
         {
+            User = userId == null ? null : mapper.Map<UserInitialDto>(await userTask!),
+            MenuItems = mapper.Map<IEnumerable<MenuItemDto>>(await menuItemsTask),
             ProductCategories = mapper.Map<IEnumerable<ProductCategoryDto>>(await categoriesTask),
-            User = mapper.Map<UserInitialDto>(await userTask),
         };
         return Ok(initialResponse);
     }

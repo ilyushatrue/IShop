@@ -41,6 +41,12 @@ const productsApi = {
 		return await httpPost({
 			url: `${baseUrl}/to-favorites${queryString}`, authenticate: true
 		})
+	},
+
+	toFavoritesRangeAsync: async (array: { productId: string, value: boolean }[]) => {
+		return await httpPost({
+			url: `${baseUrl}/to-favorites-range`, body: array, authenticate: true
+		})
 	}
 };
 

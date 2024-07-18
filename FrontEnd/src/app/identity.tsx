@@ -33,17 +33,28 @@ export default function Identity({
 			.getCurrentAsync()
 			.then((res) => {
 				if (res.ok) {
-					const { productCategories, user } = res.body!;
-
-					const {
-						avatarId,
-						email,
-						firstName,
-						lastName,
-						phone,
-						menuItems,
-						favoriteProducts,
-					} = user!;
+					const { productCategories, user, menuItems } = res.body!;
+					if (user) {
+						const {
+							avatarId,
+							email,
+							firstName,
+							lastName,
+							phone,
+							favoriteProducts,
+						} = user!;
+						dispatch(
+							updateCurrentUserState({
+								isAuthenticated: true,
+								avatarId: avatarId,
+								email: email,
+								firstName: firstName,
+								favoriteProducts: favoriteProducts,
+								lastName: lastName,
+								phone: phone,
+							})
+						);
+					}
 
 					dispatch(
 						setInitialAppState({
@@ -53,17 +64,6 @@ export default function Identity({
 							productCategories: productCategories.map((pc) =>
 								setCategoryParentNull(pc)
 							),
-						})
-					);
-					dispatch(
-						updateCurrentUserState({
-							isAuthenticated: true,
-							avatarId: avatarId,
-							email: email,
-							firstName: firstName,
-							favoriteProducts: favoriteProducts,
-							lastName: lastName,
-							phone: phone,
 						})
 					);
 				} else {

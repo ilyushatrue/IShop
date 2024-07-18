@@ -1,6 +1,6 @@
 import { Grid } from "@mui/material";
 import { IProduct } from "../../api/interfaces/product/product.interface";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import useApi from "../../api/hooks/use-api.hook";
 import { useAppSelector } from "../../app/hooks/redux/use-app-selector";
 import ProductCard from "./card/product-card";
@@ -23,10 +23,28 @@ export default function Products({ products, onDelete, onUpdate }: IProps) {
 	const categories = useAppSelector(
 		(state) => state.global.productCategories
 	);
-	const userFavoriteProducts = useAppSelector(
+	const apiFavoriteProducts = useAppSelector(
 		(state) => state.user.favoriteProducts
 	);
-	console.log(userFavoriteProducts);
+	const userFavoriteProducts: IProduct[] = useMemo(
+		function () {
+			if (isAuth) {
+				return apiFavoriteProducts;
+			} else {
+				let favoritesFromLocalStorage =
+					window.localStorage.getItem("favorite-products");
+				if (favoritesFromLocalStorage) {
+					const favorites = JSON.parse(
+						favoritesFromLocalStorage
+					) as string[];
+					return products.filter((p) => favorites.includes(p.id));
+				}
+				return [];
+			}
+		},
+		[apiFavoriteProducts, isAuth, products]
+	);
+
 	const { fetchAsync, isFetching } = useApi({ triggerPage: true });
 	const { fetchAsync: fastFetch } = useApi({ triggerPage: false });
 
@@ -41,17 +59,47 @@ export default function Products({ products, onDelete, onUpdate }: IProps) {
 	}
 
 	async function handleToFavoritesAsync(productId: string, value: boolean) {
-		await fastFetch({
-			request: () => productsApi.toFavoritesAsync(productId, value),
-			onSuccess: () =>
-				dispatch(
-					setFavoriteProduct({
-						product: products.find((p) => p.id === productId)!,
-						value: value,
-					})
-				),
-			onError: (handler) => handler.log().popup(),
-		});
+		if (isAuth) {
+			await fastFetch({
+				request: () => productsApi.toFavoritesAsync(productId, value),
+				onSuccess: () =>
+					dispatch(
+						setFavoriteProduct({
+							product: products.find((p) => p.id === productId)!,
+							value: value,
+						})
+					),
+				onError: (handler) => handler.log().popup(),
+			});
+		} else {
+			let favoritesFromLocalStorage =
+				window.localStorage.getItem("favorite-products");
+			if (favoritesFromLocalStorage) {
+				let favorites = JSON.parse(
+					favoritesFromLocalStorage
+				) as string[];
+				if (value) {
+					favorites.push(productId);
+				} else {
+					favorites = favorites.filter((sf) => sf !== productId);
+				}
+				window.localStorage.setItem(
+					"favorite-products",
+					JSON.stringify(favorites)
+				);
+			} else {
+				window.localStorage.setItem(
+					"favorite-products",
+					JSON.stringify([productId])
+				);
+			}
+			dispatch(
+				setFavoriteProduct({
+					product: products.find((p) => p.id === productId)!,
+					value: value,
+				})
+			);
+		}
 	}
 
 	async function handleEditProductAsync(product: IProduct) {
@@ -67,6 +115,7 @@ export default function Products({ products, onDelete, onUpdate }: IProps) {
 		<>
 			<Grid container rowSpacing={4} width={"100%"} height={"100%"}>
 				{products.map((p, index) => {
+					console.log(userFavoriteProducts);
 					const isFavorite = userFavoriteProducts.some(
 						(ufp) => ufp.id === p.id
 					);

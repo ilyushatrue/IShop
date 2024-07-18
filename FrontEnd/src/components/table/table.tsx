@@ -15,11 +15,10 @@ import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 import { visuallyHidden } from "@mui/utils";
-import { IProduct } from "../../../api/interfaces/product/product.interface";
-import Image from "../../../components/image";
-import Actions, { IAction } from "../../../components/actions";
-import { Button, IconButton } from "@mui/material";
-import IconButton2 from "../../../components/buttons/icon-button-2";
+import Actions, { IAction } from "../actions";
+import IconButton2 from "../buttons/icon-button-2";
+import { IProduct } from "../../api/interfaces/product/product.interface";
+import Image from "../image";
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
 	if (b[orderBy] < a[orderBy]) {

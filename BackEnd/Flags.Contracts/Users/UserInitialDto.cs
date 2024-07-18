@@ -7,7 +7,6 @@ public record UserInitialDto(
     string FirstName,
     string LastName,
     string Email,
-    IEnumerable<MenuItemDto> MenuItems,
     IEnumerable<ProductDto> FavoriteProducts,
     string? Phone,
     Guid? AvatarId = null);

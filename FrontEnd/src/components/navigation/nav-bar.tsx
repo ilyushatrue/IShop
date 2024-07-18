@@ -36,7 +36,7 @@ export default function NavBar({ sm = false }: INavBar) {
 							icon: "person",
 							label: "Личный кабинет",
 							sx: { color: "primary.dark", marginRight: 1 },
-							onClick: () => navigate("/profile"),
+							onClick: () => navigate("/my/profile"),
 						},
 						{
 							icon: "logout",

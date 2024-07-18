@@ -3,12 +3,10 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Page from "../../components/page";
 import { useAppSelector } from "../../app/hooks/redux/use-app-selector";
 import IconButton from "../../components/buttons/icon-button";
-import { ReactNode } from "react";
 
 interface IProps extends BoxProps {
 	sideBoxProps?: BoxProps;
 	mainBoxProps?: BoxProps;
-	children: ReactNode;
 }
 
 export default function ProfilePage({

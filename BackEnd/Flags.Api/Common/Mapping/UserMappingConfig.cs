@@ -11,7 +11,6 @@ public class UserMappingConfig : IRegister
         config.NewConfig<User, UserInitialDto>()
             .Map(dto => dto.Email, src => src.Email.Value)
             .Map(dto => dto.Phone, src => src.Phone.Value)
-            .Map(dto => dto.MenuItems, src => src.Role!.MemuItems)
             .Map(dto => dto.FavoriteProducts, src => src.FavoriteProducts.Select(fp => fp.Product));
     }
 }

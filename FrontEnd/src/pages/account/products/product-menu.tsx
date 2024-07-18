@@ -10,7 +10,7 @@ import { IProductCategory } from "../../../api/interfaces/product-categories/pro
 import { ICreateProductCommand } from "../../../api/interfaces/product/commands/create-product-command.interface";
 import ProductAddDialog from "./product-add-dialog";
 import { reload } from "../../../app/helpers/reload";
-import EnhancedTable from "./product-table";
+import EnhancedTable from "../../../components/table/table";
 import IconButton from "../../../components/buttons/icon-button";
 import Dialog from "../../../components/dialog";
 
@@ -31,7 +31,7 @@ export default function ProductMenu() {
 
 	const categoryId = useMemo(() => {
 		const parts = location.pathname.split("/").filter((part) => part);
-		const categories = parts.slice(1);
+		const categories = parts.slice(2);
 		if (!categories.length) return 0;
 		let curr: IProductCategory[] = appcategories;
 		let item: IProductCategory;
@@ -113,7 +113,7 @@ export default function ProductMenu() {
 					color="secondary.light"
 					variant="rounded"
 					iconName="arrow_back"
-					onClick={() => navigate("/categories")}
+					onClick={() => navigate("/my/categories")}
 					caption="К категориям"
 				/>
 			</Box>

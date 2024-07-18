@@ -1,15 +1,13 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import useApi from "../../../api/hooks/use-api.hook";
 import ProfilePage from "../profile-page";
-import { Box } from "@mui/material";
 import productsApi from "../../../api/endpoints/products.api";
 import { IProduct } from "../../../api/interfaces/product/product.interface";
 import { ICreateProductCommand } from "../../../api/interfaces/product/commands/create-product-command.interface";
 import { reload } from "../../../app/helpers/reload";
-import IconButton from "../../../components/buttons/icon-button";
 import Dialog from "../../../components/dialog";
 import { useAppSelector } from "../../../app/hooks/redux/use-app-selector";
-import EnhancedTable from "../products/product-table";
+import EnhancedTable from "../../../components/table/table";
 
 export default function FavoriteProducts() {
 	const [isDeleteDialogOn, setIsDeleteDialogOn] = useState(false);

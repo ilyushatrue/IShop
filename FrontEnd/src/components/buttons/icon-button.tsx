@@ -1,5 +1,13 @@
-import { MouseEventHandler } from "react";
-import { Box, Button, Icon, SxProps, Tooltip, Typography } from "@mui/material";
+import { MouseEventHandler, ReactNode } from "react";
+import {
+	Badge,
+	Box,
+	Button,
+	Icon,
+	SxProps,
+	Tooltip,
+	Typography,
+} from "@mui/material";
 
 export interface IIconButton {
 	iconName: string;
@@ -9,6 +17,8 @@ export interface IIconButton {
 	iconSx?: SxProps;
 	color?: string;
 	buttonSx?: SxProps;
+	badgeContent?: ReactNode;
+	badgeInvisible?: boolean;
 	centered?: boolean;
 	caption?: string;
 	orientation?: "vertical" | "horizontal";
@@ -25,6 +35,7 @@ export default function IconButton({
 	iconSx,
 	caption,
 	color = "black",
+	badgeContent,
 	buttonSx,
 	orientation = "horizontal",
 	variant = "rounded",
@@ -79,9 +90,16 @@ export default function IconButton({
 						orientation === "horizontal" ? "row" : "column"
 					}
 				>
-					<Icon sx={{ ...iconSx, color: color, fontSize: fontSize }}>
-						{iconName}
-					</Icon>
+					<Badge
+						badgeContent={badgeContent}
+						color="secondary"
+					>
+						<Icon
+							sx={{ ...iconSx, color: color, fontSize: fontSize }}
+						>
+							{iconName}
+						</Icon>
+					</Badge>
 					{caption && (
 						<Typography fontSize={fontSize * 0.6} color={color}>
 							{caption}

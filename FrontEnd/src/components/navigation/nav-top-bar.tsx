@@ -15,6 +15,9 @@ interface IProps {
 }
 export default function NavTopBar({ menuItems, avatar, value }: IProps) {
 	const { navbar, displayWidth } = useAppSelector((state) => state.page);
+	const favoriteProductsCount = useAppSelector(
+		(state) => state.user.favoriteProducts.length
+	);
 	const navigate = useNavigate();
 
 	return (
@@ -29,7 +32,7 @@ export default function NavTopBar({ menuItems, avatar, value }: IProps) {
 			justifyContent={"center"}
 			height={navbar.height}
 			bgcolor={"white"}
-			boxShadow={"0px 0px 120px rgba(0,0,0,0.1)"}
+			boxShadow={"0px 0px 10px rgba(0,0,0,0.1)"}
 		>
 			<Box width={displayWidth} display={"flex"} flexDirection={"column"}>
 				<Box height={"60px"} width={"100%"}>
@@ -37,7 +40,7 @@ export default function NavTopBar({ menuItems, avatar, value }: IProps) {
 						display={"flex"}
 						justifyContent={"end"}
 						gap={2}
-						marginY={0.5}
+						marginY={1}
 						alignItems={"center"}
 					>
 						<Box
@@ -56,21 +59,22 @@ export default function NavTopBar({ menuItems, avatar, value }: IProps) {
 							caption="Заказы"
 							iconName="local_shipping"
 							iconSx={{ color: "black" }}
-							onClick={() => navigate("/purchases")}
+							onClick={() => navigate("/my/purchases")}
 						/>
 						<IconButton
 							orientation="vertical"
 							caption="Избранное"
+							badgeContent={favoriteProductsCount}
 							iconName="favorite"
 							iconSx={{ color: "black" }}
-							onClick={() => navigate("/favorites")}
+							onClick={() => navigate("/my/favorites")}
 						/>
 						<IconButton
 							orientation="vertical"
 							caption="Корзина"
 							iconName="shopping_bag"
 							iconSx={{ color: "black" }}
-							onClick={() => navigate("/cart")}
+							onClick={() => navigate("/my/cart")}
 						/>
 						<Box display={"flex"} alignItems={"center"}>
 							{avatar && (

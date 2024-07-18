@@ -18,6 +18,7 @@ import useApi from "../../../api/hooks/use-api.hook";
 import apiAuth from "../../../api/endpoints/auth.api";
 import ResetPasswordDialog from "./reset-password-dialog";
 import EmailConfirmAlreadySentDialog from "./email-confirm-already-sent-dialog";
+import productsApi from "../../../api/endpoints/products.api";
 
 type AuthType = "phone" | "email";
 
@@ -52,7 +53,7 @@ export default function Login({ sm = false, onToRegisterClick }: IProps) {
 	async function handleLoginByPhoneAsync(request: ILoginByPhoneRequest) {
 		await fetchAsync({
 			request: async () => await apiAuth.loginByPhoneAsync(request),
-			onSuccess: (handler) => handler.do(() => redirect("/account")),
+			onSuccess: handleSuccessfulLoginAsync,
 			onError: (handler) => handler.log().popup(),
 		});
 	}
@@ -60,13 +61,12 @@ export default function Login({ sm = false, onToRegisterClick }: IProps) {
 	async function handleLoginByEmailAsync(request: ILoginByEmailRequest) {
 		await fetchAsync({
 			request: async () => await apiAuth.loginByEmailAsync(request),
-			onSuccess: (handler) => handler.do(() => redirect("/account")),
+			onSuccess: handleSuccessfulLoginAsync,
 			onError: (handler) =>
 				handler
 					.log()
 					.popup()
 					.do((error) => {
-						console.log(error);
 						if (error.name === "email-not-confirmed") {
 							setIsEmailAlreadyConfirmedDialogOn({
 								is: true,
@@ -75,6 +75,21 @@ export default function Login({ sm = false, onToRegisterClick }: IProps) {
 						}
 					}),
 		});
+	}
+
+	async function handleSuccessfulLoginAsync() {
+		const favoriteProducts =
+			window.localStorage.getItem("favorite-products");
+		if (favoriteProducts) {
+			const values = (JSON.parse(favoriteProducts) as string[]).map(
+				(item) => ({ productId: item, value: true })
+			);
+			await fetchAsync({
+				request: async () =>
+					await productsApi.toFavoritesRangeAsync(values),
+			}).then(() => window.localStorage.removeItem("favorite-products"));
+		}
+		redirect("/my/profile");
 	}
 
 	async function handleResetPasswordAsync(email: string) {

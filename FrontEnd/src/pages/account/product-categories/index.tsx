@@ -128,7 +128,7 @@ export default function ProductCategories() {
 							variant="outlined"
 							onClick={(e) => {
 								e.stopPropagation();
-								navigate(`/products/${itemsPath}`);
+								navigate(`/my/products/${itemsPath}`);
 							}}
 							sx={{ typography: { textTransform: "none" } }}
 						>
