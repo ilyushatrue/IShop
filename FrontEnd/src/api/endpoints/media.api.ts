@@ -16,7 +16,8 @@ export const mediaApi = {
 			(response) => response.text()
 		),
 	getImageById: (id: string) =>
-		httpGet({ url: `${baseUrl}/image/${id}` }, (response) =>
-			response.blob()
+		httpGet(
+			{ url: `${baseUrl}/image/${id}`, authenticate: true },
+			(response) => response.blob()
 		),
 };

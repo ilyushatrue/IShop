@@ -11,6 +11,7 @@ public class CreateProductCategoryCommandHandler(
     public async Task<bool> Handle(CreateProductCategoryCommand command, CancellationToken cancellationToken)
     {
         var productCategory = new ProductCategory(
+            
             command.Name,
             command.Title,
             command.Order,

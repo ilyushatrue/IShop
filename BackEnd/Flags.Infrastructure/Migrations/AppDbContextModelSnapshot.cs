@@ -3,7 +3,6 @@ using System;
 using Flags.Infrastructure.Persistance;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,11 +10,9 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Flags.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240715032858_ProductCategory")]
-    partial class ProductCategory
+    partial class AppDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.4");
@@ -26,6 +23,14 @@ namespace Flags.Infrastructure.Migrations
                         .HasColumnType("TEXT")
                         .HasColumnName("id");
 
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("created_date");
+
                     b.Property<string>("Extension")
                         .IsRequired()
                         .HasColumnType("TEXT")
@@ -34,6 +39,14 @@ namespace Flags.Infrastructure.Migrations
                     b.Property<int>("FileSize")
                         .HasColumnType("INTEGER")
                         .HasColumnName("file_size");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("updated_by");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("updated_date");
 
                     b.Property<string>("Uri")
                         .IsRequired()
@@ -53,6 +66,14 @@ namespace Flags.Infrastructure.Migrations
                         .HasColumnType("INTEGER")
                         .HasColumnName("id");
 
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("created_date");
+
                     b.Property<string>("IconName")
                         .IsRequired()
                         .HasColumnType("TEXT")
@@ -71,6 +92,14 @@ namespace Flags.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT")
                         .HasColumnName("title");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("updated_by");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("updated_date");
 
                     b.Property<string>("Url")
                         .IsRequired()
@@ -131,6 +160,14 @@ namespace Flags.Infrastructure.Migrations
                         .HasColumnType("INTEGER")
                         .HasColumnName("category_id");
 
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("created_date");
+
                     b.Property<string>("Description")
                         .HasColumnType("TEXT")
                         .HasColumnName("description");
@@ -147,6 +184,14 @@ namespace Flags.Infrastructure.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("TEXT")
                         .HasColumnName("price");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("updated_by");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("updated_date");
 
                     b.HasKey("Id")
                         .HasName("pk_products");
@@ -306,6 +351,14 @@ namespace Flags.Infrastructure.Migrations
                         .HasColumnType("TEXT")
                         .HasColumnName("avatar_id");
 
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("created_date");
+
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("TEXT")
@@ -319,6 +372,14 @@ namespace Flags.Infrastructure.Migrations
                     b.Property<int>("RoleId")
                         .HasColumnType("INTEGER")
                         .HasColumnName("role_id");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("updated_by");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("updated_date");
 
                     b.HasKey("Id")
                         .HasName("pk_users");
@@ -336,7 +397,7 @@ namespace Flags.Infrastructure.Migrations
             modelBuilder.Entity("Flags.Domain.ProductRoot.Entities.ProductCategory", b =>
                 {
                     b.HasOne("Flags.Domain.ProductRoot.Entities.ProductCategory", "Parent")
-                        .WithMany()
+                        .WithMany("Children")
                         .HasForeignKey("ParentId")
                         .HasConstraintName("fk_product_categories_product_categories_parent_id");
 
@@ -555,6 +616,11 @@ namespace Flags.Infrastructure.Migrations
             modelBuilder.Entity("Flags.Domain.MenuItemEntity.MenuItem", b =>
                 {
                     b.Navigation("RoleMenuItems");
+                });
+
+            modelBuilder.Entity("Flags.Domain.ProductRoot.Entities.ProductCategory", b =>
+                {
+                    b.Navigation("Children");
                 });
 
             modelBuilder.Entity("Flags.Domain.UserRoot.Entities.Permission", b =>

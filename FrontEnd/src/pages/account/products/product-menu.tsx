@@ -16,7 +16,7 @@ import Dialog from "../../../components/dialog";
 
 export default function ProductMenu() {
 	const [isDeleteDialogOn, setIsDeleteDialogOn] = useState(false);
-	const { fetchAsync } = useApi({ triggerPage: true });
+	const { isFetching, fetchAsync } = useApi({ triggerPage: true });
 	const [products, setProducts] = useState<IProduct[]>([]);
 	const rowsPerPageOptions = [10, 25, 100];
 	const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[0]);
@@ -48,7 +48,7 @@ export default function ProductMenu() {
 			curr = item.children;
 		});
 		return item!.id;
-	}, [location]);
+	}, [appcategories, location.pathname]);
 
 	useEffect(() => {
 		fetchAsync({
@@ -76,12 +76,13 @@ export default function ProductMenu() {
 
 	async function handleSubmitAsync(values: ICreateProductCommand) {
 		closeAddProductDialog();
-		await fetchAsync({
-			request: async () => await productsApi.createAsync(values),
-			onSuccess: (handler) =>
-				handler.popup("Новый товар добавлен.").do(reload),
-			onError: (handler) => handler.log().popup(),
-		});
+		console.log(values)
+		// await fetchAsync({
+		// 	request: async () => await productsApi.createAsync(values),
+		// 	onSuccess: (handler) =>
+		// 		handler.popup("Новый товар добавлен.").do(reload),
+		// 	onError: (handler) => handler.log().popup(),
+		// });
 	}
 
 	const handleChangeRowsPerPage = (
@@ -151,6 +152,8 @@ export default function ProductMenu() {
 				]}
 			/>
 			<ProductAddDialog
+				categoryId={categoryId}
+				loading={isFetching}
 				onClose={closeAddProductDialog}
 				onSubmit={handleSubmitAsync}
 				open={isAddProductDialogOn}

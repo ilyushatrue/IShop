@@ -10,15 +10,8 @@ import { IProductCategory } from "../../../api/interfaces/product-categories/pro
 import MenuEditCell from "./menu-edit-cell";
 import Dialog from "../../../components/dialog";
 import Form from "../../../components/form/form";
-import {
-	Box,
-	Button,
-	Icon,
-	Dialog as MuiDialog,
-	Typography,
-} from "@mui/material";
+import { Box, Button, Icon, Dialog as MuiDialog } from "@mui/material";
 import Fab from "../../../components/fab";
-import IconButton from "../../../components/buttons/icon-button";
 import { reload } from "../../../app/helpers/reload";
 import MenuDeleteCell from "./menu-delete-cell";
 import { useNavigate } from "react-router-dom";
@@ -43,7 +36,7 @@ export default function ProductCategories() {
 	const categories = useAppSelector(
 		(state) => state.global.productCategories
 	);
-	const [categoriesHierarchy, setCategoriesHierarchy] = useState(() => {
+	const categoriesHierarchy = useMemo(() => {
 		const recurs = (parent: IProductCategory) => {
 			parent.children = parent.children.map((child) => {
 				let newChild = { ...child };
@@ -57,7 +50,7 @@ export default function ProductCategories() {
 
 		let values = categories.map((category) => recurs({ ...category }));
 		return values;
-	});
+	}, [categories]);
 	const columns = useMemo(() => {
 		const orderColumn: IRecursiveTreeColumn<IProductCategory> = {
 			width: 200,
@@ -147,16 +140,16 @@ export default function ProductCategories() {
 		};
 	}, []);
 
-	async function handleSaveMenuAsync() {
-		console.log(categoriesHierarchy);
+	async function handleSaveMenuAsync(values: IProductCategory[]) {
 		fetchAsync({
-			request: () => productsApi.syncCategoriesAsync(categoriesHierarchy),
+			request: () => productsApi.syncCategoriesAsync(values),
 			onSuccess: (handler) => handler.do(reload),
 			onError: (handler) => handler.log().popup(),
 		});
 	}
 
 	function handleEditCategory(inputCategory: IProductCategory) {
+		console.log(1);
 		const updatedCategories = [...categoriesHierarchy];
 		let updatedCategoryIndex = -1;
 		switch (editCategory!.action) {
@@ -176,35 +169,50 @@ export default function ProductCategories() {
 				updatedCategories.splice(updatedCategoryIndex, 1);
 				break;
 		}
-		setCategoriesHierarchy(updatedCategories);
 		setEditCategory(undefined);
+		const nullifyParent = (
+			categories: IProductCategory[]
+		): IProductCategory[] => {
+			categories.forEach((category) => {
+				if (category.children?.length) {
+					category.children.forEach((child) => {
+						child.parent = null;
+					});
+					nullifyParent(category.children);
+				}
+				category.parent = null;
+			});
+			return categories;
+		};
+		handleSaveMenuAsync(nullifyParent(updatedCategories));
 	}
 
-	console.log(categoriesHierarchy);
 	if (!categoriesHierarchy) return null;
 	return (
 		<ProfilePage title="Категории товаров">
-			<Box sx={{ padding: 1 }}>
-				<IconButton
-					iconName="add"
-					fontSize={20}
-					buttonSx={{
-						bgcolor: "primary.main",
-						marginLeft: "auto",
-						paddingX: 2,
-						"&:hover": {
-							bgcolor: "primary.dark",
-						},
-					}}
-					color={"primary.100"}
+			<Box sx={{ display: "flex", justifyContent: "end", padding: 1 }}>
+				<Button
 					onClick={() =>
 						setEditCategory({
 							category: defaultCategory.current,
 							action: "create",
 						})
 					}
-					caption="Добавить"
-				/>
+					size="small"
+					sx={{
+						bgcolor: "primary.main",
+						marginLeft: "auto",
+						textTransform: "none",
+						color: "primary.100",
+						paddingX: 2,
+						"&:hover": {
+							bgcolor: "primary.dark",
+						},
+					}}
+					startIcon={<Icon>add</Icon>}
+				>
+					Добавить
+				</Button>
 			</Box>
 			<RecursiveTree<IProductCategory>
 				headerSx={{
@@ -284,13 +292,15 @@ export default function ProductCategories() {
 							{
 								value: "Отмена",
 								position: "left",
-								onClick: () =>
-									setEditCategory((prev) => ({
-										...prev!,
-										category: undefined,
-									})),
+								componentProps: {
+									onClick: () =>
+										setEditCategory((prev) => ({
+											...prev!,
+											category: undefined,
+										})),
+								},
 							},
-							{ ...submit, value: "Ok" },
+							{ ...submit, value: "Создать" },
 						]}
 						defaultValues={
 							editCategory?.category ?? defaultCategory.current
@@ -332,9 +342,6 @@ export default function ProductCategories() {
 					/>
 				</Box>
 			</MuiDialog>
-			<Fab onClick={handleSaveMenuAsync} color="primary">
-				<Icon>save</Icon>
-			</Fab>
 		</ProfilePage>
 	);
 }

@@ -13,5 +13,5 @@ public interface IUserRepository
     void Create(User user);
     void Update(User user);
     Task<List<User>> GetAllAsync(CancellationToken cancellationToken);
-    Task<HashSet<PermissionFlag>> GetPermissionsAsync(Guid userId);
+    Task<HashSet<PermissionEnum>> GetPermissionsAsync(Guid userId);
 }

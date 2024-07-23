@@ -8,7 +8,6 @@ public class MenuItem : AggregateRoot<int>
     private readonly List<Role> _roles = [];
 
     private MenuItem() : base(0) { }
-    private MenuItem(int id) : base(id) { }
     private MenuItem(int id, string name, string title, string url, string iconName, int order) : this()
     {
         Update(id, name, title, url, iconName, order);

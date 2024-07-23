@@ -7,6 +7,7 @@ import Test from "../pages/test/test";
 import ShopCategoryRoutes from "../pages/shop";
 import ForbiddenPage from "../pages/forbidden/forbidden.page";
 import AccountRoutes from "../pages/account";
+import ProductPage from "../pages/shop/product-page";
 
 interface IProps {
 	sm: boolean;
@@ -21,6 +22,7 @@ export default function Routes({ sm }: IProps) {
 				<Route path="/test" element={<Test />} />
 				<Route path="/category/*" element={<ShopCategoryRoutes />} />
 				<Route path="/not-found" element={<NotFound />} />
+				<Route path="/product/:id" element={<ProductPage />} />
 				<Route path="/no-access" element={<ForbiddenPage />} />
 				<Route path="/my/*" element={<AccountRoutes />} />
 				<Route path="*" element={<NotFound />} />

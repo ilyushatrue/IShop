@@ -6,7 +6,7 @@ public class RoleMenuItem
 {
     public RoleMenuItem() { }
 
-    public RoleMenuItem(RoleFlag role, MenuItemEnum menuItem)
+    public RoleMenuItem(RoleEnum role, MenuItemEnum menuItem)
     {
         RoleId = (int)role;
         MenuItemId = (int)menuItem;

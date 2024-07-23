@@ -1,6 +1,6 @@
 namespace Flags.Domain.Enums;
 
-public enum RoleFlag
+public enum RoleEnum
 {
     Admin = 1,
     Visitor = 2,

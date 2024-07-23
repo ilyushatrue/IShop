@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -15,9 +16,13 @@ namespace Flags.Infrastructure.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    created_date = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    updated_date = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    created_by = table.Column<Guid>(type: "TEXT", nullable: true),
+                    updated_by = table.Column<Guid>(type: "TEXT", nullable: true),
                     file_size = table.Column<int>(type: "INTEGER", nullable: false),
                     extension = table.Column<string>(type: "TEXT", nullable: false),
-                    uri = table.Column<string>(type: "TEXT", nullable: false)
+                    uri = table.Column<string>(type: "TEXT", nullable: false),
                 },
                 constraints: table =>
                 {
@@ -30,11 +35,15 @@ namespace Flags.Infrastructure.Migrations
                 {
                     id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
+                    created_date = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    updated_date = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    created_by = table.Column<Guid>(type: "TEXT", nullable: true),
+                    updated_by = table.Column<Guid>(type: "TEXT", nullable: true),
                     name = table.Column<string>(type: "TEXT", nullable: false),
                     title = table.Column<string>(type: "TEXT", nullable: false),
                     url = table.Column<string>(type: "TEXT", nullable: false),
                     order = table.Column<int>(type: "INTEGER", nullable: false),
-                    icon_name = table.Column<string>(type: "TEXT", nullable: false)
+                    icon_name = table.Column<string>(type: "TEXT", nullable: false),
                 },
                 constraints: table =>
                 {
@@ -60,12 +69,19 @@ namespace Flags.Infrastructure.Migrations
                     id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     name = table.Column<string>(type: "TEXT", nullable: false),
+                    title = table.Column<string>(type: "TEXT", nullable: false),
                     icon_name = table.Column<string>(type: "TEXT", nullable: true),
-                    order = table.Column<int>(type: "INTEGER", nullable: false)
+                    order = table.Column<int>(type: "INTEGER", nullable: false),
+                    parent_id = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("pk_product_categories", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_product_categories_product_categories_parent_id",
+                        column: x => x.parent_id,
+                        principalTable: "product_categories",
+                        principalColumn: "id");
                 });
 
             migrationBuilder.CreateTable(
@@ -85,11 +101,15 @@ namespace Flags.Infrastructure.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    created_date = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    updated_date = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    created_by = table.Column<Guid>(type: "TEXT", nullable: true),
+                    updated_by = table.Column<Guid>(type: "TEXT", nullable: true),
                     name = table.Column<string>(type: "TEXT", nullable: false),
                     description = table.Column<string>(type: "TEXT", nullable: true),
                     price = table.Column<decimal>(type: "TEXT", nullable: false),
                     image_id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    category_id = table.Column<int>(type: "INTEGER", nullable: false)
+                    category_id = table.Column<int>(type: "INTEGER", nullable: false),
                 },
                 constraints: table =>
                 {
@@ -161,13 +181,17 @@ namespace Flags.Infrastructure.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    created_date = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    updated_date = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    created_by = table.Column<Guid>(type: "TEXT", nullable: true),
+                    updated_by = table.Column<Guid>(type: "TEXT", nullable: true),
                     first_name = table.Column<string>(type: "TEXT", nullable: false),
                     last_name = table.Column<string>(type: "TEXT", nullable: false),
                     role_id = table.Column<int>(type: "INTEGER", nullable: false),
                     phone = table.Column<string>(type: "TEXT", nullable: true),
                     email = table.Column<string>(type: "TEXT", nullable: false),
                     password = table.Column<string>(type: "TEXT", nullable: false),
-                    avatar_id = table.Column<Guid>(type: "TEXT", nullable: true)
+                    avatar_id = table.Column<Guid>(type: "TEXT", nullable: true),
                 },
                 constraints: table =>
                 {
@@ -247,6 +271,11 @@ namespace Flags.Infrastructure.Migrations
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "ix_product_categories_parent_id",
+                table: "product_categories",
+                column: "parent_id");
 
             migrationBuilder.CreateIndex(
                 name: "ix_products_category_id",

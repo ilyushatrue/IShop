@@ -102,6 +102,7 @@ public static class DependencyInjection
         services.AddScoped<IGetAllProductCategoriesQueryHandler, GetAllProductCategoriesQueryHandler>();
         services.AddScoped<IGetAllProductsQueryHandler, GetAllProductsQueryHandler>();
         services.AddScoped<IGetAllUsersQueryHandler, GetAllUsersQueryHandler>();
+        services.AddScoped<IGetProductByIdQueryHandler, GetProductByIdQueryHandler>();
         services.AddScoped<IGetMenuItemsByRoleQueryHandler, GetMenuItemsByRoleQueryHandler>();
         services.AddScoped<IGetImageByIdQueryHandler, GetImageByIdQueryHandler>();
         services.AddScoped<IGetProductsByCategoryQueryHandler, GetProductsByCategoryQueryHandler>();
@@ -179,13 +180,13 @@ public static class DependencyInjection
         services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
         services.AddAuthorizationBuilder()
             .AddPolicy(CustomPolicies.ADMIN_POLICY, policy => policy
-                .RequireRole(RoleFlag.Admin.ToString()))
+                .RequireRole(RoleEnum.Admin.ToString()))
             .AddPolicy(CustomPolicies.EDIT_POLICY, policy => policy
                 .AddRequirements(new PermissionRequirement(
-                    PermissionFlag.Create,
-                    PermissionFlag.Read,
-                    PermissionFlag.Delete,
-                    PermissionFlag.Update)));
+                    PermissionEnum.Create,
+                    PermissionEnum.Read,
+                    PermissionEnum.Delete,
+                    PermissionEnum.Update)));
         return services;
     }
 }

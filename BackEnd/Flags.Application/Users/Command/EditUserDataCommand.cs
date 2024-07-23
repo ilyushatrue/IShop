@@ -7,5 +7,5 @@ public record EditUserDataCommand(
     string LastName,
     string Email,
     string Phone,
-    RoleFlag Role,
+    RoleEnum Role,
     Guid? AvatarId);

@@ -61,7 +61,7 @@ public class UserRepository(AppDbContext dbContext) : IUserRepository
             .SingleOrDefaultAsync(cancellationToken);
     }
 
-    public async Task<HashSet<PermissionFlag>> GetPermissionsAsync(Guid userId)
+    public async Task<HashSet<PermissionEnum>> GetPermissionsAsync(Guid userId)
     {
         var roles = await dbContext.Users
             .AsNoTracking()
@@ -74,7 +74,7 @@ public class UserRepository(AppDbContext dbContext) : IUserRepository
         return roles
             .Select(u => u)
             .SelectMany(u => u!.Permissions!)
-            .Select(p => (PermissionFlag)p.Id)
+            .Select(p => (PermissionEnum)p.Id)
             .ToHashSet();
     }
 

@@ -22,7 +22,7 @@ public class DataInitializationService(IServiceProvider serviceProvider) : IHost
         var adminSettings = scope.ServiceProvider.GetRequiredService<IOptions<AdminSettings>>().Value;
         var passwordHasher = scope.ServiceProvider.GetRequiredService<IPasswordHasher>();
 
-        using var transaction = await dbContext.Database.BeginTransactionAsync(cancellationToken);
+        await using var transaction = await dbContext.Database.BeginTransactionAsync(cancellationToken);
         try
         {
             await EnsureAdminUserCreated(dbContext, adminSettings, passwordHasher, cancellationToken);
@@ -31,7 +31,7 @@ public class DataInitializationService(IServiceProvider serviceProvider) : IHost
             await CreateRolePermissions(dbContext, cancellationToken);
             await CreateMenuItems(dbContext, cancellationToken);
             await CreateRoleMenuItems(dbContext, cancellationToken);
-            //await CreateProductCategories(dbContext, cancellationToken);
+            await CreateProductCategories(dbContext, cancellationToken);
 
             await dbContext.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
@@ -42,8 +42,10 @@ public class DataInitializationService(IServiceProvider serviceProvider) : IHost
         }
     }
 
-    private async Task CreateProductCategories(AppDbContext dbContext, CancellationToken cancellationToken)
+    private static async Task CreateProductCategories(AppDbContext dbContext, CancellationToken cancellationToken)
     {
+        if (await dbContext.ProductCategories.AnyAsync(cancellationToken)) return;
+
         List<ProductCategory> productCategories = [
             new ProductCategory("clothes", "Одежда и обувь", 1, null, "checkroom"),
             new ProductCategory("electronics", "Электроника", 2, null, "devices"),
@@ -53,25 +55,25 @@ public class DataInitializationService(IServiceProvider serviceProvider) : IHost
         await dbContext.SyncronizeRecordsAsync<ProductCategory, int>(productCategories, cancellationToken);
     }
 
-    private async Task CreateRolePermissions(AppDbContext dbContext, CancellationToken cancellationToken)
+    private static async Task CreateRolePermissions(AppDbContext dbContext, CancellationToken cancellationToken)
     {
         var adminPermissions = RolePermission.CreateRange(
-            RoleFlag.Admin,
-            PermissionFlag.Create,
-            PermissionFlag.Update,
-            PermissionFlag.Read,
-            PermissionFlag.Delete);
+            RoleEnum.Admin,
+            PermissionEnum.Create,
+            PermissionEnum.Update,
+            PermissionEnum.Read,
+            PermissionEnum.Delete);
 
         var visitorPermissions = RolePermission.CreateRange(
-            RoleFlag.Visitor,
-            PermissionFlag.Read);
+            RoleEnum.Visitor,
+            PermissionEnum.Read);
 
         var sellerPermissions = RolePermission.CreateRange(
-            RoleFlag.Seller,
-            PermissionFlag.Read,
-            PermissionFlag.Create,
-            PermissionFlag.Update,
-            PermissionFlag.Delete);
+            RoleEnum.Seller,
+            PermissionEnum.Read,
+            PermissionEnum.Create,
+            PermissionEnum.Update,
+            PermissionEnum.Delete);
 
         RolePermission[] rolePermissions = [.. adminPermissions, .. visitorPermissions, .. sellerPermissions];
 
@@ -97,30 +99,30 @@ public class DataInitializationService(IServiceProvider serviceProvider) : IHost
     private static async Task CreatePermissions(AppDbContext dbContext, CancellationToken cancellationToken)
     {
         var permissions = Enum
-            .GetValues<PermissionFlag>()
+            .GetValues<PermissionEnum>()
             .Select(p => Permission.Create((int)p, p.ToString()))
             .ToArray();
 
         await dbContext.SyncronizeRecordsAsync<Permission, int>(permissions, cancellationToken);
     }
 
-    private async Task CreateRoleMenuItems(AppDbContext dbContext, CancellationToken cancellationToken)
+    private static async Task CreateRoleMenuItems(AppDbContext dbContext, CancellationToken cancellationToken)
     {
         var adminMenuItems = Enum
             .GetValues<MenuItemEnum>()
-            .Select(menuItemEnum => new RoleMenuItem(RoleFlag.Admin, menuItemEnum))
+            .Select(menuItemEnum => new RoleMenuItem(RoleEnum.Admin, menuItemEnum))
             .ToList();
 
         List<RoleMenuItem> sellerMenuItems = [
-            new(RoleFlag.Seller, MenuItemEnum.Cart),
-            new(RoleFlag.Seller, MenuItemEnum.Products),
-            new(RoleFlag.Seller, MenuItemEnum.Favorites),
-            new(RoleFlag.Seller, MenuItemEnum.Profile),
-            new(RoleFlag.Seller, MenuItemEnum.Purchases),
+            new(RoleEnum.Seller, MenuItemEnum.Cart),
+            new(RoleEnum.Seller, MenuItemEnum.Products),
+            new(RoleEnum.Seller, MenuItemEnum.Favorites),
+            new(RoleEnum.Seller, MenuItemEnum.Profile),
+            new(RoleEnum.Seller, MenuItemEnum.Purchases),
         ];
         List<RoleMenuItem> userMenuItems = [
-            new(RoleFlag.Visitor, MenuItemEnum.Cart),
-            new(RoleFlag.Visitor, MenuItemEnum.Favorites),
+            new(RoleEnum.Visitor, MenuItemEnum.Cart),
+            new(RoleEnum.Visitor, MenuItemEnum.Favorites),
         ];
 
         List<RoleMenuItem> menuItems = [.. adminMenuItems, .. sellerMenuItems, .. userMenuItems];
@@ -147,13 +149,13 @@ public class DataInitializationService(IServiceProvider serviceProvider) : IHost
     private static async Task CreateRoles(AppDbContext dbContext, CancellationToken cancellationToken)
     {
         var roles = Enum
-          .GetValues<RoleFlag>()
+          .GetValues<RoleEnum>()
           .Select(r => Role.Create((int)r, r.ToString()));
 
         await dbContext.SyncronizeRecordsAsync<Role, int>(roles, cancellationToken);
     }
 
-    private async Task CreateMenuItems(AppDbContext dbContext, CancellationToken cancellationToken)
+    private static async Task CreateMenuItems(AppDbContext dbContext, CancellationToken cancellationToken)
     {
         List<MenuItem> menuItems = [
             MenuItem.Create((int)MenuItemEnum.Profile, MenuItemEnum.Profile.ToString(), "Мой профиль", "/my/profile", "person", 1),
@@ -183,7 +185,7 @@ public class DataInitializationService(IServiceProvider serviceProvider) : IHost
             null,
             adminSettings.Email,
             passwordHash,
-            RoleFlag.Admin,
+            RoleEnum.Admin,
             DateTime.UtcNow,
             null);
 

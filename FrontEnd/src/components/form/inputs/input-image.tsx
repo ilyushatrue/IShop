@@ -99,6 +99,9 @@ export default function InputImage<T extends FieldValues>({
 					<Box
 						sx={{
 							position: "relative",
+							display:"flex",
+							justifyContent:"center",
+							alignItems:"center",
 							width: 200,
 							height: 200,
 							overflow: "hidden",

@@ -56,10 +56,13 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
 
     public async Task<Product> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
-        return await dbContext.Products.SingleOrDefaultAsync(x => x.Id == id, cancellationToken) ??
-            throw new NotFoundException(
-                "product-get-by-id",
-                $"Товара с id={id} не существует.",
-                "Товара не существует.");
+        return await dbContext.Products
+            .Where(x => x.Id == id)
+            .Include(p => p.Category)
+            .SingleOrDefaultAsync(cancellationToken) ??
+                throw new NotFoundException(
+                    "product-get-by-id",
+                    $"Товара с id={id} не существует.",
+                    "Товара не существует.");
     }
 }

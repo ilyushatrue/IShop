@@ -9,6 +9,7 @@ import ProductCardEditDialog from "./card/product-card-edit-dialog";
 import productsApi from "../../api/endpoints/products.api";
 import { useAppDispatch } from "../../app/hooks/redux/use-app-dispatch";
 import { setFavoriteProduct } from "../../store/user.slice";
+import { redirect } from "../../app/helpers/redirect";
 
 interface IProps {
 	products: IProduct[];
@@ -124,7 +125,9 @@ export default function Products({ products, onDelete, onUpdate }: IProps) {
 						<Grid item xs={12} sm={6} md={4} lg={3} key={index}>
 							<ProductCard
 								onFavoriteClick={handleToFavoritesAsync}
-								onClick={console.log}
+								onClick={(id) =>
+									redirect(`/product/${id}`, true)
+								}
 								favorite={isFavorite}
 								id={p.id}
 								imageId={p.imageId}

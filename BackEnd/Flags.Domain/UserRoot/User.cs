@@ -17,7 +17,7 @@ public class User : AggregateRoot<Guid>
         string? phone,
         string email,
         string passwordHash,
-        RoleFlag role,
+        RoleEnum role,
         DateTime emailConfirmationTokenExpiry,
         Guid? avatarId = null) : this()
     {
@@ -38,7 +38,7 @@ public class User : AggregateRoot<Guid>
         string lastName,
         string? phone,
         string email,
-        RoleFlag role,
+        RoleEnum role,
         Guid? avatarId)
     {
         var emailObj = Email.Create(email);
@@ -58,7 +58,7 @@ public class User : AggregateRoot<Guid>
         string? phone,
         string email,
         string passwordHash,
-        RoleFlag role,
+        RoleEnum role,
         DateTime emailConfirmationTokenExpiry,
         Guid? avatarId)
     {

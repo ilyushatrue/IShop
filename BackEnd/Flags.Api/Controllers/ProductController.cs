@@ -13,6 +13,7 @@ namespace Flags.Api.Controllers;
 [Route("products")]
 public class ProductController(
     IGetAllProductsQueryHandler getAllProductsQueryHandler,
+    IGetProductByIdQueryHandler getProductByIdQueryHandler,
     IGetProductsByCategoryQueryHandler getProductsByCategoryQueryHandler,
     ICreateProductCommandHandler createProductCommandHandler,
     ICreateProductCategoryCommandHandler createProductCategoryCommandHandler,
@@ -43,6 +44,14 @@ public class ProductController(
     }
 
     [AllowAnonymous]
+    [HttpGet("{id}")]
+    public async Task<ActionResult<ProductDto>> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    {
+        var result = await getProductByIdQueryHandler.Handle(new(id), cancellationToken);
+        return mapper.Map<ProductDto>(result);
+    }
+
+    [AllowAnonymous]
     [HttpGet("by-category")]
     public async Task<IActionResult> GetProductsByCategory(
         [FromQuery] int categoryId,
@@ -69,7 +78,7 @@ public class ProductController(
         var result = await makeProductFavoriteCommandHandler.Handle(command, cancellationToken);
         return Ok(result);
     }
-    
+
     [HttpPost("to-favorites-range")]
     public async Task<IActionResult> MakeProductRangeFavorite([FromBody] MakeProductRangeItemFavoriteCommand[] commands, CancellationToken cancellationToken)
     {

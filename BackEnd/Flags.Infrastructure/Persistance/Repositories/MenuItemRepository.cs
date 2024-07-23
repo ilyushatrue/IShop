@@ -7,7 +7,7 @@ namespace Flags.Infrastructure.Persistance.Repositories;
 public class MenuItemRepository(
     AppDbContext dbContext) : IMenuItemRepository
 {
-    public async Task<List<MenuItem>> GetMenuItemsByRole(RoleFlag role, CancellationToken cancellationToken)
+    public async Task<List<MenuItem>> GetMenuItemsByRole(RoleEnum role, CancellationToken cancellationToken)
     {
         return await dbContext.Roles
             .Where(r => r.Id == (int)role)

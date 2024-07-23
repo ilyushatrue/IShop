@@ -1,6 +1,3 @@
-import { useNavigate } from "react-router-dom";
-import useApi from "../../../api/hooks/use-api.hook";
-import productsApi from "../../../api/endpoints/products.api";
 import Form from "../../../components/form/form";
 import { Box, Dialog } from "@mui/material";
 import { ICreateProductCommand } from "../../../api/interfaces/product/commands/create-product-command.interface";
@@ -8,36 +5,38 @@ import { useMemo } from "react";
 import { useAppSelector } from "../../../app/hooks/redux/use-app-selector";
 
 export default function ProductAddDialog({
+	categoryId,
 	open,
 	onClose,
 	onSubmit,
+	loading,
 }: {
+	categoryId: number;
+	loading: boolean;
 	open: boolean;
 	onClose: () => void;
 	onSubmit: (values: ICreateProductCommand) => void;
 }) {
-	const { fetchAsync, isFetching } = useApi({ triggerPage: true });
 	const categories = useAppSelector(
 		(state) => state.global.productCategories
 	);
-	const navigate = useNavigate();
 	const defaultValues = useMemo<ICreateProductCommand>(
 		() => ({
 			description: "",
 			imageId: "",
 			name: "",
-			categoryId: null,
+			categoryId: categoryId,
 			price: 0,
 		}),
-		[]
+		[categoryId]
 	);
-	
+
 	if (!categories) return null;
 	return (
 		<Dialog open={open} onClose={onClose}>
-			<Box width={500} marginX={"auto"} sx={{paddingX:2}}>
+			<Box width={500} marginX={"auto"} sx={{ paddingX: 2 }}>
 				<Form
-					loading={isFetching}
+					loading={loading}
 					defaultValues={defaultValues}
 					actions={([submit]) => [
 						{
@@ -68,16 +67,7 @@ export default function ProductAddDialog({
 								name: "price",
 								label: "Цена",
 								required: true,
-								min: 0,
-							})
-							.select({
-								options: categories.map((c) => ({
-									key: c.id,
-									value: c.title,
-								})),
-								name: "categoryId",
-								label: "Категория",
-								required: true,
+								min: 1,
 							})
 					}
 					minHeight={500}

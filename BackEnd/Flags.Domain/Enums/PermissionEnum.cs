@@ -1,6 +1,6 @@
 namespace Flags.Domain.Enums;
 
-public enum PermissionFlag
+public enum PermissionEnum
 {
     Read = 1,
     Create = 2,

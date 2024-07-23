@@ -2,7 +2,6 @@ using Flags.Application.Products.Queries;
 using Flags.Application.Users.Command;
 using Flags.Application.Users.Queries;
 using Flags.Contracts.Products;
-using Flags.Domain.Common.Exceptions;
 using Flags.Infrastructure.Authentication;
 using MapsterMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -50,7 +49,7 @@ public class UsersController(
         var userId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "UserId")?.Value;
 
         var userRoleId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "RoleId")?.Value;
-        var userRole = userRoleId == null ? RoleFlag.Visitor : Enum.Parse<RoleFlag>(userRoleId);
+        var userRole = userRoleId == null ? RoleEnum.Visitor : Enum.Parse<RoleEnum>(userRoleId);
         var getMenuItemsByRoleQuery = new GetMenuItemsByRoleQuery(userRole);
 
         var menuItemsTask = getMenuItemsByRoleQueryHandler.Handle(getMenuItemsByRoleQuery, cancellationToken);
@@ -74,7 +73,7 @@ public class UsersController(
     [HttpPut]
     public async Task<IActionResult> UpdateUserData([FromBody] EditUserDataCommand user, CancellationToken cancellationToken)
     {
-        var role = Enum.Parse<RoleFlag>(HttpContext.User.Claims.FirstOrDefault(x => x.Type == "RoleId")!.Value);
+        var role = Enum.Parse<RoleEnum>(HttpContext.User.Claims.FirstOrDefault(x => x.Type == "RoleId")!.Value);
         var command = new EditUserDataCommand(user.FirstName, user.LastName, user.Email, user.Phone, role, user.AvatarId);
         var result = await editUserDataCommandHandler.Handle(command, cancellationToken);
         cookieManager.SetUserCookies(result);

@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Flags.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240714032751_InitialMigration")]
+    [Migration("20240722094902_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -26,6 +26,14 @@ namespace Flags.Infrastructure.Migrations
                         .HasColumnType("TEXT")
                         .HasColumnName("id");
 
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("created_date");
+
                     b.Property<string>("Extension")
                         .IsRequired()
                         .HasColumnType("TEXT")
@@ -34,6 +42,14 @@ namespace Flags.Infrastructure.Migrations
                     b.Property<int>("FileSize")
                         .HasColumnType("INTEGER")
                         .HasColumnName("file_size");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("updated_by");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("updated_date");
 
                     b.Property<string>("Uri")
                         .IsRequired()
@@ -53,6 +69,14 @@ namespace Flags.Infrastructure.Migrations
                         .HasColumnType("INTEGER")
                         .HasColumnName("id");
 
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("created_date");
+
                     b.Property<string>("IconName")
                         .IsRequired()
                         .HasColumnType("TEXT")
@@ -71,6 +95,14 @@ namespace Flags.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT")
                         .HasColumnName("title");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("updated_by");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("updated_date");
 
                     b.Property<string>("Url")
                         .IsRequired()
@@ -103,8 +135,20 @@ namespace Flags.Infrastructure.Migrations
                         .HasColumnType("INTEGER")
                         .HasColumnName("order");
 
+                    b.Property<int?>("ParentId")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("parent_id");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("TEXT")
+                        .HasColumnName("title");
+
                     b.HasKey("Id")
                         .HasName("pk_product_categories");
+
+                    b.HasIndex("ParentId")
+                        .HasDatabaseName("ix_product_categories_parent_id");
 
                     b.ToTable("product_categories", (string)null);
                 });
@@ -118,6 +162,14 @@ namespace Flags.Infrastructure.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("INTEGER")
                         .HasColumnName("category_id");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("created_date");
 
                     b.Property<string>("Description")
                         .HasColumnType("TEXT")
@@ -135,6 +187,14 @@ namespace Flags.Infrastructure.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("TEXT")
                         .HasColumnName("price");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("updated_by");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("updated_date");
 
                     b.HasKey("Id")
                         .HasName("pk_products");
@@ -294,6 +354,14 @@ namespace Flags.Infrastructure.Migrations
                         .HasColumnType("TEXT")
                         .HasColumnName("avatar_id");
 
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("created_date");
+
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("TEXT")
@@ -308,6 +376,14 @@ namespace Flags.Infrastructure.Migrations
                         .HasColumnType("INTEGER")
                         .HasColumnName("role_id");
 
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("updated_by");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("updated_date");
+
                     b.HasKey("Id")
                         .HasName("pk_users");
 
@@ -319,6 +395,16 @@ namespace Flags.Infrastructure.Migrations
                         .HasDatabaseName("ix_users_role_id");
 
                     b.ToTable("users", (string)null);
+                });
+
+            modelBuilder.Entity("Flags.Domain.ProductRoot.Entities.ProductCategory", b =>
+                {
+                    b.HasOne("Flags.Domain.ProductRoot.Entities.ProductCategory", "Parent")
+                        .WithMany("Children")
+                        .HasForeignKey("ParentId")
+                        .HasConstraintName("fk_product_categories_product_categories_parent_id");
+
+                    b.Navigation("Parent");
                 });
 
             modelBuilder.Entity("Flags.Domain.ProductRoot.Product", b =>
@@ -533,6 +619,11 @@ namespace Flags.Infrastructure.Migrations
             modelBuilder.Entity("Flags.Domain.MenuItemEntity.MenuItem", b =>
                 {
                     b.Navigation("RoleMenuItems");
+                });
+
+            modelBuilder.Entity("Flags.Domain.ProductRoot.Entities.ProductCategory", b =>
+                {
+                    b.Navigation("Children");
                 });
 
             modelBuilder.Entity("Flags.Domain.UserRoot.Entities.Permission", b =>

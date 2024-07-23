@@ -1,3 +1,4 @@
+using Flags.Application.Common;
 using Flags.Domain.Common.Models;
 using Flags.Domain.MediaEntity;
 using Flags.Domain.MenuItemEntity;
@@ -5,13 +6,17 @@ using Flags.Domain.ProductRoot;
 using Flags.Domain.ProductRoot.Entities;
 using Flags.Domain.UserRoot;
 using Flags.Domain.UserRoot.Entities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace Flags.Infrastructure.Persistance;
 
 public class AppDbContext(
+    IDateTimeProvider dateTimeProvider,
+    IHttpContextAccessor httpContextAccessor,
     DbContextOptions<AppDbContext> options) : DbContext(options)
 {
+    private readonly DateTime _dateTimeUtcNow = dateTimeProvider.UtcNow;
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         base.OnConfiguring(optionsBuilder);
@@ -35,7 +40,39 @@ public class AppDbContext(
     public DbSet<MenuItem> MenuItems { get; set; } = null!;
     public DbSet<RoleMenuItem> RoleMenuItems { get; set; } = null!;
 
-    public async Task SyncronizeRecordsAsync<T, TId>(IEnumerable<T> overwriteData, CancellationToken cancellationToken) where TId : notnull where T : Entity<TId>
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        var entries = ChangeTracker
+            .Entries()
+            .Where(x => x.Entity is IAuditEntity);
+
+        var addedEntries = entries.Where(e => e.State == EntityState.Added);
+        var modifiedEntries = entries.Where(e => e.State == EntityState.Modified);
+
+        var userId = httpContextAccessor.HttpContext?.User.Claims.FirstOrDefault(x => x.Type == "UserId")?.Value;
+        Guid? userIdGuid = userId != null ? Guid.Parse(userId) : null;
+
+        foreach (var entry in modifiedEntries)
+        {
+            var entity = (IAuditEntity)entry.Entity;
+            entity.SetMetadata(
+                entity.CreatedDate,
+                _dateTimeUtcNow,
+                entity.CreatedBy,
+                userIdGuid);
+        }
+        foreach (var entry in addedEntries)
+        {
+            var entity = (IAuditEntity)entry.Entity;
+            entity.SetMetadata(_dateTimeUtcNow, _dateTimeUtcNow, userIdGuid, userIdGuid);
+        }
+
+        return base.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task SyncronizeRecordsAsync<T, TId>(IEnumerable<T> overwriteData, CancellationToken cancellationToken)
+        where TId : notnull
+        where T : Entity<TId>
     {
         var dbSet = Set<T>();
         var dbIds = await dbSet.AsNoTracking().Select(e => e.Id).ToListAsync(cancellationToken);

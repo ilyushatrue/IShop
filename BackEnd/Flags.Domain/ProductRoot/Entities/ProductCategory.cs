@@ -1,5 +1,4 @@
 ﻿using Flags.Domain.Common.Models;
-using Newtonsoft.Json;
 
 namespace Flags.Domain.ProductRoot.Entities;
 public class ProductCategory : Entity<int>

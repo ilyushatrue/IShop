@@ -41,7 +41,6 @@ export default function Card({
 					src={src}
 					alt="logo"
 					style={{
-						margin: "auto",
 						objectFit: "contain",
 						maxHeight: "100%",
 						maxWidth: "100%",
