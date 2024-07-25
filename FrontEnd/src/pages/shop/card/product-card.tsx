@@ -13,6 +13,7 @@ export default function ProductCard({
 	id,
 	imageId,
 	name,
+	price,
 	favorite,
 	description,
 	onFavoriteClick,
@@ -22,6 +23,7 @@ export default function ProductCard({
 	onFavoriteClick: (id: string, favorite: boolean) => Promise<void>;
 	onClick: (id: string) => void;
 	favorite: boolean;
+	price: number;
 	imageId: string;
 	name: string;
 	description: string;
@@ -39,7 +41,8 @@ export default function ProductCard({
 					iconName: isFavorite ? "favorite" : "favorite_outline",
 					color: isFavorite ? "red" : "black",
 					disabled: isDisabled,
-					onClick: () => {
+					onClick: (e) => {
+						e.stopPropagation();
 						setIsDisabled(true);
 						onFavoriteClick(id, !favorite).then(() => {
 							setIsFavorite((prev) => !prev);
@@ -51,10 +54,26 @@ export default function ProductCard({
 					fontSize: 28,
 				},
 			]}
-			height={300}
+			height={"330px"}
 		>
-			<Typography variant="body2">{name}</Typography>
-			<Typography variant="caption">{description}</Typography>
+			<Typography
+				variant="body2"
+				sx={{ fontWeight: "bold", fontSize: 20, mt: 1 }}
+			>{`${price} ₽`}</Typography>
+			<Typography variant="body2" sx={{ fontWeight: "bold" }}>
+				{name}
+			</Typography>
+			<Typography
+				variant="caption"
+				sx={{ 
+					lineHeight: 0.1, 
+					textOverflow: "ellipsis", 
+					whiteSpace: "nowrap", 
+					overflow: "hidden" 
+				}}
+			>
+				{description}
+			</Typography>
 		</Card>
 	);
 }

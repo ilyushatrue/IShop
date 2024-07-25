@@ -116,7 +116,6 @@ export default function Products({ products, onDelete, onUpdate }: IProps) {
 		<>
 			<Grid container rowSpacing={4} width={"100%"} height={"100%"}>
 				{products.map((p, index) => {
-					console.log(userFavoriteProducts);
 					const isFavorite = userFavoriteProducts.some(
 						(ufp) => ufp.id === p.id
 					);
@@ -130,6 +129,7 @@ export default function Products({ products, onDelete, onUpdate }: IProps) {
 								}
 								favorite={isFavorite}
 								id={p.id}
+								price={p.price}
 								imageId={p.imageId}
 								description={p.description}
 								name={p.name}

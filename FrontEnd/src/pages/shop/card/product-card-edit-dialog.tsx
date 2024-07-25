@@ -67,10 +67,7 @@ export default function ProductCardEditDialog({
 					}
 					actions={([submit, reset]) => [
 						{
-							onClick: () => {
-								console.log(23);
-								onCancel();
-							},
+							onClick: onCancel,
 							position: "left",
 							value: "Отменить",
 						},

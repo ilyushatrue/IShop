@@ -101,7 +101,6 @@ function FormBuilder<T extends FieldValues>(
 				return inputBuilder;
 			},
 			email: (props) => {
-				console.log(props);
 				addInput(
 					props.name,
 					<InputEmail {...props} control={control} />

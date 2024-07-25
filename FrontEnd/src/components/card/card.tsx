@@ -33,7 +33,6 @@ export default function Card({
 					height: 250,
 					borderRadius: 20,
 					overflow: "hidden",
-					boxShadow: "0px 0px 10px rgba(0,0,0,0.1)",
 					cursor: "pointer",
 				}}
 			>
@@ -59,7 +58,16 @@ export default function Card({
 					))}
 				</div>
 			</div>
-			<div style={{ padding: "0px 12px 12px 12px" }}>{children}</div>
+			<div
+				style={{
+					height: "70px",
+					textOverflow: "ellipsis",
+					overflow: "clip",
+					padding: "0px 12px 12px 12px",
+				}}
+			>
+				{children}
+			</div>
 		</div>
 	);
 }

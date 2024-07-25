@@ -149,7 +149,6 @@ export default function ProductCategories() {
 	}
 
 	function handleEditCategory(inputCategory: IProductCategory) {
-		console.log(1);
 		const updatedCategories = [...categoriesHierarchy];
 		let updatedCategoryIndex = -1;
 		switch (editCategory!.action) {

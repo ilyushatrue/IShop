@@ -24,7 +24,6 @@ export default function Clothes() {
 		pageSize: number;
 	}>({ totalPages: 1, currentPage: 1, pageSize: 12 });
 	useEffect(() => {
-		console.log(id)
 		if (!id) {
 			navigate("1");
 			return;

@@ -24,7 +24,6 @@ export default function Actions({
 		() => actions(defaultActions).groupBy((action) => action.position),
 		[actions, defaultActions]
 	);
-	console.log(actionGroups);
 	return (
 		<Grid container display={"flex"} sx={sx} spacing={1}>
 			<Grid

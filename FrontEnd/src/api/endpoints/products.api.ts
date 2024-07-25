@@ -9,7 +9,6 @@ const baseUrl = "/products";
 
 const productsApi = {
 	getByIdAsync: async (id: string) => {
-		console.log(id)
 		return await httpGet<IProduct>({ url: `${baseUrl}/${id}` }, (response) =>
 			response.json()
 		);
