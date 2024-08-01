@@ -42,6 +42,8 @@ services:
       - ishop.api
   proxy: 
     image: nginx:mainline
+    depends_on:
+      - client
 
 volumes:
   postgres-data:
