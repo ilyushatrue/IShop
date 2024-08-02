@@ -11,17 +11,17 @@ services:
       context: ./server
       dockerfile: IShop.Api/Dockerfile
     ports:
-      - "5000:80"
+      - "5000:5000"
     networks:
       - ishop-network
     depends_on:
-      - postgres_db
+      - postgres
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:80
-      - ConnectionStrings__DB=Host=postgres_db;Port=5432;Database=ishop;User Id=postgres;Password=Nhe[bY202$3;
+      - ASPNETCORE_URLS=http://+:5000
+      - ConnectionStrings__DB=Host=postgres;Port=5432;Database=ishop;User Id=postgres;Password=Nhe[bY202$3;
 
-  postgres_db:
+  postgres:
     container_name: postgres
     image: postgres:latest
     environment:
