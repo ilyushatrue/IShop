@@ -6,7 +6,7 @@ networks:
 
 services:
   backend:
-    container_name: ishop
+    container_name: backend
     build:
       context: ./server
       dockerfile: IShop.Api/Dockerfile
@@ -20,6 +20,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
       - ConnectionStrings__DB=Host=postgres_db;Port=5432;Database=ishop;User Id=postgres;Password=Nhe[bY202$3;
+
   postgres_db:
     container_name: postgres
     image: postgres:latest
@@ -33,19 +34,28 @@ services:
       - ishop-network
     volumes:
       - postgres-data:/var/lib/postgresql/data
+
   frontend:
-    image: frontend
+    container_name: frontend
     build:
       context: ./client
       dockerfile: Dockerfile
+    networks:
+      - ishop-network
     depends_on:
       - backend
-  nginx: 
+    environment:
+      - NODE_ENV=development
+    ports:
+      - "3000:3000"
+
+  nginx:
+    container_name: nginx
     image: nginx:stable-alpine
     ports:
       - "80:80"
     volumes:
-      - './nginx.conf:/etc/nginx/nginx.conf'
+      - ./nginx.conf:/etc/nginx/nginx.conf
     depends_on:
       - frontend
       - backend
@@ -54,4 +64,3 @@ services:
 
 volumes:
   postgres-data:
-   
