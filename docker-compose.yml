@@ -5,10 +5,10 @@ networks:
     driver: bridge
 
 services:
-  ishop.api:
+  backend:
     container_name: ishop
     build:
-      context: .
+      context: ./server
       dockerfile: IShop.Api/Dockerfile
     ports:
       - "5000:80"
@@ -33,17 +33,24 @@ services:
       - ishop-network
     volumes:
       - postgres-data:/var/lib/postgresql/data
-  client:
-    image: client
+  frontend:
+    image: frontend
     build:
-      context: ../client
+      context: ./client
       dockerfile: Dockerfile
     depends_on:
-      - ishop.api
-  proxy: 
-    image: nginx:mainline
+      - backend
+  nginx: 
+    image: nginx:stable-alpine
+    ports:
+      - "80:80"
+    volumes:
+      - './nginx.conf:/etc/nginx/nginx.conf'
     depends_on:
-      - client
+      - frontend
+      - backend
+    networks:
+      - ishop-network
 
 volumes:
   postgres-data:
