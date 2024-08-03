@@ -27,19 +27,29 @@ public class DataInitializationService(IServiceProvider serviceProvider) : IHost
         await using var transaction = await dbContext.Database.BeginTransactionAsync(cancellationToken);
         try
         {
+            Console.WriteLine(1);
             await EnsureAdminUserCreated(dbContext, adminSettings, passwordHasher, cancellationToken);
+            Console.WriteLine(2);
             await CreatePermissions(dbContext, cancellationToken);
+            Console.WriteLine(3);
             await CreateRoles(dbContext, cancellationToken);
+            Console.WriteLine(4);
             await CreateRolePermissions(dbContext, cancellationToken);
+            Console.WriteLine(5);
             await CreateMenuItems(dbContext, cancellationToken);
+            Console.WriteLine(6);
             await CreateRoleMenuItems(dbContext, cancellationToken);
+            Console.WriteLine(7);
             await CreateProductCategories(dbContext, cancellationToken);
-
+            Console.WriteLine(8);
             await dbContext.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
         }
-        catch
+        catch (Exception ex) 
         {
+            Console.WriteLine(ex.ToString());
+            Console.WriteLine(ex.Message);
+            Console.WriteLine("НЕ УДАЛОСЬ ИНИЦИАЛИЗИРОВАТЬ ДАННЫЕ");
             await transaction.RollbackAsync(cancellationToken);
         }
     }
