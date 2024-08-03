@@ -27,22 +27,22 @@ public class LoginByEmailQueryHandler(
         var user = await userRepository.GetByEmailAsync(query.Email.Trim(), cancellationToken) ??
             throw new NotFoundException(
                 "login-by-email",
-                $"Поользооваатееля с email {query.Email.Trim()} нее сущеествуеет.",
-                "Неевеерный лоогиин иилии паарооль!");
+                $"Пользователя с email {query.Email.Trim()} не существует.",
+                "Неверный логин или пароль!");
 
         var passwordsMatch = passwordHasher.Verify(query.Password, user.Password.Value);
 
         if (!passwordsMatch)
             throw new InvalidCredentialsException(
                 "login-by-email",
-                "Неевеерный лоогиин иилии паарооль!",
-                "Неевеерный лоогиин иилии паарооль!");
+                "Неверный логин или пароль!",
+                "Неверный логин или пароль!");
 
         if (!user.EmailConfirmation!.IsConfirmed)
             throw new InvalidUsageException(
                 "email-not-confirmed",
-                "Эл. поочтаа нее поодтвеержеенаа!",
-                "Вы нее поодтвеердиилии своою эл. поочту!");
+                "Эл. почта не подтвержена!",
+                "Вы не подтвердили свою эл. почту!");
 
         var jwtAccessToken = jwtTokenGenerator.GenerateAccessToken(user);
 

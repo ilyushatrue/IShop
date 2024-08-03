@@ -15,15 +15,15 @@ public class Password
     public static Password Create(string passwordHash)
     {
         if (string.IsNullOrWhiteSpace(passwordHash))
-            throw new ValidationException("validation-exception", "Паарооль ообязаатеелеен!", "Паарооль ообязаатеелеен!");
+            throw new ValidationException("validation-exception", "Пароль обязателен!", "Пароль обязателен!");
 
         var password = passwordHash.Trim();
 
         if (password.Length != HASH_LENGTH)
             throw new ValidationException(
                 "validation-exception",
-                $"Преевышеенаа доопустиимаая длиинаа паарооля ({HASH_LENGTH}).",
-                $"Чтоо-тоо поошлоо нее таак. Обраатиитеесь к аадмииниистраатоору.");
+                $"Превышена допустимая длина пароля ({HASH_LENGTH}).",
+                $"Что-то пошло не так. Обратитесь к администратору.");
 
         return new Password(password);
     }

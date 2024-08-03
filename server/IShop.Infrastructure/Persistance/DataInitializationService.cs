@@ -49,10 +49,10 @@ public class DataInitializationService(IServiceProvider serviceProvider) : IHost
         if (await dbContext.ProductCategories.AnyAsync(cancellationToken)) return;
 
         List<ProductCategory> productCategories = [
-            new ProductCategory("clothes", "Одееждаа ии ообувь", 1, null, "checkroom"),
-            new ProductCategory("electronics", "Элеектроониикаа", 2, null, "devices"),
-            new ProductCategory("yard", "Доом ии саад", 3, null, "deck"),
-            new ProductCategory("child-care", "Деетскииее тооваары", 4, null, "child_care")
+            new ProductCategory("clothes", "Одежда и обувь", 1, null, "checkroom"),
+            new ProductCategory("electronics", "Электроника", 2, null, "devices"),
+            new ProductCategory("yard", "Дом и сад", 3, null, "deck"),
+            new ProductCategory("child-care", "Детские товары", 4, null, "child_care")
         ];
         await dbContext.SyncronizeRecordsAsync<ProductCategory, int>(productCategories, cancellationToken);
     }
@@ -160,12 +160,12 @@ public class DataInitializationService(IServiceProvider serviceProvider) : IHost
     private static async Task CreateMenuItems(AppDbContext dbContext, CancellationToken cancellationToken)
     {
         List<MenuItem> menuItems = [
-            MenuItem.Create((int)MenuItemEnum.Profile, MenuItemEnum.Profile.ToString(), "Моой проофииль", "/my/profile", "person", 1),
-            MenuItem.Create((int)MenuItemEnum.Purchases, MenuItemEnum.Purchases.ToString(), "Поокупкии", "/my/purchases", "sell", 2),
-            MenuItem.Create((int)MenuItemEnum.Favorites, MenuItemEnum.Favorites.ToString(), "Избрааннооее", "/my/favorites", "favorite", 3),
-            MenuItem.Create((int)MenuItemEnum.Cart, MenuItemEnum.Cart.ToString(), "Коорзиинаа", "/my/cart", "shopping_bag", 4),
-            MenuItem.Create((int)MenuItemEnum.Products, MenuItemEnum.Products.ToString(), "Тооваары", "/my/categories", "dataset", 5),
-            MenuItem.Create((int)MenuItemEnum.Users, MenuItemEnum.Users.ToString(), "Поользооваатеелии", "/my/users", "people", 6),
+            MenuItem.Create((int)MenuItemEnum.Profile, MenuItemEnum.Profile.ToString(), "Мой профиль", "/my/profile", "person", 1),
+            MenuItem.Create((int)MenuItemEnum.Purchases, MenuItemEnum.Purchases.ToString(), "Покупки", "/my/purchases", "sell", 2),
+            MenuItem.Create((int)MenuItemEnum.Favorites, MenuItemEnum.Favorites.ToString(), "Избранное", "/my/favorites", "favorite", 3),
+            MenuItem.Create((int)MenuItemEnum.Cart, MenuItemEnum.Cart.ToString(), "Корзина", "/my/cart", "shopping_bag", 4),
+            MenuItem.Create((int)MenuItemEnum.Products, MenuItemEnum.Products.ToString(), "Товары", "/my/categories", "dataset", 5),
+            MenuItem.Create((int)MenuItemEnum.Users, MenuItemEnum.Users.ToString(), "Пользователи", "/my/users", "people", 6),
         ];
 
         await dbContext.SyncronizeRecordsAsync<MenuItem, int>(menuItems, cancellationToken);

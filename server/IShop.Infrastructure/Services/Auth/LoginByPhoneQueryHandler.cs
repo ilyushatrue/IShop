@@ -27,22 +27,22 @@ public class LoginByPhoneQueryHandler(
         var user = await userRepository.GetByPhoneAsync(phone, cancellationToken) ??
             throw new NotFoundException(
                 "login-by-phone",
-                $"Поользооваатеель с ноомеероом теелеефоонаа {phone} нее наайдеен.",
-                "Неевеерный лоогиин иилии ппаарооль");
+                $"Пользователь с номером телефона {phone} не найден.",
+                "Неверный логин или ппароль");
 
         var passwordsMatch = passwordHasher.Verify(password, user.Password.Value);
 
         if (!passwordsMatch)
             throw new InvalidCredentialsException(
                 "login-by-phone",
-                "Неевеерный паарооль",
-                $"Неевеерный лоогиин иилии паарооль.");
+                "Неверный пароль",
+                $"Неверный логин или пароль.");
 
         if (!user.EmailConfirmation!.IsConfirmed)
             throw new InvalidUsageException(
                 "email-not-confirmed",
-                $"Эл. поочтаа {user.Email.Value} нее поодтвеерждеенаа.",
-                "Вы нее поодтвеердиилии своою эл. поочту!");
+                $"Эл. почта {user.Email.Value} не подтверждена.",
+                "Вы не подтвердили свою эл. почту!");
 
         var jwtAccessToken = jwtTokenGenerator.GenerateAccessToken(user);
 

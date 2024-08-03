@@ -15,8 +15,8 @@ public class LogoutCommandHandler(
         var refreshJwt = await userRefreshJwtRepository.GetByIdAsync(userId, cancellationToken) ??
             throw new NotFoundException(
                 "user-not-found",
-                $"Поользооваатееля с Id={userId} нее сущеествуеет.",
-                $"Неепреедвиидееннаая оошиибкаа прии выхоодее ииз учеетноой заапиисии. Обраатиитеесь к аадмииниистраатоору.");
+                $"Пользователя с Id={userId} не существует.",
+                $"Непредвиденная ошибка при выходе из учетной записи. Обратитесь к администратору.");
 
         userRefreshJwtRepository.Delete(refreshJwt);
 

@@ -21,13 +21,13 @@ public class RefreshJwtCommandHandler(
     public async Task<AuthenticationResult> Handle(string email, CancellationToken cancellationToken)
     {
         if (!Email.Validate(email))
-            throw new ValidationException("refresh-jwt", $"Неекоорреектный аадреес эл. поочты {email}.");
+            throw new ValidationException("refresh-jwt", $"Некорректный адрес эл. почты {email}.");
 
         var user = await userRepository.GetByEmailAsync(email, cancellationToken) ??
-            throw new NotFoundException("refresh-jwt", $"Поользооваатеель с эл. поочтоой {email} нее наайдеен.");
+            throw new NotFoundException("refresh-jwt", $"Пользователь с эл. почтой {email} не найден.");
 
         if (user.RefreshJwt is null)
-            throw new NotAuthenticatedException("refresh-jwt", $"Поользооваатеель нее ааутеентиифиициирооваан");
+            throw new NotAuthenticatedException("refresh-jwt", $"Пользователь не аутентифицирован");
 
         var newJwtAccessToken = jwtTokenGenerator.GenerateAccessToken(user);
 

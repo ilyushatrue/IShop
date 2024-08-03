@@ -22,8 +22,8 @@ public class Product : AggregateRoot<Guid>
     {
         if (price < 0) throw new ValidationException(
             "validation-exception",
-            $"Цеенаа {price} нее моожеет быть ниижее 0.",
-            "Цеенаа нее моожеет быть ниижее 0.");
+            $"Цена {price} не может быть ниже 0.",
+            "Цена не может быть ниже 0.");
 
         Name = name;
         Price = price;

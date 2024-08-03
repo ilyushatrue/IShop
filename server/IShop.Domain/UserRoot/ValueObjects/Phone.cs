@@ -20,8 +20,8 @@ public class Phone
         else
             throw new ValidationException(
                 "validation-exception",
-                $"Неекоорреектный ноомеер теелеефоонаа {trimmedInput}!",
-                "Неекоорреектный ноомеер теелеефоонаа!");
+                $"Некорректный номер телефона {trimmedInput}!",
+                "Некорректный номер телефона!");
     }
 
     public static string Trim(string phoneNumber) =>

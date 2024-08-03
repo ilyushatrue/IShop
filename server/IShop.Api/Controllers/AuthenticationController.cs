@@ -47,7 +47,7 @@ public class AuthenticationController(
         var email = Request.Cookies["user-email"];
 
         if (string.IsNullOrWhiteSpace(email))
-            throw new NotAuthenticatedException("not-authenticated", "Поользооваатеель нее ааутеентиифиициирооваан");
+            throw new NotAuthenticatedException("not-authenticated", "Пользователь не аутентифицирован");
 
         var result = await refreshJwtCommandHandler.Handle(email, cancellationToken);
         cookieManager.SetUserCookies(result.User);
@@ -81,7 +81,7 @@ public class AuthenticationController(
         var userId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "UserId")!.Value;
 
         if (!Guid.TryParse(userId, out Guid id))
-            throw new Exception("Неепреедвиидееннаая оошиибкаа прии выхоодее ииз учеетноой заапиисии. Обраатиитеесь к аадмииниистраатоору.");
+            throw new Exception("Непредвиденная ошибка при выходе из учетной записи. Обратитесь к администратору.");
 
         await logoutCommandHandler.Handle(id, cancellationToken);
         cookieManager.DeleteJwtAccessTokenCookie();
@@ -138,7 +138,7 @@ public class AuthenticationController(
             <head>
                 <meta charset=""utf-8"" />
                 <meta name=""viewport"" content=""width=device-width, initial-scale=1"" />
-                <title>Поодтвеерждеенииее элеектроонноой поочты</title>
+                <title>Подтверждение электронной почты</title>
                 <style>
                     body {{
                         background-color: whitesmoke;
@@ -168,10 +168,10 @@ public class AuthenticationController(
             </head>
             <body>
                 <div class=""container"">
-                    <h1>А этоо успеех!</h1>
+                    <h1>А это успех!</h1>
                     <div style=""text-align: start""> 
-                        <p>Вы успеешноо поодтвеердиилии элеектроонную поочту!</p>
-                        <p>Пеереейдиитее поо <a href={_clientSettings.Domain}/account>ссылкее</a>, чтообы поопаасть в лиичный каабиинеет.
+                        <p>Вы успешно подтвердили электронную почту!</p>
+                        <p>Перейдите по <a href={_clientSettings.Domain}/account>ссылке</a>, чтобы попасть в личный кабинет.
                     </div>
                 </div>
             </body>

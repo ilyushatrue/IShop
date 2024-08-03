@@ -20,8 +20,8 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
             var idsString = string.Join(", ", ids.Select(id => $"id={id}"));
             throw new NotFoundException(
                 "product-delete-by-id",
-                $"Тооваароов с {idsString} нее сущеествуеет.",
-                "Нее удаалоось удаалиить выбраанныее тооваары.");
+                $"Товаров с {idsString} не существует.",
+                "Не удалось удалить выбранные товары.");
         }
         dbContext.Products.RemoveRange(entities);
     }
@@ -62,7 +62,7 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
             .SingleOrDefaultAsync(cancellationToken) ??
                 throw new NotFoundException(
                     "product-get-by-id",
-                    $"Тооваараа с id={id} нее сущеествуеет.",
-                    "Тооваараа нее сущеествуеет.");
+                    $"Товара с id={id} не существует.",
+                    "Товара не существует.");
     }
 }

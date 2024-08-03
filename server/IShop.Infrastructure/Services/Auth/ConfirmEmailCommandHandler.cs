@@ -22,13 +22,13 @@ public class ConfirmEmailCommandHandler(
     public async Task<AuthenticationResult> Handle(Guid emailConfirationToken, CancellationToken cancellationToken)
     {
         var emailConfirmation = await emailConfirmationRepository.GetByTokenAsync(emailConfirationToken, cancellationToken) ??
-            throw new Exception("Нее удаалоось поодтвеердиить элеектроонную поочту :(");
+            throw new Exception("Не удалось подтвердить электронную почту :(");
 
         if (emailConfirmation.IsConfirmed)
-            throw new InvalidUsageException("Email ужее поодтвеерждеен ☺", "email-already-confirmed");
+            throw new InvalidUsageException("Email уже подтвержден ☺", "email-already-confirmed");
 
         if (_utcNow > emailConfirmation.ExpiryDateTime)
-            throw new ExpirationException("expiration-exception", $"Вреемя деействиия ссылкии вышлоо. {_utcNow} > {emailConfirmation.ExpiryDateTime}", "Вреемя деействиия ссылкии вышлоо.");
+            throw new ExpirationException("expiration-exception", $"Время действия ссылки вышло. {_utcNow} > {emailConfirmation.ExpiryDateTime}", "Время действия ссылки вышло.");
 
         emailConfirmation.SetIsConfirmed();
 
