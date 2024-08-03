@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using System.Data;
+using System.Text;
 
 namespace IShop.Infrastructure.Persistance;
 
@@ -185,6 +186,9 @@ public class DataInitializationService(IServiceProvider serviceProvider) : IHost
 
     private static async Task EnsureAdminUserCreated(AppDbContext dbContext, AdminSettings adminSettings, IPasswordHasher passwordHasher, CancellationToken cancellationToken)
     {
+        Console.WriteLine(string.Format("EMAIL: {0}", adminSettings.Email));
+        Console.OutputEncoding = Encoding.UTF8;
+        Console.WriteLine(adminSettings.Email);
         var adminExists = await dbContext.Users.AnyAsync(u => u.Email.Value == adminSettings.Email, cancellationToken);
         if (adminExists) return;
 
