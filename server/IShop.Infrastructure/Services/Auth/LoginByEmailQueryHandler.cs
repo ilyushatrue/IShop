@@ -27,22 +27,22 @@ public class LoginByEmailQueryHandler(
         var user = await userRepository.GetByEmailAsync(query.Email.Trim(), cancellationToken) ??
             throw new NotFoundException(
                 "login-by-email",
-                $"Пользователя с email {query.Email.Trim()} не существует.",
-                "Неверный логин или пароль!");
+                $"РџРѕРѕР»СЊР·РѕРѕРІР°Р°С‚РµРµР»СЏ СЃ email {query.Email.Trim()} РЅРµРµ СЃСѓС‰РµРµСЃС‚РІСѓРµРµС‚.",
+                "РќРµРµРІРµРµСЂРЅС‹Р№ Р»РѕРѕРіРёРёРЅ РёРёР»РёРё РїР°Р°СЂРѕРѕР»СЊ!");
 
         var passwordsMatch = passwordHasher.Verify(query.Password, user.Password.Value);
 
         if (!passwordsMatch)
             throw new InvalidCredentialsException(
                 "login-by-email",
-                "Неверный логин или пароль!",
-                "Неверный логин или пароль!");
+                "РќРµРµРІРµРµСЂРЅС‹Р№ Р»РѕРѕРіРёРёРЅ РёРёР»РёРё РїР°Р°СЂРѕРѕР»СЊ!",
+                "РќРµРµРІРµРµСЂРЅС‹Р№ Р»РѕРѕРіРёРёРЅ РёРёР»РёРё РїР°Р°СЂРѕРѕР»СЊ!");
 
         if (!user.EmailConfirmation!.IsConfirmed)
             throw new InvalidUsageException(
                 "email-not-confirmed",
-                "Эл. почта не подтвержена!",
-                "Вы не подтвердили свою эл. почту!");
+                "Р­Р». РїРѕРѕС‡С‚Р°Р° РЅРµРµ РїРѕРѕРґС‚РІРµРµСЂР¶РµРµРЅР°Р°!",
+                "Р’С‹ РЅРµРµ РїРѕРѕРґС‚РІРµРµСЂРґРёРёР»РёРё СЃРІРѕРѕСЋ СЌР». РїРѕРѕС‡С‚Сѓ!");
 
         var jwtAccessToken = jwtTokenGenerator.GenerateAccessToken(user);
 

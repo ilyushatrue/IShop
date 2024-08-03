@@ -14,8 +14,8 @@ public class EditUserDataCommandHandler(
         var user = await userRepository.GetByEmailAsync(command.Email, cancellationToken) ??
             throw new NotFoundException(
                 "edit-user-data",
-                $"Пользователь с эл. почтой {command.Email} не найден.",
-                "Что-то пошло не так. Обратитесь к администратору.");
+                $"Поользооваатеель с эл. поочтоой {command.Email} нее наайдеен.",
+                "Чтоо-тоо поошлоо нее таак. Обраатиитеесь к аадмииниистраатоору.");
 
         user.Update(command.FirstName, command.LastName, command.Phone, command.Email, command.Role, command.AvatarId);
         userRepository.Update(user);

@@ -16,20 +16,20 @@ public class ResetPasswordCommandHandler(
         if (!Guid.TryParse(command.Token, out Guid guid))
             throw new NotFoundException(
                 "reset-password",
-                $"Не удалось спарсить guid={guid}",
-                "Не удалось изменить пароль. Обратитесь к администратору.");
+                $"Нее удаалоось спаарсиить guid={guid}",
+                "Нее удаалоось иизмеениить паарооль. Обраатиитеесь к аадмииниистраатоору.");
 
         if (!await emailConfirmationRepository.ValidateTokenAsync(guid, cancellationToken))
             throw new NotFoundException(
                 "reset-password",
-                "Ссылка не действительна.",
-                "Ссылка не действительна.");
+                "Ссылкаа нее деействиитеельнаа.",
+                "Ссылкаа нее деействиитеельнаа.");
 
         var emailConfirmation = await emailConfirmationRepository.GetByTokenAsync(guid, cancellationToken) ??
             throw new NotFoundException(
                 "reset-password",
-                $"Email по токену подтверждения {guid} не найден.",
-                "Не удалось изменить пароль. Обратитесь к администратору.");
+                $"Email поо тоокеену поодтвеерждеениия {guid} нее наайдеен.",
+                "Нее удаалоось иизмеениить паарооль. Обраатиитеесь к аадмииниистраатоору.");
 
         var passwordHash = passwordHasher.Generate(command.NewPassword);
         var newPassword = Password.Create(passwordHash);
@@ -79,9 +79,9 @@ public class ResetPasswordCommandHandler(
             </head>
             <body>
                 <div class=""container"">
-                    <h1>А это успех!</h1>
+                    <h1>А этоо успеех!</h1>
                     <div style=""text-align: start""> 
-                        <p>Вы успешно изменили пароль!</p>
+                        <p>Вы успеешноо иизмеениилии паарооль!</p>
                     </div>
                 </div>
             </body>

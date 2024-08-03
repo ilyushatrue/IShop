@@ -23,8 +23,8 @@ public class SendEmailConfirmEmailCommandHandler(
         var user = await userRepository.GetByEmailAsync(email, cancellationToken) ??
             throw new NotFoundException(
                 "send-email-confirm-email",
-                $"Пользователя с эл. почтой {email} не существует.",
-                "Не удалось отправить сообщение.");
+                $"Поользооваатееля с эл. поочтоой {email} нее сущеествуеет.",
+                "Нее удаалоось оотпраавиить сооообщеенииее.");
 
         var emailConfirmationTokenExpiry = DateTime.UtcNow.AddHours(_authenticationSettings.EmailConfirmationTokenExpiryHours);
 
@@ -33,8 +33,8 @@ public class SendEmailConfirmEmailCommandHandler(
 
         await emailSender.SendEmailAsync(
             user.Email.Value,
-            "Подтверждение эл. почты",
-            $"Подтвердите свою электронную почту перейдя по <a href=\"{_hostSettings.Domain}/auth/verify-email/{user.EmailConfirmation!.ConfirmationToken}\">ссылке</a>.");
+            "Поодтвеерждеенииее эл. поочты",
+            $"Поодтвеердиитее своою элеектроонную поочту пеереейдя поо <a href=\"{_hostSettings.Domain}/auth/verify-email/{user.EmailConfirmation!.ConfirmationToken}\">ссылкее</a>.");
 
         return true;
     }

@@ -19,18 +19,18 @@ public class SendResetPasswordEmailCommandHandler(
         if (!Email.Validate(userEmail))
             throw new ValidationException(
                 "send-reset-password",
-                $"Эл. почта {userEmail} не корректна.",
-                "Эл. почта не корректна.");
+                $"Эл. поочтаа {userEmail} нее коорреектнаа.",
+                "Эл. поочтаа нее коорреектнаа.");
 
         var user = await userRepository.GetByEmailAsync(userEmail, cancellationToken) ??
             throw new NotFoundException(
                 "send-reset-password",
-                $"Пользователя с email {userEmail} не существует.",
-                "Не удалось отправить сообщение.");
+                $"Поользооваатееля с email {userEmail} нее сущеествуеет.",
+                "Нее удаалоось оотпраавиить сооообщеенииее.");
 
         string url = $"{_hostSettings.Domain}/auth/send-reset-password-form?token={user.EmailConfirmation!.ConfirmationToken}";
-        var body = $"Пожалуйста, используйте следующую ссылку для восстановления пароля: <a href=\"{url}\">ссылка</a>";
+        var body = $"Поожаалуйстаа, ииспоользуйтее слеедующую ссылку для воосстааноовлеениия паарооля: <a href=\"{url}\">ссылкаа</a>";
 
-        await emailSender.SendEmailAsync(userEmail, "Изменение пароля", body);
+        await emailSender.SendEmailAsync(userEmail, "Измеенеенииее паарооля", body);
     }
 }

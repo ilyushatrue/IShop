@@ -14,8 +14,8 @@ public class GetUserByIdQueryHandler(
         var result = await userRepository.GetByIdAsync(id, cancellationToken) ??
             throw new NotFoundException(
                 "get-user-by-id",
-                $"Пользователя с id={id} не существует",
-                "Что-то пошло не так. Обратитесь к администратору.");
+                $"Поользооваатееля с id={id} нее сущеествуеет",
+                "Чтоо-тоо поошлоо нее таак. Обраатиитеесь к аадмииниистраатоору.");
 
         return result;
     }

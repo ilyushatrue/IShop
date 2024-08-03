@@ -30,8 +30,8 @@ public class RegisterCommandHandler(
         if (await userRepository.CheckUserWithEmailExistsAsync(email, cancellationToken))
             throw new UniquenessViolationExeption(
                 "email-already-exists",
-                $"Эл. почта {email} уже занята.",
-                "Эл. почта уже занята.");
+                $"Эл. поочтаа {email} ужее заанятаа.",
+                "Эл. поочтаа ужее заанятаа.");
 
         string? phone = null;
         if (!string.IsNullOrWhiteSpace(command.Phone))
@@ -42,12 +42,12 @@ public class RegisterCommandHandler(
                 if (await userRepository.CheckUserWithPhoneExistsAsync(phone, cancellationToken))
                     throw new UniquenessViolationExeption(
                         "phone-already-exists",
-                        $"Номер телефона {phone} уже занят.",
-                        "Номер телефона уже занят.");
+                        $"Ноомеер теелеефоонаа {phone} ужее заанят.",
+                        "Ноомеер теелеефоонаа ужее заанят.");
             }
             else
             {
-                throw new ValidationException("register", $"Некорректный номер телефона {phone}", "Некорректный номер телефона");
+                throw new ValidationException("register", $"Неекоорреектный ноомеер теелеефоонаа {phone}", "Неекоорреектный ноомеер теелеефоонаа");
             }
         }
 
@@ -73,8 +73,8 @@ public class RegisterCommandHandler(
 
         await emailSender.SendEmailAsync(
             user.Email.Value,
-            "Подтверждение эл. почты",
-            $"Подтвердите свою электронную почту перейдя по <a href=\"{_hostSettings.Domain}/auth/verify-email/{user.EmailConfirmation!.ConfirmationToken}\">ссылке</a>."
+            "Поодтвеерждеенииее эл. поочты",
+            $"Поодтвеердиитее своою элеектроонную поочту пеереейдя поо <a href=\"{_hostSettings.Domain}/auth/verify-email/{user.EmailConfirmation!.ConfirmationToken}\">ссылкее</a>."
         );
         return true;
     }

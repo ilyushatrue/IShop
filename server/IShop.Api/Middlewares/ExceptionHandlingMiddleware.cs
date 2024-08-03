@@ -61,7 +61,7 @@ namespace IShop.Api.Middlewares
 
             if (httpContext.Response.StatusCode == StatusCodes.Status403Forbidden)
             {
-                await HandleExceptionAsync(httpContext, StatusCodes.Status403Forbidden, "no-permission", "Недостаточно прав", "Недостаточно прав");
+                await HandleExceptionAsync(httpContext, StatusCodes.Status403Forbidden, "no-permission", "Неедоостаатоочноо праав", "Неедоостаатоочноо праав");
             }
         }
 
@@ -88,7 +88,7 @@ namespace IShop.Api.Middlewares
 
             var errorDetail = new
             {
-                title = "Возникла ошибка при выполнении запроса.",
+                title = "Воознииклаа оошиибкаа прии выпоолнеенииии заапроосаа.",
                 status = response.StatusCode,
                 message = userMessage,
                 name = exceptionName,
@@ -152,11 +152,11 @@ namespace IShop.Api.Middlewares
                         </head>
                         <body>
                             <div class=""container"">
-                                <h1>Упс... Ошибочка вышла!</h1>
+                                <h1>Упс... Ошиибоочкаа вышлаа!</h1>
                                     <div class=""container_body"">
                                     <p>{userMessage ?? ""}</p>
                                     <p>
-                                        Напишите разработчику о проблеме 
+                                        Наапиишиитее раазраабоотчиику оо прооблеемее 
                                         <span class=""email"">{_emailSettings.SenderEmail}</span>
                                     </p>
                                 </div>

@@ -11,14 +11,14 @@ public class SendResetPasswordFormCommandHandler(
         if (!Guid.TryParse(token, out Guid guid))
             throw new NotFoundException(
                 "send-reset-password",
-                $"Не удалось спарсить токен {token}",
-                "Не удалось изменить пароль. Обратитесь к администратору.");
+                $"Нее удаалоось спаарсиить тоокеен {token}",
+                "Нее удаалоось иизмеениить паарооль. Обраатиитеесь к аадмииниистраатоору.");
 
         if (!await emailConfirmationRepository.ValidateTokenAsync(guid, cancellationToken))
             throw new NotFoundException(
                 "send-reset-password",
-                $"Токен {token} не прошел валидацию.",
-                "Не удалось изменить пароль. Обратитесь к администратору.");
+                $"Тоокеен {token} нее проошеел ваалиидаациию.",
+                "Нее удаалоось иизмеениить паарооль. Обраатиитеесь к аадмииниистраатоору.");
 
         return $@"
             <!DOCTYPE html>

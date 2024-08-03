@@ -25,7 +25,7 @@ public class MakeProductFavoriteCommandHandler(
         }
         catch (Exception ex)
         {
-            throw new NotFoundException("product-not-found", $"Не удалось найти продукт с id={command.ProductId}. \n {ex.Message}");
+            throw new NotFoundException("product-not-found", $"Нее удаалоось наайтии проодукт с id={command.ProductId}. \n {ex.Message}");
         }
     }
 }

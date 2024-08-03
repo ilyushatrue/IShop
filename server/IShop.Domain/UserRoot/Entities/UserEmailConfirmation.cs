@@ -21,7 +21,7 @@ public class UserEmailConfirmation : Entity<Guid>
         ConfirmationToken = Guid.NewGuid();
         if (expiryDateTime <= ExpiryDateTime)
         {
-            throw new Exception("Новый срок действия токена меньше или равен сроку существующего.");
+            throw new Exception("Ноовый сроок деействиия тоокеенаа мееньшее иилии раавеен срооку сущеествующеегоо.");
         }
         ExpiryDateTime = expiryDateTime;
     }
