@@ -10,8 +10,6 @@ services:
     build:
       context: ./server
       dockerfile: IShop.Api/Dockerfile
-    ports:
-      - "5000:5000"
     networks:
       - ishop-network
     depends_on:
@@ -20,6 +18,8 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:5000
       - ConnectionStrings__DB=Host=postgres;Port=5432;Database=ishop;User Id=postgres;Password=Nhe[bY202$3;
+    # volumes:
+    #   - /absolute/path/to/uploads:/app/uploads
 
   postgres:
     container_name: postgres
@@ -46,8 +46,6 @@ services:
       - backend
     environment:
       - NODE_ENV=development
-    ports:
-      - "3000:3000"
 
   nginx:
     container_name: nginx
