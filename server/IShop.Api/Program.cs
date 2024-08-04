@@ -16,9 +16,10 @@ public class Program
             .AddCors(p => p.AddPolicy("CORS", build =>
             {
                 build.WithOrigins(
-                        "http://localhost:3000",
-                        "http://185.128.105.115:3000",
-                        "http://vlways.ru"
+                        //"http://localhost:3000",
+                        //"http://185.128.105.115:3000",
+                        //"http://vlways.ru",
+                        "https://vlways.ru"
                     )
                     .AllowCredentials()
                     .AllowAnyMethod()
