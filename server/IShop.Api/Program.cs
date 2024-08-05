@@ -13,18 +13,22 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         builder.Services
-            .AddCors(p => p.AddPolicy("CORS", build =>
+            .AddCors(options =>
             {
-                build.WithOrigins(
-                        //"http://localhost:3000",
-                        //"http://185.128.105.115:3000",
-                        //"http://vlways.ru",
-                        "https://vlways.ru"
-                    )
-                    .AllowCredentials()
-                    .AllowAnyMethod()
-                    .AllowAnyHeader();
-            }))
+                options.AddPolicy("CORS_DEVELOPMENT", build =>
+                    build
+                        .WithOrigins("http://localhost:3000")
+                        .AllowCredentials()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader());
+
+                options.AddPolicy("CORS_PRODUCTION", build =>
+                    build
+                        .WithOrigins("https://vlways.ru")
+                        .AllowCredentials()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader());
+            })
             .AddPresentation()
             .AddInfrastructure(builder.Configuration)
             .AddControllers()
@@ -48,15 +52,21 @@ public class Program
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "IShop API V1");
             });
+            app.UseCors("CORS_DEVELOPMENT");
         }
-
-        app.UseCors("CORS");
-        app.UseMiddleware<ExceptionHandlingMiddleware>();
-        app.UseHttpsRedirection();
-        app.UseCookiePolicy(new CookiePolicyOptions
+        else if (app.Environment.IsProduction())
         {
-            HttpOnly = HttpOnlyPolicy.Always,
-        });
+            app.UseHsts();
+            app.UseCookiePolicy(new CookiePolicyOptions()
+            {
+                HttpOnly = HttpOnlyPolicy.Always,
+                Secure = CookieSecurePolicy.Always,
+                MinimumSameSitePolicy = SameSiteMode.Strict
+            });
+            app.UseCors("CORS_PRODUCTION");
+        }
+        app.UseHttpsRedirection();
+        app.UseMiddleware<ExceptionHandlingMiddleware>();
         app.UseAuthentication();
         app.UseAuthorization();
         app.MapControllers();

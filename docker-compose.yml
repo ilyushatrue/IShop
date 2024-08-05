@@ -16,10 +16,11 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:5000
       - ConnectionStrings__DB=Host=postgres;Port=5432;Database=ishop;User Id=postgres;Password=Nhe[bY202$3;
+      - AdminSettings__Password=${AdminSettings__Password}
+      - JwtSettings__Secret=${JwtSettings__Secret}
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
-      # - /absolute/path/to/uploads:/app/uploads
 
   postgres:
     container_name: postgres
