@@ -12,7 +12,7 @@ export default function Avatar({
 		if (imageId) {
 			return getConstant("API_URL") + "/media/image/" + imageId;
 		} else {
-			return getConstant("IMAGES_PATH") + "no-avatar.jpg";
+			return getConstant("IMAGES_PATH") + "/no-avatar.jpg";
 		}
 	}
 
