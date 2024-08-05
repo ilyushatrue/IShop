@@ -13,7 +13,7 @@ services:
     depends_on:
       - postgres
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Release
       - ASPNETCORE_URLS=http://+:5000
       - ConnectionStrings__DB=Host=postgres;Port=5432;Database=ishop;User Id=postgres;Password=Nhe[bY202$3;
       - AdminSettings__Password=${AdminSettings__Password}
@@ -46,7 +46,7 @@ services:
     depends_on:
       - backend
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=release
 
   nginx:
     container_name: nginx

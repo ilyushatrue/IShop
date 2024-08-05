@@ -1,4 +1,0 @@
-@host=http://localhost:5261
-
-GET  {{host}}/users
-
