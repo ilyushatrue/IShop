@@ -1,9 +1,9 @@
 FROM node:alpine AS build
 WORKDIR /app
 COPY package*.json ./
-RUN npm install --legacy-peer-deps
+RUN npm install
 COPY . .
-RUN npm run build --legacy-peer-deps
+RUN npm run build
 
 FROM nginx:stable-alpine
 COPY --from=build /app/build /usr/share/nginx/html
