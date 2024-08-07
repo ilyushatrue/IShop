@@ -17,6 +17,8 @@ services:
       - ConnectionStrings__DB=Host=postgres;Port=5432;Database=ishop;User Id=postgres;Password=Nhe[bY202$3;
       - AdminSettings__Password=${AdminSettings__Password}
       - JwtSettings__Secret=${JwtSettings__Secret}
+    volumes:
+      - /var/uploads:/app/uploads
 
   postgres:
     container_name: postgres
