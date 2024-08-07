@@ -4,6 +4,7 @@ networks:
 
 services:
   backend:
+    user: "root"
     container_name: backend
     build:
       context: ./server
