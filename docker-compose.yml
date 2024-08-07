@@ -20,7 +20,6 @@ services:
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
-      - ./uploads:/home/app/uploads
 
   postgres:
     container_name: postgres
