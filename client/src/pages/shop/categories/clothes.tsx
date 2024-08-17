@@ -60,18 +60,24 @@ export default function Clothes() {
 					setProducts((prev) => [...prev].filter((p) => p.id !== id))
 				}
 			/>
-			<Pagination
-				sx={{ display: "flex", justifyContent: "end" }}
-				page={pageProps.currentPage}
-				count={pageProps.totalPages}
-				renderItem={(item) => (
-					<PaginationItem
-						component={Link}
-						to={`${path}${item.page?.toString() ?? "1"}`}
-						{...item}
-					/>
-				)}
-			/>
+			{products.length > 0 && (
+				<Pagination
+					sx={{
+						display: "flex",
+						bgcolor: "pink",
+						justifyContent: "end",
+					}}
+					page={pageProps.currentPage}
+					count={pageProps.totalPages}
+					renderItem={(item) => (
+						<PaginationItem
+							component={Link}
+							to={`${path}${item.page?.toString() ?? "1"}`}
+							{...item}
+						/>
+					)}
+				/>
+			)}
 		</ShopPage>
 	);
 }

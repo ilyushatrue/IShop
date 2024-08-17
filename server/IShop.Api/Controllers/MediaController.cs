@@ -21,9 +21,7 @@ public class MediaController(
     [HttpGet("image/{id}")]
     public async Task<IActionResult> GetImageById(Guid id, CancellationToken cancellationToken)
     {
-        var result = await getImageByIdQuery
-            .Handle(new(id), cancellationToken);
-
+        var result = await getImageByIdQuery.Handle(new(id), cancellationToken);
 
         var (fileName, bytes) = result;
         var memoryStream = new MemoryStream(bytes)

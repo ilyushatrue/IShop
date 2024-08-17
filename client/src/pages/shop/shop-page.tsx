@@ -18,12 +18,7 @@ export default function ShopPage({
 
 	return (
 		<Page sx={{ mt: 2 }}>
-			<Box
-				display={"flex"}
-				gap={2}
-				flexDirection={xs ? "column" : "row"}
-				minHeight={`calc(100vh - ${navbarHeight[screenSize] + 50}px)`}
-			>
+			<Box display={"flex"} gap={2} flexDirection={xs ? "column" : "row"}>
 				<Box
 					{...sideBoxProps}
 					sx={{
@@ -40,12 +35,15 @@ export default function ShopPage({
 				</Box>
 				<Box
 					{...mainBoxProps}
+					minHeight={`calc(100vh - ${
+						navbarHeight[screenSize] + 50
+					}px)`}
 					sx={{
 						bgcolor: "white",
 						boxShadow: "0px 0px 10px rgba(0,0,0,0.1)",
 						borderRadius: "24px",
 						padding: 2,
-						width: 1200,
+						width: xs ? "100%" : 1200,
 					}}
 				>
 					{children}

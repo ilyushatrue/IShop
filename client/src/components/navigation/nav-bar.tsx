@@ -73,14 +73,22 @@ export default function NavBar() {
 		dispatch(setIsPageLoading(false));
 	}
 
+	function handleTabChange(href: string) {
+		setTimeout(() => {
+			navigate(href);
+		}, 150);
+	}
+
 	return xs ? (
 		<NavSideBar
+			onChange={handleTabChange}
 			value={selectedItemIndex}
 			avatar={menuAvatar}
 			menuItems={tabs}
 		/>
 	) : (
 		<NavTopBar
+			onChange={handleTabChange}
 			value={selectedItemIndex}
 			menuItems={tabs}
 			avatar={menuAvatar}

@@ -8,12 +8,19 @@ import IconButton from "../buttons/icon-button";
 interface IProps {
 	menuItems: {
 		label: string;
+		iconName: string;
 		href: string;
 	}[];
 	avatar: IAvatar;
 	value: number | null;
+	onChange: (href: string) => void;
 }
-export default function NavTopBar({ menuItems, avatar, value }: IProps) {
+export default function NavTopBar({
+	menuItems,
+	avatar,
+	value,
+	onChange,
+}: IProps) {
 	const { navbar, displayWidth } = useAppSelector((state) => state.page);
 	const favoriteProductsCount = useAppSelector(
 		(state) => state.user.favoriteProducts.length
@@ -92,6 +99,7 @@ export default function NavTopBar({ menuItems, avatar, value }: IProps) {
 						value={value}
 						menuItems={menuItems}
 						orientation={"horizontal"}
+						onChange={(e, i, href) => onChange(href)}
 					/>
 				</Box>
 			</Box>

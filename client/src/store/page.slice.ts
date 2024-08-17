@@ -16,6 +16,7 @@ interface IPageState {
 		label: string;
 		href: string;
 		active: boolean;
+		iconName: string;
 	}[];
 }
 const menuItems: IPageState = {
@@ -31,25 +32,28 @@ const menuItems: IPageState = {
 		},
 	},
 	tabs: [
-		{ label: "Главная", href: "/", active: true },
 		{
 			label: "Одежда и обувь",
 			href: "/category/clothes",
+			iconName: "checkroom",
 			active: false,
 		},
 		{
 			label: "Электроника",
 			href: "/category/electronics",
+			iconName: "devices",
 			active: false,
 		},
 		{
 			label: "Дом и сад",
 			href: "/category/yard",
+			iconName: "deck",
 			active: false,
 		},
 		{
 			label: "Детские товары",
 			href: "/category/child-care",
+			iconName: "child_care",
 			active: false,
 		},
 	],

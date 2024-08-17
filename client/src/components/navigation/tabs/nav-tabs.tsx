@@ -3,9 +3,13 @@ import LinkTab, { ILinkTab } from "./link-tab";
 import { useMemo } from "react";
 
 interface IProps {
-	menuItems: { label: string; href: string }[];
+	menuItems: { label: string; href: string; iconName: string }[];
 	orientation: "vertical" | "horizontal";
-	onChange?: (tabIndex: number) => void;
+	onChange?: (
+		e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+		tabIndex: number,
+		href: string
+	) => void;
 	value: number | null;
 }
 
@@ -20,6 +24,7 @@ export default function NavTabs({
 			href: tab.href,
 			label: tab.label,
 			index: index,
+			iconName: tab.iconName,
 			onClick: onChange,
 		}));
 		return items;
@@ -32,19 +37,20 @@ export default function NavTabs({
 			value={value ?? false}
 			orientation={orientation}
 			TabIndicatorProps={{
-				style:{
-					...orientation === "vertical"
+				style: {
+					...(orientation === "vertical"
 						? { left: "0px", width: "4px" }
-						: {},
-					color:"black",
-					backgroundColor:"black"
-				}
+						: {}),
+					color: "black",
+					backgroundColor: "black",
+				},
 			}}
 		>
 			{tabs.map((tab) => (
 				<LinkTab
 					key={tab.index}
-					isActive={value ? false : value === tab.index}
+					iconName={tab.iconName}
+					isActive={value === tab.index ? true : false}
 					index={tab.index}
 					label={tab.label}
 					href={tab.href}
