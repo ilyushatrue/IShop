@@ -7,10 +7,12 @@ import { useEffect, useState } from "react";
 import useApi from "../../api/hooks/use-api.hook";
 import productsApi from "../../api/endpoints/products.api";
 import { IProduct } from "../../api/interfaces/product/product.interface";
+import { useMediaQueryContext } from "../../app/infrastructure/media-query-context";
 
 export default function ProductPage() {
 	const { id } = useParams();
 	const navbarHeight = useAppSelector((state) => state.page.navbar.height);
+	const { screenSize } = useMediaQueryContext();
 	const [product, setProduct] = useState<IProduct>();
 	const { fetchAsync, isFetching } = useApi({ triggerPage: true });
 
@@ -33,7 +35,9 @@ export default function ProductPage() {
 					borderRadius: "24px",
 					boxShadow: "0px 0px 10px rgba(0,0,0,0.1)",
 					padding: 2,
-					minHeight: `calc(100vh - ${navbarHeight + 50}px)`,
+					minHeight: `calc(100vh - ${
+						navbarHeight[screenSize] + 50
+					}px)`,
 					bgcolor: "white",
 				}}
 			>

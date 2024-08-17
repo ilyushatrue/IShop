@@ -1,10 +1,9 @@
-import React from "react";
-import ProfilePage from "../profile-page";
+import AccountPage from "../account-page";
 
 export default function Cart() {
 	return (
-		<ProfilePage title="Корзина">
+		<AccountPage title="Корзина">
 			<div>Cart</div>
-		</ProfilePage>
+		</AccountPage>
 	);
 }

@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 import Page from "../../components/page";
 import { Box, BoxProps, Typography } from "@mui/material";
 import { useAppSelector } from "../../app/hooks/redux/use-app-selector";
+import { useMediaQueryContext } from "../../app/infrastructure/media-query-context";
 
 export default function ShopPage({
 	children,
@@ -13,12 +14,15 @@ export default function ShopPage({
 	children: ReactNode;
 }) {
 	const navbarHeight = useAppSelector((state) => state.page.navbar.height);
+	const { screenSize, xs } = useMediaQueryContext();
+
 	return (
 		<Page sx={{ mt: 2 }}>
 			<Box
 				display={"flex"}
 				gap={2}
-				minHeight={`calc(100vh - ${navbarHeight + 50}px)`}
+				flexDirection={xs ? "column" : "row"}
+				minHeight={`calc(100vh - ${navbarHeight[screenSize] + 50}px)`}
 			>
 				<Box
 					{...sideBoxProps}
@@ -27,7 +31,7 @@ export default function ShopPage({
 						boxShadow: "0px 0px 10px rgba(0,0,0,0.1)",
 						borderRadius: "24px",
 						padding: 2,
-						width: 200,
+						width: xs ? "100%" : 200,
 					}}
 				>
 					<Typography>Цена </Typography>

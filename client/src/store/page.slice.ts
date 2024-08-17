@@ -4,7 +4,13 @@ interface IPageState {
 	loading: boolean;
 	displayWidth: number;
 	navbar: {
-		height: number;
+		height: {
+			xs: number
+			sm: number;
+			md: number;
+			lg: number;
+			xl: number;
+		};
 	};
 	tabs: {
 		label: string;
@@ -16,7 +22,13 @@ const menuItems: IPageState = {
 	loading: false,
 	displayWidth: 1440,
 	navbar: {
-		height: 112,
+		height: {
+			xs: 60,
+			sm: 112,
+			md: 112,
+			lg: 112,
+			xl: 112,
+		},
 	},
 	tabs: [
 		{ label: "Главная", href: "/", active: true },

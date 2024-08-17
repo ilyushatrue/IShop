@@ -5,7 +5,7 @@ import usersApi from "../../../api/endpoints/users.api";
 import { IUser } from "../../../api/interfaces/user/user.interface";
 import { useAppSelector } from "../../../app/hooks/redux/use-app-selector";
 import { reload } from "../../../app/helpers/reload";
-import ProfileProtectedPage from "../profile-protected-page";
+import AccountProtectedPage from "../account-protected-page";
 
 export default function Profile() {
 	const userState = useAppSelector((state) => state.user);
@@ -21,9 +21,10 @@ export default function Profile() {
 	}
 
 	return (
-		<ProfileProtectedPage title="Мой профиль">
+		<AccountProtectedPage title="Мой профиль">
 			<Box
-				width={500}
+				maxWidth={500}
+				width={"100%"}
 				marginX={"auto"}
 				display="flex"
 				flexDirection="column"
@@ -42,6 +43,6 @@ export default function Profile() {
 					}}
 				/>
 			</Box>
-		</ProfileProtectedPage>
+		</AccountProtectedPage>
 	);
 }

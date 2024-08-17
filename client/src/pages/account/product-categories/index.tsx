@@ -1,7 +1,6 @@
 import useApi from "../../../api/hooks/use-api.hook";
 import productsApi from "../../../api/endpoints/products.api";
-import ProfilePage from "../profile-page";
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { useAppSelector } from "../../../app/hooks/redux/use-app-selector";
 import RecursiveTree, {
 	IRecursiveTreeColumn,
@@ -9,15 +8,15 @@ import RecursiveTree, {
 import { IProductCategory } from "../../../api/interfaces/product-categories/product-category.interface";
 import MenuEditCell from "./menu-edit-cell";
 import Dialog from "../../../components/dialog";
-import Form from "../../../components/form/form";
-import { Box, Button, Icon, Dialog as MuiDialog } from "@mui/material";
-import Fab from "../../../components/fab";
+import { Box, Button, Icon } from "@mui/material";
 import { reload } from "../../../app/helpers/reload";
 import MenuDeleteCell from "./menu-delete-cell";
 import { useNavigate } from "react-router-dom";
+import AccountPage from "../account-page";
+import CategoryEditDialog from "./category-edit-dialog";
 
 export default function ProductCategories() {
-	const defaultCategory = useRef<IProductCategory>({
+	const defaultCategory: IProductCategory = {
 		id: 0,
 		name: "",
 		title: "",
@@ -26,7 +25,7 @@ export default function ProductCategories() {
 		iconName: "",
 		children: [],
 		parent: null,
-	});
+	};
 	const { fetchAsync, isFetching } = useApi({ triggerPage: true });
 	const navigate = useNavigate();
 	const [editCategory, setEditCategory] = useState<{
@@ -52,20 +51,20 @@ export default function ProductCategories() {
 		return values;
 	}, [categories]);
 	const columns = useMemo(() => {
-		const orderColumn: IRecursiveTreeColumn<IProductCategory> = {
-			width: 200,
-			headerTitle: "Порядок",
-			cell: (x) => (
-				<Box
-					display={"flex"}
-					justifyContent={"center"}
-					alignItems={"center"}
-					height={"100%"}
-				>
-					{x.order}
-				</Box>
-			),
-		};
+		// const orderColumn: IRecursiveTreeColumn<IProductCategory> = {
+		// 	width: 200,
+		// 	headerTitle: "Порядок",
+		// 	cell: (x) => (
+		// 		<Box
+		// 			display={"flex"}
+		// 			justifyContent={"center"}
+		// 			alignItems={"center"}
+		// 			height={"100%"}
+		// 		>
+		// 			{x.order}
+		// 		</Box>
+		// 	),
+		// };
 
 		const editColumn: IRecursiveTreeColumn<IProductCategory> = {
 			width: 42,
@@ -135,10 +134,16 @@ export default function ProductCategories() {
 		return {
 			productsColumn,
 			editColumn,
-			orderColumn,
 			deleteColumn,
 		};
 	}, []);
+
+	function closeEditDialog() {
+		setEditCategory((prev) => ({
+			...prev!,
+			category: undefined,
+		}));
+	}
 
 	async function handleSaveMenuAsync(values: IProductCategory[]) {
 		fetchAsync({
@@ -188,12 +193,12 @@ export default function ProductCategories() {
 
 	if (!categoriesHierarchy) return null;
 	return (
-		<ProfilePage title="Категории товаров">
+		<AccountPage title="Категории товаров">
 			<Box sx={{ display: "flex", justifyContent: "end", padding: 1 }}>
 				<Button
 					onClick={() =>
 						setEditCategory({
-							category: defaultCategory.current,
+							category: defaultCategory,
 							action: "create",
 						})
 					}
@@ -225,7 +230,6 @@ export default function ProductCategories() {
 				row={{
 					height: 60,
 					sx: { paddingX: 2 },
-					onClick: console.log,
 				}}
 				tree={{
 					data: categoriesHierarchy,
@@ -233,13 +237,12 @@ export default function ProductCategories() {
 					id: (x) => x.id,
 					icon: (x) => x.iconName ?? "",
 					children: (x) => x.children ?? [],
-					minWidth: 300,
+					minWidth: 150,
 					flex: 1,
 					title: (x) => `${x.title}`,
 				}}
 				columnsRange={{
 					columns: [
-						columns.orderColumn,
 						columns.productsColumn,
 						columns.deleteColumn,
 						columns.editColumn,
@@ -267,80 +270,20 @@ export default function ProductCategories() {
 				title="Вы уверены?"
 				content="Вы действительно хотите удалить категорию?"
 			/>
-			<MuiDialog
+			<CategoryEditDialog
+				onClose={closeEditDialog}
 				open={
-					["create", "edit"].includes(editCategory?.action ?? "") &&
-					!!editCategory?.category
+					!!editCategory?.action &&
+					["create", "edit"].includes(editCategory.action) &&
+					!!editCategory.category
 				}
-				onClose={() =>
-					setEditCategory((prev) => ({
-						...prev!,
-						category: undefined,
-					}))
-				}
-			>
-				<Box sx={{ width: 500, paddingX: 2 }}>
-					{editCategory?.action === "edit" ? (
-						<h4>Редактировать категорию</h4>
-					) : (
-						<h4>Создать категорию</h4>
-					)}
-					<Form
-						loading={isFetching}
-						actions={([submit]) => [
-							{
-								value: "Отмена",
-								position: "left",
-								componentProps: {
-									onClick: () =>
-										setEditCategory((prev) => ({
-											...prev!,
-											category: undefined,
-										})),
-								},
-							},
-							{ ...submit, value: "Создать" },
-						]}
-						defaultValues={
-							editCategory?.category ?? defaultCategory.current
-						}
-						fullwidth
-						fields={(builder) =>
-							builder
-								.text({
-									name: "name",
-									label: "Системное наименование",
-									required: true,
-								})
-								.text({
-									name: "title",
-									label: "Заголовок",
-									required: true,
-								})
-								.text({
-									name: "iconName",
-									label: "Название иконки",
-									required: true,
-								})
-								.number({
-									name: "order",
-									label: "Порядок",
-									required: true,
-								})
-								.select({
-									name: "parentId",
-									label: "Подкатегория категории",
-									options: categoriesHierarchy.map((c) => ({
-										key: c.id,
-										value: c.title,
-									})),
-								})
-						}
-						minHeight={250}
-						onSubmit={(values) => handleEditCategory(values)}
-					/>
-				</Box>
-			</MuiDialog>
-		</ProfilePage>
+				editCategory={editCategory?.category}
+				onSubmit={handleEditCategory}
+				action={editCategory?.action === "create" ? "create" : "edit"}
+				loading={isFetching}
+				defaultCategory={defaultCategory}
+				categoriesHierarchy={categoriesHierarchy}
+			/>
+		</AccountPage>
 	);
 }

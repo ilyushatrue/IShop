@@ -3,18 +3,16 @@ import Register from "./register/register";
 import Login from "./login";
 import Page from "../../components/page";
 
-interface IProps {
-	sm?: boolean;
-}
-export default function Authentication({ sm = false }: IProps) {
+
+export default function Authentication() {
 	const [hasAccount, setHasAccount] = useState(true);
 
 	return (
-		<Page >
+		<Page>
 			{hasAccount ? (
-				<Login sm={sm} onToRegisterClick={() => setHasAccount(false)} />
+				<Login onToRegisterClick={() => setHasAccount(false)} />
 			) : (
-				<Register sm={sm} onToLoginClick={() => setHasAccount(true)} />
+				<Register  onToLoginClick={() => setHasAccount(true)} />
 			)}
 		</Page>
 	);

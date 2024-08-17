@@ -9,13 +9,13 @@ import useApi from "../../api/hooks/use-api.hook";
 import { setIsPageLoading } from "../../store/page.slice";
 import apiAuth from "../../api/endpoints/auth.api";
 import { resetCurrentUserState } from "../../store/user.slice";
+import { useMediaQueryContext } from "../../app/infrastructure/media-query-context";
 
-export interface INavBar {
-	sm?: boolean;
-}
-export default function NavBar({ sm = false }: INavBar) {
+export default function NavBar() {
 	const navigate = useNavigate();
+	const { xs } = useMediaQueryContext();
 	const tabs = useAppSelector((state) => state.page.tabs);
+	const menuItems = useAppSelector((state) => state.global.menuItems);
 	const { fetchAsync } = useApi({ triggerPage: true });
 	const dispatch = useAppDispatch();
 	const isAuthenticated = useAppSelector(
@@ -31,20 +31,21 @@ export default function NavBar({ sm = false }: INavBar) {
 	const menuAvatar = useMemo<IAvatar>(
 		() => ({
 			menuItems: isAuthenticated
-				? [
-						{
-							icon: "person",
-							label: "Личный кабинет",
+				? menuItems
+						.map((mi) => ({
+							icon: mi.iconName,
+							label: mi.title,
 							sx: { color: "primary.dark", marginRight: 1 },
-							onClick: () => navigate("/my/profile"),
-						},
-						{
-							icon: "logout",
-							label: "Выйти",
-							sx: { color: "primary.dark", marginRight: 1 },
-							onClick: handleLogout,
-						},
-				  ]
+							onClick: () => navigate(mi.url),
+						}))
+						.concat([
+							{
+								icon: "logout",
+								label: "Выйти",
+								sx: { color: "primary.dark", marginRight: 1 },
+								onClick: handleLogout,
+							},
+						])
 				: [
 						{
 							icon: "login",
@@ -72,21 +73,17 @@ export default function NavBar({ sm = false }: INavBar) {
 		dispatch(setIsPageLoading(false));
 	}
 
-	return (
-		<>
-			{sm ? (
-				<NavTopBar
-					value={selectedItemIndex}
-					menuItems={tabs}
-					avatar={menuAvatar}
-				/>
-			) : (
-				<NavSideBar
-					value={selectedItemIndex}
-					avatar={menuAvatar}
-					menuItems={tabs}
-				/>
-			)}
-		</>
+	return xs ? (
+		<NavSideBar
+			value={selectedItemIndex}
+			avatar={menuAvatar}
+			menuItems={tabs}
+		/>
+	) : (
+		<NavTopBar
+			value={selectedItemIndex}
+			menuItems={tabs}
+			avatar={menuAvatar}
+		/>
 	);
 }

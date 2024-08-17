@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import useApi from "../../../api/hooks/use-api.hook";
-import ProfilePage from "../profile-page";
 import { Box } from "@mui/material";
 import productsApi from "../../../api/endpoints/products.api";
 import { IProduct } from "../../../api/interfaces/product/product.interface";
@@ -9,10 +8,10 @@ import { useAppSelector } from "../../../app/hooks/redux/use-app-selector";
 import { IProductCategory } from "../../../api/interfaces/product-categories/product-category.interface";
 import { ICreateProductCommand } from "../../../api/interfaces/product/commands/create-product-command.interface";
 import ProductAddDialog from "./product-add-dialog";
-import { reload } from "../../../app/helpers/reload";
 import EnhancedTable from "../../../components/table/table";
 import IconButton from "../../../components/buttons/icon-button";
 import Dialog from "../../../components/dialog";
+import AccountPage from "../account-page";
 
 export default function ProductMenu() {
 	const [isDeleteDialogOn, setIsDeleteDialogOn] = useState(false);
@@ -76,7 +75,7 @@ export default function ProductMenu() {
 
 	async function handleSubmitAsync(values: ICreateProductCommand) {
 		closeAddProductDialog();
-		console.log(values)
+		console.log(values);
 		// await fetchAsync({
 		// 	request: async () => await productsApi.createAsync(values),
 		// 	onSuccess: (handler) =>
@@ -108,7 +107,7 @@ export default function ProductMenu() {
 	const closeDeleteDialog = () => setIsDeleteDialogOn(false);
 	const openDeleteDialog = () => setIsDeleteDialogOn(true);
 	return (
-		<ProfilePage title={"Продукты"}>
+		<AccountPage title={"Продукты"}>
 			<Box height={50} mt={1} ml={1}>
 				<IconButton
 					color="secondary.light"
@@ -179,6 +178,6 @@ export default function ProductMenu() {
 					},
 				]}
 			/>
-		</ProfilePage>
+		</AccountPage>
 	);
 }

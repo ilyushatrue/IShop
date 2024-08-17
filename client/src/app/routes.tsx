@@ -9,16 +9,13 @@ import ForbiddenPage from "../pages/forbidden/forbidden.page";
 import AccountRoutes from "../pages/account";
 import ProductPage from "../pages/shop/product-page";
 
-interface IProps {
-	sm: boolean;
-}
-export default function Routes({ sm }: IProps) {
+export default function Routes() {
 	return (
 		<>
-			<NavBar sm={sm} />
+			<NavBar />
 			<ReactRoutes>
 				<Route path="/" element={<Shop />} />
-				<Route path="/auth" element={<Authentication sm={sm} />} />
+				<Route path="/auth" element={<Authentication />} />
 				<Route path="/test" element={<Test />} />
 				<Route path="/category/*" element={<ShopCategoryRoutes />} />
 				<Route path="/not-found" element={<NotFound />} />

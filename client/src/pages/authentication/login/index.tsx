@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { LockOutlined } from "@mui/icons-material";
 import {
 	Box,
@@ -19,18 +19,20 @@ import apiAuth from "../../../api/endpoints/auth.api";
 import ResetPasswordDialog from "./reset-password-dialog";
 import EmailConfirmAlreadySentDialog from "./email-confirm-already-sent-dialog";
 import productsApi from "../../../api/endpoints/products.api";
+import { useMediaQueryContext } from "../../../app/infrastructure/media-query-context";
 
 type AuthType = "phone" | "email";
 
 interface IProps {
-	sm?: boolean;
 	onToRegisterClick: () => void;
 }
 
 const MemoizedLoginByEmailForm = React.memo(LoginByEmailForm);
 const MemoizedLoginByPhoneForm = React.memo(LoginByPhoneForm);
 
-export default function Login({ sm = false, onToRegisterClick }: IProps) {
+export default function Login({ onToRegisterClick }: IProps) {
+	const { sm } = useMediaQueryContext();
+
 	const [authType, setAuthType] = useState<AuthType>("email");
 	const [isResetPasswordDialogOn, setIsResetPasswordDialogOn] =
 		useState(false);
@@ -42,7 +44,9 @@ export default function Login({ sm = false, onToRegisterClick }: IProps) {
 		email?: string;
 	}>({ is: false });
 	const { fetchAsync, isFetching } = useApi({ triggerPage: true });
-
+	useEffect(() => {
+		console.log(sm);
+	}, [sm]);
 	const handleAuthTypeChange = (
 		event: React.MouseEvent<HTMLElement>,
 		authType: AuthType

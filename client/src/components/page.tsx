@@ -5,9 +5,11 @@ import { setActiveTab } from "../store/page.slice";
 import { useLocation } from "react-router-dom";
 import { useAppSelector } from "../app/hooks/redux/use-app-selector";
 import { useEffect } from "react";
+import { useMediaQueryContext } from "../app/infrastructure/media-query-context";
 
 export default function Page({ children, ...props }: BoxProps) {
 	const dispatch = useAppDispatch();
+	const { screenSize } = useMediaQueryContext();
 	const { displayWidth, loading, navbar } = useAppSelector(
 		(state) => state.page
 	);
@@ -22,7 +24,7 @@ export default function Page({ children, ...props }: BoxProps) {
 			display={"flex"}
 			flexDirection={"column"}
 			alignItems={"center"}
-			style={{ marginTop: navbar.height }}
+			style={{ marginTop: navbar.height[screenSize] }}
 		>
 			{loading && (
 				<LinearProgress

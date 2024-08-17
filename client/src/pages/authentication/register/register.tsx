@@ -10,12 +10,13 @@ import apiAuth from "../../../api/endpoints/auth.api";
 import { useState } from "react";
 import Dialog from "../../../components/dialog";
 import { useNavigate } from "react-router-dom";
+import { useMediaQueryContext } from "../../../app/infrastructure/media-query-context";
 
 interface IProps {
-	sm?: boolean;
 	onToLoginClick: () => void;
 }
-export default function Register({ sm = false, onToLoginClick }: IProps) {
+export default function Register({ onToLoginClick }: IProps) {
+	const { sm } = useMediaQueryContext();
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 	const [isEmailConfirmationDialogOn, setIsEmailConfirmationDialogOn] =

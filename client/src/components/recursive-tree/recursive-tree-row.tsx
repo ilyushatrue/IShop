@@ -1,6 +1,8 @@
 import { Box, Collapse, SxProps } from "@mui/material";
 import { ReactNode, useState } from "react";
-import RecursiveTreeBranch, { IRecursiveTreeBranch } from "./recursive-tree-branch";
+import RecursiveTreeBranch, {
+	IRecursiveTreeBranch,
+} from "./recursive-tree-branch";
 
 interface IRecursiveTreeCell {
 	flex?: number;
@@ -46,7 +48,7 @@ export default function RecursiveTreeRow<T>({
 	return (
 		<>
 			<Box
-				onClick={branch.hasChildren ? toggleCollapsed : handleMenuClick}
+				onMouseDown={branch.hasChildren ? toggleCollapsed : handleMenuClick}
 				onDoubleClick={() => onDoubleClick?.(branch.item)}
 				minHeight={height}
 				sx={{

@@ -1,6 +1,5 @@
 import { useRef, useState } from "react";
 import useApi from "../../../api/hooks/use-api.hook";
-import ProfilePage from "../profile-page";
 import productsApi from "../../../api/endpoints/products.api";
 import { IProduct } from "../../../api/interfaces/product/product.interface";
 import { ICreateProductCommand } from "../../../api/interfaces/product/commands/create-product-command.interface";
@@ -8,6 +7,7 @@ import { reload } from "../../../app/helpers/reload";
 import Dialog from "../../../components/dialog";
 import { useAppSelector } from "../../../app/hooks/redux/use-app-selector";
 import EnhancedTable from "../../../components/table/table";
+import AccountPage from "../account-page";
 
 export default function FavoriteProducts() {
 	const [isDeleteDialogOn, setIsDeleteDialogOn] = useState(false);
@@ -62,7 +62,7 @@ export default function FavoriteProducts() {
 	const closeDeleteDialog = () => setIsDeleteDialogOn(false);
 	const openDeleteDialog = () => setIsDeleteDialogOn(true);
 	return (
-		<ProfilePage title="Избранное">
+		<AccountPage title="Избранное">
 			<EnhancedTable
 				onSelect={(ids) => (selectedIds.current = ids)}
 				rowsPerPage={rowsPerPage}
@@ -117,6 +117,6 @@ export default function FavoriteProducts() {
 					},
 				]}
 			/>
-		</ProfilePage>
+		</AccountPage>
 	);
 }

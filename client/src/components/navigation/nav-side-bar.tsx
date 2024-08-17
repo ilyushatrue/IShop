@@ -21,7 +21,7 @@ interface IProps {
 	value: number | null;
 }
 export default function NavSideBar({ menuItems, avatar, value }: IProps) {
-	const height = useAppSelector((state) => state.page.navbar.height);
+	const { height } = useAppSelector((state) => state.page.navbar);
 	const [isMenuCollapsed, setIsMenuCollapsed] = useState(true);
 
 	function toggleMenuCollapse() {
@@ -39,10 +39,13 @@ export default function NavSideBar({ menuItems, avatar, value }: IProps) {
 				top={0}
 				left={0}
 				right={0}
+				sx={{"&:hover":{
+					cursor:"pointer"
+				}}}
 				display={"flex"}
 				justifyContent={"space-between"}
 				alignItems={"center"}
-				height={height}
+				height={height.xs}
 				bgcolor={"white"}
 				boxShadow={"0px 0px 120px rgba(0,0,0,0.1)"}
 			>

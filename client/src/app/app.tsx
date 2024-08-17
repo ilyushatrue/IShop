@@ -8,6 +8,7 @@ import { Provider } from "react-redux";
 import { store } from "../store/store";
 import Identity from "./identity";
 import { PopupProvider } from "../components/popup";
+import { MediaQueryProvider } from "./infrastructure/media-query-context";
 
 function App() {
 	const sm = useMediaQuery("(min-width:600px)");
@@ -18,7 +19,9 @@ function App() {
 				<Identity>
 					<PopupProvider>
 						<BrowserRouter>
-							<Router sm={sm} />
+							<MediaQueryProvider>
+								<Router />
+							</MediaQueryProvider>
 						</BrowserRouter>
 					</PopupProvider>
 				</Identity>
