@@ -34,7 +34,7 @@ export default function Card({
 					justifyContent: "center",
 					position: "relative",
 					width: width,
-					height: "100%",
+					height: "200px",
 					borderRadius: 20,
 					overflow: "hidden",
 					cursor: "pointer",
@@ -61,7 +61,7 @@ export default function Card({
 						<IconButton
 							key={index}
 							{...action}
-							fontSize={xs ? 36 : 22}
+							fontSize={xs ? 30 : 24}
 						/>
 					))}
 				</div>

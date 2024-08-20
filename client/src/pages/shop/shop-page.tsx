@@ -1,8 +1,9 @@
 import { ReactNode } from "react";
 import Page from "../../components/page";
-import { Box, BoxProps, Typography } from "@mui/material";
+import { Box, BoxProps } from "@mui/material";
 import { useAppSelector } from "../../app/hooks/redux/use-app-selector";
 import { useMediaQueryContext } from "../../app/infrastructure/media-query-context";
+import ShopPageFilters from "./filters";
 
 export default function ShopPage({
 	children,
@@ -29,9 +30,7 @@ export default function ShopPage({
 						width: xs ? "100%" : 200,
 					}}
 				>
-					<Typography>Цена </Typography>
-					<Typography>от: </Typography>
-					<Typography>до: </Typography>
+					<ShopPageFilters />
 				</Box>
 				<Box
 					{...mainBoxProps}

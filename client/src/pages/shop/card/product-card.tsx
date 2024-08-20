@@ -2,6 +2,7 @@ import { Typography } from "@mui/material";
 import Card from "../../../components/card/card";
 import getConstant from "../../../app/infrastructure/constant-provider";
 import { useState } from "react";
+import { useMediaQueryContext } from "../../../app/infrastructure/media-query-context";
 
 export interface ICardAction {
 	onClick: (id: string, favorite: boolean) => void;
@@ -28,6 +29,7 @@ export default function ProductCard({
 	name: string;
 	description: string;
 }) {
+	const { xs } = useMediaQueryContext();
 	const imagesPath = getConstant("API_URL");
 	const [isDisabled, setIsDisabled] = useState(false);
 	const [isFavorite, setIsFavorite] = useState(favorite);
@@ -36,7 +38,7 @@ export default function ProductCard({
 		<Card
 			onClick={() => onClick(id)}
 			src={imagesPath + "/media/image/" + imageId}
-			width={"100%"}
+			width={xs ? "100%" : "250px"}
 			actions={[
 				{
 					iconName: isFavorite ? "favorite" : "favorite_outline",
@@ -55,7 +57,7 @@ export default function ProductCard({
 					fontSize: 28,
 				},
 			]}
-			height={"400px"}
+			height={xs ? "300px" : 250}
 		>
 			<Typography
 				variant="body2"

@@ -123,7 +123,7 @@ export default function Products({ products, onDelete, onUpdate }: IProps) {
 					);
 
 					return (
-						<Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+						<Grid item xs={6} sm={6} md={4} lg={3} key={index}>
 							<ProductCard
 								onFavoriteClick={handleToFavoritesAsync}
 								onClick={(id) =>
