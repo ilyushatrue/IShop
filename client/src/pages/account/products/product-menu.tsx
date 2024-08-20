@@ -12,6 +12,7 @@ import EnhancedTable from "../../../components/table/table";
 import IconButton from "../../../components/buttons/icon-button";
 import Dialog from "../../../components/dialog";
 import AccountPage from "../account-page";
+import { reload } from "../../../app/helpers/reload";
 
 export default function ProductMenu() {
 	const [isDeleteDialogOn, setIsDeleteDialogOn] = useState(false);
@@ -75,13 +76,12 @@ export default function ProductMenu() {
 
 	async function handleSubmitAsync(values: ICreateProductCommand) {
 		closeAddProductDialog();
-		console.log(values);
-		// await fetchAsync({
-		// 	request: async () => await productsApi.createAsync(values),
-		// 	onSuccess: (handler) =>
-		// 		handler.popup("Новый товар добавлен.").do(reload),
-		// 	onError: (handler) => handler.log().popup(),
-		// });
+		await fetchAsync({
+			request: async () => await productsApi.createAsync(values),
+			onSuccess: (handler) =>
+				handler.popup("Новый товар добавлен.").do(reload),
+			onError: (handler) => handler.log().popup(),
+		});
 	}
 
 	const handleChangeRowsPerPage = (
@@ -110,6 +110,7 @@ export default function ProductMenu() {
 		<AccountPage title={"Продукты"}>
 			<Box height={50} mt={1} ml={1}>
 				<IconButton
+					disabled={isFetching}
 					color="secondary.light"
 					variant="rounded"
 					iconName="arrow_back"
@@ -131,6 +132,7 @@ export default function ProductMenu() {
 						...del,
 						componentProps: {
 							...filter.componentProps,
+							disabled: isFetching,
 							onClick: openDeleteDialog,
 						},
 					},
@@ -138,6 +140,7 @@ export default function ProductMenu() {
 						...add,
 						componentProps: {
 							...filter.componentProps,
+							disabled: isFetching,
 							onClick: openAddProductDialog,
 						},
 					},
@@ -145,6 +148,7 @@ export default function ProductMenu() {
 						...filter,
 						componentProps: {
 							...filter.componentProps,
+							disabled: isFetching,
 							onClick: () => console.log(selectedIds.current),
 						},
 					},

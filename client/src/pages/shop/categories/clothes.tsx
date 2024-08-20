@@ -64,7 +64,6 @@ export default function Clothes() {
 				<Pagination
 					sx={{
 						display: "flex",
-						bgcolor: "pink",
 						justifyContent: "end",
 					}}
 					page={pageProps.currentPage}
