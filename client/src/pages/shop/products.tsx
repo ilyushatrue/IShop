@@ -10,6 +10,7 @@ import productsApi from "../../api/endpoints/products.api";
 import { useAppDispatch } from "../../app/hooks/redux/use-app-dispatch";
 import { setFavoriteProduct } from "../../store/user.slice";
 import { redirect } from "../../app/helpers/redirect";
+import { useMediaQueryContext } from "../../app/infrastructure/media-query-context";
 
 interface IProps {
 	products: IProduct[];
@@ -19,6 +20,7 @@ interface IProps {
 export default function Products({ products, onDelete, onUpdate }: IProps) {
 	const [productToDeleteId, setProductToDeleteId] = useState("");
 	const [productToEdit, setProductToEdit] = useState<IProduct>();
+	const { xs } = useMediaQueryContext();
 	const dispatch = useAppDispatch();
 	const isAuth = useAppSelector((state) => state.user.isAuthenticated);
 	const categories = useAppSelector(

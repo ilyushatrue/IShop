@@ -36,6 +36,7 @@ export default function ProductCard({
 		<Card
 			onClick={() => onClick(id)}
 			src={imagesPath + "/media/image/" + imageId}
+			width={"100%"}
 			actions={[
 				{
 					iconName: isFavorite ? "favorite" : "favorite_outline",
@@ -54,7 +55,7 @@ export default function ProductCard({
 					fontSize: 28,
 				},
 			]}
-			height={"330px"}
+			height={"400px"}
 		>
 			<Typography
 				variant="body2"
@@ -65,11 +66,11 @@ export default function ProductCard({
 			</Typography>
 			<Typography
 				variant="caption"
-				sx={{ 
-					lineHeight: 0.1, 
-					textOverflow: "ellipsis", 
-					whiteSpace: "nowrap", 
-					overflow: "hidden" 
+				sx={{
+					lineHeight: 0.1,
+					textOverflow: "ellipsis",
+					whiteSpace: "nowrap",
+					overflow: "hidden",
 				}}
 			>
 				{description}

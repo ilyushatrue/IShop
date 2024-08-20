@@ -1,25 +1,29 @@
 import { MouseEvent, ReactNode } from "react";
 import IconButton, { IIconButton } from "../buttons/icon-button";
+import { useMediaQueryContext } from "../../app/infrastructure/media-query-context";
 
 interface IProps {
 	src: string;
 	children: ReactNode;
-	height: number | string;
 	actions: IIconButton[];
+	width: string | number;
+	height: string | number;
 	onClick: (e: MouseEvent<HTMLDivElement>) => void;
 }
 export default function Card({
 	children,
 	src,
-	height,
 	actions,
 	onClick,
+	width,
+	height,
 }: IProps) {
+	const { xs } = useMediaQueryContext();
 	return (
 		<div
 			style={{
 				height: height,
-				width: 250,
+				width: width,
 			}}
 		>
 			<div
@@ -29,8 +33,8 @@ export default function Card({
 					alignItems: "center",
 					justifyContent: "center",
 					position: "relative",
-					width: 250,
-					height: 250,
+					width: width,
+					height: "100%",
 					borderRadius: 20,
 					overflow: "hidden",
 					cursor: "pointer",
@@ -54,7 +58,11 @@ export default function Card({
 					}}
 				>
 					{actions.map((action, index) => (
-						<IconButton key={index} {...action} fontSize={22} />
+						<IconButton
+							key={index}
+							{...action}
+							fontSize={xs ? 36 : 22}
+						/>
 					))}
 				</div>
 			</div>
