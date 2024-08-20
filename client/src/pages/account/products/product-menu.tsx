@@ -13,12 +13,15 @@ import IconButton from "../../../components/buttons/icon-button";
 import Dialog from "../../../components/dialog";
 import AccountPage from "../account-page";
 import { reload } from "../../../app/helpers/reload";
+import { useMediaQueryContext } from "../../../app/infrastructure/media-query-context";
+import AccountProtectedPage from "../account-protected-page";
 
 export default function ProductMenu() {
 	const [isDeleteDialogOn, setIsDeleteDialogOn] = useState(false);
 	const { isFetching, fetchAsync } = useApi({ triggerPage: true });
 	const [products, setProducts] = useState<IProduct[]>([]);
 	const rowsPerPageOptions = [10, 25, 100];
+	const { xs } = useMediaQueryContext();
 	const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[0]);
 	const [page, setPage] = useState(0);
 	const selectedIds = useRef<string[]>([]);
@@ -107,7 +110,7 @@ export default function ProductMenu() {
 	const closeDeleteDialog = () => setIsDeleteDialogOn(false);
 	const openDeleteDialog = () => setIsDeleteDialogOn(true);
 	return (
-		<AccountPage title={"Продукты"}>
+		<AccountProtectedPage title={"Продукты"}>
 			<Box height={50} mt={1} ml={1}>
 				<IconButton
 					disabled={isFetching}
@@ -119,6 +122,7 @@ export default function ProductMenu() {
 				/>
 			</Box>
 			<EnhancedTable
+				loading={isFetching}
 				onSelect={(ids) => (selectedIds.current = ids)}
 				rowsPerPage={rowsPerPage}
 				rows={products}
@@ -127,20 +131,25 @@ export default function ProductMenu() {
 				onPageChange={handleChangePage}
 				onRowsPerPageChange={handleChangeRowsPerPage}
 				page={page}
-				actions={([del, add, filter]) => [
+				actions={([del, edit, add, filter]) => [
 					{
 						...del,
 						componentProps: {
-							...filter.componentProps,
-							disabled: isFetching,
+							...del.componentProps,
+							onClick: openDeleteDialog,
+						},
+					},
+					{
+						...edit,
+						componentProps: {
+							...edit.componentProps,
 							onClick: openDeleteDialog,
 						},
 					},
 					{
 						...add,
 						componentProps: {
-							...filter.componentProps,
-							disabled: isFetching,
+							...add.componentProps,
 							onClick: openAddProductDialog,
 						},
 					},
@@ -182,6 +191,6 @@ export default function ProductMenu() {
 					},
 				]}
 			/>
-		</AccountPage>
+		</AccountProtectedPage>
 	);
 }

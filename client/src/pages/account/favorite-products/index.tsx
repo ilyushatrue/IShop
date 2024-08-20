@@ -11,7 +11,7 @@ import AccountPage from "../account-page";
 
 export default function FavoriteProducts() {
 	const [isDeleteDialogOn, setIsDeleteDialogOn] = useState(false);
-	const { fetchAsync } = useApi({ triggerPage: true });
+	const { fetchAsync, isFetching } = useApi({ triggerPage: true });
 	const [products, setProducts] = useState<IProduct[]>(
 		useAppSelector((state) => state.user.favoriteProducts)
 	);
@@ -67,6 +67,7 @@ export default function FavoriteProducts() {
 				onSelect={(ids) => (selectedIds.current = ids)}
 				rowsPerPage={rowsPerPage}
 				rows={products}
+				loading={isFetching}
 				title={"Избранные товары"}
 				rowsPerPageOptions={rowsPerPageOptions}
 				onPageChange={handleChangePage}

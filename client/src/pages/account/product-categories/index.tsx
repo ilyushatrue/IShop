@@ -14,6 +14,7 @@ import MenuDeleteCell from "./menu-delete-cell";
 import { useNavigate } from "react-router-dom";
 import AccountPage from "../account-page";
 import CategoryEditDialog from "./category-edit-dialog";
+import AccountProtectedPage from "../account-protected-page";
 
 export default function ProductCategories() {
 	const defaultCategory: IProductCategory = {
@@ -193,7 +194,7 @@ export default function ProductCategories() {
 
 	if (!categoriesHierarchy) return null;
 	return (
-		<AccountPage title="Категории товаров">
+		<AccountProtectedPage title="Категории товаров">
 			<Box sx={{ display: "flex", justifyContent: "end", padding: 1 }}>
 				<Button
 					onClick={() =>
@@ -284,6 +285,6 @@ export default function ProductCategories() {
 				defaultCategory={defaultCategory}
 				categoriesHierarchy={categoriesHierarchy}
 			/>
-		</AccountPage>
+		</AccountProtectedPage>
 	);
 }

@@ -19,6 +19,7 @@ import Actions, { IAction } from "../actions";
 import IconButton2 from "../buttons/icon-button-2";
 import { IProduct } from "../../api/interfaces/product/product.interface";
 import Image from "../image";
+import { useMediaQueryContext } from "../../app/infrastructure/media-query-context";
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
 	if (b[orderBy] < a[orderBy]) {
@@ -82,6 +83,7 @@ interface EnhancedTableProps {
 	order: Order;
 	orderBy: string;
 	rowCount: number;
+	loading: boolean;
 }
 
 function EnhancedTableHead(props: EnhancedTableProps) {
@@ -143,12 +145,14 @@ interface EnhancedTableToolbarProps {
 	numSelected: number;
 	title: string;
 	actions?: (defaultActions: IAction[]) => IAction[];
+	loading: boolean;
 }
 
 function EnhancedTableToolbar({
 	numSelected,
 	title,
 	actions,
+	loading,
 }: EnhancedTableToolbarProps) {
 	return (
 		<Toolbar
@@ -190,12 +194,22 @@ function EnhancedTableToolbar({
 						value: "delete",
 						tooltip: "Удалить",
 						position: "right",
+						componentProps: { disabled: loading },
 						display: numSelected > 0 ? "inherit" : "none",
+						component: IconButton2,
+					},
+					{
+						value: "edit",
+						tooltip: "Редактировать",
+						position: "right",
+						componentProps: { disabled: loading },
+						display: numSelected === 1 ? "inherit" : "none",
 						component: IconButton2,
 					},
 					{
 						value: "add",
 						position: "right",
+						componentProps: { disabled: loading },
 						tooltip: "Добавить",
 						display: numSelected > 0 ? "none" : "inherit",
 						component: IconButton2,
@@ -204,6 +218,7 @@ function EnhancedTableToolbar({
 						value: "filter_list",
 						position: "right",
 						tooltip: "Фильтр",
+						componentProps: { disabled: loading },
 						display: numSelected > 0 ? "none" : "inherit",
 						component: IconButton2,
 					},
@@ -215,6 +230,7 @@ function EnhancedTableToolbar({
 export default function EnhancedTable({
 	actions,
 	rows,
+	loading,
 	title,
 	rowsPerPageOptions,
 	page,
@@ -227,16 +243,18 @@ export default function EnhancedTable({
 	rows: IProduct[];
 	rowsPerPageOptions: number[];
 	title: string;
+	loading: boolean;
 	page: number;
 	rowsPerPage: number;
 	onPageChange: (e: unknown, newPage: number) => void;
 	onRowsPerPageChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 	onSelect: (ids: string[]) => void;
 }) {
+	const { xs } = useMediaQueryContext();
 	const [order, setOrder] = React.useState<Order>("asc");
 	const [orderBy, setOrderBy] = React.useState<keyof IProduct>("name");
 	const [selected, setSelected] = React.useState<string[]>([]);
-	const [dense, setDense] = React.useState(false);
+	const [dense, setDense] = React.useState<boolean>(xs);
 
 	const handleRequestSort = (
 		event: React.MouseEvent<unknown>,
@@ -297,7 +315,12 @@ export default function EnhancedTable({
 
 	return (
 		<Box>
-			<EnhancedTableToolbar numSelected={selected.length} title={title} actions={actions}/>
+			<EnhancedTableToolbar
+				numSelected={selected.length}
+				title={title}
+				actions={actions}
+				loading={loading}
+			/>
 			<TableContainer>
 				<Table
 					sx={{ minWidth: 750 }}
@@ -305,6 +328,7 @@ export default function EnhancedTable({
 					size={dense ? "small" : "medium"}
 				>
 					<EnhancedTableHead
+						loading={loading}
 						numSelected={selected.length}
 						order={order}
 						orderBy={orderBy}

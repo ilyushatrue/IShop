@@ -45,7 +45,7 @@ export default function NavSideBar({
 	function handleTabChange(tabIndex: number) {
 		toggleMenuCollapse();
 	}
-	
+
 	return (
 		<>
 			<Box
@@ -59,10 +59,12 @@ export default function NavSideBar({
 					},
 				}}
 				display={"flex"}
+				zIndex={1}
 				justifyContent={"space-between"}
 				alignItems={"center"}
 				height={height.xs}
 				bgcolor={"white"}
+				boxShadow={"0px 0px 10px rgba(0,0,0,0.1)"}
 			>
 				<Button sx={{ height: height }} onClick={toggleMenuCollapse}>
 					<Menu />
