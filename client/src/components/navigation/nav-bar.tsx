@@ -13,6 +13,9 @@ import { useMediaQueryContext } from "../../app/infrastructure/media-query-conte
 
 export default function NavBar() {
 	const navigate = useNavigate();
+	const navigateTo = (path: string) => () => {
+		navigate(path);
+	};
 	const { xs } = useMediaQueryContext();
 	const tabs = useAppSelector((state) => state.page.tabs);
 	const menuItems = useAppSelector((state) => state.global.menuItems);
@@ -28,37 +31,50 @@ export default function NavBar() {
 		else return null;
 	}, [tabs]);
 
-	const menuAvatar = useMemo<IAvatar>(
-		() => ({
-			menuItems: isAuthenticated
-				? menuItems
-						.map((mi) => ({
-							icon: mi.iconName,
-							label: mi.title,
-							sx: { color: "primary.dark", marginRight: 1 },
-							onClick: () => navigate(mi.url),
-						}))
-						.concat([
-							{
-								icon: "logout",
-								label: "Выйти",
-								sx: { color: "primary.dark", marginRight: 1 },
-								onClick: handleLogout,
-							},
-						])
-				: [
-						{
-							icon: "login",
-							label: "Войти",
-							sx: { color: "primary.dark", marginRight: 1 },
-							onClick: () => navigate("/auth"),
-						},
-				  ],
+	const menuAvatar = useMemo<IAvatar>(() => {
+		let authItems = menuItems
+			.map((mi) => ({
+				icon: mi.iconName,
+				label: mi.title,
+				onClick: navigateTo(mi.url),
+			}))
+			.concat([
+				{
+					icon: "logout",
+					label: "Выйти",
+					onClick: handleLogout,
+				},
+			]);
+
+		let visitorItems: IAvatar["menuItems"] = [
+			{
+				icon: "login",
+				label: "Войти",
+				onClick: navigateTo("/auth"),
+			},
+		];
+		if (xs) {
+			visitorItems = visitorItems.concat([
+				{
+					icon: "favorite",
+					label: "Избранное",
+					onClick: navigateTo("/my/favorites"),
+				},
+				{
+					icon: "shopping_cart",
+					label: "Корзина",
+					onClick: navigateTo("/my/cart"),
+				},
+			]);
+		}
+
+		return {
+			menuItems: isAuthenticated ? authItems : visitorItems,
 			tip: "Аккаунт",
 			sx: { bgcolor: "primary.main" },
-		}),
-		[isAuthenticated]
-	);
+		};
+	}, [isAuthenticated, menuItems, xs]);
+
 	async function handleLogout() {
 		dispatch(setIsPageLoading(true));
 		await fetchAsync({
@@ -74,9 +90,7 @@ export default function NavBar() {
 	}
 
 	function handleTabChange(href: string) {
-		setTimeout(() => {
-			navigate(href);
-		}, 150);
+		setTimeout(navigateTo(href), 150);
 	}
 
 	return xs ? (
