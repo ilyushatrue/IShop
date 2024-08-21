@@ -86,6 +86,7 @@ export default function NavSideBar({
 				onClose={toggleDrawer(false)}
 				PaperProps={{ sx: { minWidth: 220 } }}
 			>
+				<br />
 				<NavTabs
 					value={value}
 					onChange={(e, tabIndex, href) => {
