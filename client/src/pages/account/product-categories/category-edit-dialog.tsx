@@ -74,7 +74,6 @@ export default function CategoryEditDialog({
 								})),
 							})
 					}
-					minHeight={250}
 					onSubmit={onSubmit}
 				/>
 			</Box>

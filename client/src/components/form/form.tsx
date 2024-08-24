@@ -1,26 +1,30 @@
-import { useEffect, useRef } from "react";
-import FormBuilder, { TFormBuilderRef } from "./form-builder";
+import { CSSProperties, useEffect, useRef } from "react";
+import FormBuilder, { FormBuilderRef } from "./form-builder";
 import { DefaultValues, FieldValues, useForm } from "react-hook-form";
 import Actions, { IAction } from "../actions";
+import { SxProps } from "@mui/material";
 
+export interface FormProps<T extends FieldValues> {
+	defaultValues: DefaultValues<T>;
+	onSubmit: (values: T) => void;
+	fields: (builder: FormBuilderRef<T>) => void;
+	actions: (actions: IAction[]) => IAction[];
+	fullwidth?: boolean;
+	loading?: boolean;
+	style?: CSSProperties;
+	actionProps?: SxProps;
+}
 export default function Form<T extends FieldValues>({
 	defaultValues,
 	fields,
 	onSubmit,
 	actions,
-	minHeight,
 	fullwidth = true,
 	loading = false,
-}: {
-	defaultValues: DefaultValues<T>;
-	onSubmit: (values: T) => void;
-	fields: (builder: TFormBuilderRef<T>) => void;
-	actions: (actions: IAction[]) => IAction[];
-	minHeight: number | string;
-	fullwidth?: boolean;
-	loading?: boolean;
-}) {
-	const builderRef = useRef<TFormBuilderRef<T>>(null);
+	style,
+	actionProps,
+}: FormProps<T>) {
+	const builderRef = useRef<FormBuilderRef<T>>(null);
 	const { handleSubmit, control, watch, formState, reset, getValues } =
 		useForm<T>({
 			mode: "onChange",
@@ -50,12 +54,12 @@ export default function Form<T extends FieldValues>({
 			handleSubmit={handleSubmit}
 			fullwidth={fullwidth}
 			onSubmit={onSubmit}
-			minHeight={minHeight}
 			loading={loading}
 			ref={builderRef}
+			style={style}
 		>
 			<Actions
-				sx={{ marginY: "16px" }}
+				sx={{ ...actionProps, marginY: "16px" }}
 				actions={actions}
 				defaultActions={[
 					{

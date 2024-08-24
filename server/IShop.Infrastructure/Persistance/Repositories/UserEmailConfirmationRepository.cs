@@ -15,6 +15,7 @@ public class UserEmailConfirmationRepository(AppDbContext dbContext) : IUserEmai
         return await dbContext.UserEmailConfirmations
             .Where(x => x.ConfirmationToken == emailConfirmationToken)
             .Include(x => x.User!.RefreshJwt)
+            .Include(x => x.User!.Role)
             .SingleOrDefaultAsync(cancellationToken);
     }
 

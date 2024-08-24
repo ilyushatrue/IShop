@@ -1,5 +1,5 @@
-import { Dialog } from "@mui/material";
-import Form from "../../../components/form/form";
+import OutlinedButton from "../../../components/buttons/outlined-button";
+import FormDialog from "../../../components/form-dialog";
 
 export default function ResetPasswordDialog({
 	loading,
@@ -13,32 +13,39 @@ export default function ResetPasswordDialog({
 	onClose: () => void;
 }) {
 	return (
-		<Dialog
-			open={open}
-			title={"Изменение пароля"}
-			content={
-				"На указанный адрес эл. почты будет отправлено сообщение на изменение пароля."
-			}
-			onClose={onClose}
-		>
-			<Form
-				fullwidth
-				defaultValues={{ email: "" }}
-				fields={(builder) =>
-					builder.email({ name: "email", required: true })
-				}
-				minHeight={80}
-				loading={loading}
-				actions={([submit]) => [
+		<FormDialog
+			dialogProps={{
+				title: "Изменение пароля",
+				content:
+					"На указанный адрес эл. почты будет отправлено сообщение на изменение пароля.",
+				open: open,
+				onClose: onClose,
+			}}
+			formProps={{
+				fullwidth: true,
+				defaultValues: { email: "" },
+				fields: (builder) =>
+					builder.email({ name: "email", required: true }),
+				loading: loading,
+				actions: ([submit]) => [
 					{
+						component: OutlinedButton,
 						value: "Отмена",
 						position: "left",
-						onClick: onClose,
+						componentProps: {
+							onClick: onClose,
+						},
 					},
 					submit,
-				]}
-				onSubmit={(values) => onSubmit(values.email)}
-			/>
-		</Dialog>
+				],
+				onSubmit: (values) => {
+					onSubmit(values.email);
+					onClose();
+				},
+				actionProps: {
+					position: "fixed",
+				},
+			}}
+		/>
 	);
 }

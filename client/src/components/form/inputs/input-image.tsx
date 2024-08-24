@@ -36,7 +36,7 @@ export default function InputImage<T extends FieldValues>({
 	shape = "rounded",
 	tip,
 }: { control: Control<T> } & IFormImageField<T>) {
-	const { fetchAsync } = useApi({});
+	const { fetchAsync } = useApi();
 	const { popupError } = usePopup();
 	const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -64,7 +64,7 @@ export default function InputImage<T extends FieldValues>({
 			popupError("Не удалось загрузить изображение.");
 		}
 	}
-	
+
 	return (
 		<Controller
 			key={name}
@@ -99,9 +99,9 @@ export default function InputImage<T extends FieldValues>({
 					<Box
 						sx={{
 							position: "relative",
-							display:"flex",
-							justifyContent:"center",
-							alignItems:"center",
+							display: "flex",
+							justifyContent: "center",
+							alignItems: "center",
 							width: 200,
 							height: 200,
 							overflow: "hidden",

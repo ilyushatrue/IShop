@@ -46,7 +46,7 @@ export default function InputNumber<T extends FieldValues>({
 					onChange={field.onChange}
 					value={field.value}
 					error={!!error}
-					helperText={error ? error.message : ""}
+					helperText={error && error.message}
 				/>
 			)}
 		/>

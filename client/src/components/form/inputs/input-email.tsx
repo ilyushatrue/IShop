@@ -15,10 +15,8 @@ const getValidateOptions = <T extends FieldValues>(
 	"valueAsNumber" | "valueAsDate" | "setValueAs" | "disabled"
 > => ({
 	required: { value: required, message: "Обязательно для заполнения" },
-	pattern: {
-		value: /^(.+)@(mail\.ru|gmail\.com)$/,
-		message: "Некорректный email",
-	},
+	validate: (value: string) =>
+		value.includes("@") || "Email должен содержать @",
 });
 
 export default function InputEmail<T extends FieldValues>({

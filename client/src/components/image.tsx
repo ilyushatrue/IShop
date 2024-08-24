@@ -17,7 +17,7 @@ export default function Image({
 			if (noImage === "placeholder") {
 				return getConstant("IMAGES_PATH") + "/no-avatar.jpg";
 			} else {
-				return ""; // Пустая строка, если noImage === "emptySpace"
+				return ""; 
 			}
 		}
 	}

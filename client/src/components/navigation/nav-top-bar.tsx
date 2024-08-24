@@ -87,7 +87,6 @@ export default function NavTopBar({
 							{avatar && (
 								<NavAvatar
 									tip={avatar.tip}
-									sx={avatar.sx}
 									menuItems={avatar.menuItems}
 								/>
 							)}

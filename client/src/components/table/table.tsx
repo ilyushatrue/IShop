@@ -54,6 +54,12 @@ interface HeadCell {
 
 const headCells: HeadCell[] = [
 	{
+		id: "imageId",
+		numeric: false,
+		disablePadding: false,
+		label: "Изображение",
+	},
+	{
 		id: "name",
 		numeric: false,
 		disablePadding: true,
@@ -64,12 +70,6 @@ const headCells: HeadCell[] = [
 		numeric: false,
 		disablePadding: false,
 		label: "Описание",
-	},
-	{
-		id: "imageId",
-		numeric: false,
-		disablePadding: false,
-		label: "Изображение",
 	},
 ];
 
@@ -154,6 +154,7 @@ function EnhancedTableToolbar({
 	actions,
 	loading,
 }: EnhancedTableToolbarProps) {
+	const { xs } = useMediaQueryContext();
 	return (
 		<Toolbar
 			sx={{
@@ -194,7 +195,11 @@ function EnhancedTableToolbar({
 						value: "delete",
 						tooltip: "Удалить",
 						position: "right",
-						componentProps: { disabled: loading },
+
+						componentProps: {
+							disabled: loading,
+							size: xs ? "small" : "medium",
+						},
 						display: numSelected > 0 ? "inherit" : "none",
 						component: IconButton2,
 					},
@@ -202,14 +207,20 @@ function EnhancedTableToolbar({
 						value: "edit",
 						tooltip: "Редактировать",
 						position: "right",
-						componentProps: { disabled: loading },
+						componentProps: {
+							disabled: loading,
+							size: xs ? "small" : "medium",
+						},
 						display: numSelected === 1 ? "inherit" : "none",
 						component: IconButton2,
 					},
 					{
 						value: "add",
 						position: "right",
-						componentProps: { disabled: loading },
+						componentProps: {
+							disabled: loading,
+							size: xs ? "small" : "medium",
+						},
 						tooltip: "Добавить",
 						display: numSelected > 0 ? "none" : "inherit",
 						component: IconButton2,
@@ -218,7 +229,10 @@ function EnhancedTableToolbar({
 						value: "filter_list",
 						position: "right",
 						tooltip: "Фильтр",
-						componentProps: { disabled: loading },
+						componentProps: {
+							disabled: loading,
+							size: xs ? "small" : "medium",
+						},
 						display: numSelected > 0 ? "none" : "inherit",
 						component: IconButton2,
 					},

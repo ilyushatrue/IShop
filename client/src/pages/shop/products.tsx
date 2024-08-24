@@ -48,8 +48,7 @@ export default function Products({ products, onDelete, onUpdate }: IProps) {
 		[apiFavoriteProducts, isAuth, products]
 	);
 
-	const { fetchAsync, isFetching } = useApi({ triggerPage: true });
-	const { fetchAsync: fastFetch } = useApi({ triggerPage: false });
+	const { fetchAsync, isFetching } = useApi();
 
 	async function handleDeleteProductAsync() {
 		const id = productToDeleteId;
@@ -58,12 +57,13 @@ export default function Products({ products, onDelete, onUpdate }: IProps) {
 			request: () => productsApi.deleteByIdAsync(id),
 			onSuccess: () => onDelete(id),
 			onError: (handler) => handler.log().popup(),
+			triggerPageLoader: true,
 		});
 	}
 
 	async function handleToFavoritesAsync(productId: string, value: boolean) {
 		if (isAuth) {
-			await fastFetch({
+			await fetchAsync({
 				request: () => productsApi.toFavoritesAsync(productId, value),
 				onSuccess: () =>
 					dispatch(
@@ -88,12 +88,14 @@ export default function Products({ products, onDelete, onUpdate }: IProps) {
 				}
 				window.localStorage.setItem(
 					"favorite-products",
-					JSON.stringify(favorites)
+					JSON.stringify(
+						products.filter((x) => favorites.includes(x.id))
+					)
 				);
 			} else {
 				window.localStorage.setItem(
 					"favorite-products",
-					JSON.stringify([productId])
+					JSON.stringify(products.filter((x) => x.id === productId))
 				);
 			}
 			dispatch(
@@ -111,6 +113,7 @@ export default function Products({ products, onDelete, onUpdate }: IProps) {
 			request: () => productsApi.updateAsync(product),
 			onSuccess: () => onUpdate(product),
 			onError: (handler) => handler.log().popup(),
+			triggerPageLoader: true,
 		});
 	}
 
@@ -146,16 +149,20 @@ export default function Products({ products, onDelete, onUpdate }: IProps) {
 				content="Вы действительно хотите удалить товар?"
 				open={!!productToDeleteId}
 				onClose={() => setProductToDeleteId("")}
-				onOk={handleDeleteProductAsync}
-				actions={([ok]) => [
+				actions={() => [
 					{
 						value: "Не хочу",
 						position: "left",
-						onClick: () => setProductToDeleteId(""),
+						componentProps: {
+							onClick: () => setProductToDeleteId(""),
+						},
 					},
 					{
-						...ok,
 						value: "Хочу!",
+						position: "right",
+						componentProps: {
+							onClick: handleDeleteProductAsync,
+						},
 					},
 				]}
 			/>

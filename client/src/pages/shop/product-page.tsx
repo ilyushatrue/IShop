@@ -14,7 +14,7 @@ export default function ProductPage() {
 	const navbarHeight = useAppSelector((state) => state.page.navbar.height);
 	const { screenSize } = useMediaQueryContext();
 	const [product, setProduct] = useState<IProduct>();
-	const { fetchAsync, isFetching } = useApi({ triggerPage: true });
+	const { fetchAsync, isFetching } = useApi();
 
 	useEffect(() => {
 		if (!id) return;
@@ -22,6 +22,7 @@ export default function ProductPage() {
 			request: () => productsApi.getByIdAsync(id),
 			onSuccess: (handler) => handler.do((res) => setProduct(res.body!)),
 			onError: (handler) => handler.log().popup(),
+			triggerPageLoader: true,
 		});
 	}, [id]);
 

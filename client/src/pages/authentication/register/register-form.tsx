@@ -26,7 +26,6 @@ export default function RegisterForm({
 				password: "",
 				confirmPassword: "",
 			}}
-			minHeight={430}
 			loading={loading}
 			actions={([submit, reset]) => [
 				{ ...submit, value: "Зарегистрироваться", position: "center" },

@@ -19,7 +19,7 @@ export default function NavBar() {
 	const { xs } = useMediaQueryContext();
 	const tabs = useAppSelector((state) => state.page.tabs);
 	const menuItems = useAppSelector((state) => state.global.menuItems);
-	const { fetchAsync } = useApi({ triggerPage: true });
+	const { fetchAsync } = useApi();
 	const dispatch = useAppDispatch();
 	const isAuthenticated = useAppSelector(
 		(state) => state.user.isAuthenticated
@@ -85,6 +85,7 @@ export default function NavBar() {
 					dispatch(resetCurrentUserState());
 				}),
 			onError: (handler) => handler.log().popup(),
+			triggerPageLoader: true,
 		});
 		dispatch(setIsPageLoading(false));
 	}

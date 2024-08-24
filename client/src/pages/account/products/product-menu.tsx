@@ -18,7 +18,7 @@ import AccountProtectedPage from "../account-protected-page";
 
 export default function ProductMenu() {
 	const [isDeleteDialogOn, setIsDeleteDialogOn] = useState(false);
-	const { isFetching, fetchAsync } = useApi({ triggerPage: true });
+	const { isFetching, fetchAsync } = useApi();
 	const [products, setProducts] = useState<IProduct[]>([]);
 	const rowsPerPageOptions = [10, 25, 100];
 	const { xs } = useMediaQueryContext();
@@ -66,6 +66,7 @@ export default function ProductMenu() {
 			onSuccess: (handler) =>
 				handler.do((res) => setProducts(res.body!.pageItems!)),
 			onError: (handler) => handler.log().popup(),
+			triggerPageLoader: true,
 		});
 	}, []);
 
@@ -84,6 +85,7 @@ export default function ProductMenu() {
 			onSuccess: (handler) =>
 				handler.popup("Новый товар добавлен.").do(reload),
 			onError: (handler) => handler.log().popup(),
+			triggerPageLoader: true,
 		});
 	}
 
@@ -105,6 +107,7 @@ export default function ProductMenu() {
 					prev.filter((x) => !productIds.includes(x.id))
 				),
 			onError: (handler) => handler.log().popup(),
+			triggerPageLoader: true,
 		});
 	}
 	const closeDeleteDialog = () => setIsDeleteDialogOn(false);
@@ -178,16 +181,21 @@ export default function ProductMenu() {
 				content="Вы действительно хотите удалить выбранные товары?"
 				open={isDeleteDialogOn}
 				onClose={closeDeleteDialog}
-				onOk={() => handleDeleteProductAsync(selectedIds.current)}
-				actions={([ok]) => [
+				actions={() => [
 					{
 						value: "Не хочу",
 						position: "left",
-						onClick: closeDeleteDialog,
+						componentProps: {
+							onClick: closeDeleteDialog,
+						},
 					},
 					{
-						...ok,
 						value: "Хочу!",
+						position: "right",
+						componentProps: {
+							onClick: () =>
+								handleDeleteProductAsync(selectedIds.current),
+						},
 					},
 				]}
 			/>

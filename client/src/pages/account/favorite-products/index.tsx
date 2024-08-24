@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import useApi from "../../../api/hooks/use-api.hook";
 import productsApi from "../../../api/endpoints/products.api";
 import { IProduct } from "../../../api/interfaces/product/product.interface";
@@ -11,10 +11,23 @@ import AccountPage from "../account-page";
 
 export default function FavoriteProducts() {
 	const [isDeleteDialogOn, setIsDeleteDialogOn] = useState(false);
-	const { fetchAsync, isFetching } = useApi({ triggerPage: true });
-	const [products, setProducts] = useState<IProduct[]>(
-		useAppSelector((state) => state.user.favoriteProducts)
+	const isAuth = useAppSelector((state) => state.user.isAuthenticated);
+	const apiFavoriteProducts = useAppSelector(
+		(state) => state.user.favoriteProducts
 	);
+	const [products, setProducts] = useState<IProduct[]>(function () {
+		if (isAuth) {
+			return apiFavoriteProducts;
+		} else {
+			const favoritesFromLocalStorage =
+				window.localStorage.getItem("favorite-products");
+			if (favoritesFromLocalStorage) {
+				return JSON.parse(favoritesFromLocalStorage) as IProduct[];
+			}
+		}
+		return [];
+	});
+	const { fetchAsync, isFetching } = useApi();
 	const rowsPerPageOptions = [10, 25, 100];
 	const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[0]);
 	const [page, setPage] = useState(0);
@@ -36,6 +49,7 @@ export default function FavoriteProducts() {
 			onSuccess: (handler) =>
 				handler.popup("Новый товар добавлен.").do(reload),
 			onError: (handler) => handler.log().popup(),
+			triggerPageLoader: true,
 		});
 	}
 
@@ -57,12 +71,13 @@ export default function FavoriteProducts() {
 					prev.filter((x) => !productIds.includes(x.id))
 				),
 			onError: (handler) => handler.log().popup(),
+			triggerPageLoader: true,
 		});
 	}
 	const closeDeleteDialog = () => setIsDeleteDialogOn(false);
 	const openDeleteDialog = () => setIsDeleteDialogOn(true);
 	return (
-		<AccountPage title="Избранное">
+		<AccountPage title="Избранное" paddingX={2}>
 			<EnhancedTable
 				onSelect={(ids) => (selectedIds.current = ids)}
 				rowsPerPage={rowsPerPage}
@@ -105,16 +120,20 @@ export default function FavoriteProducts() {
 				content="Вы действительно хотите удалить выбранные товары?"
 				open={isDeleteDialogOn}
 				onClose={closeDeleteDialog}
-				onOk={() => handleDeleteProductAsync(selectedIds.current)}
-				actions={([ok]) => [
+				actions={() => [
 					{
 						value: "Не хочу",
 						position: "left",
-						onClick: closeDeleteDialog,
+						componentProps: {
+							onClick: closeDeleteDialog,
+						},
 					},
 					{
-						...ok,
 						value: "Хочу!",
+						componentProps: {
+							onClick: () =>
+								handleDeleteProductAsync(selectedIds.current),
+						},
 					},
 				]}
 			/>

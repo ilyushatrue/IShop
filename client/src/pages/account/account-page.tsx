@@ -23,7 +23,7 @@ export default function AccountPage({
 	const menuItems = useAppSelector((state) => state.global.menuItems);
 	const pathname = useLocation().pathname;
 	return (
-		<Page {...props}>
+		<Page {...props} paddingX={xs ? 2 : 0}>
 			<Box
 				display={"flex"}
 				my={2}

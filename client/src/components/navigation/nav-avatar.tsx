@@ -1,4 +1,5 @@
 import {
+	Box,
 	Icon,
 	IconButton,
 	Menu,
@@ -11,7 +12,6 @@ import { useAppSelector } from "../../app/hooks/redux/use-app-selector";
 import Avatar from "../avatar";
 
 export interface IAvatar {
-	sx?: SxProps;
 	containerSx?: SxProps;
 	tip: string;
 	menuItems: {
@@ -21,7 +21,7 @@ export interface IAvatar {
 		onClick: () => void;
 	}[];
 }
-export default function NavAvatar({ tip, menuItems }: IAvatar) {
+export default function NavAvatar({ tip, menuItems, containerSx }: IAvatar) {
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const isMenuOpen = Boolean(anchorEl);
 	const user = useAppSelector((state) => state.user);
@@ -36,7 +36,7 @@ export default function NavAvatar({ tip, menuItems }: IAvatar) {
 	};
 
 	return (
-		<>
+		<Box sx={containerSx}>
 			<Tooltip title={tip}>
 				<IconButton onClick={handleAvatarClick} size="small">
 					<Avatar imageId={user?.avatarId} />
@@ -94,6 +94,6 @@ export default function NavAvatar({ tip, menuItems }: IAvatar) {
 					</MenuItem>
 				))}
 			</Menu>
-		</>
+		</Box>
 	);
 }

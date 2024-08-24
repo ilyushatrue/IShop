@@ -62,7 +62,7 @@ public class RegisterCommandHandler(
             email: email,
             phone: phone,
             passwordHash: passwordHash,
-            role: RoleEnum.Visitor,
+            role: RoleEnum.Seller,
             emailConfirmationTokenExpiry: emailConfirmationTokenExpiry,
             avatarId: command.AvatarId
         );

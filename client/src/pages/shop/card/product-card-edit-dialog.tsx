@@ -81,7 +81,6 @@ export default function ProductCardEditDialog({
 							value: "Сохранить",
 						},
 					]}
-					minHeight={500}
 					onSubmit={onSubmit}
 				/>
 			</Box>

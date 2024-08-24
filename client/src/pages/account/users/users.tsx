@@ -8,7 +8,7 @@ export default function Users() {
 	const [users, setUsers] = useState<any[]>([]);
 	const navigate = useNavigate();
 
-	const { fetchAsync } = useApi({ triggerPage: true });
+	const { fetchAsync } = useApi();
 	useEffect(() => {
 		fetchAsync<IUser[]>({
 			request: usersApi.getListAsync,
@@ -19,6 +19,7 @@ export default function Users() {
 					.log()
 					.popup()
 					.do(() => navigate("/")),
+			triggerPageLoader: true,
 		});
 	}, []);
 

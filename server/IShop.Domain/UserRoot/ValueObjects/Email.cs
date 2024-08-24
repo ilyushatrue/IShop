@@ -44,7 +44,7 @@ public class Email : ValueObject
 
     private static bool ValidateFilled(string email) => !string.IsNullOrWhiteSpace(email);
     private static bool ValidateLength(string email) => email.Length <= EMAIL_MAX_LENGTH;
-    private static bool ValidateFormat(string email) => Regex.IsMatch(email, @"^(.+)@(mail\.ru|gmail\.com)$");
+    private static bool ValidateFormat(string email) => email.Contains('@');
     public static bool Validate(string email) =>
         ValidateFilled(email)
         && ValidateLength(email)

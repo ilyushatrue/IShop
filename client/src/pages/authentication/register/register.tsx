@@ -1,7 +1,7 @@
 import { LockOutlined } from "@mui/icons-material";
 import { IRegisterRequest } from "../../../api/contracts/authentication/register-request.interface";
 import { Link, Typography } from "@mui/material";
-import Template from "../base/template";
+import Template from "../template";
 import RegisterForm from "./register-form";
 import { useAppDispatch } from "../../../app/hooks/redux/use-app-dispatch";
 import useApi from "../../../api/hooks/use-api.hook";
@@ -16,12 +16,11 @@ interface IProps {
 	onToLoginClick: () => void;
 }
 export default function Register({ onToLoginClick }: IProps) {
-	const { sm } = useMediaQueryContext();
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 	const [isEmailConfirmationDialogOn, setIsEmailConfirmationDialogOn] =
 		useState(false);
-	const { fetchAsync, isFetching } = useApi({ triggerPage: true });
+	const { fetchAsync, isFetching } = useApi();
 
 	async function handleRegisterAsync(request: IRegisterRequest) {
 		dispatch(setIsPageLoading(true));
@@ -30,12 +29,13 @@ export default function Register({ onToLoginClick }: IProps) {
 			onSuccess: (handler) =>
 				handler.do(() => setIsEmailConfirmationDialogOn(true)),
 			onError: (handler) => handler.log().popup(),
+			triggerPageLoader: true,
 		});
 		dispatch(setIsPageLoading(false));
 	}
 
 	return (
-		<Template sm={sm} avatar={<LockOutlined />} title="Регистрация">
+		<Template avatarChildren={<LockOutlined />} title="Регистрация">
 			<RegisterForm
 				onSubmitAsync={handleRegisterAsync}
 				loading={isFetching}
@@ -58,11 +58,17 @@ export default function Register({ onToLoginClick }: IProps) {
 					setIsEmailConfirmationDialogOn(false);
 					navigate("/");
 				}}
-				onOk={() => {
-					setIsEmailConfirmationDialogOn(false);
-					navigate("/");
-				}}
-				actions={([ok]) => [ok]}
+				actions={() => [
+					{
+						value: "Понятно",
+						componentProps: {
+							onClick: () => {
+								setIsEmailConfirmationDialogOn(false);
+								navigate("/");
+							},
+						},
+					},
+				]}
 			/>
 		</Template>
 	);

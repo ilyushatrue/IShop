@@ -74,10 +74,8 @@ export default function NavSideBar({
 						menuItems={avatar.menuItems}
 						tip={avatar.tip}
 						containerSx={{
-							marginLeft: "auto",
-							marginRight: 2,
+							marginRight: 1,
 						}}
-						sx={avatar.sx}
 					/>
 				)}
 			</Box>

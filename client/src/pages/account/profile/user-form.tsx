@@ -4,24 +4,24 @@ import Form from "../../../components/form/form";
 export default function UserForm({
 	onSubmitAsync,
 	defaultValues,
-	minHeight = 330,
 	loading,
+	fullwidth,
 }: {
 	defaultValues: IUser;
 	onSubmitAsync: (values: IUser) => Promise<void>;
 	loading: boolean;
-	minHeight?: number;
+	fullwidth?: boolean;
 }) {
 	return (
 		<Form
 			defaultValues={defaultValues}
-			minHeight={minHeight}
 			actions={([submit, reset]) => [
 				{ ...submit, value: "Сохранить" },
 				reset,
 			]}
 			onSubmit={onSubmitAsync}
 			loading={loading}
+			fullwidth={fullwidth}
 			fields={(builder) =>
 				builder
 					.image({

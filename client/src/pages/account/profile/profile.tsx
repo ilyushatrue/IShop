@@ -6,10 +6,12 @@ import { IUser } from "../../../api/interfaces/user/user.interface";
 import { useAppSelector } from "../../../app/hooks/redux/use-app-selector";
 import { reload } from "../../../app/helpers/reload";
 import AccountProtectedPage from "../account-protected-page";
+import { useMediaQueryContext } from "../../../app/infrastructure/media-query-context";
 
 export default function Profile() {
 	const userState = useAppSelector((state) => state.user);
-	const { fetchAsync, isFetching } = useApi({ triggerPage: true });
+	const { xs } = useMediaQueryContext();
+	const { fetchAsync, isFetching } = useApi();
 
 	async function handleFormSubmitAsync(user: IUser) {
 		await fetchAsync({
@@ -17,6 +19,7 @@ export default function Profile() {
 			onSuccess: (handler) =>
 				handler.popup("Данные успешно обновлены!").do(reload),
 			onError: (handler) => handler.log().popup(),
+			triggerPageLoader: true,
 		});
 	}
 
@@ -32,6 +35,7 @@ export default function Profile() {
 				alignItems="center"
 			>
 				<UserForm
+					fullwidth={xs}
 					loading={isFetching}
 					onSubmitAsync={handleFormSubmitAsync}
 					defaultValues={{

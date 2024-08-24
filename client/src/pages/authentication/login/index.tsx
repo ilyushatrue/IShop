@@ -8,7 +8,7 @@ import {
 	Typography,
 } from "@mui/material";
 import { useState } from "react";
-import Template from "../base/template";
+import Template from "../template";
 import LoginByEmailForm from "./login-by-email-form";
 import LoginByPhoneForm from "./login-by-phone-form";
 import { ILoginByEmailRequest } from "../../../api/contracts/authentication/login-by-email-request.interface";
@@ -43,7 +43,7 @@ export default function Login({ onToRegisterClick }: IProps) {
 		is: boolean;
 		email?: string;
 	}>({ is: false });
-	const { fetchAsync, isFetching } = useApi({ triggerPage: true });
+	const { fetchAsync, isFetching } = useApi();
 	useEffect(() => {
 		console.log(sm);
 	}, [sm]);
@@ -59,6 +59,7 @@ export default function Login({ onToRegisterClick }: IProps) {
 			request: async () => await apiAuth.loginByPhoneAsync(request),
 			onSuccess: handleSuccessfulLoginAsync,
 			onError: (handler) => handler.log().popup(),
+			triggerPageLoader: true,
 		});
 	}
 
@@ -78,6 +79,7 @@ export default function Login({ onToRegisterClick }: IProps) {
 							});
 						}
 					}),
+			triggerPageLoader: true,
 		});
 	}
 
@@ -91,6 +93,7 @@ export default function Login({ onToRegisterClick }: IProps) {
 			await fetchAsync({
 				request: async () =>
 					await productsApi.toFavoritesRangeAsync(values),
+				triggerPageLoader: true,
 			}).then(() => window.localStorage.removeItem("favorite-products"));
 		}
 		redirect("/my/profile");
@@ -106,6 +109,7 @@ export default function Login({ onToRegisterClick }: IProps) {
 					"Сообщение о смене пароля отправлено на эл. почту"
 				),
 			onError: (handler) => handler.log().popup(),
+			triggerPageLoader: true,
 		});
 	}
 
@@ -119,11 +123,12 @@ export default function Login({ onToRegisterClick }: IProps) {
 					"Сообщение о смене пароля отправлено на эл. почту"
 				),
 			onError: (handler) => handler.log().popup(),
+			triggerPageLoader: true,
 		});
 	}
 	return (
 		<>
-			<Template sm={sm} avatar={<LockOutlined />} title={"Войти"}>
+			<Template avatarChildren={<LockOutlined />} title={"Войти"}>
 				<ToggleButtonGroup
 					fullWidth
 					color="primary"

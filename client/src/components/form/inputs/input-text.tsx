@@ -38,7 +38,7 @@ export default function InputText<T extends FieldValues>({
 					value={field.value}
 					error={!!error}
 					autoComplete="off"
-					helperText={error ? error.message : ""}
+					helperText={error && error.message}
 				/>
 			)}
 		/>

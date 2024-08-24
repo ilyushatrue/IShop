@@ -16,8 +16,8 @@ public class EditUserDataCommandHandler(
                 "edit-user-data",
                 $"Пользователь с эл. почтой {command.Email} не найден.",
                 "Что-то пошло не так. Обратитесь к администратору.");
-
-        user.Update(command.FirstName, command.LastName, command.Phone, command.Email, command.Role, command.AvatarId);
+        var phone = string.IsNullOrWhiteSpace(command.Phone) ? null : command.Phone;
+        user.Update(command.FirstName, command.LastName, phone, command.Email, command.Role, command.AvatarId);
         userRepository.Update(user);
         await dbManager.SaveChangesAsync(cancellationToken);
         return user;

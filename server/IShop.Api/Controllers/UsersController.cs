@@ -17,7 +17,6 @@ using IShop.Infrastructure.Authentication;
 namespace IShop.Api.Controllers;
 
 [Route("users")]
-[Authorize(Policy = CustomPolicies.ADMIN_POLICY)]
 public class UsersController(
     IMapper mapper,
     IGetAllUsersQueryHandler getAllUsersQueryHandler,
@@ -28,6 +27,7 @@ public class UsersController(
     CookieManager cookieManager
 ) : ApiController
 {
+    [Authorize(Policy = CustomPolicies.ADMIN_POLICY)]
     [HttpGet]
     public async Task<IActionResult> GetAllUsersAsync(CancellationToken cancellationToken)
     {
@@ -35,6 +35,7 @@ public class UsersController(
         return Ok(result);
     }
 
+    [Authorize(Policy = CustomPolicies.ADMIN_POLICY)]
     [HttpGet("{id}")]
     public async Task<IActionResult> GetUserByIdAsync(Guid id, CancellationToken cancellationToken)
     {
@@ -70,6 +71,7 @@ public class UsersController(
         return Ok(initialResponse);
     }
 
+    [Authorize(Policy = CustomPolicies.EDIT_POLICY)]
     [HttpPut]
     public async Task<IActionResult> UpdateUserData([FromBody] EditUserDataCommand user, CancellationToken cancellationToken)
     {

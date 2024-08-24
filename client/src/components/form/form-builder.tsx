@@ -27,24 +27,24 @@ import InputNumber, { IFormNumberField } from "./inputs/input-number";
 import InputSelect, { IFormSelectField } from "./inputs/input-select";
 import { IFormField } from "./inputs/form-field.interface";
 
-const formStyles: CSSProperties = {
+const fieldBoxStyles: CSSProperties = {
 	display: "flex",
 	flexDirection: "column",
 	justifyContent: "end",
 	alignItems: "center",
 };
 
-export type TFormBuilderRef<T extends FieldValues> = {
-	select: (props: IFormSelectField<T>) => TFormBuilderRef<T>;
-	email: (props: IFormField<T>) => TFormBuilderRef<T>;
-	text: (props: IFormField<T>) => TFormBuilderRef<T>;
-	number: (props: IFormNumberField<T>) => TFormBuilderRef<T>;
-	password: (props: IFormPasswordField<T>) => TFormBuilderRef<T>;
+export type FormBuilderRef<T extends FieldValues> = {
+	select: (props: IFormSelectField<T>) => FormBuilderRef<T>;
+	email: (props: IFormField<T>) => FormBuilderRef<T>;
+	text: (props: IFormField<T>) => FormBuilderRef<T>;
+	number: (props: IFormNumberField<T>) => FormBuilderRef<T>;
+	password: (props: IFormPasswordField<T>) => FormBuilderRef<T>;
 	passwordConfirm: (
 		props: IFormField<T> & { password: Path<T> }
-	) => TFormBuilderRef<T>;
-	image: (props: IFormImageField<T>) => TFormBuilderRef<T>;
-	phone: (props: IFormField<T>) => TFormBuilderRef<T>;
+	) => FormBuilderRef<T>;
+	image: (props: IFormImageField<T>) => FormBuilderRef<T>;
+	phone: (props: IFormField<T>) => FormBuilderRef<T>;
 };
 
 export interface IForm<T extends FieldValues> {
@@ -53,9 +53,9 @@ export interface IForm<T extends FieldValues> {
 	handleSubmit: UseFormHandleSubmit<T, undefined>;
 	onSubmit: (values: T) => void;
 	children: ReactNode;
-	minHeight: number | string;
 	fullwidth: boolean;
 	loading: boolean;
+	style?: CSSProperties;
 }
 
 function FormBuilder<T extends FieldValues>(
@@ -65,11 +65,11 @@ function FormBuilder<T extends FieldValues>(
 		handleSubmit,
 		onSubmit,
 		children,
-		minHeight,
 		fullwidth,
 		loading,
+		style,
 	}: IForm<T>,
-	ref: Ref<TFormBuilderRef<T>>
+	ref: Ref<FormBuilderRef<T>>
 ) {
 	const [inputsMap, setInputsMap] = useState<Map<string, ReactElement>>(
 		new Map()
@@ -91,7 +91,7 @@ function FormBuilder<T extends FieldValues>(
 		});
 	};
 
-	const inputBuilder: TFormBuilderRef<T> = useMemo<TFormBuilderRef<T>>(
+	const inputBuilder: FormBuilderRef<T> = useMemo(
 		() => ({
 			select: (props) => {
 				addInput(
@@ -162,23 +162,21 @@ function FormBuilder<T extends FieldValues>(
 	return (
 		<form
 			onSubmit={handleSubmit(handleSubmitButtonClick)}
-			style={{
-				...formStyles,
-				minHeight: minHeight,
-				width: fullwidth ? "100%" : undefined,
-			}}
+			style={{ ...style, width: fullwidth ? "100%" : undefined }}
 		>
-			{inputs.map((input) =>
-				cloneElement(input, {
-					key: input.props.name,
-					disabled: input.props.disabled || loading,
-				})
-			)}
+			<div style={fieldBoxStyles}>
+				{inputs.map((input) =>
+					cloneElement(input, {
+						key: input.props.name,
+						disabled: input.props.disabled || loading,
+					})
+				)}
+			</div>
 			{children}
 		</form>
 	);
 }
 
 export default forwardRef(FormBuilder) as <T extends FieldValues>(
-	props: IForm<T> & { ref: Ref<TFormBuilderRef<T>> }
+	props: IForm<T> & { ref: Ref<FormBuilderRef<T>> }
 ) => ReactElement;

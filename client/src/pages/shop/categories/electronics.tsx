@@ -16,7 +16,7 @@ export default function Electronics() {
 	)!;
 	const { id } = useParams<{ id: string }>();
 	const navigate = useNavigate();
-	const { fetchAsync } = useApi({ triggerPage: true });
+	const { fetchAsync } = useApi();
 	const [products, setProducts] = useState<IProduct[]>([]);
 	const [pageProps, setPageProps] = useState<{
 		totalPages: number;
@@ -44,6 +44,7 @@ export default function Electronics() {
 					});
 				}),
 			onError: (handler) => handler.do(() => navigate("/not-found")),
+			triggerPageLoader: true,
 		});
 	}, [id]);
 

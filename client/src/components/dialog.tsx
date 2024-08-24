@@ -1,4 +1,7 @@
-import { DialogProps, Dialog as MuiDialog } from "@mui/material";
+import {
+	DialogProps as MuiDialogProps,
+	Dialog as MuiDialog,
+} from "@mui/material";
 import {
 	DialogActions,
 	DialogContent,
@@ -7,11 +10,11 @@ import {
 } from "@mui/material";
 import { useEffect, useCallback, KeyboardEvent } from "react";
 import Actions, { IAction } from "./actions";
+import { useMediaQueryContext } from "../app/infrastructure/media-query-context";
 
-type DialogPropsEx = DialogProps & {
+export type DialogProps = MuiDialogProps & {
 	actions?: (defaultActions: IAction[]) => IAction[];
-	onOk: () => void;
-	onEnterKeyPress: (event: React.KeyboardEvent<HTMLButtonElement>) => void;
+	onEnterKeyPress?: (event: React.KeyboardEvent<HTMLButtonElement>) => void;
 };
 
 function Dialog({
@@ -20,14 +23,15 @@ function Dialog({
 	children,
 	open,
 	content,
-	onOk,
 	onEnterKeyPress,
 	...props
-}: DialogPropsEx) {
+}: DialogProps) {
+	const { xs } = useMediaQueryContext();
+
 	const handleEnterKeyPress = useCallback(
 		(event: globalThis.KeyboardEvent) => {
 			if (event.key === "Enter") {
-				onEnterKeyPress(
+				onEnterKeyPress!(
 					event as unknown as KeyboardEvent<HTMLButtonElement>
 				);
 			}
@@ -36,16 +40,17 @@ function Dialog({
 	);
 
 	useEffect(() => {
+		if (!onEnterKeyPress) return;
 		if (open) {
 			window.addEventListener("keydown", handleEnterKeyPress);
 		}
 		return () => {
 			window.removeEventListener("keydown", handleEnterKeyPress);
 		};
-	}, [handleEnterKeyPress, open]);
+	}, [handleEnterKeyPress, onEnterKeyPress, open]);
 
 	return (
-		<MuiDialog {...props} open={open}>
+		<MuiDialog fullScreen={xs} {...props} open={open}>
 			<DialogTitle>{title}</DialogTitle>
 			<DialogContent>
 				<DialogContentText>{content}</DialogContentText>
@@ -53,18 +58,7 @@ function Dialog({
 			</DialogContent>
 			{actions && (
 				<DialogActions>
-					<Actions
-						defaultActions={[
-							{
-								value: "Понятно",
-								position: "right",
-								componentProps: {
-									onClick: onOk,
-								},
-							},
-						]}
-						actions={actions}
-					/>
+					<Actions actions={actions} />
 				</DialogActions>
 			)}
 		</MuiDialog>

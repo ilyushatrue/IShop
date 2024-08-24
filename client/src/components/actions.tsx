@@ -4,7 +4,7 @@ import Button from "./buttons/button";
 
 export interface IAction {
 	value: string;
-	position: "center" | "left" | "right";
+	position?: "center" | "left" | "right";
 	tooltip?: string;
 	display?: "none" | "inherit";
 	componentProps?: ButtonProps;
@@ -21,7 +21,10 @@ export default function Actions({
 	actions?: (defaultActions: IAction[]) => IAction[];
 }) {
 	const actionGroups = useMemo(
-		() => actions(defaultActions).groupBy((action) => action.position),
+		() =>
+			actions(defaultActions).groupBy(
+				(action) => action.position ?? "right"
+			),
 		[actions, defaultActions]
 	);
 	return (
@@ -41,7 +44,13 @@ export default function Actions({
 							key={index}
 							sx={{ display: action.display }}
 						>
-							<Box>
+							<Box
+								sx={{
+									flex: 1,
+									display: "flex",
+									justifyContent: "start",
+								}}
+							>
 								<Component {...action.componentProps}>
 									{action.value}
 								</Component>
@@ -65,7 +74,13 @@ export default function Actions({
 							key={index}
 							sx={{ display: action.display }}
 						>
-							<Box>
+							<Box
+								sx={{
+									flex: 1,
+									display: "flex",
+									justifyContent: "center",
+								}}
+							>
 								<Component {...action.componentProps}>
 									{action.value}
 								</Component>
@@ -83,7 +98,13 @@ export default function Actions({
 							key={index}
 							sx={{ display: action.display }}
 						>
-							<Box>
+							<Box
+								sx={{
+									flex: 1,
+									display: "flex",
+									justifyContent: "end",
+								}}
+							>
 								<Component {...action.componentProps}>
 									{action.value}
 								</Component>

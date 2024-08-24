@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import ShopPage from "./shop-page";
 
 export default function Main() {
-	const { fetchAsync } = useApi({ triggerPage: true });
+	const { fetchAsync } = useApi();
 	const navigate = useNavigate();
 	const [products, setProducts] = useState<IProduct[]>([]);
 
@@ -17,6 +17,7 @@ export default function Main() {
 			onSuccess: (handler) =>
 				handler.do((res) => setProducts(res.body!.pageItems!)),
 			onError: (handler) => handler.do(() => navigate("/not-found")),
+			triggerPageLoader: true,
 		});
 	}, []);
 

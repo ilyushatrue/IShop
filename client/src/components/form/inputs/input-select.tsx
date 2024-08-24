@@ -72,7 +72,7 @@ export default function InputSelect<T extends FieldValues>({
 					size={size}
 					error={!!error}
 				>
-					<InputLabel>{label}</InputLabel>
+					<InputLabel>{label + (required ? " *" : "")}</InputLabel>
 					<Select
 						multiple={multiple}
 						value={field.value || (multiple ? [] : "")}

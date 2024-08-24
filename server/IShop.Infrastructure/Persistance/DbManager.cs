@@ -2,14 +2,15 @@
 using IShop.Domain.Common.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using System.Data;
 using System.Linq.Expressions;
 
 namespace IShop.Infrastructure.Persistance;
 public class DbManager(AppDbContext dbContext) : IDbManager
 {
-    public async Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken)
+    public async Task<IDbContextTransaction> BeginTransactionAsync(IsolationLevel isolationLevel, CancellationToken cancellationToken)
     {
-        return await dbContext.Database.BeginTransactionAsync(cancellationToken);
+        return await dbContext.Database.BeginTransactionAsync(isolationLevel, cancellationToken);
     }
 
     public async Task<int> CountRecordsAsync<T>(CancellationToken cancellationToken) where T : class

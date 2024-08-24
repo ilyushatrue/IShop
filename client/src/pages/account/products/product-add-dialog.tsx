@@ -70,7 +70,6 @@ export default function ProductAddDialog({
 								min: 1,
 							})
 					}
-					minHeight={500}
 					onSubmit={onSubmit}
 				/>
 			</Box>

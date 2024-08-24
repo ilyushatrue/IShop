@@ -13,7 +13,7 @@ export default function AvatarPlus({
 	onChange: (id: string) => void;
 	imageId?: string | null;
 }) {
-	const { fetchAsync } = useApi({});
+	const { fetchAsync } = useApi();
 	const { popupError } = usePopup();
 	const fileInputRef = useRef<HTMLInputElement | null>(null);
 	const [imageUrl, setImageUrl] = useState<string | null>(imageId);

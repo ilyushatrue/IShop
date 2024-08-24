@@ -12,7 +12,6 @@ import { Box, Button, Icon } from "@mui/material";
 import { reload } from "../../../app/helpers/reload";
 import MenuDeleteCell from "./menu-delete-cell";
 import { useNavigate } from "react-router-dom";
-import AccountPage from "../account-page";
 import CategoryEditDialog from "./category-edit-dialog";
 import AccountProtectedPage from "../account-protected-page";
 
@@ -27,7 +26,7 @@ export default function ProductCategories() {
 		children: [],
 		parent: null,
 	};
-	const { fetchAsync, isFetching } = useApi({ triggerPage: true });
+	const { fetchAsync, isFetching } = useApi();
 	const navigate = useNavigate();
 	const [editCategory, setEditCategory] = useState<{
 		category?: IProductCategory;
@@ -151,6 +150,7 @@ export default function ProductCategories() {
 			request: () => productsApi.syncCategoriesAsync(values),
 			onSuccess: (handler) => handler.do(reload),
 			onError: (handler) => handler.log().popup(),
+			triggerPageLoader: true,
 		});
 	}
 
@@ -255,16 +255,19 @@ export default function ProductCategories() {
 					handleEditCategory(editCategory!.category!)
 				}
 				onClose={() => setEditCategory(undefined)}
-				onOk={() => handleEditCategory(editCategory!.category!)}
-				actions={([ok]) => [
+				actions={() => [
 					{
 						value: "Нет",
-						onClick: () => setEditCategory(undefined),
 						position: "left",
+						onClick: () => setEditCategory(undefined),
 					},
 					{
-						...ok,
 						value: "Да",
+						position: "right",
+						componentProps: {
+							onClick: () =>
+								handleEditCategory(editCategory!.category!),
+						},
 					},
 				]}
 				open={editCategory?.action === "delete"}

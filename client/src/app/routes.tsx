@@ -1,5 +1,4 @@
 import { Route, Routes as ReactRoutes } from "react-router-dom";
-import Authentication from "../pages/authentication/authentication";
 import NotFound from "../pages/not-found/not-found";
 import Shop from "../pages/shop/main";
 import NavBar from "../components/navigation/nav-bar";
@@ -8,6 +7,7 @@ import ShopCategoryRoutes from "../pages/shop";
 import ForbiddenPage from "../pages/forbidden/forbidden.page";
 import AccountRoutes from "../pages/account";
 import ProductPage from "../pages/shop/product-page";
+import Authentication from "../pages/authentication";
 
 export default function Routes() {
 	return (
