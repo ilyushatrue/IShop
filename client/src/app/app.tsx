@@ -1,6 +1,11 @@
 import "../assets/fonts/fonts.css";
 import "../extension-methods/array.extensions";
-import { CssBaseline, ThemeProvider, useMediaQuery } from "@mui/material";
+import {
+	CssBaseline,
+	GlobalStyles,
+	ThemeProvider,
+	useMediaQuery,
+} from "@mui/material";
 import { theme } from "../styles/theme-provider";
 import Router from "./routes";
 import { BrowserRouter } from "react-router-dom";
@@ -11,11 +16,20 @@ import { PopupProvider } from "../components/popup";
 import { MediaQueryProvider } from "./infrastructure/media-query-context";
 
 function App() {
-	const sm = useMediaQuery("(min-width:600px)");
 	return (
 		<Provider store={store}>
 			<ThemeProvider theme={theme}>
 				<CssBaseline />
+				<GlobalStyles
+					styles={{
+						html: {
+							backgroundColor: "white",
+						},
+						body: {
+							backgroundColor: "white",
+						},
+					}}
+				/>
 				<Identity>
 					<PopupProvider>
 						<BrowserRouter>
