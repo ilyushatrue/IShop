@@ -50,7 +50,7 @@ export default function Template({ avatarChildren, title, children }: IProps) {
 						>
 							{avatarChildren}
 						</Avatar>
-						<Typography variant="h5">{title}</Typography>
+						<Typography variant="h6">{title}</Typography>
 					</Box>
 					{children}
 				</Box>

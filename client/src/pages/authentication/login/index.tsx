@@ -148,7 +148,13 @@ export default function Login({ onToRegisterClick }: IProps) {
 							},
 						}}
 					>
-						Почта
+						<Typography
+							variant="body2"
+							textTransform={"none"}
+							fontWeight={600}
+						>
+							Почта
+						</Typography>
 					</ToggleButton>
 					<ToggleButton
 						value="phone"
@@ -161,7 +167,13 @@ export default function Login({ onToRegisterClick }: IProps) {
 							},
 						}}
 					>
-						Номер телефона
+						<Typography
+							variant="body2"
+							textTransform={"none"}
+							fontWeight={600}
+						>
+							Номер телефона
+						</Typography>
 					</ToggleButton>
 				</ToggleButtonGroup>
 				<Box sx={{ display: authType === "email" ? "block" : "none" }}>

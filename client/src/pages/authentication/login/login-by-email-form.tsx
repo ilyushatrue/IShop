@@ -23,6 +23,7 @@ export default function LoginByEmailForm({ onSubmitAsync, loading }: IProps) {
 					componentProps: {
 						...submit.componentProps,
 						fullWidth: true,
+						sx: { height: 50, width: 200 },
 					},
 				},
 			]}

@@ -28,7 +28,15 @@ export default function RegisterForm({
 			}}
 			loading={loading}
 			actions={([submit]) => [
-				{ ...submit, value: "Зарегистрироваться", position: "center" },
+				{
+					...submit,
+					value: "Зарегистрироваться",
+					position: "center",
+					componentProps: {
+						...submit.componentProps,
+						sx: { height: 50 },
+					},
+				},
 			]}
 			onSubmit={onSubmitAsync}
 			fields={(builder) =>

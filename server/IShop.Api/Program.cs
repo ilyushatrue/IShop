@@ -61,7 +61,6 @@ public class Program
             {
                 HttpOnly = HttpOnlyPolicy.Always,
                 Secure = CookieSecurePolicy.Always,
-                MinimumSameSitePolicy = SameSiteMode.Strict
             });
             app.UseCors("CORS_PRODUCTION");
         }
