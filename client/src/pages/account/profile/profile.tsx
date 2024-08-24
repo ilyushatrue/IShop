@@ -24,10 +24,10 @@ export default function Profile() {
 	}
 
 	return (
-		<AccountProtectedPage title="Мой профиль">
+		<AccountProtectedPage title="Мой профиль" mainBoxProps={{width:"100%", bgcolor:"orange"}}>
 			<Box
 				maxWidth={500}
-				width={"100%"}
+				width={xs ? "100%" : 500}
 				marginX={"auto"}
 				display="flex"
 				flexDirection="column"
@@ -35,7 +35,7 @@ export default function Profile() {
 				alignItems="center"
 			>
 				<UserForm
-					fullwidth={xs}
+					fullwidth={true}
 					loading={isFetching}
 					onSubmitAsync={handleFormSubmitAsync}
 					defaultValues={{

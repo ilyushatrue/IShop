@@ -27,7 +27,7 @@ export default function RegisterForm({
 				confirmPassword: "",
 			}}
 			loading={loading}
-			actions={([submit, reset]) => [
+			actions={([submit]) => [
 				{ ...submit, value: "Зарегистрироваться", position: "center" },
 			]}
 			onSubmit={onSubmitAsync}

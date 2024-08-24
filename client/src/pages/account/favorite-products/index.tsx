@@ -8,6 +8,7 @@ import Dialog from "../../../components/dialog";
 import { useAppSelector } from "../../../app/hooks/redux/use-app-selector";
 import EnhancedTable from "../../../components/table/table";
 import AccountPage from "../account-page";
+import OutlinedButton from "../../../components/buttons/outlined-button";
 
 export default function FavoriteProducts() {
 	const [isDeleteDialogOn, setIsDeleteDialogOn] = useState(false);
@@ -77,7 +78,7 @@ export default function FavoriteProducts() {
 	const closeDeleteDialog = () => setIsDeleteDialogOn(false);
 	const openDeleteDialog = () => setIsDeleteDialogOn(true);
 	return (
-		<AccountPage title="Избранное" paddingX={2}>
+		<AccountPage title="Избранное">
 			<EnhancedTable
 				onSelect={(ids) => (selectedIds.current = ids)}
 				rowsPerPage={rowsPerPage}
@@ -92,14 +93,14 @@ export default function FavoriteProducts() {
 					{
 						...del,
 						componentProps: {
-							...filter.componentProps,
+							...del.componentProps,
 							onClick: openDeleteDialog,
 						},
 					},
 					{
 						...add,
 						componentProps: {
-							...filter.componentProps,
+							...add.componentProps,
 							onClick: openAddProductDialog,
 						},
 					},
@@ -124,8 +125,10 @@ export default function FavoriteProducts() {
 					{
 						value: "Не хочу",
 						position: "left",
+						component: OutlinedButton,
 						componentProps: {
 							onClick: closeDeleteDialog,
+							fullWidth: true,
 						},
 					},
 					{
@@ -133,6 +136,7 @@ export default function FavoriteProducts() {
 						componentProps: {
 							onClick: () =>
 								handleDeleteProductAsync(selectedIds.current),
+							fullWidth: true,
 						},
 					},
 				]}

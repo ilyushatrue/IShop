@@ -4,6 +4,7 @@ using IShop.Application.Products.Commands.MakeProductFavorite;
 using IShop.Application.Products.Queries;
 using IShop.Contracts.Products;
 using IShop.Domain.ProductRoot.Entities;
+using IShop.Infrastructure.Authentication;
 using MapsterMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -88,6 +89,7 @@ public class ProductController(
         return Ok(result);
     }
 
+    [Authorize(Policy = CustomPolicies.EDIT_POLICY)]
     [HttpPost]
     public async Task<IActionResult> CreateProductAsync(CreateProductCommand command, CancellationToken cancellationToken)
     {
@@ -95,6 +97,7 @@ public class ProductController(
         return Ok();
     }
 
+    [Authorize(Policy = CustomPolicies.EDIT_POLICY)]
     [HttpDelete]
     public async Task<IActionResult> DeleteProductRangeByIdAsync([FromBody] Guid[] ids, CancellationToken cancellationToken)
     {
@@ -102,6 +105,7 @@ public class ProductController(
         return Ok();
     }
 
+    [Authorize(Policy = CustomPolicies.EDIT_POLICY)]
     [HttpPut]
     public async Task<IActionResult> UpdateProductAsync(UpdateProductCommand product, CancellationToken cancellationToken)
     {
@@ -116,6 +120,7 @@ public class ProductController(
         return Ok(result);
     }
 
+    [Authorize(Policy = CustomPolicies.ADMIN_POLICY)]
     [HttpPost("categories")]
     public async Task<IActionResult> CreateProductCategoryAsync([FromBody] CreateProductCategoryCommand command, CancellationToken cancellationToken)
     {
@@ -123,6 +128,7 @@ public class ProductController(
         return Ok();
     }
 
+    [Authorize(Policy = CustomPolicies.ADMIN_POLICY)]
     [HttpPut("categories")]
     public async Task<IActionResult> SyncProductCategoriesAsync([FromBody] ProductCategoryDto[] categoryDtos, CancellationToken cancellationToken)
     {

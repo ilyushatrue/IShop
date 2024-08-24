@@ -1,8 +1,7 @@
-import Form from "../../../components/form/form";
-import { Box, Dialog } from "@mui/material";
 import { ICreateProductCommand } from "../../../api/interfaces/product/commands/create-product-command.interface";
 import { useMemo } from "react";
 import { useAppSelector } from "../../../app/hooks/redux/use-app-selector";
+import FormDialog from "../../../components/form-dialog";
 
 export default function ProductAddDialog({
 	categoryId,
@@ -33,46 +32,60 @@ export default function ProductAddDialog({
 
 	if (!categories) return null;
 	return (
-		<Dialog open={open} onClose={onClose}>
-			<Box width={500} marginX={"auto"} sx={{ paddingX: 2 }}>
-				<Form
-					loading={loading}
-					defaultValues={defaultValues}
-					actions={([submit]) => [
-						{
-							...submit,
-							position: "center",
-							value: "Добавить товар",
+		<FormDialog
+			dialogProps={{
+				title: "Добавить товар",
+				open: open,
+				onClose: onClose,
+			}}
+			formProps={{
+				loading: loading,
+				defaultValues: defaultValues,
+				actions: ([submit, reset]) => [
+					{
+						...submit,
+						value: "Добавить товар",
+						componentProps: {
+							...submit.componentProps,
+							fullWidth: true,
 						},
-					]}
-					fields={(builder) =>
-						builder
-							.image({
-								name: "imageId",
-								required: true,
-								shape: "rounded",
-								containerSized: true,
-							})
-							.text({
-								name: "name",
-								label: "Наименование",
-								required: true,
-							})
-							.text({
-								name: "description",
-								label: "Описание",
-								required: true,
-							})
-							.number({
-								name: "price",
-								label: "Цена",
-								required: true,
-								min: 1,
-							})
-					}
-					onSubmit={onSubmit}
-				/>
-			</Box>
-		</Dialog>
+					},
+					{
+						...reset,
+						value: "Отмена",
+						componentProps: {
+							...reset.componentProps,
+							disabled: false,
+							onClick: onClose,
+						},
+					},
+				],
+				fields: (builder) =>
+					builder
+						.image({
+							name: "imageId",
+							required: true,
+							shape: "rounded",
+							containerSized: true,
+						})
+						.text({
+							name: "name",
+							label: "Наименование",
+							required: true,
+						})
+						.text({
+							name: "description",
+							label: "Описание",
+							required: true,
+						})
+						.number({
+							name: "price",
+							label: "Цена",
+							required: true,
+							min: 1,
+						}),
+				onSubmit: onSubmit,
+			}}
+		/>
 	);
 }

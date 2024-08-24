@@ -16,7 +16,15 @@ export default function LoginByEmailForm({ onSubmitAsync, loading }: IProps) {
 			loading={loading || sk}
 			onSubmit={onSubmitAsync}
 			actions={([submit]) => [
-				{ ...submit, position: "center", value: "Войти" },
+				{
+					...submit,
+					position: "center",
+					value: "Войти",
+					componentProps: {
+						...submit.componentProps,
+						fullWidth: true,
+					},
+				},
 			]}
 			fields={(builder) =>
 				builder.email({ name: "email", required: true }).password({

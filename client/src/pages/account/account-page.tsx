@@ -23,7 +23,7 @@ export default function AccountPage({
 	const menuItems = useAppSelector((state) => state.global.menuItems);
 	const pathname = useLocation().pathname;
 	return (
-		<Page {...props} paddingX={xs ? 2 : 0}>
+		<Page {...props}>
 			<Box
 				display={"flex"}
 				my={2}
@@ -74,8 +74,8 @@ export default function AccountPage({
 				)}
 				<Box
 					{...mainBoxProps}
-					flex={1}
 					bgcolor={"white"}
+					flex={1}
 					borderRadius={4}
 					boxShadow={"0px 0px 10px rgba(0,0,0,0.1)"}
 					overflow={"hidden"}

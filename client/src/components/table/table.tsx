@@ -195,7 +195,6 @@ function EnhancedTableToolbar({
 						value: "delete",
 						tooltip: "Удалить",
 						position: "right",
-
 						componentProps: {
 							disabled: loading,
 							size: xs ? "small" : "medium",
@@ -336,11 +335,7 @@ export default function EnhancedTable({
 				loading={loading}
 			/>
 			<TableContainer>
-				<Table
-					sx={{ minWidth: 750 }}
-					aria-labelledby="tableTitle"
-					size={dense ? "small" : "medium"}
-				>
+				<Table sx={{ minWidth: 750 }} size={dense ? "small" : "medium"}>
 					<EnhancedTableHead
 						loading={loading}
 						numSelected={selected.length}
@@ -373,6 +368,9 @@ export default function EnhancedTable({
 											checked={isItemSelected}
 										/>
 									</TableCell>
+									<TableCell>
+										<Image imageId={row.imageId} />
+									</TableCell>
 									<TableCell
 										component="th"
 										id={labelId}
@@ -382,9 +380,6 @@ export default function EnhancedTable({
 										{row.name}
 									</TableCell>
 									<TableCell>{row.description}</TableCell>
-									<TableCell>
-										<Image imageId={row.imageId} />
-									</TableCell>
 								</TableRow>
 							);
 						})}

@@ -15,7 +15,15 @@ export default function LoginByPhoneForm({ onSubmitAsync, loading }: IProps) {
 			onSubmit={onSubmitAsync}
 			loading={loading}
 			actions={([submit]) => [
-				{ ...submit, position: "center", value: "Войти" },
+				{
+					...submit,
+					position: "center",
+					value: "Войти",
+					componentProps: {
+						...submit.componentProps,
+						fullWidth: true,
+					},
+				},
 			]}
 			fields={(builder) =>
 				builder

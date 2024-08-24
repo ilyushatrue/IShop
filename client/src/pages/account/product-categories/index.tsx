@@ -259,11 +259,12 @@ export default function ProductCategories() {
 					{
 						value: "Нет",
 						position: "left",
-						onClick: () => setEditCategory(undefined),
+						componentProps: {
+							onClick: () => setEditCategory(undefined),
+						},
 					},
 					{
 						value: "Да",
-						position: "right",
 						componentProps: {
 							onClick: () =>
 								handleEditCategory(editCategory!.category!),

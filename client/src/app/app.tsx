@@ -20,17 +20,6 @@ function App() {
 		<Provider store={store}>
 			<ThemeProvider theme={theme}>
 				<CssBaseline />
-				<GlobalStyles
-					styles={{
-						"html, body, .MuiPaper-root": {
-							backgroundColor: "white",
-							height: "100%",
-							margin: 0,
-							padding: 0,
-							overflowX: "hidden", // Скрыть горизонтальную прокрутку
-						},
-					}}
-				/>
 				<Identity>
 					<PopupProvider>
 						<BrowserRouter>

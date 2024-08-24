@@ -3,6 +3,7 @@ import FormBuilder, { FormBuilderRef } from "./form-builder";
 import { DefaultValues, FieldValues, useForm } from "react-hook-form";
 import Actions, { IAction } from "../actions";
 import { SxProps } from "@mui/material";
+import OutlinedButton from "../buttons/outlined-button";
 
 export interface FormProps<T extends FieldValues> {
 	defaultValues: DefaultValues<T>;
@@ -76,6 +77,7 @@ export default function Form<T extends FieldValues>({
 							type: "reset",
 							onClick: () => reset(),
 						},
+						component: OutlinedButton,
 						value: "Отменить",
 						position: "left",
 					},

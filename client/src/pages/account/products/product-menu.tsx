@@ -146,7 +146,7 @@ export default function ProductMenu() {
 						...edit,
 						componentProps: {
 							...edit.componentProps,
-							onClick: openDeleteDialog,
+							onClick: openAddProductDialog,
 						},
 					},
 					{
@@ -156,14 +156,14 @@ export default function ProductMenu() {
 							onClick: openAddProductDialog,
 						},
 					},
-					{
-						...filter,
-						componentProps: {
-							...filter.componentProps,
-							disabled: isFetching,
-							onClick: () => console.log(selectedIds.current),
-						},
-					},
+					// {
+					// 	...filter,
+					// 	componentProps: {
+					// 		...filter.componentProps,
+					// 		disabled: isFetching,
+					// 		onClick: () => console.log(selectedIds.current),
+					// 	},
+					// },
 				]}
 			/>
 			<ProductAddDialog

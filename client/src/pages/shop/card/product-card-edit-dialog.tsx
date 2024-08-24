@@ -1,7 +1,8 @@
 import Form from "../../../components/form/form";
 import { IProduct } from "../../../api/interfaces/product/product.interface";
-import { Box, Dialog } from "@mui/material";
+import { Box, Dialog as MuiDialog } from "@mui/material";
 import { IProductCategory } from "../../../api/interfaces/product-categories/product-category.interface";
+import FormDialog from "../../../components/form-dialog";
 
 export default function ProductCardEditDialog({
 	open,
@@ -26,12 +27,29 @@ export default function ProductCardEditDialog({
 	onCancel: () => void;
 }) {
 	return (
-		<Dialog open={open} onClose={onCancel}>
-			<Box width={"100%"} minWidth={400} maxWidth={500} paddingX={2}>
-				<Form<IProduct>
-					loading={loading}
-					defaultValues={defaultValues}
-					fields={(builder) =>
+		<>
+			<FormDialog
+				dialogProps={{ open: open, onClose: onCancel }}
+				formProps={{
+					actions: ([submit, reset]) => [
+						{
+							onClick: onCancel,
+							position: "left",
+							value: "Отменить",
+						},
+						{
+							...reset,
+							position: "right",
+							value: "Сбросить",
+						},
+						{
+							...submit,
+							value: "Сохранить",
+						},
+					],
+					defaultValues: defaultValues,
+					loading: loading,
+					fields: (builder) =>
 						builder
 							.image({
 								name: "imageId",
@@ -63,27 +81,69 @@ export default function ProductCardEditDialog({
 								name: "categoryId",
 								label: "Категория",
 								required: true,
-							})
-					}
-					actions={([submit, reset]) => [
-						{
-							onClick: onCancel,
-							position: "left",
-							value: "Отменить",
-						},
-						{
-							...reset,
-							position: "right",
-							value: "Сбросить",
-						},
-						{
-							...submit,
-							value: "Сохранить",
-						},
-					]}
-					onSubmit={onSubmit}
-				/>
-			</Box>
-		</Dialog>
+							}),
+							onSubmit:onSubmit,
+				}}
+			/>
+			{/* <MuiDialog open={open} onClose={onCancel}>
+				<Box width={"100%"} minWidth={400} maxWidth={500} paddingX={2}>
+					<Form<IProduct>
+						loading={loading}
+						defaultValues={defaultValues}
+						fields={(builder) =>
+							builder
+								.image({
+									name: "imageId",
+									required: true,
+									shape: "rounded",
+									containerSized: true,
+								})
+								.text({
+									name: "name",
+									label: "Наименование",
+									required: true,
+								})
+								.text({
+									name: "description",
+									label: "Описание",
+									required: true,
+								})
+								.number({
+									name: "price",
+									label: "Цена",
+									required: true,
+									min: 0,
+								})
+								.select({
+									options: categories.map((c) => ({
+										key: c.id,
+										value: c.name,
+									})),
+									name: "categoryId",
+									label: "Категория",
+									required: true,
+								})
+						}
+						actions={([submit, reset]) => [
+							{
+								onClick: onCancel,
+								position: "left",
+								value: "Отменить",
+							},
+							{
+								...reset,
+								position: "right",
+								value: "Сбросить",
+							},
+							{
+								...submit,
+								value: "Сохранить",
+							},
+						]}
+						onSubmit={onSubmit}
+					/>
+				</Box>
+			</MuiDialog> */}
+		</>
 	);
 }
