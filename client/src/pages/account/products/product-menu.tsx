@@ -100,6 +100,7 @@ export default function ProductMenu() {
 		setPage(newPage);
 	};
 	async function handleDeleteProductAsync(productIds: string[]) {
+		closeDeleteDialog();
 		fetchAsync({
 			request: () => productsApi.deleteRangeByIdAsync(productIds),
 			onSuccess: () =>

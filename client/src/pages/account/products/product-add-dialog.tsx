@@ -37,6 +37,7 @@ export default function ProductAddDialog({
 				title: "Добавить товар",
 				open: open,
 				onClose: onClose,
+				fullWidth: true
 			}}
 			formProps={{
 				loading: loading,
