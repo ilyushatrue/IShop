@@ -51,5 +51,6 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             b.Property(x => x.Value).HasColumnName("email");
             b.HasIndex(x => x.Value).IsUnique().HasDatabaseName("ix_user_email");
         });
+
     }
 }

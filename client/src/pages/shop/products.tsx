@@ -39,8 +39,10 @@ export default function Products({ products, onDelete, onUpdate }: IProps) {
 				if (favoritesFromLocalStorage) {
 					const favorites = JSON.parse(
 						favoritesFromLocalStorage
-					) as string[];
-					return products.filter((p) => favorites.includes(p.id));
+					) as IProduct[];
+					return products.filter((p) =>
+						favorites.some((f) => f.id === p.id)
+					);
 				}
 				return [];
 			}
@@ -54,7 +56,7 @@ export default function Products({ products, onDelete, onUpdate }: IProps) {
 		const id = productToDeleteId;
 		setProductToDeleteId("");
 		fetchAsync({
-			request: () => productsApi.deleteByIdAsync(id),
+			request: productsApi.deleteByIdAsync(id),
 			onSuccess: () => onDelete(id),
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
@@ -64,7 +66,7 @@ export default function Products({ products, onDelete, onUpdate }: IProps) {
 	async function handleToFavoritesAsync(productId: string, value: boolean) {
 		if (isAuth) {
 			await fetchAsync({
-				request: () => productsApi.toFavoritesAsync(productId, value),
+				request: productsApi.toFavoritesAsync(productId, value),
 				onSuccess: () =>
 					dispatch(
 						setFavoriteProduct({
@@ -80,16 +82,18 @@ export default function Products({ products, onDelete, onUpdate }: IProps) {
 			if (favoritesFromLocalStorage) {
 				let favorites = JSON.parse(
 					favoritesFromLocalStorage
-				) as string[];
+				) as IProduct[];
 				if (value) {
-					favorites.push(productId);
+					favorites.push(products.find((x) => x.id === productId)!);
 				} else {
-					favorites = favorites.filter((sf) => sf !== productId);
+					favorites = favorites.filter((sf) => sf.id !== productId);
 				}
 				window.localStorage.setItem(
 					"favorite-products",
 					JSON.stringify(
-						products.filter((x) => favorites.includes(x.id))
+						products.filter((x) =>
+							favorites.some((f) => f.id === x.id)
+						)
 					)
 				);
 			} else {
@@ -110,7 +114,7 @@ export default function Products({ products, onDelete, onUpdate }: IProps) {
 	async function handleEditProductAsync(product: IProduct) {
 		setProductToEdit(undefined);
 		fetchAsync({
-			request: () => productsApi.updateAsync(product),
+			request: productsApi.updateAsync(product),
 			onSuccess: () => onUpdate(product),
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,

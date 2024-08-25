@@ -66,9 +66,10 @@ export default function Template({ avatarChildren, title, children }: IProps) {
 				>
 					<Box
 						display={"flex"}
-						flexDirection={xs ? "column" : "row"}
+						flexDirection={"row"}
 						alignItems={"center"}
-						gap={xs ? 0 : 2}
+						gap={2}
+						marginBottom={2}
 					>
 						<Avatar
 							style={avatarStyle}
@@ -76,7 +77,9 @@ export default function Template({ avatarChildren, title, children }: IProps) {
 						>
 							{avatarChildren}
 						</Avatar>
-						<h2>{title}</h2>
+						<Typography variant="h6" fontWeight={600}>
+							{title}
+						</Typography>
 					</Box>
 					<Box width={"100%"}>{children}</Box>
 				</Box>

@@ -2,6 +2,7 @@
 using IShop.Domain.Common.Models;
 using IShop.Domain.MediaEntity;
 using IShop.Domain.ProductRoot.Entities;
+using IShop.Domain.UserRoot.Entities;
 
 namespace IShop.Domain.ProductRoot;
 public class Product : AggregateRoot<Guid>
@@ -40,4 +41,6 @@ public class Product : AggregateRoot<Guid>
 
     public Media? Image { get; private set; }
     public ProductCategory? Category { get; private set; }
+    public ICollection<UserCartProduct>? UserCartProducts { get; set; }
+    public ICollection<UserFavoriteProduct>? UserFavoriteProducts { get; set; }
 }

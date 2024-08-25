@@ -21,7 +21,7 @@ export default function AvatarPlus({
 	useEffect(() => {
 		if (!imageId) return;
 		fetchAsync({
-			request: async () => await mediaApi.getImageById(imageId),
+			request: mediaApi.getImageById(imageId),
 		});
 	}, []);
 
@@ -37,7 +37,7 @@ export default function AvatarPlus({
 			const formData = new FormData();
 			formData.append("file", file);
 			fetchAsync({
-				request: async () => await mediaApi.uploadFile(formData),
+				request: mediaApi.uploadFile(formData),
 				onSuccess: (handler) =>
 					handler
 						.validate((res) => !!res.body)
@@ -56,13 +56,13 @@ export default function AvatarPlus({
 		<Box
 			height={200}
 			width={200}
-			position="relative" 
+			position="relative"
 			borderRadius="50%"
 			overflow="hidden"
 			sx={{
 				"&:hover .overlay": { opacity: 0.7 },
 				"&:hover .editIcon": { opacity: 1 },
-			}} 
+			}}
 		>
 			<Avatar imageId={imageUrl} size={"100%"} />
 

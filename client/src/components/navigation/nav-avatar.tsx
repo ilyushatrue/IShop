@@ -10,6 +10,7 @@ import {
 import { useState } from "react";
 import { useAppSelector } from "../../app/hooks/redux/use-app-selector";
 import Avatar from "../avatar";
+import { useMediaQueryContext } from "../../app/infrastructure/media-query-context";
 
 export interface IAvatar {
 	containerSx?: SxProps;
@@ -24,6 +25,7 @@ export interface IAvatar {
 export default function NavAvatar({ tip, menuItems, containerSx }: IAvatar) {
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const isMenuOpen = Boolean(anchorEl);
+	const { xs } = useMediaQueryContext();
 	const user = useAppSelector((state) => state.user);
 	function closeMenu() {
 		setAnchorEl(null);
@@ -80,6 +82,7 @@ export default function NavAvatar({ tip, menuItems, containerSx }: IAvatar) {
 			>
 				{menuItems.map((item, index) => (
 					<MenuItem
+						sx={{display:"flex", alignItems:"center",}}
 						onClick={() => {
 							closeMenu();
 							item.onClick();
@@ -87,7 +90,13 @@ export default function NavAvatar({ tip, menuItems, containerSx }: IAvatar) {
 						}}
 						key={index}
 					>
-						<Icon sx={{ ...item.sx, marginRight: 1 }}>
+						<Icon
+							sx={{
+								...item.sx,
+								marginRight: 1,
+								marginY: xs ? 0 : 1,
+							}}
+						>
 							{item.icon}
 						</Icon>
 						{item.label}

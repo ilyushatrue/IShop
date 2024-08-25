@@ -15,7 +15,7 @@ export default function Profile() {
 
 	async function handleFormSubmitAsync(user: IUser) {
 		await fetchAsync({
-			request: () => usersApi.updateUserData(user),
+			request: usersApi.updateUserData(user),
 			onSuccess: (handler) =>
 				handler.popup("Данные успешно обновлены!").do(reload),
 			onError: (handler) => handler.log().popup(),

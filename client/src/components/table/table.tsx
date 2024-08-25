@@ -155,6 +155,7 @@ function EnhancedTableToolbar({
 	loading,
 }: EnhancedTableToolbarProps) {
 	const { xs } = useMediaQueryContext();
+	console.log(numSelected);
 	return (
 		<Toolbar
 			sx={{
@@ -184,6 +185,7 @@ function EnhancedTableToolbar({
 					variant="h6"
 					id="tableTitle"
 					component="div"
+					fontSize={18}
 				>
 					{title}
 				</Typography>
@@ -194,45 +196,41 @@ function EnhancedTableToolbar({
 					{
 						value: "delete",
 						tooltip: "Удалить",
-						position: "right",
 						componentProps: {
 							disabled: loading,
 							size: xs ? "small" : "medium",
 						},
-						display: numSelected > 0 ? "inherit" : "none",
+						display: numSelected > 0 ? "flex" : "none",
 						component: IconButton2,
 					},
 					{
 						value: "edit",
 						tooltip: "Редактировать",
-						position: "right",
 						componentProps: {
 							disabled: loading,
 							size: xs ? "small" : "medium",
 						},
-						display: numSelected === 1 ? "inherit" : "none",
+						display: numSelected === 1 ? "flex" : "none",
 						component: IconButton2,
 					},
 					{
 						value: "add",
-						position: "right",
 						componentProps: {
 							disabled: loading,
 							size: xs ? "small" : "medium",
 						},
 						tooltip: "Добавить",
-						display: numSelected > 0 ? "none" : "inherit",
+						display: numSelected > 0 ? "none" : "flex",
 						component: IconButton2,
 					},
 					{
 						value: "filter_list",
-						position: "right",
 						tooltip: "Фильтр",
 						componentProps: {
 							disabled: loading,
 							size: xs ? "small" : "medium",
 						},
-						display: numSelected > 0 ? "none" : "inherit",
+						display: numSelected > 0 ? "none" : "flex",
 						component: IconButton2,
 					},
 				]}
@@ -406,6 +404,7 @@ export default function EnhancedTable({
 				labelRowsPerPage={"Строк на странице"}
 			/>
 			<FormControlLabel
+				sx={{ marginLeft: 1 }}
 				control={
 					<Switch checked={dense} onChange={handleChangeDense} />
 				}

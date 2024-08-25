@@ -78,7 +78,7 @@ export default function NavBar() {
 	async function handleLogout() {
 		dispatch(setIsPageLoading(true));
 		await fetchAsync({
-			request: async () => await apiAuth.logoutAsync(),
+			request: apiAuth.logoutAsync(),
 			onSuccess: (handler) =>
 				handler.do(() => {
 					navigate("/auth");

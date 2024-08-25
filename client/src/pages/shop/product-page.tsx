@@ -1,30 +1,64 @@
 import { useParams } from "react-router-dom";
 import Page from "../../components/page";
 import { useAppSelector } from "../../app/hooks/redux/use-app-selector";
-import { Box, Button, Grid, Icon } from "@mui/material";
+import { Button as MuiButton, Box, Grid, Icon, Paper } from "@mui/material";
 import Image from "../../components/image";
 import { useEffect, useState } from "react";
 import useApi from "../../api/hooks/use-api.hook";
 import productsApi from "../../api/endpoints/products.api";
 import { IProduct } from "../../api/interfaces/product/product.interface";
 import { useMediaQueryContext } from "../../app/infrastructure/media-query-context";
+import Button from "../../components/buttons/button";
 
 export default function ProductPage() {
 	const { id } = useParams();
+	const { favoriteProducts, isAuthenticated } = useAppSelector(
+		(state) => state.user
+	);
 	const navbarHeight = useAppSelector((state) => state.page.navbar.height);
 	const { screenSize } = useMediaQueryContext();
 	const [product, setProduct] = useState<IProduct>();
 	const { fetchAsync, isFetching } = useApi();
+	const [addedToCart, setAddedToCart] = useState(false);
+	const [isFavorite, setIsFavorite] = useState(() => {
+		if (isAuthenticated) {
+			return favoriteProducts.some((fp) => fp.id === id);
+		} else {
+			const storageFavoriteProducts =
+				window.localStorage.getItem("favorite-products");
+			if (storageFavoriteProducts) {
+				const objects = JSON.parse(
+					storageFavoriteProducts
+				) as IProduct[];
+				return objects.some((fp) => fp.id === id);
+			}
+		}
+		return false;
+	});
 
 	useEffect(() => {
 		if (!id) return;
 		fetchAsync({
-			request: () => productsApi.getByIdAsync(id),
+			request: productsApi.getByIdAsync(id),
 			onSuccess: (handler) => handler.do((res) => setProduct(res.body!)),
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
 		});
 	}, [id]);
+
+	function addToCart() {
+		console.log("addToCart");
+		return;
+		fetchAsync({
+			request: productsApi.addToCartAsync(id!),
+			onSuccess: (handler) =>
+				handler.popup("Товар успешно добавлен в корзину!").do(() => {
+					setAddedToCart(true);
+				}),
+			onError: (handler) => handler.log().popup(),
+			triggerPageLoader: true,
+		});
+	}
 
 	return (
 		<Page sx={{ mt: 2 }}>
@@ -44,20 +78,60 @@ export default function ProductPage() {
 			>
 				{!isFetching && product && (
 					<Grid container>
-						<Grid item sx={{ flex: 1 }}>
+						<Grid item xs={12} sm={4}>
 							<Image imageId={product.imageId} size={"100%"} />
 						</Grid>
-						<Grid item sx={{ flex: 1 }}>
+						<Grid item xs={12} sm={4}>
 							{product.name}
 							{product.description}
 						</Grid>
-						<Grid item sx={{ flex: 1 }}>
-							<Button
-								variant="contained"
-								startIcon={<Icon>add</Icon>}
+						<Grid item xs={12} sm={4}>
+							<Paper
+								elevation={2}
+								sx={{
+									display: "flex",
+									flexDirection: "column",
+									padding: 2,
+								}}
 							>
-								Добавить в карзину
-							</Button>
+								<Box
+									sx={{
+										display: "flex",
+										gap: 1,
+									}}
+								>
+									<Button
+										variant="contained"
+										onClick={addToCart}
+										sx={{
+											width: "100%",
+										}}
+										startIcon={<Icon>shopping_cart</Icon>}
+									>
+										Добавить в карзину
+									</Button>
+									<MuiButton
+										onClick={console.log}
+										sx={{
+											height: 60,
+											bgcolor: "secondary.100",
+											"&:hover": {
+												bgcolor: "secondary.200",
+											},
+											borderRadius: 3,
+										}}
+									>
+										<Icon
+											fontSize="large"
+											sx={{ color: "secondary.400" }}
+										>
+											{isFavorite
+												? "favorite"
+												: "favorite_outline"}
+										</Icon>
+									</MuiButton>
+								</Box>
+							</Paper>
 						</Grid>
 					</Grid>
 				)}

@@ -1,10 +1,10 @@
 ﻿using IShop.Domain.ProductRoot;
 
 namespace IShop.Domain.UserRoot.Entities;
-public class UserFavoriteProduct
+public class UserCartProduct
 {
-    public UserFavoriteProduct() { }
-    public UserFavoriteProduct(Guid userId, Guid productId)
+    public UserCartProduct() { }
+    public UserCartProduct(Guid userId, Guid productId)
     {
         UserId = userId;
         ProductId = productId;

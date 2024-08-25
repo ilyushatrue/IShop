@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ApiResponse } from "../endpoints/api";
+import { ApiResponse } from "../api";
 import { usePopup } from "../../app/hooks/use-popup.hook";
 import { useAppDispatch } from "../../app/hooks/redux/use-app-dispatch";
 import { setIsPageLoading } from "../../store/page.slice";
@@ -22,7 +22,7 @@ type SuccessHandler<T> = {
 };
 
 type Fetch<TOut> = {
-	request: () => Promise<ApiResponse<TOut>>;
+	request: Promise<ApiResponse<TOut>>;
 	onSuccess?: (handler: SuccessHandler<ApiResponse<TOut>>) => void;
 	onError?: (handler: ErrorHandler<ApiResponse<TOut>>) => void;
 	triggerPageLoader?: boolean;
@@ -41,7 +41,8 @@ export default function useApi() {
 	}: Fetch<TOut>): Promise<void> => {
 		if (triggerPageLoader) dispatch(setIsPageLoading(true));
 		setIsFetching(true);
-		const response = await request();
+		const requestFunc = async () => await request;
+		const response = await requestFunc();
 		if (response.ok) {
 			const successHandler = getSuccessHandler(response);
 			onSuccess?.(successHandler);

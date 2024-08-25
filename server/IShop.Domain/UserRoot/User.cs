@@ -9,6 +9,7 @@ namespace IShop.Domain.UserRoot;
 public class User : AggregateRoot<Guid>
 {
     private readonly List<UserFavoriteProduct> _favoriteProducts = [];
+    private readonly List<UserCartProduct> _cartProducts = [];
     private User() : base(Guid.NewGuid()) { }
     private User(
         Guid id,
@@ -87,6 +88,7 @@ public class User : AggregateRoot<Guid>
     public Media? Avatar { get; }
     public UserEmailConfirmation? EmailConfirmation { get; private set; }
     public IReadOnlyCollection<UserFavoriteProduct>? FavoriteProducts => _favoriteProducts.AsReadOnly();
+    public IReadOnlyCollection<UserCartProduct>? CartProducts => _cartProducts.AsReadOnly();
 
     public void ChangePassword(Password password) => Password = password;
     public void SetRefreshToken(RefreshJwt refreshJwt) => RefreshJwt = refreshJwt;

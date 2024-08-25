@@ -21,13 +21,14 @@ export default function Card({
 	const { xs } = useMediaQueryContext();
 	return (
 		<div
+			onClick={onClick}
 			style={{
 				height: height,
 				width: width,
+				cursor: "pointer",
 			}}
 		>
 			<div
-				onClick={onClick}
 				style={{
 					display: "flex",
 					alignItems: "center",
@@ -37,7 +38,6 @@ export default function Card({
 					height: "200px",
 					borderRadius: 20,
 					overflow: "hidden",
-					cursor: "pointer",
 				}}
 			>
 				<img
@@ -61,7 +61,7 @@ export default function Card({
 						<IconButton
 							key={index}
 							{...action}
-							fontSize={xs ? 30 : 24}
+							fontSize={xs ? 28 : 24}
 						/>
 					))}
 				</div>

@@ -1,4 +1,4 @@
-import { httpGet, httpPost, httpPut, httpDelete } from "./api";
+import { httpGet, httpPost, httpPut, httpDelete } from "../api";
 import { ICreateProductCategoryCommand } from "../interfaces/product-categories/commands/create-product-category-command.interface";
 import { IProductCategory } from "../interfaces/product-categories/product-category.interface";
 import { ICreateProductCommand } from "../interfaces/product/commands/create-product-command.interface";
@@ -9,8 +9,9 @@ const baseUrl = "/products";
 
 const productsApi = {
 	getByIdAsync: async (id: string) => {
-		return await httpGet<IProduct>({ url: `${baseUrl}/${id}` }, (response) =>
-			response.json()
+		return await httpGet<IProduct>(
+			{ url: `${baseUrl}/${id}` },
+			(response) => response.json()
 		);
 	},
 	getAllAsync: async (page: number, pageSize: number) => {
@@ -77,6 +78,13 @@ const productsApi = {
 		return await httpPost({
 			url: `${baseUrl}/to-favorites-range`,
 			body: array,
+			authenticate: true,
+		});
+	},
+
+	addToCartAsync: async (id: string) => {
+		return await httpPost({
+			url: `${baseUrl}/add-to-cart/${id}`,
 			authenticate: true,
 		});
 	},

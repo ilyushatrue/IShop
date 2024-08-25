@@ -147,7 +147,7 @@ export default function ProductCategories() {
 
 	async function handleSaveMenuAsync(values: IProductCategory[]) {
 		fetchAsync({
-			request: () => productsApi.syncCategoriesAsync(values),
+			request:  productsApi.syncCategoriesAsync(values),
 			onSuccess: (handler) => handler.do(reload),
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,

@@ -1,4 +1,4 @@
-import { httpGet, httpPost } from "./api";
+import { httpGet, httpPost } from "../api";
 
 const baseUrl = "/media";
 export const mediaApi = {

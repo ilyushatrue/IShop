@@ -29,7 +29,7 @@ export default function ChilrdenCare() {
 			return;
 		}
 		fetchAsync({
-			request: () => productsApi.getByCategoryAsync(category.id, +id, 12),
+			request:  productsApi.getByCategoryAsync(category.id, +id, 12),
 			onSuccess: (handler) =>
 				handler.do((res) => {
 					const { currentPage, pageItems, pageSize, totalPages } =

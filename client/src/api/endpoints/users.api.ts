@@ -1,4 +1,4 @@
-import { httpGet, httpPut } from "./api";
+import { httpGet, httpPut } from "../api";
 import { IUser } from "../interfaces/user/user.interface";
 import { IApiInitialResponse } from "../interfaces/api-initial-response.interface";
 

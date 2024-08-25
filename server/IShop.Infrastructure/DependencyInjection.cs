@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.Extensions.Options;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using IShop.Application.Persistance.Repositories;
 using IShop.Application.Images.Queries;
@@ -83,6 +82,9 @@ public static class DependencyInjection
     public static IServiceCollection AddServices(
     this IServiceCollection services)
     {
+        #region A
+        services.AddScoped<IAddProductToCartCommandHandler, AddProductToCartCommandHandler>();
+        #endregion
         #region C
         services.AddScoped<IConfirmEmailCommandHandler, ConfirmEmailCommandHandler>();
         services.AddScoped<ICreateImageCommandHandler, CreateImageCommandHandler>();

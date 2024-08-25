@@ -56,7 +56,7 @@ export default function Login({ onToRegisterClick }: IProps) {
 
 	async function handleLoginByPhoneAsync(request: ILoginByPhoneRequest) {
 		await fetchAsync({
-			request: async () => await apiAuth.loginByPhoneAsync(request),
+			request: apiAuth.loginByPhoneAsync(request),
 			onSuccess: handleSuccessfulLoginAsync,
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
@@ -65,7 +65,7 @@ export default function Login({ onToRegisterClick }: IProps) {
 
 	async function handleLoginByEmailAsync(request: ILoginByEmailRequest) {
 		await fetchAsync({
-			request: async () => await apiAuth.loginByEmailAsync(request),
+			request: apiAuth.loginByEmailAsync(request),
 			onSuccess: handleSuccessfulLoginAsync,
 			onError: (handler) =>
 				handler
@@ -91,8 +91,7 @@ export default function Login({ onToRegisterClick }: IProps) {
 				(item) => ({ productId: item, value: true })
 			);
 			await fetchAsync({
-				request: async () =>
-					await productsApi.toFavoritesRangeAsync(values),
+				request: productsApi.toFavoritesRangeAsync(values),
 				triggerPageLoader: true,
 			}).then(() => window.localStorage.removeItem("favorite-products"));
 		}
@@ -102,8 +101,7 @@ export default function Login({ onToRegisterClick }: IProps) {
 	async function handleResetPasswordAsync(email: string) {
 		setIsResetPasswordDialogOn(false);
 		await fetchAsync({
-			request: async () =>
-				await apiAuth.sendResetPasswordEmailAsync(email),
+			request: apiAuth.sendResetPasswordEmailAsync(email),
 			onSuccess: (handler) =>
 				handler.popup(
 					"Сообщение о смене пароля отправлено на эл. почту"
@@ -116,8 +114,7 @@ export default function Login({ onToRegisterClick }: IProps) {
 	async function handleResendEmailAsync(email: string) {
 		setIsEmailAlreadyConfirmedDialogOn((prev) => ({ ...prev, is: false }));
 		await fetchAsync({
-			request: async () =>
-				await apiAuth.sendEmailConfirmEmailAsync(email),
+			request: apiAuth.sendEmailConfirmEmailAsync(email),
 			onSuccess: (handler) =>
 				handler.popup(
 					"Сообщение о смене пароля отправлено на эл. почту"

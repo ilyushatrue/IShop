@@ -6,7 +6,7 @@ export interface IAction {
 	value: string;
 	position?: "center" | "left" | "right";
 	tooltip?: string;
-	display?: "none" | "inherit";
+	display?: "none" | "flex";
 	componentProps?: ButtonProps;
 	component?: ElementType<ButtonProps>;
 }
@@ -39,23 +39,22 @@ export default function Actions({
 				{actionGroups["left"]?.map((action, index) => {
 					const Component = action.component || Button;
 					return (
-						<Tooltip
-							title={action.tooltip}
-							key={index}
-							sx={{ display: action.display }}
-						>
-							<Box
-								sx={{
-									flex: 1,
-									display: "flex",
-									justifyContent: "start",
-								}}
-							>
-								<Component {...action.componentProps}>
-									{action.value}
-								</Component>
-							</Box>
-						</Tooltip>
+						<Box sx={{ display: action.display }} key={index}>
+							<Tooltip title={action.tooltip}>
+								<Box
+									display={action.display}
+									sx={{
+										flex: 1,
+										display: "flex",
+										justifyContent: "start",
+									}}
+								>
+									<Component {...action.componentProps}>
+										{action.value}
+									</Component>
+								</Box>
+							</Tooltip>
+						</Box>
 					);
 				})}
 			</Grid>
@@ -69,23 +68,22 @@ export default function Actions({
 				{actionGroups["center"]?.map((action, index) => {
 					const Component = action.component || Button;
 					return (
-						<Tooltip
-							title={action.tooltip}
-							key={index}
-							sx={{ display: action.display }}
-						>
-							<Box
-								sx={{
-									flex: 1,
-									display: "flex",
-									justifyContent: "center",
-								}}
-							>
-								<Component {...action.componentProps}>
-									{action.value}
-								</Component>
-							</Box>
-						</Tooltip>
+						<Box sx={{ display: action.display }} key={index}>
+							<Tooltip title={action.tooltip}>
+								<Box
+									display={action.display}
+									sx={{
+										flex: 1,
+										display: "flex",
+										justifyContent: "center",
+									}}
+								>
+									<Component {...action.componentProps}>
+										{action.value}
+									</Component>
+								</Box>
+							</Tooltip>
+						</Box>
 					);
 				})}
 			</Grid>
@@ -93,23 +91,21 @@ export default function Actions({
 				{actionGroups["right"]?.map((action, index) => {
 					const Component = action.component || Button;
 					return (
-						<Tooltip
-							title={action.tooltip}
-							key={index}
-							sx={{ display: action.display }}
-						>
-							<Box
-								sx={{
-									flex: 1,
-									display: "flex",
-									justifyContent: "end",
-								}}
-							>
-								<Component {...action.componentProps}>
-									{action.value}
-								</Component>
-							</Box>
-						</Tooltip>
+						<Box sx={{ display: action.display }} key={index}>
+							<Tooltip title={action.tooltip}>
+								<Box
+									sx={{
+										flex: 1,
+										display: "flex",
+										justifyContent: "end",
+									}}
+								>
+									<Component {...action.componentProps}>
+										{action.value}
+									</Component>
+								</Box>
+							</Tooltip>
+						</Box>
 					);
 				})}
 			</Grid>

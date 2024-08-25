@@ -8,6 +8,7 @@ using IShop.Infrastructure.Authentication;
 using MapsterMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading;
 
 namespace IShop.Api.Controllers;
 
@@ -24,6 +25,7 @@ public class ProductController(
     IUpdateProductCommandHandler updateProductCommandHandler,
     IMakeProductFavoriteCommandHandler makeProductFavoriteCommandHandler,
     IMakeProductRangeFavoriteCommandHandler makeProductRangeFavoriteCommandHandler,
+    IAddProductToCartCommandHandler addProductToCartCommandHandler,
     IMapper mapper) : ApiController
 {
     [AllowAnonymous]
@@ -135,6 +137,13 @@ public class ProductController(
         var categories = mapper.Map<IEnumerable<ProductCategory>>(categoryDtos);
         var syncCommand = new SyncProductCategoriesCommand(categories);
         await updateProductCategoryCommandHandler.Handle(syncCommand, cancellationToken);
+        return Ok();
+    }
+
+    [HttpPost("add-to-cart/{id}")]
+    public async Task<IActionResult> AddProductToCartAsync(Guid id, CancellationToken cancellationToken)
+    {
+        await addProductToCartCommandHandler.Handle(new(id), cancellationToken);
         return Ok();
     }
 }

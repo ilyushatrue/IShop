@@ -13,7 +13,7 @@ export default function Main() {
 
 	useEffect(() => {
 		fetchAsync({
-			request: () => productsApi.getAllAsync(1, 10),
+			request: productsApi.getAllAsync(1, 10),
 			onSuccess: (handler) =>
 				handler.do((res) => setProducts(res.body!.pageItems!)),
 			onError: (handler) => handler.do(() => navigate("/not-found")),

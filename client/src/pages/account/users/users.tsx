@@ -11,7 +11,7 @@ export default function Users() {
 	const { fetchAsync } = useApi();
 	useEffect(() => {
 		fetchAsync<IUser[]>({
-			request: usersApi.getListAsync,
+			request: usersApi.getListAsync(),
 			onSuccess: (handler) =>
 				handler.do((result) => setUsers(result.body!)),
 			onError: (handler) =>

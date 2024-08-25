@@ -1,5 +1,5 @@
-import getConstant from "../../app/infrastructure/constant-provider";
-import { StatusCodes } from "../enums/status-codes.enum";
+import getConstant from "../app/infrastructure/constant-provider";
+import { StatusCodes } from "./enums/status-codes.enum";
 
 type ApiRequest = {
 	url: string;
@@ -13,18 +13,19 @@ export type ApiResponse<T> = {
 	ok: Response["ok"];
 	body?: T;
 	errors: {
-		message: string,
-		name: string
+		message: string;
+		name: string;
 	}[];
 };
 
 const fetchPipe = async (
-	request: () => Promise<Response | null>
+	request: Promise<Response | null>
 ): Promise<Response | null> => {
 	const attemptsCount = 2;
 	let response: Response | null = null;
 	for (let attempt = 1; attempt <= attemptsCount; attempt++) {
-		response = await request();
+		const requestFunc = async () => await request;
+		response = await requestFunc();
 		if (response === null) {
 			if (attempt === attemptsCount) {
 				response = null;
@@ -105,7 +106,7 @@ const httpGet = async <TOut>(
 	onResponse?: (response: Response) => Promise<TOut>
 ): Promise<ApiResponse<TOut>> => {
 	const response = request.authenticate
-		? await fetchPipe(() => get(request))
+		? await fetchPipe(get(request))
 		: await get(request);
 	return handleResponse(response, onResponse);
 };
@@ -115,7 +116,7 @@ const httpPost = async <TOut = undefined>(
 	onResponse?: (response: Response) => Promise<TOut>
 ): Promise<ApiResponse<TOut>> => {
 	const response = request.authenticate
-		? await fetchPipe(() => post(request))
+		? await fetchPipe(post(request))
 		: await post(request);
 	return handleResponse(response, onResponse);
 };
@@ -125,7 +126,7 @@ const httpDelete = async <TOut = undefined>(
 	onResponse?: (response: Response) => Promise<TOut>
 ): Promise<ApiResponse<TOut>> => {
 	const response = request.authenticate
-		? await fetchPipe(() => remove(request))
+		? await fetchPipe(remove(request))
 		: await remove(request);
 	return handleResponse(response, onResponse);
 };
@@ -135,7 +136,7 @@ const httpPut = async <TOut = undefined>(
 	onResponse?: (response: Response) => Promise<TOut>
 ): Promise<ApiResponse<TOut>> => {
 	const response = request.authenticate
-		? await fetchPipe(() => put(request))
+		? await fetchPipe(put(request))
 		: await put(request);
 	return handleResponse(response, onResponse);
 };

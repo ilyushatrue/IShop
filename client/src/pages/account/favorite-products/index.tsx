@@ -46,7 +46,7 @@ export default function FavoriteProducts() {
 	async function handleSubmitAsync(values: ICreateProductCommand) {
 		closeAddProductDialog();
 		await fetchAsync({
-			request: async () => await productsApi.createAsync(values),
+			request:  productsApi.createAsync(values),
 			onSuccess: (handler) =>
 				handler.popup("Новый товар добавлен.").do(reload),
 			onError: (handler) => handler.log().popup(),
@@ -66,7 +66,7 @@ export default function FavoriteProducts() {
 	};
 	async function handleDeleteProductAsync(productIds: string[]) {
 		fetchAsync({
-			request: () => productsApi.deleteRangeByIdAsync(productIds),
+			request: productsApi.deleteRangeByIdAsync(productIds),
 			onSuccess: () =>
 				setProducts((prev) =>
 					prev.filter((x) => !productIds.includes(x.id))

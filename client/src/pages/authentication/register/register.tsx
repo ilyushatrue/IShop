@@ -10,7 +10,6 @@ import apiAuth from "../../../api/endpoints/auth.api";
 import { useState } from "react";
 import Dialog from "../../../components/dialog";
 import { useNavigate } from "react-router-dom";
-import { useMediaQueryContext } from "../../../app/infrastructure/media-query-context";
 
 interface IProps {
 	onToLoginClick: () => void;
@@ -25,7 +24,7 @@ export default function Register({ onToLoginClick }: IProps) {
 	async function handleRegisterAsync(request: IRegisterRequest) {
 		dispatch(setIsPageLoading(true));
 		await fetchAsync({
-			request: async () => await apiAuth.registerAsync(request),
+			request:  apiAuth.registerAsync(request),
 			onSuccess: (handler) =>
 				handler.do(() => setIsEmailConfirmationDialogOn(true)),
 			onError: (handler) => handler.log().popup(),

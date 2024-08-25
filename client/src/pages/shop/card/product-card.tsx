@@ -61,9 +61,9 @@ export default function ProductCard({
 		>
 			<Typography
 				variant="body2"
-				sx={{ fontWeight: "bold", fontSize: 20, mt: 1 }}
-			>{`${price} ₽`}</Typography>
-			<Typography variant="body2" sx={{ fontWeight: "bold" }}>
+				sx={{ fontWeight: 600, fontSize: 20, mt: 1 }}
+			>{`${price.toLocaleString("ru-RU").replace(/,/g, " ")} ₽`}</Typography>
+			<Typography variant="body2" sx={{ fontWeight: 500 }}>
 				{name}
 			</Typography>
 			<Typography

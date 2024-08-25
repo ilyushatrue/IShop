@@ -53,7 +53,7 @@ export default function InputImage<T extends FieldValues>({
 			const formData = new FormData();
 			formData.append("file", file);
 			await fetchAsync({
-				request: async () => await mediaApi.uploadFile(formData),
+				request: mediaApi.uploadFile(formData),
 				onSuccess: (handler) =>
 					handler
 						.validate((res) => !!res.body)
