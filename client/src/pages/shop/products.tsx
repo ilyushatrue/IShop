@@ -153,22 +153,22 @@ export default function Products({ products, onDelete, onUpdate }: IProps) {
 				content="Вы действительно хотите удалить товар?"
 				open={!!productToDeleteId}
 				onClose={() => setProductToDeleteId("")}
-				actions={() => [
-					{
-						value: "Не хочу",
-						position: "left",
-						componentProps: {
-							onClick: () => setProductToDeleteId(""),
-						},
-					},
-					{
-						value: "Хочу!",
-						position: "right",
-						componentProps: {
-							onClick: handleDeleteProductAsync,
-						},
-					},
-				]}
+				// actions={() => [
+				// 	{
+				// 		value: "Не хочу",
+				// 		position: "left",
+				// 		componentProps: {
+				// 			onClick: () => setProductToDeleteId(""),
+				// 		},
+				// 	},
+				// 	{
+				// 		value: "Хочу!",
+				// 		position: "right",
+				// 		componentProps: {
+				// 			onClick: handleDeleteProductAsync,
+				// 		},
+				// 	},
+				// ]}
 			/>
 			<ProductCardEditDialog
 				categories={categories}

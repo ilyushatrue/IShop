@@ -1,6 +1,9 @@
-import { TurnLeftRounded } from "@mui/icons-material";
+import { DialogTitle } from "@mui/material";
 import { IProductCategory } from "../../../api/interfaces/product-categories/product-category.interface";
-import FormDialog from "../../../components/form-dialog";
+import Dialog from "../../../components/dialog";
+import Form from "../../../components/form/form";
+import FormActions from "../../../components/form/form-actions";
+import { SubmitHandler, useForm } from "react-hook-form";
 
 export default function CategoryEditDialog({
 	onClose,
@@ -21,32 +24,31 @@ export default function CategoryEditDialog({
 	categoriesHierarchy: IProductCategory[];
 	onSubmit: (values: IProductCategory) => void;
 }) {
+	const { watch, handleSubmit, control, reset } = useForm<IProductCategory>({
+		defaultValues: editCategory ?? defaultCategory,
+	});
+
+	const handleEnterKeyPressed: SubmitHandler<IProductCategory> = (values) => {
+		onSubmit(values);
+	};
 	return (
-		<FormDialog
-			dialogProps={{
-				open: open,
-				fullWidth: true,
-				onClose: onClose,
-				title:
-					action === "edit"
-						? "Редактировать категорию"
-						: "Создать категорию",
-			}}
-			formProps={{
-				loading: loading,
-				actions: ([submit]) => [
-					{
-						value: "Отмена",
-						position: "left",
-						componentProps: {
-							onClick: onClose,
-						},
-					},
-					{ ...submit, value: "Создать" },
-				],
-				defaultValues: editCategory ?? defaultCategory,
-				fullwidth: true,
-				fields: (builder) =>
+		<Dialog
+			open={open}
+			fullWidth
+			onClose={onClose}
+			onEnterKeyPress={handleSubmit(handleEnterKeyPressed)}
+		>
+			<DialogTitle>
+				{action === "edit"
+					? "Редактировать категорию"
+					: "Создать категорию"}
+			</DialogTitle>
+			<Form
+				loading={loading}
+				style={{ padding: 20 }}
+				watch={watch}
+				control={control}
+				fields={(builder) =>
 					builder
 						.text({
 							name: "name",
@@ -75,9 +77,16 @@ export default function CategoryEditDialog({
 								key: c.id,
 								value: c.title,
 							})),
-						}),
-				onSubmit: onSubmit,
-			}}
-		/>
+						})
+				}
+			>
+				<FormActions
+					disabled={loading}
+					handleSubmit={handleSubmit}
+					onSubmit={onSubmit}
+					reset={reset}
+				/>
+			</Form>
+		</Dialog>
 	);
 }

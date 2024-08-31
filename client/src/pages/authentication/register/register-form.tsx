@@ -1,4 +1,7 @@
+import { SubmitHandler, useForm } from "react-hook-form";
 import Form from "../../../components/form/form";
+import { Box } from "@mui/material";
+import Button from "../../../components/buttons/button";
 
 interface IRegisterForm {
 	firstName: string;
@@ -10,35 +13,36 @@ interface IRegisterForm {
 }
 
 export default function RegisterForm({
-	onSubmitAsync,
+	onSubmit,
 	loading,
 }: {
-	onSubmitAsync: (values: IRegisterForm) => Promise<void>;
+	onSubmit: (values: IRegisterForm) => void;
 	loading: boolean;
 }) {
+	const defaultValues = {
+		firstName: "",
+		lastName: "",
+		phone: "+7",
+		email: "",
+		password: "",
+		confirmPassword: "",
+	};
+	const { handleSubmit, control, watch, reset } = useForm<IRegisterForm>({
+		mode: "onChange",
+		reValidateMode: "onBlur",
+		defaultValues,
+	});
+
+	const handleSubmitButtonClick: SubmitHandler<IRegisterForm> = (values) => {
+		onSubmit(values);
+	};
+
 	return (
 		<Form<IRegisterForm>
-			defaultValues={{
-				firstName: "",
-				lastName: "",
-				phone: "+7",
-				email: "",
-				password: "",
-				confirmPassword: "",
-			}}
+			control={control}
+			watch={watch}
 			loading={loading}
-			actions={([submit]) => [
-				{
-					...submit,
-					value: "Зарегистрироваться",
-					position: "center",
-					componentProps: {
-						...submit.componentProps,
-						sx: { height: 50 },
-					},
-				},
-			]}
-			onSubmit={onSubmitAsync}
+			style={{ marginBottom: 24 }}
 			fields={(builder) =>
 				builder
 					.text({
@@ -73,6 +77,17 @@ export default function RegisterForm({
 						password: "password",
 					})
 			}
-		/>
+		>
+			<Box display={"flex"} justifyContent={"center"} marginTop={"16px"}>
+				<Button
+					onClick={handleSubmit(handleSubmitButtonClick)}
+					size="large"
+					sx={{ minWidth: 150, height: 50 }}
+					disabled={loading}
+				>
+					Зарегистрироваться
+				</Button>
+			</Box>
+		</Form>
 	);
 }

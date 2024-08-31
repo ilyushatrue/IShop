@@ -19,15 +19,15 @@ export default function EmailConfirmAlreadySentDialog({
 			title={"Ожидание подтверждения эл. почты"}
 			content={`На почту ${email} была отправлена ссылка на подтверждение учетной записи. Перейдите по ней.`}
 			onClose={onClose}
-			actions={() => [
-				{
-					position: "right",
-					value: "Понятно",
-					componentProps: {
-						onClick: onClose,
-					},
-				},
-			]}
+			// actions={() => [
+			// 	{
+			// 		position: "right",
+			// 		value: "Понятно",
+			// 		componentProps: {
+			// 			onClick: onClose,
+			// 		},
+			// 	},
+			// ]}
 		>
 			<Typography
 				onClick={() => onEmailResendRequest(email)}

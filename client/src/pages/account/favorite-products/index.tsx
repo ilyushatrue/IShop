@@ -46,12 +46,12 @@ export default function FavoriteProducts() {
 	async function handleSubmitAsync(values: ICreateProductCommand) {
 		closeAddProductDialog();
 		await fetchAsync({
-			request:  productsApi.createAsync(values),
+			request: productsApi.createAsync(values),
 			onSuccess: (handler) =>
-				handler.popup("Новый товар добавлен.").do(reload),
+				handler.popup("Новый товар добавлен."),
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
-		});
+		}).then(reload);
 	}
 
 	const handleChangeRowsPerPage = (
@@ -89,26 +89,12 @@ export default function FavoriteProducts() {
 				onPageChange={handleChangePage}
 				onRowsPerPageChange={handleChangeRowsPerPage}
 				page={page}
-				actions={([del, add, filter]) => [
+				actions={([del]) => [
 					{
 						...del,
 						componentProps: {
 							...del.componentProps,
 							onClick: openDeleteDialog,
-						},
-					},
-					{
-						...add,
-						componentProps: {
-							...add.componentProps,
-							onClick: openAddProductDialog,
-						},
-					},
-					{
-						...filter,
-						componentProps: {
-							...filter.componentProps,
-							onClick: () => console.log(selectedIds.current),
 						},
 					},
 				]}
@@ -121,25 +107,25 @@ export default function FavoriteProducts() {
 				content="Вы действительно хотите удалить выбранные товары?"
 				open={isDeleteDialogOn}
 				onClose={closeDeleteDialog}
-				actions={() => [
-					{
-						value: "Не хочу",
-						position: "left",
-						component: OutlinedButton,
-						componentProps: {
-							onClick: closeDeleteDialog,
-							fullWidth: true,
-						},
-					},
-					{
-						value: "Хочу!",
-						componentProps: {
-							onClick: () =>
-								handleDeleteProductAsync(selectedIds.current),
-							fullWidth: true,
-						},
-					},
-				]}
+				// actions={() => [
+				// 	{
+				// 		value: "Не хочу",
+				// 		position: "left",
+				// 		component: OutlinedButton,
+				// 		componentProps: {
+				// 			onClick: closeDeleteDialog,
+				// 			fullWidth: true,
+				// 		},
+				// 	},
+				// 	{
+				// 		value: "Хочу!",
+				// 		componentProps: {
+				// 			onClick: () =>
+				// 				handleDeleteProductAsync(selectedIds.current),
+				// 			fullWidth: true,
+				// 		},
+				// 	},
+				// ]}
 			/>
 		</AccountPage>
 	);

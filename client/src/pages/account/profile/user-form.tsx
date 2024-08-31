@@ -1,27 +1,28 @@
+import { useForm } from "react-hook-form";
 import { IUser } from "../../../api/interfaces/user/user.interface";
 import Form from "../../../components/form/form";
+import FormActions from "../../../components/form/form-actions";
 
 export default function UserForm({
-	onSubmitAsync,
+	onSubmit,
 	defaultValues,
 	loading,
-	fullwidth,
 }: {
 	defaultValues: IUser;
-	onSubmitAsync: (values: IUser) => Promise<void>;
+	onSubmit: (values: IUser) => void;
 	loading: boolean;
-	fullwidth?: boolean;
 }) {
+	const { handleSubmit, control, watch, reset, formState } = useForm<IUser>({
+		mode: "onChange",
+		reValidateMode: "onBlur",
+		defaultValues,
+	});
+	console.log(loading, formState.isDirty)
 	return (
 		<Form
-			defaultValues={defaultValues}
-			actions={([submit, reset]) => [
-				{ ...submit, value: "Сохранить" },
-				reset,
-			]}
-			onSubmit={onSubmitAsync}
+			control={control}
+			watch={watch}
 			loading={loading}
-			fullwidth={fullwidth}
 			fields={(builder) =>
 				builder
 					.image({
@@ -48,6 +49,22 @@ export default function UserForm({
 						disabled: true,
 					})
 			}
-		/>
+		>
+			<FormActions
+				handleSubmit={handleSubmit}
+				onSubmit={onSubmit}
+				reset={reset}
+				// actions={([submit, reset_a]) => [
+				// 	{ ...submit, value: "Сохранить" },
+				// 	{
+				// 		...reset_a,
+				// 		componentProps: {
+				// 			onClick: () => reset(defaultValues),
+				// 		},
+				// 	},
+				// ]}
+				disabled={loading || !formState.isDirty}
+			/>
+		</Form>
 	);
 }

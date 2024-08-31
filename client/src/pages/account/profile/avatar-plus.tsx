@@ -38,14 +38,11 @@ export default function AvatarPlus({
 			formData.append("file", file);
 			fetchAsync({
 				request: mediaApi.uploadFile(formData),
-				onSuccess: (handler) =>
-					handler
-						.validate((res) => !!res.body)
-						.do((res) => {
-							setImageUrl(res.body!);
-							onChange(res.body!);
-						}),
+				onSuccess: (handler) => handler.validate((res) => !!res.body),
 				onError: (handler) => handler.log().popup(),
+			}).then((res) => {
+				setImageUrl(res!.body!);
+				onChange(res!.body!);
 			});
 		} else {
 			popupError("Не удалось загрузить изображение.");

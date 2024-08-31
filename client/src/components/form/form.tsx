@@ -1,48 +1,24 @@
-import { CSSProperties, useEffect, useRef } from "react";
+import { CSSProperties, ReactElement, useEffect, useRef } from "react";
 import FormBuilder, { FormBuilderRef } from "./form-builder";
-import { DefaultValues, FieldValues, useForm } from "react-hook-form";
-import Actions, { IAction } from "../actions";
-import { SxProps } from "@mui/material";
-import OutlinedButton from "../buttons/outlined-button";
+import { Control, FieldValues, UseFormWatch } from "react-hook-form";
 
 export interface FormProps<T extends FieldValues> {
-	defaultValues: DefaultValues<T>;
-	onSubmit: (values: T) => void;
+	watch: UseFormWatch<T>;
+	control: Control<T, any>;
 	fields: (builder: FormBuilderRef<T>) => void;
-	actions: (actions: IAction[]) => IAction[];
-	fullwidth?: boolean;
 	loading?: boolean;
 	style?: CSSProperties;
-	actionProps?: SxProps;
+	children?: ReactElement;
 }
 export default function Form<T extends FieldValues>({
-	defaultValues,
+	control,
+	watch,
 	fields,
-	onSubmit,
-	actions,
-	fullwidth = true,
 	loading = false,
 	style,
-	actionProps,
+	children,
 }: FormProps<T>) {
 	const builderRef = useRef<FormBuilderRef<T>>(null);
-	const { handleSubmit, control, watch, formState, reset, getValues } =
-		useForm<T>({
-			mode: "onChange",
-			reValidateMode: "onBlur",
-			defaultValues,
-		});
-
-	useEffect(() => {
-		const formValues = getValues();
-		if (
-			Object.keys(formValues).every(
-				(key) => formValues[key] === defaultValues[key]
-			)
-		) {
-			reset(defaultValues);
-		}
-	}, [defaultValues, getValues, reset, formState.isValid]);
 
 	useEffect(() => {
 		fields(builderRef.current!);
@@ -52,37 +28,11 @@ export default function Form<T extends FieldValues>({
 		<FormBuilder<T>
 			watch={watch}
 			control={control}
-			handleSubmit={handleSubmit}
-			fullwidth={fullwidth}
-			onSubmit={onSubmit}
 			loading={loading}
 			ref={builderRef}
 			style={style}
 		>
-			<Actions
-				sx={{ ...actionProps, marginY: "16px" }}
-				actions={actions}
-				defaultActions={[
-					{
-						componentProps: {
-							disabled: !formState.isDirty || loading,
-							type: "submit",
-						},
-						value: "Отправить",
-						position: "right",
-					},
-					{
-						componentProps: {
-							disabled: !formState.isDirty || loading,
-							type: "reset",
-							onClick: () => reset(),
-						},
-						component: OutlinedButton,
-						value: "Отменить",
-						position: "left",
-					},
-				]}
-			/>
+			{children}
 		</FormBuilder>
 	);
 }

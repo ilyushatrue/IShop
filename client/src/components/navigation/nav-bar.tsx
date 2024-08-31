@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../app/hooks/redux/use-app-dispatch";
 import { useAppSelector } from "../../app/hooks/redux/use-app-selector";
 import useApi from "../../api/hooks/use-api.hook";
-import { setIsPageLoading } from "../../store/page.slice";
 import apiAuth from "../../api/endpoints/auth.api";
 import { resetCurrentUserState } from "../../store/user.slice";
 import { useMediaQueryContext } from "../../app/infrastructure/media-query-context";
@@ -76,18 +75,14 @@ export default function NavBar() {
 	}, [isAuthenticated, menuItems, xs]);
 
 	async function handleLogout() {
-		dispatch(setIsPageLoading(true));
 		await fetchAsync({
 			request: apiAuth.logoutAsync(),
-			onSuccess: (handler) =>
-				handler.do(() => {
-					navigate("/auth");
-					dispatch(resetCurrentUserState());
-				}),
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
+		}).then(() => {
+			navigate("/auth");
+			dispatch(resetCurrentUserState());
 		});
-		dispatch(setIsPageLoading(false));
 	}
 
 	function handleTabChange(href: string) {

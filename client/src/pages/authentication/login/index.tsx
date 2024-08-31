@@ -20,6 +20,7 @@ import ResetPasswordDialog from "./reset-password-dialog";
 import EmailConfirmAlreadySentDialog from "./email-confirm-already-sent-dialog";
 import productsApi from "../../../api/endpoints/products.api";
 import { useMediaQueryContext } from "../../../app/infrastructure/media-query-context";
+import { IProduct } from "../../../api/interfaces/product/product.interface";
 
 type AuthType = "phone" | "email";
 
@@ -47,6 +48,7 @@ export default function Login({ onToRegisterClick }: IProps) {
 	useEffect(() => {
 		console.log(sm);
 	}, [sm]);
+
 	const handleAuthTypeChange = (
 		event: React.MouseEvent<HTMLElement>,
 		authType: AuthType
@@ -57,38 +59,43 @@ export default function Login({ onToRegisterClick }: IProps) {
 	async function handleLoginByPhoneAsync(request: ILoginByPhoneRequest) {
 		await fetchAsync({
 			request: apiAuth.loginByPhoneAsync(request),
-			onSuccess: handleSuccessfulLoginAsync,
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
-		});
+		})
+			.then(handleSuccessfulLoginAsync)
+			.catch((error: Error) => {
+				if (error.cause === "email-not-confirmed") {
+					setIsEmailAlreadyConfirmedDialogOn({
+						is: true,
+						email: "email",
+					});
+				}
+			});
 	}
 
 	async function handleLoginByEmailAsync(request: ILoginByEmailRequest) {
 		await fetchAsync({
 			request: apiAuth.loginByEmailAsync(request),
-			onSuccess: handleSuccessfulLoginAsync,
-			onError: (handler) =>
-				handler
-					.log()
-					.popup()
-					.do((error) => {
-						if (error.name === "email-not-confirmed") {
-							setIsEmailAlreadyConfirmedDialogOn({
-								is: true,
-								email: request.email,
-							});
-						}
-					}),
+			onError: (handler) => handler.log().popup().throw(),
 			triggerPageLoader: true,
-		});
+		})
+			.then(handleSuccessfulLoginAsync)
+			.catch((error: Error) => {
+				if (error.cause === "email-not-confirmed") {
+					setIsEmailAlreadyConfirmedDialogOn({
+						is: true,
+						email: request.email,
+					});
+				}
+			});
 	}
 
 	async function handleSuccessfulLoginAsync() {
 		const favoriteProducts =
 			window.localStorage.getItem("favorite-products");
 		if (favoriteProducts) {
-			const values = (JSON.parse(favoriteProducts) as string[]).map(
-				(item) => ({ productId: item, value: true })
+			const values = (JSON.parse(favoriteProducts) as IProduct[]).map(
+				(item) => ({ productId: item.id, value: true })
 			);
 			await fetchAsync({
 				request: productsApi.toFavoritesRangeAsync(values),
@@ -176,13 +183,13 @@ export default function Login({ onToRegisterClick }: IProps) {
 				<Box sx={{ display: authType === "email" ? "block" : "none" }}>
 					<MemoizedLoginByEmailForm
 						loading={isFetching}
-						onSubmitAsync={handleLoginByEmailAsync}
+						onSubmit={handleLoginByEmailAsync}
 					/>
 				</Box>
 				<Box sx={{ display: authType === "phone" ? "block" : "none" }}>
 					<MemoizedLoginByPhoneForm
 						loading={isFetching}
-						onSubmitAsync={handleLoginByPhoneAsync}
+						onSubmit={handleLoginByPhoneAsync}
 					/>
 				</Box>
 				<Typography sx={{ cursor: "pointer", mt: 1 }} variant="body2">
@@ -203,7 +210,7 @@ export default function Login({ onToRegisterClick }: IProps) {
 				</Typography>
 			</Template>
 			<ResetPasswordDialog
-				onSubmit={handleResetPasswordAsync}
+				onSubmit={(values) => handleResetPasswordAsync(values.email)}
 				loading={isFetching}
 				onClose={() => setIsResetPasswordDialogOn(false)}
 				open={isResetPasswordDialogOn}

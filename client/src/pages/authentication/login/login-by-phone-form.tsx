@@ -1,31 +1,36 @@
+import { SubmitHandler, useForm } from "react-hook-form";
 import { ILoginByPhoneRequest } from "../../../api/contracts/authentication/login-by-phone-request.interface";
 import Form from "../../../components/form/form";
+import Button from "../../../components/buttons/button";
+import { Box } from "@mui/material";
 
 interface IProps {
-	onSubmitAsync: (values: ILoginByPhoneRequest) => Promise<void>;
+	onSubmit: (values: ILoginByPhoneRequest) => void;
 	loading: boolean;
 }
-export default function LoginByPhoneForm({ onSubmitAsync, loading }: IProps) {
+export default function LoginByPhoneForm({ onSubmit, loading }: IProps) {
+	const defaultValues = {
+		password: "",
+		phone: "7",
+	};
+	const { handleSubmit, control, watch } = useForm<ILoginByPhoneRequest>({
+		mode: "onChange",
+		reValidateMode: "onBlur",
+		defaultValues,
+	});
+
+	const handleSubmitButtonClick: SubmitHandler<ILoginByPhoneRequest> = (
+		values
+	) => {
+		onSubmit(values);
+	};
+
 	return (
 		<Form
-			defaultValues={{
-				password: "",
-				phone: "7",
-			}}
-			onSubmit={onSubmitAsync}
+			control={control}
+			watch={watch}
 			loading={loading}
-			actions={([submit]) => [
-				{
-					...submit,
-					position: "center",
-					value: "Войти",
-					componentProps: {
-						...submit.componentProps,
-						fullWidth: true,
-						sx: { height: 50, width: 200 },
-					},
-				},
-			]}
+			style={{ marginBottom: 24 }}
 			fields={(builder) =>
 				builder
 					.phone({
@@ -36,6 +41,17 @@ export default function LoginByPhoneForm({ onSubmitAsync, loading }: IProps) {
 						validationRequired: false,
 					})
 			}
-		/>
+		>
+			<Box display={"flex"} justifyContent={"center"} marginTop={"16px"}>
+				<Button
+					onClick={handleSubmit(handleSubmitButtonClick)}
+					size="large"
+					sx={{ width: 150, height: 50 }}
+					disabled={loading}
+				>
+					Войти
+				</Button>
+			</Box>
+		</Form>
 	);
 }

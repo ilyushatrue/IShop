@@ -54,12 +54,9 @@ export default function InputImage<T extends FieldValues>({
 			formData.append("file", file);
 			await fetchAsync({
 				request: mediaApi.uploadFile(formData),
-				onSuccess: (handler) =>
-					handler
-						.validate((res) => !!res.body)
-						.do((res) => field.onChange(res.body)),
+				onSuccess: (handler) => handler.validate((res) => !!res.body),
 				onError: (handler) => handler.log().popup(),
-			});
+			}).then((res) => field.onChange(res!.body));
 		} else {
 			popupError("Не удалось загрузить изображение.");
 		}

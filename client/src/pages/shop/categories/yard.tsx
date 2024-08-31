@@ -30,20 +30,20 @@ export default function Yard() {
 		}
 		fetchAsync({
 			request: productsApi.getByCategoryAsync(category.id, +id, 12),
-			onSuccess: (handler) =>
-				handler.do((res) => {
-					const { currentPage, pageItems, pageSize, totalPages } =
-						res.body!;
-					setProducts(pageItems);
-					setPageProps({
-						currentPage: currentPage,
-						pageSize: pageSize,
-						totalPages: totalPages,
-					});
-				}),
-			onError: (handler) => handler.do(() => navigate("/not-found")),
+			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
-		});
+		})
+			.catch(() => navigate("/not-found"))
+			.then((res) => {
+				const { currentPage, pageItems, pageSize, totalPages } =
+					res!.body!;
+				setProducts(pageItems);
+				setPageProps({
+					currentPage: currentPage,
+					pageSize: pageSize,
+					totalPages: totalPages,
+				});
+			});
 	}, [id]);
 
 	function handleProductUpdate(product: IProduct) {

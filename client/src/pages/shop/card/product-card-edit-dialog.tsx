@@ -2,7 +2,6 @@ import Form from "../../../components/form/form";
 import { IProduct } from "../../../api/interfaces/product/product.interface";
 import { Box, Dialog as MuiDialog } from "@mui/material";
 import { IProductCategory } from "../../../api/interfaces/product-categories/product-category.interface";
-import FormDialog from "../../../components/form-dialog";
 
 export default function ProductCardEditDialog({
 	open,
@@ -28,7 +27,7 @@ export default function ProductCardEditDialog({
 }) {
 	return (
 		<>
-			<FormDialog
+			{/* <FormDialog
 				dialogProps={{ open: open, onClose: onCancel }}
 				formProps={{
 					actions: ([submit, reset]) => [
@@ -84,7 +83,7 @@ export default function ProductCardEditDialog({
 							}),
 							onSubmit:onSubmit,
 				}}
-			/>
+			/> */}
 			{/* <MuiDialog open={open} onClose={onCancel}>
 				<Box width={"100%"} minWidth={400} maxWidth={500} paddingX={2}>
 					<Form<IProduct>

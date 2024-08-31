@@ -7,21 +7,19 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../../app/hooks/redux/use-app-selector";
 import { IProductCategory } from "../../../api/interfaces/product-categories/product-category.interface";
 import { ICreateProductCommand } from "../../../api/interfaces/product/commands/create-product-command.interface";
-import ProductAddDialog from "./product-add-dialog";
 import EnhancedTable from "../../../components/table/table";
 import IconButton from "../../../components/buttons/icon-button";
-import Dialog from "../../../components/dialog";
-import AccountPage from "../account-page";
 import { reload } from "../../../app/helpers/reload";
 import { useMediaQueryContext } from "../../../app/infrastructure/media-query-context";
 import AccountProtectedPage from "../account-protected-page";
+import ProductAddDialog from "./product-add-dialog";
+import ProductDeleteDialog from "./product-delete-dialog";
 
 export default function ProductMenu() {
 	const [isDeleteDialogOn, setIsDeleteDialogOn] = useState(false);
 	const { isFetching, fetchAsync } = useApi();
 	const [products, setProducts] = useState<IProduct[]>([]);
 	const rowsPerPageOptions = [10, 25, 100];
-	const { xs } = useMediaQueryContext();
 	const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[0]);
 	const [page, setPage] = useState(0);
 	const selectedIds = useRef<string[]>([]);
@@ -55,19 +53,12 @@ export default function ProductMenu() {
 
 	useEffect(() => {
 		fetchAsync({
-			request: 
-				categoryId
-					? productsApi.getByCategoryAsync(
-							categoryId,
-							page,
-							rowsPerPage
-					  )
-					: productsApi.getAllAsync(page, rowsPerPage),
-			onSuccess: (handler) =>
-				handler.do((res) => setProducts(res.body!.pageItems!)),
+			request: categoryId
+				? productsApi.getByCategoryAsync(categoryId, page, rowsPerPage)
+				: productsApi.getAllAsync(page, rowsPerPage),
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
-		});
+		}).then((res) => setProducts(res!.body!.pageItems!));
 	}, []);
 
 	function closeAddProductDialog() {
@@ -81,12 +72,11 @@ export default function ProductMenu() {
 	async function handleSubmitAsync(values: ICreateProductCommand) {
 		closeAddProductDialog();
 		await fetchAsync({
-			request:  productsApi.createAsync(values),
-			onSuccess: (handler) =>
-				handler.popup("Новый товар добавлен.").do(reload),
+			request: productsApi.createAsync(values),
+			onSuccess: (handler) => handler.popup("Новый товар добавлен."),
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
-		});
+		}).then(reload);
 	}
 
 	const handleChangeRowsPerPage = (
@@ -102,7 +92,7 @@ export default function ProductMenu() {
 	async function handleDeleteProductAsync(productIds: string[]) {
 		closeDeleteDialog();
 		fetchAsync({
-			request:  productsApi.deleteRangeByIdAsync(productIds),
+			request: productsApi.deleteRangeByIdAsync(productIds),
 			onSuccess: () =>
 				setProducts((prev) =>
 					prev.filter((x) => !productIds.includes(x.id))
@@ -174,31 +164,11 @@ export default function ProductMenu() {
 				onSubmit={handleSubmitAsync}
 				open={isAddProductDialogOn}
 			/>
-			<Dialog
-				title="Удалить товары"
-				onEnterKeyPress={() =>
-					handleDeleteProductAsync(selectedIds.current)
-				}
-				content="Вы действительно хотите удалить выбранные товары?"
+			<ProductDeleteDialog
+				onDelete={() => handleDeleteProductAsync(selectedIds.current)}
 				open={isDeleteDialogOn}
 				onClose={closeDeleteDialog}
-				actions={() => [
-					{
-						value: "Не хочу",
-						position: "left",
-						componentProps: {
-							onClick: closeDeleteDialog,
-						},
-					},
-					{
-						value: "Хочу!",
-						position: "right",
-						componentProps: {
-							onClick: () =>
-								handleDeleteProductAsync(selectedIds.current),
-						},
-					},
-				]}
+				loading={isFetching}
 			/>
 		</AccountProtectedPage>
 	);

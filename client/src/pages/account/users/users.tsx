@@ -12,15 +12,11 @@ export default function Users() {
 	useEffect(() => {
 		fetchAsync<IUser[]>({
 			request: usersApi.getListAsync(),
-			onSuccess: (handler) =>
-				handler.do((result) => setUsers(result.body!)),
-			onError: (handler) =>
-				handler
-					.log()
-					.popup()
-					.do(() => navigate("/")),
+			onError: (handler) => handler.log().popup().throw(),
 			triggerPageLoader: true,
-		});
+		})
+			.catch(() => navigate("/"))
+			.then((result) => setUsers(result!.body!));
 	}, []);
 
 	return (

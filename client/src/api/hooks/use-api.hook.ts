@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ApiResponse } from "../api";
 import { usePopup } from "../../app/hooks/use-popup.hook";
 import { useAppDispatch } from "../../app/hooks/redux/use-app-dispatch";
@@ -7,9 +7,7 @@ import { setIsPageLoading } from "../../store/page.slice";
 type ErrorHandler<T> = {
 	log: () => ErrorHandler<T>;
 	popup: (message?: string) => ErrorHandler<T>;
-	do: (
-		action: (error: { message: string; name: string }) => void
-	) => ErrorHandler<T>;
+	throw: () => void;
 };
 
 type SuccessHandler<T> = {
@@ -18,7 +16,6 @@ type SuccessHandler<T> = {
 		predicate: (result: T) => boolean,
 		message?: string
 	) => SuccessHandler<T>;
-	do: (action: (result: T) => void) => SuccessHandler<T>;
 };
 
 type Fetch<TOut> = {
@@ -38,20 +35,27 @@ export default function useApi() {
 		onError,
 		onSuccess,
 		triggerPageLoader,
-	}: Fetch<TOut>): Promise<void> => {
+	}: Fetch<TOut>): Promise<ApiResponse<TOut> | undefined> => {
 		if (triggerPageLoader) dispatch(setIsPageLoading(true));
 		setIsFetching(true);
-		const requestFunc = async () => await request;
-		const response = await requestFunc();
-		if (response.ok) {
-			const successHandler = getSuccessHandler(response);
-			onSuccess?.(successHandler);
-		} else {
-			const errorHandler = getErrorHandler(response);
-			onError?.(errorHandler);
+		try {
+			const response = await request;
+			if (response.ok) {
+				if (onSuccess) {
+					const successHandler = getSuccessHandler(response);
+					onSuccess(successHandler);
+				}
+			} else {
+				if (onError) {
+					const errorHandler = getErrorHandler(response);
+					onError(errorHandler);
+				}
+			}
+			return response;
+		} finally {
+			setIsFetching(false);
+			if (triggerPageLoader) dispatch(setIsPageLoading(false));
 		}
-		setIsFetching(false);
-		if (triggerPageLoader) dispatch(setIsPageLoading(false));
 	};
 
 	function getSuccessHandler<TOut>(
@@ -65,10 +69,6 @@ export default function useApi() {
 			validate: (predicate, message) => {
 				if (apiResult !== null && !predicate(apiResult))
 					throw new Error(message);
-				return successHandler;
-			},
-			do: (action) => {
-				apiResult !== null && action(apiResult);
 				return successHandler;
 			},
 		};
@@ -94,9 +94,9 @@ export default function useApi() {
 				);
 				return errorHandler;
 			},
-			do: (action) => {
-				action(apiResult.errors[0]);
-				return errorHandler;
+			throw: () => {
+				const { message, name } = apiResult.errors[0];
+				throw new Error(message, { cause: name });
 			},
 		};
 		return errorHandler;

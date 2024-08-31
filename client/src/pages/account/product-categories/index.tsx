@@ -14,6 +14,7 @@ import MenuDeleteCell from "./menu-delete-cell";
 import { useNavigate } from "react-router-dom";
 import CategoryEditDialog from "./category-edit-dialog";
 import AccountProtectedPage from "../account-protected-page";
+import OutlinedButton from "../../../components/buttons/outlined-button";
 
 export default function ProductCategories() {
 	const defaultCategory: IProductCategory = {
@@ -147,11 +148,10 @@ export default function ProductCategories() {
 
 	async function handleSaveMenuAsync(values: IProductCategory[]) {
 		fetchAsync({
-			request:  productsApi.syncCategoriesAsync(values),
-			onSuccess: (handler) => handler.do(reload),
+			request: productsApi.syncCategoriesAsync(values),
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
-		});
+		}).then(reload);
 	}
 
 	function handleEditCategory(inputCategory: IProductCategory) {
@@ -255,22 +255,23 @@ export default function ProductCategories() {
 					handleEditCategory(editCategory!.category!)
 				}
 				onClose={() => setEditCategory(undefined)}
-				actions={() => [
-					{
-						value: "Нет",
-						position: "left",
-						componentProps: {
-							onClick: () => setEditCategory(undefined),
-						},
-					},
-					{
-						value: "Да",
-						componentProps: {
-							onClick: () =>
-								handleEditCategory(editCategory!.category!),
-						},
-					},
-				]}
+				// actions={() => [
+				// 	{
+				// 		value: "Нет",
+				// 		position: "left",
+				// 		component: OutlinedButton,
+				// 		componentProps: {
+				// 			onClick: () => setEditCategory(undefined),
+				// 		},
+				// 	},
+				// 	{
+				// 		value: "Да",
+				// 		componentProps: {
+				// 			onClick: () =>
+				// 				handleEditCategory(editCategory!.category!),
+				// 		},
+				// 	},
+				// ]}
 				open={editCategory?.action === "delete"}
 				title="Вы уверены?"
 				content="Вы действительно хотите удалить категорию?"

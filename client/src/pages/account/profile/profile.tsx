@@ -16,15 +16,17 @@ export default function Profile() {
 	async function handleFormSubmitAsync(user: IUser) {
 		await fetchAsync({
 			request: usersApi.updateUserData(user),
-			onSuccess: (handler) =>
-				handler.popup("Данные успешно обновлены!").do(reload),
+			onSuccess: (handler) => handler.popup("Данные успешно обновлены!"),
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
-		});
+		}).then(reload);
 	}
 
 	return (
-		<AccountProtectedPage title="Мой профиль" mainBoxProps={{width:"100%", bgcolor:"orange"}}>
+		<AccountProtectedPage
+			title="Мой профиль"
+			mainBoxProps={{ width: "100%", bgcolor: "orange" }}
+		>
 			<Box
 				maxWidth={500}
 				width={xs ? "100%" : 500}
@@ -35,9 +37,8 @@ export default function Profile() {
 				alignItems="center"
 			>
 				<UserForm
-					fullwidth={true}
+					onSubmit={handleFormSubmitAsync}
 					loading={isFetching}
-					onSubmitAsync={handleFormSubmitAsync}
 					defaultValues={{
 						avatarId: userState.avatarId,
 						email: userState.email!,

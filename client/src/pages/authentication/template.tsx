@@ -6,7 +6,6 @@ import { useAppSelector } from "../../app/hooks/redux/use-app-selector";
 
 const containerStyle: CSSProperties = {
 	padding: 36,
-	width: "90vw",
 	maxWidth: "380px",
 	margin: "24px auto",
 	backgroundColor: "white",

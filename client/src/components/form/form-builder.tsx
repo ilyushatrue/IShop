@@ -13,8 +13,6 @@ import {
 	Control,
 	FieldValues,
 	Path,
-	SubmitHandler,
-	UseFormHandleSubmit,
 	UseFormWatch,
 } from "react-hook-form";
 import InputEmail from "./inputs/input-email";
@@ -32,6 +30,8 @@ const fieldBoxStyles: CSSProperties = {
 	flexDirection: "column",
 	justifyContent: "end",
 	alignItems: "center",
+	width: "100%",
+	height: "100%",
 };
 
 export type FormBuilderRef<T extends FieldValues> = {
@@ -50,35 +50,19 @@ export type FormBuilderRef<T extends FieldValues> = {
 export interface IForm<T extends FieldValues> {
 	watch: UseFormWatch<T>;
 	control: Control<T, any>;
-	handleSubmit: UseFormHandleSubmit<T, undefined>;
-	onSubmit: (values: T) => void;
 	children: ReactNode;
-	fullwidth: boolean;
 	loading: boolean;
 	style?: CSSProperties;
 }
 
 function FormBuilder<T extends FieldValues>(
-	{
-		control,
-		watch,
-		handleSubmit,
-		onSubmit,
-		children,
-		fullwidth,
-		loading,
-		style,
-	}: IForm<T>,
+	{ control, watch, children, loading, style }: IForm<T>,
 	ref: Ref<FormBuilderRef<T>>
 ) {
 	const [inputsMap, setInputsMap] = useState<Map<string, ReactElement>>(
 		new Map()
 	);
 	const inputs = useMemo(() => Array.from(inputsMap.values()), [inputsMap]);
-
-	const handleSubmitButtonClick: SubmitHandler<T> = async (data) => {
-		onSubmit(data);
-	};
 
 	const addInput = (key: string, field: ReactElement) => {
 		setInputsMap((map) => {
@@ -160,10 +144,7 @@ function FormBuilder<T extends FieldValues>(
 	useImperativeHandle(ref, () => inputBuilder, [inputBuilder]);
 
 	return (
-		<form
-			onSubmit={handleSubmit(handleSubmitButtonClick)}
-			style={{ ...style, width: fullwidth ? "100%" : undefined }}
-		>
+		<form style={{ ...style, width: "100%", height: "100%" }}>
 			<div style={fieldBoxStyles}>
 				{inputs.map((input) =>
 					cloneElement(input, {

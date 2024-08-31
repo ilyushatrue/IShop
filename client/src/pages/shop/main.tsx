@@ -14,11 +14,12 @@ export default function Main() {
 	useEffect(() => {
 		fetchAsync({
 			request: productsApi.getAllAsync(1, 10),
-			onSuccess: (handler) =>
-				handler.do((res) => setProducts(res.body!.pageItems!)),
-			onError: (handler) => handler.do(() => navigate("/not-found")),
+			onSuccess: (handler) => handler,
+			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
-		});
+		})
+			.catch(() => navigate("/not-found"))
+			.then((res) => setProducts(res!.body!.pageItems));
 	}, []);
 
 	function handleProductUpdate(product: IProduct) {

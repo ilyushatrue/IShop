@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Page from "../../components/page";
 import { useAppSelector } from "../../app/hooks/redux/use-app-selector";
 import { Button as MuiButton, Box, Grid, Icon, Paper } from "@mui/material";
@@ -11,6 +11,7 @@ import { useMediaQueryContext } from "../../app/infrastructure/media-query-conte
 import Button from "../../components/buttons/button";
 
 export default function ProductPage() {
+	const navigate = useNavigate();
 	const { id } = useParams();
 	const { favoriteProducts, isAuthenticated } = useAppSelector(
 		(state) => state.user
@@ -40,10 +41,13 @@ export default function ProductPage() {
 		if (!id) return;
 		fetchAsync({
 			request: productsApi.getByIdAsync(id),
-			onSuccess: (handler) => handler.do((res) => setProduct(res.body!)),
-			onError: (handler) => handler.log().popup(),
+			onError: (handler) => handler.log().popup().throw(),
 			triggerPageLoader: true,
-		});
+		})
+			.catch((err) => {
+				navigate("server-is-dead");
+			})
+			.then((res) => setProduct(res!.body));
 	}, [id]);
 
 	function addToCart() {
@@ -52,11 +56,11 @@ export default function ProductPage() {
 		fetchAsync({
 			request: productsApi.addToCartAsync(id!),
 			onSuccess: (handler) =>
-				handler.popup("Товар успешно добавлен в корзину!").do(() => {
-					setAddedToCart(true);
-				}),
+				handler.popup("Товар успешно добавлен в корзину!"),
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
+		}).then(() => {
+			setAddedToCart(true);
 		});
 	}
 

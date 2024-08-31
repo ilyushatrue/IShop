@@ -10,16 +10,16 @@ export interface IAction {
 	componentProps?: ButtonProps;
 	component?: ElementType<ButtonProps>;
 }
-
+export interface ActionProps {
+	sx?: SxProps;
+	defaultActions?: IAction[];
+	actions?: (defaultActions: IAction[]) => IAction[];
+}
 export default function Actions({
 	sx,
 	defaultActions = [],
 	actions = (defaultActions) => defaultActions,
-}: {
-	sx?: SxProps;
-	defaultActions?: IAction[];
-	actions?: (defaultActions: IAction[]) => IAction[];
-}) {
+}: ActionProps) {
 	const actionGroups = useMemo(
 		() =>
 			actions(defaultActions).groupBy(
@@ -28,7 +28,7 @@ export default function Actions({
 		[actions, defaultActions]
 	);
 	return (
-		<Grid container display={"flex"} sx={sx} spacing={1}>
+		<Grid container display={"flex"} sx={{ ...sx }} spacing={1}>
 			<Grid
 				item
 				flex={1}
