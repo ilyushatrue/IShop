@@ -10,6 +10,10 @@ const GradientButton = styled(MuiButton)({
 	textTransform: "none",
 	paddingLeft: 20,
 	paddingRight: 20,
+	"&:hover": {
+		background:
+			"linear-gradient(90deg, rgb(240, 115, 26) 10%, rgb(240, 115, 26) 90%)",
+	},
 });
 
 export default function Button({ ...props }: ButtonProps) {

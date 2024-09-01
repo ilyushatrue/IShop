@@ -1,5 +1,6 @@
-import { Typography } from "@mui/material";
-import Dialog from "../../../components/dialog";
+import { Dialog, Typography } from "@mui/material";
+import ConfirmDialog from "../../../components/confirm-dialog";
+import InfoDialog from "../../../components/info-dialog";
 
 export default function EmailConfirmAlreadySentDialog({
 	open,
@@ -13,9 +14,9 @@ export default function EmailConfirmAlreadySentDialog({
 	onEmailResendRequest: (email: string) => void;
 }) {
 	return (
-		<Dialog
+		<InfoDialog
 			open={open}
-			onEnterKeyPress={onClose}
+			onOk={onClose}
 			title={"Ожидание подтверждения эл. почты"}
 			content={`На почту ${email} была отправлена ссылка на подтверждение учетной записи. Перейдите по ней.`}
 			onClose={onClose}
@@ -39,6 +40,6 @@ export default function EmailConfirmAlreadySentDialog({
 			>
 				Или закажите новую ссылку для подтверждения
 			</Typography>
-		</Dialog>
+		</InfoDialog>
 	);
 }

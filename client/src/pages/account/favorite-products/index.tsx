@@ -1,18 +1,20 @@
-import { useMemo, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import useApi from "../../../api/hooks/use-api.hook";
 import productsApi from "../../../api/endpoints/products.api";
 import { IProduct } from "../../../api/interfaces/product/product.interface";
 import { ICreateProductCommand } from "../../../api/interfaces/product/commands/create-product-command.interface";
 import { reload } from "../../../app/helpers/reload";
-import Dialog from "../../../components/dialog";
 import { useAppSelector } from "../../../app/hooks/redux/use-app-selector";
 import EnhancedTable from "../../../components/table/table";
 import AccountPage from "../account-page";
-import OutlinedButton from "../../../components/buttons/outlined-button";
+import { useMediaQueryContext } from "../../../app/infrastructure/media-query-context";
+import ConfirmDialog from "../../../components/confirm-dialog";
+import FavoriteProductsTable from "./favorite-products-table";
 
 export default function FavoriteProducts() {
 	const [isDeleteDialogOn, setIsDeleteDialogOn] = useState(false);
 	const isAuth = useAppSelector((state) => state.user.isAuthenticated);
+	const { xs } = useMediaQueryContext();
 	const apiFavoriteProducts = useAppSelector(
 		(state) => state.user.favoriteProducts
 	);
@@ -29,10 +31,7 @@ export default function FavoriteProducts() {
 		return [];
 	});
 	const { fetchAsync, isFetching } = useApi();
-	const rowsPerPageOptions = [10, 25, 100];
-	const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[0]);
-	const [page, setPage] = useState(0);
-	const selectedIds = useRef<string[]>([]);
+	const [selectedItems, setSelectedItems] = useState<IProduct[]>([]);
 	const [isAddProductDialogOn, setIsAddProductDialogOn] = useState(false);
 
 	function closeAddProductDialog() {
@@ -47,23 +46,12 @@ export default function FavoriteProducts() {
 		closeAddProductDialog();
 		await fetchAsync({
 			request: productsApi.createAsync(values),
-			onSuccess: (handler) =>
-				handler.popup("Новый товар добавлен."),
+			onSuccess: (handler) => handler.popup("Новый товар добавлен."),
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
 		}).then(reload);
 	}
 
-	const handleChangeRowsPerPage = (
-		event: React.ChangeEvent<HTMLInputElement>
-	) => {
-		setRowsPerPage(parseInt(event.target.value, 10));
-		setPage(0);
-	};
-
-	const handleChangePage = (event: unknown, newPage: number) => {
-		setPage(newPage);
-	};
 	async function handleDeleteProductAsync(productIds: string[]) {
 		fetchAsync({
 			request: productsApi.deleteRangeByIdAsync(productIds),
@@ -79,53 +67,20 @@ export default function FavoriteProducts() {
 	const openDeleteDialog = () => setIsDeleteDialogOn(true);
 	return (
 		<AccountPage title="Избранное">
-			<EnhancedTable
-				onSelect={(ids) => (selectedIds.current = ids)}
-				rowsPerPage={rowsPerPage}
-				rows={products}
+			<FavoriteProductsTable
 				loading={isFetching}
-				title={"Избранные товары"}
-				rowsPerPageOptions={rowsPerPageOptions}
-				onPageChange={handleChangePage}
-				onRowsPerPageChange={handleChangeRowsPerPage}
-				page={page}
-				actions={([del]) => [
-					{
-						...del,
-						componentProps: {
-							...del.componentProps,
-							onClick: openDeleteDialog,
-						},
-					},
-				]}
+				rows={products}
+				onChange={setSelectedItems}
 			/>
-			<Dialog
-				title="Удалить товары"
-				onEnterKeyPress={() =>
-					handleDeleteProductAsync(selectedIds.current)
+
+			<ConfirmDialog
+				onConfirm={() =>
+					handleDeleteProductAsync(selectedItems.map((s) => s.id))
 				}
-				content="Вы действительно хотите удалить выбранные товары?"
-				open={isDeleteDialogOn}
 				onClose={closeDeleteDialog}
-				// actions={() => [
-				// 	{
-				// 		value: "Не хочу",
-				// 		position: "left",
-				// 		component: OutlinedButton,
-				// 		componentProps: {
-				// 			onClick: closeDeleteDialog,
-				// 			fullWidth: true,
-				// 		},
-				// 	},
-				// 	{
-				// 		value: "Хочу!",
-				// 		componentProps: {
-				// 			onClick: () =>
-				// 				handleDeleteProductAsync(selectedIds.current),
-				// 			fullWidth: true,
-				// 		},
-				// 	},
-				// ]}
+				open={isDeleteDialogOn}
+				title="Удалить из избранного"
+				content="Вы действительно хотите удалить выбранные товары?"
 			/>
 		</AccountPage>
 	);

@@ -1,10 +1,11 @@
-import { DialogTitle, DialogContent } from "@mui/material";
-import { useForm } from "react-hook-form";
+import { DialogTitle, DialogContent, Dialog } from "@mui/material";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { ICreateProductCommand } from "../../../api/interfaces/product/commands/create-product-command.interface";
 import Form from "../../../components/form/form";
 import { useMemo } from "react";
 import FormActions from "../../../components/form/form-actions";
-import Dialog from "../../../components/dialog";
+import OutlinedButton from "../../../components/buttons/outlined-button";
+import Button from "../../../components/buttons/button";
 
 export default function ProductAddDialog({
 	onSubmit,
@@ -35,6 +36,12 @@ export default function ProductAddDialog({
 			reValidateMode: "onBlur",
 			defaultValues: defaultValues,
 		});
+
+	const handleSubmitButtonClick: SubmitHandler<ICreateProductCommand> = (
+		values
+	) => {
+		onSubmit(values);
+	};
 	return (
 		<Dialog open={open} onClose={onClose} fullWidth>
 			<DialogTitle>Добавить продукт</DialogTitle>
@@ -69,15 +76,14 @@ export default function ProductAddDialog({
 							})
 					}
 				>
-					<FormActions
-						disabled={loading}
-						handleSubmit={handleSubmit}
-						onSubmit={onSubmit}
-						reset={() => {
-							onClose();
-							reset();
-						}}
-					/>
+					<FormActions>
+						<OutlinedButton onClick={() => reset()}>
+							Отмена
+						</OutlinedButton>
+						<Button onClick={handleSubmit(handleSubmitButtonClick)}>
+							Добавить
+						</Button>
+					</FormActions>
 				</Form>
 			</DialogContent>
 		</Dialog>

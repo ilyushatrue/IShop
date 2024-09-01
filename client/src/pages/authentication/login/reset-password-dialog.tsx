@@ -1,8 +1,14 @@
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import Form from "../../../components/form/form";
-import { DialogContent, DialogContentText, DialogTitle } from "@mui/material";
+import {
+	Dialog,
+	DialogContent,
+	DialogContentText,
+	DialogTitle,
+} from "@mui/material";
 import FormActions from "../../../components/form/form-actions";
-import Dialog from "../../../components/dialog";
+import OutlinedButton from "../../../components/buttons/outlined-button";
+import Button from "../../../components/buttons/button";
 
 export default function ResetPasswordDialog({
 	loading,
@@ -21,6 +27,13 @@ export default function ResetPasswordDialog({
 		reValidateMode: "onBlur",
 		defaultValues: defaultValues,
 	});
+
+	const handleSubmitButtonClick: SubmitHandler<{ email: string }> = (
+		values
+	) => {
+		onSubmit(values);
+	};
+
 	return (
 		<Dialog open={open}>
 			<DialogTitle>Сброс пароля</DialogTitle>
@@ -33,15 +46,22 @@ export default function ResetPasswordDialog({
 						builder.email({ name: "email", required: true })
 					}
 				>
-					<FormActions
-						handleSubmit={handleSubmit}
-						onSubmit={onSubmit}
-						reset={() => {
-							reset();
-							onClose();
-						}}
-						disabled={loading}
-					/>
+					<FormActions>
+						<OutlinedButton
+							onClick={() => {
+								reset();
+								onClose();
+							}}
+						>
+							Отмена
+						</OutlinedButton>
+						<Button
+							onClick={handleSubmit(handleSubmitButtonClick)}
+							autoFocus
+						>
+							Добавить
+						</Button>
+					</FormActions>
 				</Form>
 			</DialogContent>
 		</Dialog>

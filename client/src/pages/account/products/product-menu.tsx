@@ -10,10 +10,9 @@ import { ICreateProductCommand } from "../../../api/interfaces/product/commands/
 import EnhancedTable from "../../../components/table/table";
 import IconButton from "../../../components/buttons/icon-button";
 import { reload } from "../../../app/helpers/reload";
-import { useMediaQueryContext } from "../../../app/infrastructure/media-query-context";
 import AccountProtectedPage from "../account-protected-page";
 import ProductAddDialog from "./product-add-dialog";
-import ProductDeleteDialog from "./product-delete-dialog";
+import ConfirmDialog from "../../../components/confirm-dialog";
 
 export default function ProductMenu() {
 	const [isDeleteDialogOn, setIsDeleteDialogOn] = useState(false);
@@ -125,37 +124,6 @@ export default function ProductMenu() {
 				onPageChange={handleChangePage}
 				onRowsPerPageChange={handleChangeRowsPerPage}
 				page={page}
-				actions={([del, edit, add, filter]) => [
-					{
-						...del,
-						componentProps: {
-							...del.componentProps,
-							onClick: openDeleteDialog,
-						},
-					},
-					{
-						...edit,
-						componentProps: {
-							...edit.componentProps,
-							onClick: openAddProductDialog,
-						},
-					},
-					{
-						...add,
-						componentProps: {
-							...add.componentProps,
-							onClick: openAddProductDialog,
-						},
-					},
-					// {
-					// 	...filter,
-					// 	componentProps: {
-					// 		...filter.componentProps,
-					// 		disabled: isFetching,
-					// 		onClick: () => console.log(selectedIds.current),
-					// 	},
-					// },
-				]}
 			/>
 			<ProductAddDialog
 				categoryId={categoryId}
@@ -164,11 +132,12 @@ export default function ProductMenu() {
 				onSubmit={handleSubmitAsync}
 				open={isAddProductDialogOn}
 			/>
-			<ProductDeleteDialog
-				onDelete={() => handleDeleteProductAsync(selectedIds.current)}
-				open={isDeleteDialogOn}
+			<ConfirmDialog
 				onClose={closeDeleteDialog}
-				loading={isFetching}
+				open={isDeleteDialogOn}
+				title="Удалить товары"
+				onConfirm={() => handleDeleteProductAsync(selectedIds.current)}
+				content="Вы действительно хотите удалить выбранные товары?"
 			/>
 		</AccountProtectedPage>
 	);

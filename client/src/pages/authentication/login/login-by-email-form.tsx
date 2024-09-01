@@ -9,7 +9,7 @@ interface IProps {
 }
 export default function LoginByEmailForm({ onSubmit, loading }: IProps) {
 	const { handleSubmit, control, watch } = useForm<ILoginByEmailRequest>({
-		mode: "onChange",
+		mode: "onSubmit",
 		reValidateMode: "onBlur",
 		defaultValues: {
 			password: "",

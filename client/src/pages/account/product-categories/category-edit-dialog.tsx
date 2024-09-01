@@ -1,9 +1,10 @@
-import { DialogTitle } from "@mui/material";
+import { Dialog, DialogTitle } from "@mui/material";
 import { IProductCategory } from "../../../api/interfaces/product-categories/product-category.interface";
-import Dialog from "../../../components/dialog";
 import Form from "../../../components/form/form";
 import FormActions from "../../../components/form/form-actions";
 import { SubmitHandler, useForm } from "react-hook-form";
+import OutlinedButton from "../../../components/buttons/outlined-button";
+import Button from "../../../components/buttons/button";
 
 export default function CategoryEditDialog({
 	onClose,
@@ -28,20 +29,16 @@ export default function CategoryEditDialog({
 		defaultValues: editCategory ?? defaultCategory,
 	});
 
-	const handleEnterKeyPressed: SubmitHandler<IProductCategory> = (values) => {
+	const handleSubmitButtonClick: SubmitHandler<IProductCategory> = (
+		values
+	) => {
 		onSubmit(values);
 	};
+
 	return (
-		<Dialog
-			open={open}
-			fullWidth
-			onClose={onClose}
-			onEnterKeyPress={handleSubmit(handleEnterKeyPressed)}
-		>
+		<Dialog open={open} fullWidth onClose={onClose}>
 			<DialogTitle>
-				{action === "edit"
-					? "Редактировать категорию"
-					: "Создать категорию"}
+				{`${action === "edit" ? "Редактировать" : "Создать"} категорию`}
 			</DialogTitle>
 			<Form
 				loading={loading}
@@ -80,12 +77,17 @@ export default function CategoryEditDialog({
 						})
 				}
 			>
-				<FormActions
-					disabled={loading}
-					handleSubmit={handleSubmit}
-					onSubmit={onSubmit}
-					reset={reset}
-				/>
+				<FormActions>
+					<OutlinedButton onClick={() => reset()}>
+						Отмена
+					</OutlinedButton>
+					<Button
+						onClick={handleSubmit(handleSubmitButtonClick)}
+						autoFocus
+					>
+						Добавить
+					</Button>
+				</FormActions>
 			</Form>
 		</Dialog>
 	);

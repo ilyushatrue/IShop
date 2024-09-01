@@ -7,14 +7,13 @@ import RecursiveTree, {
 } from "../../../components/recursive-tree/recursive-tree";
 import { IProductCategory } from "../../../api/interfaces/product-categories/product-category.interface";
 import MenuEditCell from "./menu-edit-cell";
-import Dialog from "../../../components/dialog";
 import { Box, Button, Icon } from "@mui/material";
 import { reload } from "../../../app/helpers/reload";
 import MenuDeleteCell from "./menu-delete-cell";
 import { useNavigate } from "react-router-dom";
 import CategoryEditDialog from "./category-edit-dialog";
 import AccountProtectedPage from "../account-protected-page";
-import OutlinedButton from "../../../components/buttons/outlined-button";
+import ConfirmDialog from "../../../components/confirm-dialog";
 
 export default function ProductCategories() {
 	const defaultCategory: IProductCategory = {
@@ -250,28 +249,9 @@ export default function ProductCategories() {
 					],
 				}}
 			/>
-			<Dialog
-				onEnterKeyPress={() =>
-					handleEditCategory(editCategory!.category!)
-				}
+			<ConfirmDialog
+				onConfirm={() => handleEditCategory(editCategory!.category!)}
 				onClose={() => setEditCategory(undefined)}
-				// actions={() => [
-				// 	{
-				// 		value: "Нет",
-				// 		position: "left",
-				// 		component: OutlinedButton,
-				// 		componentProps: {
-				// 			onClick: () => setEditCategory(undefined),
-				// 		},
-				// 	},
-				// 	{
-				// 		value: "Да",
-				// 		componentProps: {
-				// 			onClick: () =>
-				// 				handleEditCategory(editCategory!.category!),
-				// 		},
-				// 	},
-				// ]}
 				open={editCategory?.action === "delete"}
 				title="Вы уверены?"
 				content="Вы действительно хотите удалить категорию?"

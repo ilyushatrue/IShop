@@ -1,27 +1,17 @@
 import * as React from "react";
-import { alpha } from "@mui/material/styles";
-import Box from "@mui/material/Box";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import TableSortLabel from "@mui/material/TableSortLabel";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
 import Checkbox from "@mui/material/Checkbox";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Switch from "@mui/material/Switch";
-import { visuallyHidden } from "@mui/utils";
-import Actions, { IAction } from "../actions";
-import IconButton2 from "../buttons/icon-button-2";
+
 import { IProduct } from "../../api/interfaces/product/product.interface";
 import Image from "../image";
+import TableHead, { Order } from "./table-head";
 import { useMediaQueryContext } from "../../app/infrastructure/media-query-context";
 
-function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
+export function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
 	if (b[orderBy] < a[orderBy]) {
 		return -1;
 	}
@@ -31,9 +21,7 @@ function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
 	return 0;
 }
 
-type Order = "asc" | "desc";
-
-function getComparator<Key extends keyof any>(
+export function getComparator<Key extends keyof any>(
 	order: Order,
 	orderBy: Key
 ): (
@@ -45,201 +33,7 @@ function getComparator<Key extends keyof any>(
 		: (a, b) => -descendingComparator(a, b, orderBy);
 }
 
-interface HeadCell {
-	id: keyof IProduct;
-	disablePadding: boolean;
-	label: string;
-	numeric: boolean;
-}
-
-const headCells: HeadCell[] = [
-	{
-		id: "imageId",
-		numeric: false,
-		disablePadding: false,
-		label: "Изображение",
-	},
-	{
-		id: "name",
-		numeric: false,
-		disablePadding: true,
-		label: "Наименование",
-	},
-	{
-		id: "description",
-		numeric: false,
-		disablePadding: false,
-		label: "Описание",
-	},
-];
-
-interface EnhancedTableProps {
-	numSelected: number;
-	onRequestSort: (
-		event: React.MouseEvent<unknown>,
-		property: keyof IProduct
-	) => void;
-	onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
-	order: Order;
-	orderBy: string;
-	rowCount: number;
-	loading: boolean;
-}
-
-function EnhancedTableHead(props: EnhancedTableProps) {
-	const {
-		onSelectAllClick,
-		order,
-		orderBy,
-		numSelected,
-		rowCount,
-		onRequestSort,
-	} = props;
-	const createSortHandler =
-		(property: keyof IProduct) => (event: React.MouseEvent<unknown>) => {
-			onRequestSort(event, property);
-		};
-
-	return (
-		<TableHead>
-			<TableRow>
-				<TableCell padding="checkbox">
-					<Checkbox
-						color="primary"
-						indeterminate={
-							numSelected > 0 && numSelected < rowCount
-						}
-						checked={rowCount > 0 && numSelected === rowCount}
-						onChange={onSelectAllClick}
-					/>
-				</TableCell>
-				{headCells.map((headCell, index) => (
-					<TableCell
-						key={headCell.id}
-						align={headCell.numeric ? "right" : "left"}
-						padding={headCell.disablePadding ? "none" : "normal"}
-						sortDirection={orderBy === headCell.id ? order : false}
-					>
-						<TableSortLabel
-							active={orderBy === headCell.id}
-							direction={orderBy === headCell.id ? order : "asc"}
-							onClick={createSortHandler(headCell.id)}
-						>
-							{headCell.label}
-							{orderBy === headCell.id ? (
-								<Box component="span" sx={visuallyHidden}>
-									{order === "desc"
-										? "sorted descending"
-										: "sorted ascending"}
-								</Box>
-							) : null}
-						</TableSortLabel>
-					</TableCell>
-				))}
-			</TableRow>
-		</TableHead>
-	);
-}
-
-interface EnhancedTableToolbarProps {
-	numSelected: number;
-	title: string;
-	actions?: (defaultActions: IAction[]) => IAction[];
-	loading: boolean;
-}
-
-function EnhancedTableToolbar({
-	numSelected,
-	title,
-	actions,
-	loading,
-}: EnhancedTableToolbarProps) {
-	const { xs } = useMediaQueryContext();
-	console.log(numSelected);
-	return (
-		<Toolbar
-			sx={{
-				pl: { sm: 2 },
-				pr: { xs: 1, sm: 1 },
-				...(numSelected > 0 && {
-					bgcolor: (theme) =>
-						alpha(
-							theme.palette.primary.main,
-							theme.palette.action.activatedOpacity
-						),
-				}),
-			}}
-		>
-			{numSelected > 0 ? (
-				<Typography
-					sx={{ flex: "1 1 100%" }}
-					color="inherit"
-					variant="subtitle1"
-					component="div"
-				>
-					{numSelected} выбрано
-				</Typography>
-			) : (
-				<Typography
-					sx={{ flex: "1 1 100%" }}
-					variant="h6"
-					id="tableTitle"
-					component="div"
-					fontSize={18}
-				>
-					{title}
-				</Typography>
-			)}
-			<Actions
-				actions={actions}
-				defaultActions={[
-					{
-						value: "delete",
-						tooltip: "Удалить",
-						componentProps: {
-							disabled: loading,
-							size: xs ? "small" : "medium",
-						},
-						display: numSelected > 0 ? "flex" : "none",
-						component: IconButton2,
-					},
-					{
-						value: "edit",
-						tooltip: "Редактировать",
-						componentProps: {
-							disabled: loading,
-							size: xs ? "small" : "medium",
-						},
-						display: numSelected === 1 ? "flex" : "none",
-						component: IconButton2,
-					},
-					{
-						value: "add",
-						componentProps: {
-							disabled: loading,
-							size: xs ? "small" : "medium",
-						},
-						tooltip: "Добавить",
-						display: numSelected > 0 ? "none" : "flex",
-						component: IconButton2,
-					},
-					{
-						value: "filter_list",
-						tooltip: "Фильтр",
-						componentProps: {
-							disabled: loading,
-							size: xs ? "small" : "medium",
-						},
-						display: numSelected > 0 ? "none" : "flex",
-						component: IconButton2,
-					},
-				]}
-			/>
-		</Toolbar>
-	);
-}
 export default function EnhancedTable({
-	actions,
 	rows,
 	loading,
 	title,
@@ -250,7 +44,6 @@ export default function EnhancedTable({
 	onRowsPerPageChange,
 	onSelect,
 }: {
-	actions?: (defaultActions: IAction[]) => IAction[];
 	rows: IProduct[];
 	rowsPerPageOptions: number[];
 	title: string;
@@ -325,16 +118,10 @@ export default function EnhancedTable({
 	);
 
 	return (
-		<Box>
-			<EnhancedTableToolbar
-				numSelected={selected.length}
-				title={title}
-				actions={actions}
-				loading={loading}
-			/>
 			<TableContainer>
 				<Table sx={{ minWidth: 750 }} size={dense ? "small" : "medium"}>
-					<EnhancedTableHead
+					<TableHead<IProduct>
+						headCells={[]}
 						loading={loading}
 						numSelected={selected.length}
 						order={order}
@@ -358,7 +145,7 @@ export default function EnhancedTable({
 									tabIndex={-1}
 									key={row.id}
 									selected={isItemSelected}
-									sx={{ cursor: "pointer" }}
+									sx={{ cursor: "pointer", height: 40 }}
 								>
 									<TableCell padding="checkbox">
 										<Checkbox
@@ -393,23 +180,13 @@ export default function EnhancedTable({
 					</TableBody>
 				</Table>
 			</TableContainer>
-			<TablePagination
-				rowsPerPageOptions={rowsPerPageOptions}
-				component="div"
-				count={rows.length}
-				rowsPerPage={rowsPerPage}
-				page={page}
-				onPageChange={onPageChange}
-				onRowsPerPageChange={onRowsPerPageChange}
-				labelRowsPerPage={"Строк на странице"}
-			/>
-			<FormControlLabel
-				sx={{ marginLeft: 1 }}
-				control={
-					<Switch checked={dense} onChange={handleChangeDense} />
-				}
-				label="Компактный вид"
-			/>
-		</Box>
+
+			// <FormControlLabel
+			// 	sx={{ marginLeft: 1 }}
+			// 	control={
+			// 		<Switch checked={dense} onChange={handleChangeDense} />
+			// 	}
+			// 	label="Компактный вид"
+			// />
 	);
 }

@@ -1,16 +1,16 @@
-import { Grid } from "@mui/material";
+import { Dialog, Grid } from "@mui/material";
 import { IProduct } from "../../api/interfaces/product/product.interface";
 import { useMemo, useState } from "react";
 import useApi from "../../api/hooks/use-api.hook";
 import { useAppSelector } from "../../app/hooks/redux/use-app-selector";
 import ProductCard from "./card/product-card";
-import Dialog from "../../components/dialog";
 import ProductCardEditDialog from "./card/product-card-edit-dialog";
 import productsApi from "../../api/endpoints/products.api";
 import { useAppDispatch } from "../../app/hooks/redux/use-app-dispatch";
 import { setFavoriteProduct } from "../../store/user.slice";
 import { redirect } from "../../app/helpers/redirect";
 import { useMediaQueryContext } from "../../app/infrastructure/media-query-context";
+import ConfirmDialog from "../../components/confirm-dialog";
 
 interface IProps {
 	products: IProduct[];
@@ -147,28 +147,12 @@ export default function Products({ products, onDelete, onUpdate }: IProps) {
 					);
 				})}
 			</Grid>
-			<Dialog
-				title="Удалить товар"
-				onEnterKeyPress={handleDeleteProductAsync}
-				content="Вы действительно хотите удалить товар?"
+			<ConfirmDialog
 				open={!!productToDeleteId}
 				onClose={() => setProductToDeleteId("")}
-				// actions={() => [
-				// 	{
-				// 		value: "Не хочу",
-				// 		position: "left",
-				// 		componentProps: {
-				// 			onClick: () => setProductToDeleteId(""),
-				// 		},
-				// 	},
-				// 	{
-				// 		value: "Хочу!",
-				// 		position: "right",
-				// 		componentProps: {
-				// 			onClick: handleDeleteProductAsync,
-				// 		},
-				// 	},
-				// ]}
+				confirmText="Удалить"
+				content="Вы действительно хотите удалить товар?"
+				onConfirm={handleDeleteProductAsync}
 			/>
 			<ProductCardEditDialog
 				categories={categories}
