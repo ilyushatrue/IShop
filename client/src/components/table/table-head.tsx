@@ -5,18 +5,16 @@ import {
 	Checkbox,
 	TableSortLabel,
 } from "@mui/material";
+import { ChangeEvent, MouseEvent } from "react";
+import { IIdentity } from "../../app/infrastructure/unique.interface";
 export type Order = "asc" | "desc";
 interface EnhancedTableProps<T> {
 	numSelected: number;
-	onRequestSort: (
-		event: React.MouseEvent<unknown>,
-		property: keyof T
-	) => void;
-	onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
+	onRequestSort: (event: MouseEvent<unknown>, property: keyof T) => void;
+	onSelectAllClick: (event: ChangeEvent<HTMLInputElement>) => void;
 	order: Order;
-	orderBy: string;
+	orderBy: keyof T;
 	rowCount: number;
-	loading: boolean;
 	headCells: HeadCell<T>[];
 }
 
@@ -27,7 +25,7 @@ interface HeadCell<T> {
 	numeric: boolean;
 }
 
-export default function TableHead<T>({
+export default function TableHead<T extends IIdentity<number | string>>({
 	onSelectAllClick,
 	order,
 	orderBy,
@@ -54,9 +52,9 @@ export default function TableHead<T>({
 						onChange={onSelectAllClick}
 					/>
 				</TableCell>
-				{headCells.map((headCell, index) => (
+				{headCells.map((headCell) => (
 					<TableCell
-						key={index}
+						key={headCell.id.toString()}
 						align={headCell.numeric ? "right" : "left"}
 						padding={headCell.disablePadding ? "none" : "normal"}
 						sortDirection={orderBy === headCell.id ? order : false}

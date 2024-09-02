@@ -24,17 +24,22 @@ interface ITableValue {
 	imageId: string;
 	name: string;
 }
-
-export default function FavoriteProductsTable({
+export default function ProductsTable({
 	rows,
 	loading,
 	onChange,
+	onAdd,
 	onDelete,
+	onEdit,
+	rowsPerPage: _rowsPerPage,
 }: {
 	rows: ITableValue[];
 	loading: boolean;
+	rowsPerPage: number;
 	onChange: (items: ITableValue[]) => void;
 	onDelete: (items: ITableValue[]) => void;
+	onEdit: (item: ITableValue) => void;
+	onAdd: (item: ITableValue) => void;
 }) {
 	const defaultValue: ITableValue = {
 		id: "",
@@ -42,9 +47,9 @@ export default function FavoriteProductsTable({
 		imageId: "",
 		name: "",
 	};
-	const { xs } = useMediaQueryContext();
 	const rowsPerPageOptions = [10, 25, 100];
-	const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[0]);
+	const { xs } = useMediaQueryContext();
+	const [rowsPerPage, setRowsPerPage] = useState(_rowsPerPage);
 	const [page, setPage] = useState(0);
 	const [order, setOrder] = useState<Order>("asc");
 	const [orderBy, setOrderBy] = useState<keyof ITableValue>("name");
@@ -125,17 +130,32 @@ export default function FavoriteProductsTable({
 			>
 				<Stack direction={"row"} spacing={1}>
 					<TooltipIconButton
-						hidden={selected.length === 0}
+						hidden={selected.length > 0}
 						tooltip="Удалить"
 						size={xs ? "small" : "medium"}
 						disabled={loading}
-						onClick={() =>
-							onDelete(
-								rows.filter((r) => selected.includes(r.id))
-							)
-						}
+						onClick={() => onDelete(rows)}
 					>
 						delete
+					</TooltipIconButton>
+					<TooltipIconButton
+						hidden={selected.length !== 1}
+						tooltip="Редактировать"
+						size={xs ? "small" : "medium"}
+						disabled={loading}
+						onClick={() =>
+							onEdit(rows.find((r) => r.id === selected[0])!)
+						}
+					>
+						edit
+					</TooltipIconButton>
+					<TooltipIconButton
+						tooltip="Добавить"
+						size={xs ? "small" : "medium"}
+						disabled={loading}
+						onClick={() => onAdd(rows[0])}
+					>
+						add
 					</TooltipIconButton>
 				</Stack>
 			</TableToolbar>
@@ -170,7 +190,7 @@ export default function FavoriteProductsTable({
 						rowCount={rows.length}
 					/>
 					<TableBody>
-						{visibleRows.map((row) => {
+						{visibleRows.map((row, index) => {
 							const isItemSelected = isSelected(row.id);
 
 							return (
@@ -193,18 +213,24 @@ export default function FavoriteProductsTable({
 											checked={isItemSelected}
 										/>
 									</TableCell>
-									<TableCell padding="none">
+									<TableCell
+										component="th"
+										scope="row"
+										padding="none"
+									>
 										<Image
 											imageId={row.imageId}
 											size={dense ? 40 : 80}
 										/>
 									</TableCell>
-									<TableCell padding="none">
+									<TableCell
+										component="th"
+										scope="row"
+										padding="none"
+									>
 										{row.name}
 									</TableCell>
-									<TableCell padding="none">
-										{row.description}
-									</TableCell>
+									<TableCell>{row.description}</TableCell>
 								</TableRow>
 							);
 						})}

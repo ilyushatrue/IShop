@@ -3,7 +3,7 @@ import Users from "./users/users";
 import Purchases from "./purchases";
 import Profile from "./profile/profile";
 import ProductCategories from "./product-categories";
-import ProductMenu from "./products/product-menu";
+import ProductMenu from "./products/products-menu";
 import NotFound from "../not-found/not-found";
 import Cart from "./cart";
 import FavoriteProducts from "./favorite-products";

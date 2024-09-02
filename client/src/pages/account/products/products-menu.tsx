@@ -13,6 +13,7 @@ import { reload } from "../../../app/helpers/reload";
 import AccountProtectedPage from "../account-protected-page";
 import ProductAddDialog from "./product-add-dialog";
 import ConfirmDialog from "../../../components/confirm-dialog";
+import ProductsTable from "./products-table";
 
 export default function ProductMenu() {
 	const [isDeleteDialogOn, setIsDeleteDialogOn] = useState(false);
@@ -114,16 +115,14 @@ export default function ProductMenu() {
 					caption="К категориям"
 				/>
 			</Box>
-			<EnhancedTable
+			<ProductsTable
 				loading={isFetching}
-				onSelect={(ids) => (selectedIds.current = ids)}
-				rowsPerPage={rowsPerPage}
+				onAdd={console.log}
+				onChange={console.log}
+				onDelete={console.log}
+				onEdit={console.log}
 				rows={products}
-				title={"Товары"}
-				rowsPerPageOptions={rowsPerPageOptions}
-				onPageChange={handleChangePage}
-				onRowsPerPageChange={handleChangeRowsPerPage}
-				page={page}
+				rowsPerPage={rowsPerPage}
 			/>
 			<ProductAddDialog
 				categoryId={categoryId}

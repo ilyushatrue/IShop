@@ -118,75 +118,32 @@ export default function EnhancedTable({
 	);
 
 	return (
-			<TableContainer>
-				<Table sx={{ minWidth: 750 }} size={dense ? "small" : "medium"}>
-					<TableHead<IProduct>
-						headCells={[]}
-						loading={loading}
-						numSelected={selected.length}
-						order={order}
-						orderBy={orderBy}
-						onSelectAllClick={handleSelectAllClick}
-						onRequestSort={handleRequestSort}
-						rowCount={rows.length}
-					/>
-					<TableBody>
-						{visibleRows.map((row, index) => {
-							const isItemSelected = isSelected(row.id);
-							const labelId = `enhanced-table-checkbox-${index}`;
+		<Table sx={{ minWidth: 750 }} size={dense ? "small" : "medium"}>
 
-							return (
-								<TableRow
-									hover
-									onClick={(event) =>
-										handleClick(event, row.id)
-									}
-									role="checkbox"
-									tabIndex={-1}
-									key={row.id}
-									selected={isItemSelected}
-									sx={{ cursor: "pointer", height: 40 }}
-								>
-									<TableCell padding="checkbox">
-										<Checkbox
-											color="primary"
-											checked={isItemSelected}
-										/>
-									</TableCell>
-									<TableCell>
-										<Image imageId={row.imageId} />
-									</TableCell>
-									<TableCell
-										component="th"
-										id={labelId}
-										scope="row"
-										padding="none"
-									>
-										{row.name}
-									</TableCell>
-									<TableCell>{row.description}</TableCell>
-								</TableRow>
-							);
-						})}
-						{emptyRows > 0 && (
-							<TableRow
-								style={{
-									height: (dense ? 33 : 53) * emptyRows,
-								}}
-							>
-								<TableCell colSpan={6} />
-							</TableRow>
-						)}
-					</TableBody>
-				</Table>
-			</TableContainer>
+			<TableBody>
+				{/* {visibleRows.map((row, index) => {
+					const isItemSelected = isSelected(row.id);
+					const labelId = `enhanced-table-checkbox-${index}`;
 
-			// <FormControlLabel
-			// 	sx={{ marginLeft: 1 }}
-			// 	control={
-			// 		<Switch checked={dense} onChange={handleChangeDense} />
-			// 	}
-			// 	label="Компактный вид"
-			// />
+				})} */}
+				{emptyRows > 0 && (
+					<TableRow
+						style={{
+							height: (dense ? 33 : 53) * emptyRows,
+						}}
+					>
+						<TableCell colSpan={6} />
+					</TableRow>
+				)}
+			</TableBody>
+		</Table>
+
+		// <FormControlLabel
+		// 	sx={{ marginLeft: 1 }}
+		// 	control={
+		// 		<Switch checked={dense} onChange={handleChangeDense} />
+		// 	}
+		// 	label="Компактный вид"
+		// />
 	);
 }

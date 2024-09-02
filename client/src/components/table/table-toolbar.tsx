@@ -27,6 +27,26 @@ export default function TableToolbar({
 				}),
 			}}
 		>
+			{numSelected > 0 ? (
+				<Typography
+					sx={{ flex: "1 1 100%" }}
+					color="inherit"
+					variant="subtitle1"
+					component="div"
+				>
+					{numSelected} выбрано
+				</Typography>
+			) : (
+				<Typography
+					sx={{ flex: "1 1 100%" }}
+					variant="h6"
+					id="tableTitle"
+					component="div"
+					fontSize={18}
+				>
+					{title}
+				</Typography>
+			)}
 			{children}
 		</Toolbar>
 	);

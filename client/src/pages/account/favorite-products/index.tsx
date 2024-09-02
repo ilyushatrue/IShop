@@ -68,9 +68,21 @@ export default function FavoriteProducts() {
 	return (
 		<AccountPage title="Избранное">
 			<FavoriteProductsTable
+				onDelete={console.log}
 				loading={isFetching}
 				rows={products}
-				onChange={setSelectedItems}
+				onChange={(values) =>
+					setSelectedItems(
+						values.map((v) => ({
+							categoryId: 0,
+							description: v.description,
+							id: v.id,
+							imageId: v.imageId,
+							name: v.name,
+							price: 0,
+						}))
+					)
+				}
 			/>
 
 			<ConfirmDialog
