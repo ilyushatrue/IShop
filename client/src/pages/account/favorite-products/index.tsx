@@ -1,15 +1,17 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import useApi from "../../../api/hooks/use-api.hook";
 import productsApi from "../../../api/endpoints/products.api";
 import { IProduct } from "../../../api/interfaces/product/product.interface";
 import { ICreateProductCommand } from "../../../api/interfaces/product/commands/create-product-command.interface";
 import { reload } from "../../../app/helpers/reload";
 import { useAppSelector } from "../../../app/hooks/redux/use-app-selector";
-import EnhancedTable from "../../../components/table/table";
 import AccountPage from "../account-page";
 import { useMediaQueryContext } from "../../../app/infrastructure/media-query-context";
 import ConfirmDialog from "../../../components/confirm-dialog";
 import FavoriteProductsTable from "./favorite-products-table";
+import AccountPageSideBox from "../account-page-side-box";
+import AccountPageMainBox from "../account-page-main-box";
+import AccountPageMainBoxHeader from "../account-page-main-box-header";
 
 export default function FavoriteProducts() {
 	const [isDeleteDialogOn, setIsDeleteDialogOn] = useState(false);
@@ -66,34 +68,38 @@ export default function FavoriteProducts() {
 	const closeDeleteDialog = () => setIsDeleteDialogOn(false);
 	const openDeleteDialog = () => setIsDeleteDialogOn(true);
 	return (
-		<AccountPage title="Избранное">
-			<FavoriteProductsTable
-				onDelete={console.log}
-				loading={isFetching}
-				rows={products}
-				onChange={(values) =>
-					setSelectedItems(
-						values.map((v) => ({
-							categoryId: 0,
-							description: v.description,
-							id: v.id,
-							imageId: v.imageId,
-							name: v.name,
-							price: 0,
-						}))
-					)
-				}
-			/>
+		<AccountPage>
+			<AccountPageSideBox />
+			<AccountPageMainBox>
+				<AccountPageMainBoxHeader>Избранное</AccountPageMainBoxHeader>
+				<FavoriteProductsTable
+					onDelete={console.log}
+					loading={isFetching}
+					rows={products}
+					onChange={(values) =>
+						setSelectedItems(
+							values.map((v) => ({
+								categoryId: 0,
+								description: v.description,
+								id: v.id,
+								imageId: v.imageId,
+								name: v.name,
+								price: 0,
+							}))
+						)
+					}
+				/>
 
-			<ConfirmDialog
-				onConfirm={() =>
-					handleDeleteProductAsync(selectedItems.map((s) => s.id))
-				}
-				onClose={closeDeleteDialog}
-				open={isDeleteDialogOn}
-				title="Удалить из избранного"
-				content="Вы действительно хотите удалить выбранные товары?"
-			/>
+				<ConfirmDialog
+					onConfirm={() =>
+						handleDeleteProductAsync(selectedItems.map((s) => s.id))
+					}
+					onClose={closeDeleteDialog}
+					open={isDeleteDialogOn}
+					title="Удалить из избранного"
+					content="Вы действительно хотите удалить выбранные товары?"
+				/>
+			</AccountPageMainBox>
 		</AccountPage>
 	);
 }

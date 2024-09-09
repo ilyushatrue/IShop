@@ -3,10 +3,10 @@ import Users from "./users/users";
 import Purchases from "./purchases";
 import Profile from "./profile/profile";
 import ProductCategories from "./product-categories";
-import ProductMenu from "./products/products-menu";
 import NotFound from "../not-found/not-found";
 import Cart from "./cart";
 import FavoriteProducts from "./favorite-products";
+import ProductRoutes from "./products";
 
 export default function AccountRoutes() {
 	return (
@@ -16,7 +16,7 @@ export default function AccountRoutes() {
 			<Route path="/profile/*" element={<Profile />} />
 			<Route path="/cart/*" element={<Cart />} />
 			<Route path="/categories/*" element={<ProductCategories />} />
-			<Route path="/products/*" element={<ProductMenu />} />
+			<Route path="/products/*" element={<ProductRoutes />} />
 			<Route path="/favorites/*" element={<FavoriteProducts />} />
 			<Route path="*" element={<NotFound />} />
 		</Routes>

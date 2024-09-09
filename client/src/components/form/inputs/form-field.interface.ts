@@ -10,4 +10,5 @@ export interface IFormField<T extends FieldValues> {
 	required?: boolean;
 	disabled?: boolean;
 	readonly?: boolean;
+	multiline?: boolean;
 }

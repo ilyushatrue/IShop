@@ -4,6 +4,7 @@ import Form from "../../../components/form/form";
 import FormActions from "../../../components/form/form-actions";
 import OutlinedButton from "../../../components/buttons/outlined-button";
 import Button from "../../../components/buttons/button";
+import { useMediaQueryContext } from "../../../app/infrastructure/media-query-context";
 
 export default function UserForm({
 	onSubmit,
@@ -14,6 +15,7 @@ export default function UserForm({
 	onSubmit: (values: IUser) => void;
 	loading: boolean;
 }) {
+	const { xs } = useMediaQueryContext();
 	const { handleSubmit, control, watch, reset, formState } = useForm<IUser>({
 		mode: "onChange",
 		reValidateMode: "onBlur",
@@ -36,34 +38,43 @@ export default function UserForm({
 						shape: "circled",
 						label: "Аватар",
 						containerSized: true,
+						size: xs ? "small" : "medium",
 					})
 					.text({
 						name: "firstName",
 						label: "Имя",
 						required: true,
+						size: xs ? "small" : "medium",
 					})
 					.text({
 						name: "lastName",
 						label: "Фамилия",
+						size: xs ? "small" : "medium",
 					})
 					.phone({
 						name: "phone",
+						size: xs ? "small" : "medium",
 					})
 					.email({
 						name: "email",
 						required: true,
 						disabled: true,
+						size: xs ? "small" : "medium",
 					})
 			}
 		>
-			<FormActions>
+			<FormActions
+				sx={{ display: "flex", justifyContent: "space-between" }}
+			>
 				<OutlinedButton
+					size="large"
 					onClick={() => reset()}
 					disabled={loading || !formState.isDirty}
 				>
 					Отмена
 				</OutlinedButton>
 				<Button
+					size="large"
 					onClick={handleSubmit(handleSubmitButtonClick)}
 					autoFocus
 					disabled={loading || !formState.isDirty}

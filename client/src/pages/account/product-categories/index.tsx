@@ -14,6 +14,9 @@ import { useNavigate } from "react-router-dom";
 import CategoryEditDialog from "./category-edit-dialog";
 import AccountProtectedPage from "../account-protected-page";
 import ConfirmDialog from "../../../components/confirm-dialog";
+import AccountPageSideBox from "../account-page-side-box";
+import AccountPageMainBox from "../account-page-main-box";
+import AccountPageMainBoxHeader from "../account-page-main-box-header";
 
 export default function ProductCategories() {
 	const defaultCategory: IProductCategory = {
@@ -193,83 +196,95 @@ export default function ProductCategories() {
 
 	if (!categoriesHierarchy) return null;
 	return (
-		<AccountProtectedPage title="Категории товаров">
-			<Box sx={{ display: "flex", justifyContent: "end", padding: 1 }}>
-				<Button
-					onClick={() =>
-						setEditCategory({
-							category: defaultCategory,
-							action: "create",
-						})
-					}
-					size="small"
-					sx={{
-						bgcolor: "primary.main",
-						marginLeft: "auto",
-						textTransform: "none",
-						color: "primary.100",
-						paddingX: 2,
-						"&:hover": {
-							bgcolor: "primary.dark",
-						},
-					}}
-					startIcon={<Icon>add</Icon>}
+		<AccountProtectedPage>
+			<AccountPageSideBox />
+			<AccountPageMainBox>
+				<AccountPageMainBoxHeader>
+					Категории товаров
+				</AccountPageMainBoxHeader>
+				<Box
+					sx={{ display: "flex", justifyContent: "end", padding: 1 }}
 				>
-					Добавить
-				</Button>
-			</Box>
-			<RecursiveTree<IProductCategory>
-				headerSx={{
-					bgcolor: "whitesmoke",
-					color: "black",
-				}}
-				containerSx={{
-					width: "100%",
-					overflow: "hidden",
-				}}
-				row={{
-					height: 60,
-					sx: { paddingX: 2 },
-				}}
-				tree={{
-					data: categoriesHierarchy,
-					headerTitle: "Меню",
-					id: (x) => x.id,
-					icon: (x) => x.iconName ?? "",
-					children: (x) => x.children ?? [],
-					minWidth: 150,
-					flex: 1,
-					title: (x) => `${x.title}`,
-				}}
-				columnsRange={{
-					columns: [
-						columns.productsColumn,
-						columns.deleteColumn,
-						columns.editColumn,
-					],
-				}}
-			/>
-			<ConfirmDialog
-				onConfirm={() => handleEditCategory(editCategory!.category!)}
-				onClose={() => setEditCategory(undefined)}
-				open={editCategory?.action === "delete"}
-				title="Вы уверены?"
-				content="Вы действительно хотите удалить категорию?"
-			/>
-			<CategoryEditDialog
-				onClose={closeEditDialog}
-				open={
-					!!editCategory?.action &&
-					["create", "edit"].includes(editCategory.action) &&
-					!!editCategory.category
-				}
-				editCategory={editCategory?.category}
-				onSubmit={handleEditCategory}
-				action={editCategory?.action === "create" ? "create" : "edit"}
-				loading={isFetching}
-				defaultCategory={defaultCategory}
-				categoriesHierarchy={categoriesHierarchy}
-			/>
+					<Button
+						onClick={() =>
+							setEditCategory({
+								category: defaultCategory,
+								action: "create",
+							})
+						}
+						size="small"
+						sx={{
+							bgcolor: "primary.main",
+							marginLeft: "auto",
+							textTransform: "none",
+							color: "primary.100",
+							paddingX: 2,
+							"&:hover": {
+								bgcolor: "primary.dark",
+							},
+						}}
+						startIcon={<Icon>add</Icon>}
+					>
+						Добавить
+					</Button>
+				</Box>
+				<RecursiveTree<IProductCategory>
+					headerSx={{
+						bgcolor: "whitesmoke",
+						color: "black",
+					}}
+					containerSx={{
+						width: "100%",
+						overflow: "hidden",
+					}}
+					row={{
+						height: 60,
+						sx: { paddingX: 2 },
+					}}
+					tree={{
+						data: categoriesHierarchy,
+						headerTitle: "Меню",
+						id: (x) => x.id,
+						icon: (x) => x.iconName ?? "",
+						children: (x) => x.children ?? [],
+						minWidth: 150,
+						flex: 1,
+						title: (x) => `${x.title}`,
+					}}
+					columnsRange={{
+						columns: [
+							columns.productsColumn,
+							columns.deleteColumn,
+							columns.editColumn,
+						],
+					}}
+				/>
+				<ConfirmDialog
+					onConfirm={() =>
+						handleEditCategory(editCategory!.category!)
+					}
+					onClose={() => setEditCategory(undefined)}
+					open={editCategory?.action === "delete"}
+					title="Вы уверены?"
+					content="Вы действительно хотите удалить категорию?"
+				/>
+				<CategoryEditDialog
+					onClose={closeEditDialog}
+					open={
+						!!editCategory?.action &&
+						["create", "edit"].includes(editCategory.action) &&
+						!!editCategory.category
+					}
+					editCategory={editCategory?.category}
+					onSubmit={handleEditCategory}
+					action={
+						editCategory?.action === "create" ? "create" : "edit"
+					}
+					loading={isFetching}
+					defaultCategory={defaultCategory}
+					categoriesHierarchy={categoriesHierarchy}
+				/>
+			</AccountPageMainBox>
 		</AccountProtectedPage>
 	);
 }

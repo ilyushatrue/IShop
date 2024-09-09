@@ -3,19 +3,26 @@ import useApi from "../../../api/hooks/use-api.hook";
 import { Box } from "@mui/material";
 import productsApi from "../../../api/endpoints/products.api";
 import { IProduct } from "../../../api/interfaces/product/product.interface";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useAppSelector } from "../../../app/hooks/redux/use-app-selector";
 import { IProductCategory } from "../../../api/interfaces/product-categories/product-category.interface";
 import { ICreateProductCommand } from "../../../api/interfaces/product/commands/create-product-command.interface";
-import EnhancedTable from "../../../components/table/table";
 import IconButton from "../../../components/buttons/icon-button";
 import { reload } from "../../../app/helpers/reload";
 import AccountProtectedPage from "../account-protected-page";
 import ProductAddDialog from "./product-add-dialog";
 import ConfirmDialog from "../../../components/confirm-dialog";
 import ProductsTable from "./products-table";
+import AccountPageSideBox from "../account-page-side-box";
+import AccountPageMainBox from "../account-page-main-box";
+import AccountPageMainBoxHeader from "../account-page-main-box-header";
+import { ProductCategoryEnum } from "../../../api/enums/product-category.enum";
 
-export default function ProductMenu() {
+export default function ProductsMenu() {
+	const { category } = useParams();
+	const categoryEnum =
+		ProductCategoryEnum[category!.toUpperCase() as keyof typeof category];
+	console.log(categoryEnum);
 	const [isDeleteDialogOn, setIsDeleteDialogOn] = useState(false);
 	const { isFetching, fetchAsync } = useApi();
 	const [products, setProducts] = useState<IProduct[]>([]);
@@ -23,7 +30,6 @@ export default function ProductMenu() {
 	const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[0]);
 	const [page, setPage] = useState(0);
 	const selectedIds = useRef<string[]>([]);
-	const [isAddProductDialogOn, setIsAddProductDialogOn] = useState(false);
 	const location = useLocation();
 	const navigate = useNavigate();
 	const appcategories = useAppSelector(
@@ -61,16 +67,15 @@ export default function ProductMenu() {
 		}).then((res) => setProducts(res!.body!.pageItems!));
 	}, []);
 
-	function closeAddProductDialog() {
-		setIsAddProductDialogOn(false);
-	}
+	const handleAddProduct = () => {
+		navigate("add");
+	};
 
-	function openAddProductDialog() {
-		setIsAddProductDialogOn(true);
-	}
+	const handleEditProduct = (item: IProduct) => {
+		navigate(item.id);
+	};
 
 	async function handleSubmitAsync(values: ICreateProductCommand) {
-		closeAddProductDialog();
 		await fetchAsync({
 			request: productsApi.createAsync(values),
 			onSuccess: (handler) => handler.popup("Новый товар добавлен."),
@@ -102,42 +107,41 @@ export default function ProductMenu() {
 		});
 	}
 	const closeDeleteDialog = () => setIsDeleteDialogOn(false);
-	const openDeleteDialog = () => setIsDeleteDialogOn(true);
+	const openDeleteDialog = (items: any[]) => setIsDeleteDialogOn(true);
 	return (
-		<AccountProtectedPage title={"Продукты"}>
-			<Box height={50} mt={1} ml={1}>
-				<IconButton
-					disabled={isFetching}
-					color="secondary.light"
-					variant="rounded"
-					iconName="arrow_back"
-					onClick={() => navigate("/my/categories")}
-					caption="К категориям"
+		<AccountProtectedPage>
+			<AccountPageSideBox />
+			<AccountPageMainBox>
+				<AccountPageMainBoxHeader>Продукты</AccountPageMainBoxHeader>
+				<Box height={50} mt={1} ml={1}>
+					<IconButton
+						disabled={isFetching}
+						color="secondary.light"
+						variant="rounded"
+						iconName="arrow_back"
+						onClick={() => navigate("/my/categories")}
+						caption="К категориям"
+					/>
+				</Box>
+				<ProductsTable
+					loading={isFetching}
+					onAdd={handleAddProduct}
+					onChange={console.log}
+					onDelete={console.log}
+					onEdit={handleEditProduct}
+					rows={products}
+					rowsPerPage={rowsPerPage}
 				/>
-			</Box>
-			<ProductsTable
-				loading={isFetching}
-				onAdd={console.log}
-				onChange={console.log}
-				onDelete={console.log}
-				onEdit={console.log}
-				rows={products}
-				rowsPerPage={rowsPerPage}
-			/>
-			<ProductAddDialog
-				categoryId={categoryId}
-				loading={isFetching}
-				onClose={closeAddProductDialog}
-				onSubmit={handleSubmitAsync}
-				open={isAddProductDialogOn}
-			/>
-			<ConfirmDialog
-				onClose={closeDeleteDialog}
-				open={isDeleteDialogOn}
-				title="Удалить товары"
-				onConfirm={() => handleDeleteProductAsync(selectedIds.current)}
-				content="Вы действительно хотите удалить выбранные товары?"
-			/>
+				<ConfirmDialog
+					onClose={closeDeleteDialog}
+					open={isDeleteDialogOn}
+					title="Удалить товары"
+					onConfirm={() =>
+						handleDeleteProductAsync(selectedIds.current)
+					}
+					content="Вы действительно хотите удалить выбранные товары?"
+				/>
+			</AccountPageMainBox>
 		</AccountProtectedPage>
 	);
 }

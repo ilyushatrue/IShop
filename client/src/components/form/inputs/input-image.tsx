@@ -99,8 +99,8 @@ export default function InputImage<T extends FieldValues>({
 							display: "flex",
 							justifyContent: "center",
 							alignItems: "center",
-							width: 200,
-							height: 200,
+							width: size === "small" ? 150 : 200,
+							height: size === "small" ? 150 : 200,
 							overflow: "hidden",
 							borderRadius:
 								shape === "circled"

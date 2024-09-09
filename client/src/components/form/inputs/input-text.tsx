@@ -12,6 +12,7 @@ export default function InputText<T extends FieldValues>({
 	required = false,
 	disabled,
 	readonly,
+	multiline,
 }: { control: Control<T> } & IFormField<T>) {
 	return (
 		<Controller
@@ -28,6 +29,7 @@ export default function InputText<T extends FieldValues>({
 				<TextField
 					label={label + (required ? " *" : "")}
 					margin={margin}
+					multiline={multiline}
 					type="text"
 					size={size}
 					variant={variant}

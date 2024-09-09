@@ -59,7 +59,7 @@ export default function NavSideBar({
 					},
 				}}
 				display={"flex"}
-				zIndex={1}
+				zIndex={100}
 				justifyContent={"space-between"}
 				alignItems={"center"}
 				height={height.xs}

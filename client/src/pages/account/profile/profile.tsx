@@ -7,6 +7,9 @@ import { useAppSelector } from "../../../app/hooks/redux/use-app-selector";
 import { reload } from "../../../app/helpers/reload";
 import AccountProtectedPage from "../account-protected-page";
 import { useMediaQueryContext } from "../../../app/infrastructure/media-query-context";
+import AccountPageSideBox from "../account-page-side-box";
+import AccountPageMainBox from "../account-page-main-box";
+import AccountPageMainBoxHeader from "../account-page-main-box-header";
 
 export default function Profile() {
 	const userState = useAppSelector((state) => state.user);
@@ -23,31 +26,32 @@ export default function Profile() {
 	}
 
 	return (
-		<AccountProtectedPage
-			title="Мой профиль"
-			mainBoxProps={{ width: "100%", bgcolor: "orange" }}
-		>
-			<Box
-				maxWidth={500}
-				width={xs ? "100%" : 500}
-				marginX={"auto"}
-				display="flex"
-				flexDirection="column"
-				sx={{ padding: 2 }}
-				alignItems="center"
-			>
-				<UserForm
-					onSubmit={handleFormSubmitAsync}
-					loading={isFetching}
-					defaultValues={{
-						avatarId: userState.avatarId,
-						email: userState.email!,
-						firstName: userState.firstName!,
-						lastName: userState.lastName!,
-						phone: userState.phone ?? "",
-					}}
-				/>
-			</Box>
+		<AccountProtectedPage>
+			<AccountPageSideBox />
+			<AccountPageMainBox>
+				<AccountPageMainBoxHeader>Мой профиль</AccountPageMainBoxHeader>
+				<Box
+					maxWidth={500}
+					width={xs ? "100%" : 500}
+					marginX={"auto"}
+					display="flex"
+					flexDirection="column"
+					sx={{ padding: 2 }}
+					alignItems="center"
+				>
+					<UserForm
+						onSubmit={handleFormSubmitAsync}
+						loading={isFetching}
+						defaultValues={{
+							avatarId: userState.avatarId,
+							email: userState.email!,
+							firstName: userState.firstName!,
+							lastName: userState.lastName!,
+							phone: userState.phone ?? "",
+						}}
+					/>
+				</Box>
+			</AccountPageMainBox>
 		</AccountProtectedPage>
 	);
 }

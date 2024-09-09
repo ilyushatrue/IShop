@@ -17,6 +17,8 @@ import Image from "../../../components/image";
 import { getComparator } from "../../../components/table/table";
 import { Stack } from "@mui/material";
 import TooltipIconButton from "../../../components/buttons/tooltip-button";
+import { IProduct } from "../../../api/interfaces/product/product.interface";
+import { productCategoryEnumName } from "../../../api/enums/product-category.enum";
 
 interface ITableValue {
 	id: string;
@@ -33,13 +35,13 @@ export default function ProductsTable({
 	onEdit,
 	rowsPerPage: _rowsPerPage,
 }: {
-	rows: ITableValue[];
+	rows: IProduct[];
 	loading: boolean;
 	rowsPerPage: number;
-	onChange: (items: ITableValue[]) => void;
-	onDelete: (items: ITableValue[]) => void;
-	onEdit: (item: ITableValue) => void;
-	onAdd: (item: ITableValue) => void;
+	onChange: (items: IProduct[]) => void;
+	onDelete: (items: IProduct[]) => void;
+	onEdit: (item: IProduct) => void;
+	onAdd: () => void;
 }) {
 	const defaultValue: ITableValue = {
 		id: "",
@@ -52,13 +54,24 @@ export default function ProductsTable({
 	const [rowsPerPage, setRowsPerPage] = useState(_rowsPerPage);
 	const [page, setPage] = useState(0);
 	const [order, setOrder] = useState<Order>("asc");
-	const [orderBy, setOrderBy] = useState<keyof ITableValue>("name");
+	const [orderBy, setOrderBy] = useState<keyof IProduct>("name");
 	const [selected, setSelected] = useState<string[]>([]);
 	const [dense, setDense] = useState<boolean>(xs);
+	const recordPairs = useMemo<[IProduct, ITableValue][]>(() => {
+		return rows.map((row) => [
+			row,
+			{
+				description: row.description,
+				id: row.id,
+				imageId: row.imageId,
+				name: row.name,
+			} as ITableValue,
+		]);
+	}, [rows]);
 
 	const handleRequestSort = (
 		event: React.MouseEvent<unknown>,
-		property: keyof ITableValue
+		property: keyof IProduct
 	) => {
 		const isAsc = orderBy === property && order === "asc";
 		setOrder(isAsc ? "desc" : "asc");
@@ -74,7 +87,11 @@ export default function ProductsTable({
 		setSelected([]);
 	};
 
-	const handleClick = (event: MouseEvent<unknown>, id: string) => {
+	const handleDoubleClick = (id: string) => (event: MouseEvent<unknown>) => {
+		onEdit(rows.find((x) => x.id === id)!);
+	};
+
+	const handleClick = (id: string) => (event: MouseEvent<unknown>) => {
 		const selectedIndex = selected.indexOf(id);
 		let newSelected: string[] = [];
 
@@ -104,10 +121,11 @@ export default function ProductsTable({
 
 	const visibleRows = useMemo(
 		() =>
-			rows
+			recordPairs
+				.map(([val, tableVal]) => val)
 				.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 				.sort(getComparator(order, orderBy)),
-		[order, orderBy, page, rows, rowsPerPage]
+		[order, orderBy, page, recordPairs, rowsPerPage]
 	);
 
 	const handleChangeRowsPerPage = (
@@ -130,7 +148,7 @@ export default function ProductsTable({
 			>
 				<Stack direction={"row"} spacing={1}>
 					<TooltipIconButton
-						hidden={selected.length > 0}
+						hidden={selected.length === 0}
 						tooltip="Удалить"
 						size={xs ? "small" : "medium"}
 						disabled={loading}
@@ -153,15 +171,15 @@ export default function ProductsTable({
 						tooltip="Добавить"
 						size={xs ? "small" : "medium"}
 						disabled={loading}
-						onClick={() => onAdd(rows[0])}
+						onClick={onAdd}
 					>
 						add
 					</TooltipIconButton>
 				</Stack>
 			</TableToolbar>
 			<TableContainer>
-				<Table sx={{ minWidth: 750 }} size={dense ? "small" : "medium"}>
-					<TableHead<ITableValue>
+				<Table size={dense ? "small" : "medium"}>
+					<TableHead<IProduct>
 						headCells={[
 							{
 								id: "imageId",
@@ -196,9 +214,8 @@ export default function ProductsTable({
 							return (
 								<TableRow
 									hover
-									onClick={(event) =>
-										handleClick(event, row.id)
-									}
+									onDoubleClick={handleDoubleClick(row.id)}
+									onClick={handleClick(row.id)}
 									tabIndex={-1}
 									key={row.id}
 									selected={isItemSelected}

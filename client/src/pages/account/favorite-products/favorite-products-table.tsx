@@ -140,7 +140,7 @@ export default function FavoriteProductsTable({
 				</Stack>
 			</TableToolbar>
 			<TableContainer>
-				<Table sx={{ minWidth: 750 }} size={dense ? "small" : "medium"}>
+				<Table size={dense ? "small" : "medium"}>
 					<TableHead<ITableValue>
 						headCells={[
 							{
@@ -187,7 +187,10 @@ export default function FavoriteProductsTable({
 										height: dense ? 50 : 100,
 									}}
 								>
-									<TableCell padding="checkbox">
+									<TableCell
+										padding="checkbox"
+										sx={{ width: "auto", minWidth: 0 }}
+									>
 										<Checkbox
 											color="primary"
 											checked={isItemSelected}

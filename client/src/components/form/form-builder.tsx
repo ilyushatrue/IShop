@@ -9,12 +9,7 @@ import {
 	useMemo,
 	useState,
 } from "react";
-import {
-	Control,
-	FieldValues,
-	Path,
-	UseFormWatch,
-} from "react-hook-form";
+import { Control, FieldValues, Path, UseFormWatch } from "react-hook-form";
 import InputEmail from "./inputs/input-email";
 import InputPassword, { IFormPasswordField } from "./inputs/input-password";
 import InputText from "./inputs/input-text";
@@ -28,7 +23,6 @@ import { IFormField } from "./inputs/form-field.interface";
 const fieldBoxStyles: CSSProperties = {
 	display: "flex",
 	flexDirection: "column",
-	justifyContent: "end",
 	alignItems: "center",
 	width: "100%",
 	height: "100%",

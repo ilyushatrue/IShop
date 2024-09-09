@@ -4,6 +4,8 @@ import useApi from "../../../api/hooks/use-api.hook";
 import usersApi from "../../../api/endpoints/users.api";
 import { useNavigate } from "react-router-dom";
 import AccountProtectedPage from "../account-protected-page";
+import AccountPageSideBox from "../account-page-side-box";
+import AccountPageMainBox from "../account-page-main-box";
 export default function Users() {
 	const [users, setUsers] = useState<any[]>([]);
 	const navigate = useNavigate();
@@ -21,7 +23,8 @@ export default function Users() {
 
 	return (
 		<AccountProtectedPage title="Пользователи">
-			<>
+			<AccountPageSideBox />
+			<AccountPageMainBox>
 				{users.map((user, index) => (
 					<div
 						key={index}
@@ -36,7 +39,7 @@ export default function Users() {
 							user.phone?.value}
 					</div>
 				))}
-			</>
+			</AccountPageMainBox>
 		</AccountProtectedPage>
 	);
 }
