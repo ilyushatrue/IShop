@@ -13,7 +13,6 @@ public class LoginByEmailQueryHandler(
     IDbManager dbManager,
     IUserRepository userRepository,
     IJwtTokenGenerator jwtTokenGenerator,
-    IRefreshJwtRepository refreshJwtRepository,
     IPasswordHasher passwordHasher,
     IOptions<RefreshJwtSettings> refreshJwtSettings
 ) : ILoginByEmailQueryHandler
@@ -46,15 +45,9 @@ public class LoginByEmailQueryHandler(
 
         var jwtAccessToken = jwtTokenGenerator.GenerateAccessToken(user);
 
-        if (user.RefreshJwt is null)
-        {
-            var refreshJwt = RefreshJwt.Create(user.Id, _refreshJwtSettings.ExpiryDays);
-            refreshJwtRepository.Create(refreshJwt);
-        }
-        else
-        {
-            refreshJwtRepository.Update(user.RefreshJwt);
-        }
+        var refreshJwt = RefreshJwt.Create(user.Id, _refreshJwtSettings.ExpiryDays);
+        user.SetRefreshToken(refreshJwt);
+
         await dbManager.SaveChangesAsync(cancellationToken);
         return new AuthenticationResult(user, jwtAccessToken);
     }

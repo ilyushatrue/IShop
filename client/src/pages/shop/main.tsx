@@ -20,7 +20,7 @@ export default function Main() {
 		})
 			.catch(() => navigate("/not-found"))
 			.then((res) => setProducts(res!.body!.pageItems));
-	}, []);
+	}, [fetchAsync, navigate]);
 
 	function handleProductUpdate(product: IProduct) {
 		const updatedProducts = [...products];

@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement, useCallback, useEffect, useState } from "react";
 import { useAppDispatch } from "./hooks/redux/use-app-dispatch";
 import { CircularProgress } from "@mui/material";
 import getConstant from "./infrastructure/constant-provider";
@@ -20,14 +20,15 @@ export default function Identity({
 	const [serverIsDead, setServerIsDead] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
 
-	const setCategoryParentNull = (parent: IProductCategory) => {
+	const setCategoryParentNull = useCallback((parent: IProductCategory) => {
 		parent.children?.map((child) => {
 			child.parent = null;
 			setCategoryParentNull(child);
 			return child;
 		});
 		return parent;
-	};
+	}, []);
+
 	useEffect(() => {
 		usersApi
 			.getCurrentAsync()
@@ -71,9 +72,7 @@ export default function Identity({
 				}
 			})
 			.finally(() => setIsLoading(false));
-	}, [dispatch]);
-
-	
+	}, [dispatch, setCategoryParentNull]);
 
 	if (isLoading) {
 		return (

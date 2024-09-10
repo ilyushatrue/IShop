@@ -48,7 +48,7 @@ export default function ProductPage() {
 				navigate("server-is-dead");
 			})
 			.then((res) => setProduct(res!.body));
-	}, [id]);
+	}, [fetchAsync, id, navigate]);
 
 	function addToCart() {
 		console.log("addToCart");

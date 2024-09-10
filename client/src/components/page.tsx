@@ -4,7 +4,7 @@ import { useAppDispatch } from "../app/hooks/redux/use-app-dispatch";
 import { setActiveTab } from "../store/page.slice";
 import { useLocation } from "react-router-dom";
 import { useAppSelector } from "../app/hooks/redux/use-app-selector";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { useMediaQueryContext } from "../app/infrastructure/media-query-context";
 
 export default function Page({ children, ...props }: BoxProps) {

@@ -1,4 +1,3 @@
-import { Box } from "@mui/material";
 import UserForm from "./user-form";
 import useApi from "../../../api/hooks/use-api.hook";
 import usersApi from "../../../api/endpoints/users.api";
@@ -30,27 +29,23 @@ export default function Profile() {
 			<AccountPageSideBox />
 			<AccountPageMainBox>
 				<AccountPageMainBoxHeader>Мой профиль</AccountPageMainBoxHeader>
-				<Box
-					maxWidth={500}
-					width={xs ? "100%" : 500}
-					marginX={"auto"}
-					display="flex"
-					flexDirection="column"
-					sx={{ padding: 2 }}
-					alignItems="center"
-				>
-					<UserForm
-						onSubmit={handleFormSubmitAsync}
-						loading={isFetching}
-						defaultValues={{
-							avatarId: userState.avatarId,
-							email: userState.email!,
-							firstName: userState.firstName!,
-							lastName: userState.lastName!,
-							phone: userState.phone ?? "",
-						}}
-					/>
-				</Box>
+				<UserForm
+					sx={{
+						maxWidth: 500,
+						padding: xs ? 2 : 0,
+						width: xs ? "100%" : 500,
+						marginX: "auto",
+					}}
+					onSubmit={handleFormSubmitAsync}
+					loading={isFetching}
+					defaultValues={{
+						avatarId: userState.avatarId,
+						email: userState.email!,
+						firstName: userState.firstName!,
+						lastName: userState.lastName!,
+						phone: userState.phone ?? "",
+					}}
+				/>
 			</AccountPageMainBox>
 		</AccountProtectedPage>
 	);

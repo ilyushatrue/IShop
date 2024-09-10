@@ -14,15 +14,17 @@ import AccountPageMainBoxHeader from "../../account-page-main-box-header";
 export default function ProductEdit() {
 	const navigate = useNavigate();
 	const { category, id } = useParams();
+	const backUrl = `/my/products/${category}`;
 	const navigateBack = useCallback(
-		() => navigate(`/my/products/${category}`),
-		[category, navigate]
+		() => navigate(backUrl),
+		[backUrl, navigate]
 	);
 	const { fetchAsync } = useApi();
 	const categoryEnum =
 		ProductCategoryEnum[
-			category!.toUpperCase() as keyof typeof ProductCategoryEnum
-		];
+			category!.capitalize() as keyof typeof ProductCategoryEnum
+		] + 1;
+	console.log(categoryEnum);
 	const defaultValues: IProduct = {
 		categoryId: categoryEnum,
 		description: "",
@@ -60,7 +62,10 @@ export default function ProductEdit() {
 		<AccountPage>
 			<AccountPageSideBox />
 			<AccountPageMainBox>
-				<AccountPageMainBoxHeader>
+				<AccountPageMainBoxHeader
+					backUrl={backUrl}
+					backText="К товарам"
+				>
 					{product.name}
 				</AccountPageMainBoxHeader>
 				<Box sx={{ marginX: "auto", maxWidth: 500, padding: 1 }}>

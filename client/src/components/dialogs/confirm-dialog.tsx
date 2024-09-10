@@ -3,12 +3,12 @@ import {
 	DialogContent,
 	DialogContentText,
 	DialogActions,
-	Dialog,
 	DialogProps,
 } from "@mui/material";
-import OutlinedButton from "./buttons/outlined-button";
-import Button from "./buttons/button";
+import OutlinedButton from "../buttons/outlined-button";
+import Button from "../buttons/button";
 import { MouseEvent } from "react";
+import Dialog from "./dialog";
 
 export default function ConfirmDialog({
 	confirmText = "Подтверждаю",

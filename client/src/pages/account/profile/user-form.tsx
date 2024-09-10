@@ -5,16 +5,20 @@ import FormActions from "../../../components/form/form-actions";
 import OutlinedButton from "../../../components/buttons/outlined-button";
 import Button from "../../../components/buttons/button";
 import { useMediaQueryContext } from "../../../app/infrastructure/media-query-context";
+import { BoxProps } from "@mui/material";
+
+interface IUserForm extends Omit<BoxProps, "onSubmit"> {
+	defaultValues: IUser;
+	onSubmit: (values: IUser) => void;
+	loading: boolean;
+}
 
 export default function UserForm({
 	onSubmit,
 	defaultValues,
 	loading,
-}: {
-	defaultValues: IUser;
-	onSubmit: (values: IUser) => void;
-	loading: boolean;
-}) {
+	...props
+}: IUserForm) {
 	const { xs } = useMediaQueryContext();
 	const { handleSubmit, control, watch, reset, formState } = useForm<IUser>({
 		mode: "onChange",
@@ -28,6 +32,7 @@ export default function UserForm({
 
 	return (
 		<Form
+			{...props}
 			control={control}
 			watch={watch}
 			loading={loading}
@@ -79,7 +84,7 @@ export default function UserForm({
 					autoFocus
 					disabled={loading || !formState.isDirty}
 				>
-					Добавить
+					Сохранить
 				</Button>
 			</FormActions>
 		</Form>

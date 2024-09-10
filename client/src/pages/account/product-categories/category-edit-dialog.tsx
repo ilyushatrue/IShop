@@ -1,10 +1,11 @@
-import { Dialog, DialogTitle } from "@mui/material";
+import { DialogTitle } from "@mui/material";
 import { IProductCategory } from "../../../api/interfaces/product-categories/product-category.interface";
 import Form from "../../../components/form/form";
 import FormActions from "../../../components/form/form-actions";
 import { SubmitHandler, useForm } from "react-hook-form";
 import OutlinedButton from "../../../components/buttons/outlined-button";
 import Button from "../../../components/buttons/button";
+import Dialog from "../../../components/dialogs/dialog";
 
 export default function CategoryEditDialog({
 	onClose,

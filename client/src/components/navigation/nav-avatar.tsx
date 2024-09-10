@@ -48,6 +48,7 @@ export default function NavAvatar({ tip, menuItems, containerSx }: IAvatar) {
 				anchorEl={anchorEl}
 				open={isMenuOpen}
 				onClose={closeMenu}
+				disableScrollLock={true}
 				onClick={handleMenuClick}
 				slotProps={{
 					paper: {
@@ -82,7 +83,7 @@ export default function NavAvatar({ tip, menuItems, containerSx }: IAvatar) {
 			>
 				{menuItems.map((item, index) => (
 					<MenuItem
-						sx={{display:"flex", alignItems:"center",}}
+						sx={{ display: "flex", alignItems: "center" }}
 						onClick={() => {
 							closeMenu();
 							item.onClick();

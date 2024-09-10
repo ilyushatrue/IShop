@@ -13,7 +13,7 @@ import MenuDeleteCell from "./menu-delete-cell";
 import { useNavigate } from "react-router-dom";
 import CategoryEditDialog from "./category-edit-dialog";
 import AccountProtectedPage from "../account-protected-page";
-import ConfirmDialog from "../../../components/confirm-dialog";
+import ConfirmDialog from "../../../components/dialogs/confirm-dialog";
 import AccountPageSideBox from "../account-page-side-box";
 import AccountPageMainBox from "../account-page-main-box";
 import AccountPageMainBoxHeader from "../account-page-main-box-header";

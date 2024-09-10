@@ -18,7 +18,6 @@ import { getComparator } from "../../../components/table/table";
 import { Stack } from "@mui/material";
 import TooltipIconButton from "../../../components/buttons/tooltip-button";
 import { IProduct } from "../../../api/interfaces/product/product.interface";
-import { productCategoryEnumName } from "../../../api/enums/product-category.enum";
 
 interface ITableValue {
 	id: string;
@@ -152,7 +151,11 @@ export default function ProductsTable({
 						tooltip="Удалить"
 						size={xs ? "small" : "medium"}
 						disabled={loading}
-						onClick={() => onDelete(rows)}
+						onClick={() =>
+							onDelete(
+								rows.filter((r) => selected.includes(r.id))
+							)
+						}
 					>
 						delete
 					</TooltipIconButton>

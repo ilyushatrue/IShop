@@ -23,7 +23,7 @@ export default function AvatarPlus({
 		fetchAsync({
 			request: mediaApi.getImageById(imageId),
 		});
-	}, []);
+	}, [fetchAsync, imageId]);
 
 	const handleIconClick = () => {
 		fileInputRef.current?.click();

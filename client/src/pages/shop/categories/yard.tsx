@@ -44,7 +44,7 @@ export default function Yard() {
 					totalPages: totalPages,
 				});
 			});
-	}, [id]);
+	}, [category.id, fetchAsync, id, navigate]);
 
 	function handleProductUpdate(product: IProduct) {
 		const updatedProducts = [...products];

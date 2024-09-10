@@ -1,7 +1,7 @@
 import NavSideBar from "./nav-side-bar";
 import NavTopBar from "./nav-top-bar";
 import { IAvatar } from "./nav-avatar";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../app/hooks/redux/use-app-dispatch";
 import { useAppSelector } from "../../app/hooks/redux/use-app-selector";
@@ -12,9 +12,12 @@ import { useMediaQueryContext } from "../../app/infrastructure/media-query-conte
 
 export default function NavBar() {
 	const navigate = useNavigate();
-	const navigateTo = (path: string) => () => {
-		navigate(path);
-	};
+	const navigateTo = useCallback(
+		(path: string) => () => {
+			navigate(path);
+		},
+		[navigate]
+	);
 	const { xs } = useMediaQueryContext();
 	const tabs = useAppSelector((state) => state.page.tabs);
 	const menuItems = useAppSelector((state) => state.global.menuItems);
@@ -29,6 +32,17 @@ export default function NavBar() {
 		if (index > -1) return index;
 		else return null;
 	}, [tabs]);
+
+	const handleLogout = useCallback(() => {
+		fetchAsync({
+			request: apiAuth.logoutAsync(),
+			onError: (handler) => handler.log().popup(),
+			triggerPageLoader: true,
+		}).then(() => {
+			navigate("/auth");
+			dispatch(resetCurrentUserState());
+		});
+	}, [dispatch, fetchAsync, navigate]);
 
 	const menuAvatar = useMemo<IAvatar>(() => {
 		let authItems = menuItems
@@ -72,18 +86,7 @@ export default function NavBar() {
 			tip: "Аккаунт",
 			sx: { bgcolor: "primary.main" },
 		};
-	}, [isAuthenticated, menuItems, xs]);
-
-	async function handleLogout() {
-		await fetchAsync({
-			request: apiAuth.logoutAsync(),
-			onError: (handler) => handler.log().popup(),
-			triggerPageLoader: true,
-		}).then(() => {
-			navigate("/auth");
-			dispatch(resetCurrentUserState());
-		});
-	}
+	}, [handleLogout, isAuthenticated, menuItems, navigateTo, xs]);
 
 	function handleTabChange(href: string) {
 		setTimeout(navigateTo(href), 150);

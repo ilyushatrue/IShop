@@ -46,11 +46,10 @@ export interface IForm<T extends FieldValues> {
 	control: Control<T, any>;
 	children: ReactNode;
 	loading: boolean;
-	style?: CSSProperties;
 }
 
 function FormBuilder<T extends FieldValues>(
-	{ control, watch, children, loading, style }: IForm<T>,
+	{ control, watch, children, loading }: IForm<T>,
 	ref: Ref<FormBuilderRef<T>>
 ) {
 	const [inputsMap, setInputsMap] = useState<Map<string, ReactElement>>(
@@ -138,7 +137,7 @@ function FormBuilder<T extends FieldValues>(
 	useImperativeHandle(ref, () => inputBuilder, [inputBuilder]);
 
 	return (
-		<form style={{ ...style, width: "100%", height: "100%" }}>
+		<form style={{ width: "100%", height: "100%" }}>
 			<div style={fieldBoxStyles}>
 				{inputs.map((input) =>
 					cloneElement(input, {

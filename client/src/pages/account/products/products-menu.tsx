@@ -1,17 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import useApi from "../../../api/hooks/use-api.hook";
-import { Box } from "@mui/material";
 import productsApi from "../../../api/endpoints/products.api";
 import { IProduct } from "../../../api/interfaces/product/product.interface";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useAppSelector } from "../../../app/hooks/redux/use-app-selector";
 import { IProductCategory } from "../../../api/interfaces/product-categories/product-category.interface";
 import { ICreateProductCommand } from "../../../api/interfaces/product/commands/create-product-command.interface";
-import IconButton from "../../../components/buttons/icon-button";
 import { reload } from "../../../app/helpers/reload";
 import AccountProtectedPage from "../account-protected-page";
-import ProductAddDialog from "./product-add-dialog";
-import ConfirmDialog from "../../../components/confirm-dialog";
+import ConfirmDialog from "../../../components/dialogs/confirm-dialog";
 import ProductsTable from "./products-table";
 import AccountPageSideBox from "../account-page-side-box";
 import AccountPageMainBox from "../account-page-main-box";
@@ -21,15 +18,18 @@ import { ProductCategoryEnum } from "../../../api/enums/product-category.enum";
 export default function ProductsMenu() {
 	const { category } = useParams();
 	const categoryEnum =
-		ProductCategoryEnum[category!.toUpperCase() as keyof typeof category];
-	console.log(categoryEnum);
-	const [isDeleteDialogOn, setIsDeleteDialogOn] = useState(false);
+		ProductCategoryEnum[category!.capitalize() as keyof typeof category] +
+		1;
+	console.log(category, categoryEnum);
+	const [confirmDeleteState, setConfirmDeleteState] = useState<{
+		open: boolean;
+		items: IProduct[];
+	}>({ open: false, items: [] });
 	const { isFetching, fetchAsync } = useApi();
 	const [products, setProducts] = useState<IProduct[]>([]);
 	const rowsPerPageOptions = [10, 25, 100];
 	const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[0]);
 	const [page, setPage] = useState(0);
-	const selectedIds = useRef<string[]>([]);
 	const location = useLocation();
 	const navigate = useNavigate();
 	const appcategories = useAppSelector(
@@ -65,7 +65,7 @@ export default function ProductsMenu() {
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
 		}).then((res) => setProducts(res!.body!.pageItems!));
-	}, []);
+	}, [categoryId, fetchAsync, page, rowsPerPage]);
 
 	const handleAddProduct = () => {
 		navigate("add");
@@ -94,50 +94,54 @@ export default function ProductsMenu() {
 	const handleChangePage = (event: unknown, newPage: number) => {
 		setPage(newPage);
 	};
-	async function handleDeleteProductAsync(productIds: string[]) {
+	async function handleDeleteProductAsync(products: IProduct[]) {
 		closeDeleteDialog();
+		const ids = products.map((p) => p.id);
 		fetchAsync({
-			request: productsApi.deleteRangeByIdAsync(productIds),
-			onSuccess: () =>
-				setProducts((prev) =>
-					prev.filter((x) => !productIds.includes(x.id))
-				),
+			request: productsApi.deleteRangeByIdAsync(ids),
+			onSuccess: (handler) => handler.popup("Данные сохранены"),
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
+		}).then((response) => {
+			if (response.ok) {
+				setProducts((prev) => prev.filter((x) => !ids.includes(x.id)));
+			}
 		});
 	}
-	const closeDeleteDialog = () => setIsDeleteDialogOn(false);
-	const openDeleteDialog = (items: any[]) => setIsDeleteDialogOn(true);
+	const closeDeleteDialog = () => {
+		setConfirmDeleteState((prev) => ({ ...prev, open: false }));
+	};
+
+	const handleDeleteClick = (items: IProduct[]) => {
+		setConfirmDeleteState({ open: true, items: items });
+	};
+
 	return (
 		<AccountProtectedPage>
 			<AccountPageSideBox />
 			<AccountPageMainBox>
-				<AccountPageMainBoxHeader>Продукты</AccountPageMainBoxHeader>
-				<Box height={50} mt={1} ml={1}>
-					<IconButton
-						disabled={isFetching}
-						color="secondary.light"
-						variant="rounded"
-						iconName="arrow_back"
-						onClick={() => navigate("/my/categories")}
-						caption="К категориям"
-					/>
-				</Box>
+				<AccountPageMainBoxHeader
+					backText="К категориям"
+					backUrl="/my/categories"
+				>
+					Продукты
+				</AccountPageMainBoxHeader>
+
 				<ProductsTable
 					loading={isFetching}
 					onAdd={handleAddProduct}
 					onChange={console.log}
-					onDelete={console.log}
+					onDelete={handleDeleteClick}
 					onEdit={handleEditProduct}
 					rows={products}
 					rowsPerPage={rowsPerPage}
 				/>
 				<ConfirmDialog
 					onClose={closeDeleteDialog}
-					open={isDeleteDialogOn}
+					open={confirmDeleteState.open}
 					title="Удалить товары"
 					onConfirm={() =>
-						handleDeleteProductAsync(selectedIds.current)
+						handleDeleteProductAsync(confirmDeleteState.items)
 					}
 					content="Вы действительно хотите удалить выбранные товары?"
 				/>

@@ -184,6 +184,7 @@ export default function Login({ onToRegisterClick }: IProps) {
 					<MemoizedLoginByEmailForm
 						loading={isFetching}
 						onSubmit={handleLoginByEmailAsync}
+						
 					/>
 				</Box>
 				<Box sx={{ display: authType === "phone" ? "block" : "none" }}>
@@ -211,7 +212,6 @@ export default function Login({ onToRegisterClick }: IProps) {
 			</Template>
 			<ResetPasswordDialog
 				onSubmit={(values) => handleResetPasswordAsync(values.email)}
-				loading={isFetching}
 				onClose={() => setIsResetPasswordDialogOn(false)}
 				open={isResetPasswordDialogOn}
 			/>

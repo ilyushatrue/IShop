@@ -1,11 +1,7 @@
 import "../assets/fonts/fonts.css";
 import "../extension-methods/array.extensions";
-import {
-	CssBaseline,
-	GlobalStyles,
-	ThemeProvider,
-	useMediaQuery,
-} from "@mui/material";
+import "../extension-methods/string.extensions";
+import { CssBaseline, GlobalStyles, ThemeProvider } from "@mui/material";
 import { theme } from "../styles/theme-provider";
 import Router from "./routes";
 import { BrowserRouter } from "react-router-dom";
@@ -20,6 +16,13 @@ function App() {
 		<Provider store={store}>
 			<ThemeProvider theme={theme}>
 				<CssBaseline />
+				<GlobalStyles
+					styles={{
+						html: {
+							overflowY: "scroll",
+						},
+					}}
+				/>
 				<Identity>
 					<PopupProvider>
 						<BrowserRouter>

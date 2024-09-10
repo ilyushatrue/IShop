@@ -7,7 +7,7 @@ import { reload } from "../../../app/helpers/reload";
 import { useAppSelector } from "../../../app/hooks/redux/use-app-selector";
 import AccountPage from "../account-page";
 import { useMediaQueryContext } from "../../../app/infrastructure/media-query-context";
-import ConfirmDialog from "../../../components/confirm-dialog";
+import ConfirmDialog from "../../../components/dialogs/confirm-dialog";
 import FavoriteProductsTable from "./favorite-products-table";
 import AccountPageSideBox from "../account-page-side-box";
 import AccountPageMainBox from "../account-page-main-box";

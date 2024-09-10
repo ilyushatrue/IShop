@@ -10,7 +10,7 @@ import { useAppDispatch } from "../../app/hooks/redux/use-app-dispatch";
 import { setFavoriteProduct } from "../../store/user.slice";
 import { redirect } from "../../app/helpers/redirect";
 import { useMediaQueryContext } from "../../app/infrastructure/media-query-context";
-import ConfirmDialog from "../../components/confirm-dialog";
+import ConfirmDialog from "../../components/dialogs/confirm-dialog";
 
 interface IProps {
 	products: IProduct[];
@@ -115,9 +115,11 @@ export default function Products({ products, onDelete, onUpdate }: IProps) {
 		setProductToEdit(undefined);
 		fetchAsync({
 			request: productsApi.updateAsync(product),
-			onSuccess: () => onUpdate(product),
+			onSuccess: (handler) => handler.popup("Данные сохранены"),
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
+		}).then(() => {
+			onUpdate(product);
 		});
 	}
 

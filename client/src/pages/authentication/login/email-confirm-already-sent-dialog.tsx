@@ -1,6 +1,6 @@
 import { Dialog, Typography } from "@mui/material";
-import ConfirmDialog from "../../../components/confirm-dialog";
-import InfoDialog from "../../../components/info-dialog";
+import ConfirmDialog from "../../../components/dialogs/confirm-dialog";
+import InfoDialog from "../../../components/dialogs/info-dialog";
 
 export default function EmailConfirmAlreadySentDialog({
 	open,

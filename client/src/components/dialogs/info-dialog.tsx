@@ -3,11 +3,11 @@ import {
 	DialogContent,
 	DialogContentText,
 	DialogActions,
-	Dialog,
 	DialogProps,
 } from "@mui/material";
-import Button from "./buttons/button";
 import { MouseEvent } from "react";
+import Button from "../buttons/button";
+import Dialog from "./dialog";
 
 export default function InfoDialog({
 	okText = "Понятно",

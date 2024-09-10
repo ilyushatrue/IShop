@@ -7,7 +7,7 @@ import useApi from "../../../api/hooks/use-api.hook";
 import apiAuth from "../../../api/endpoints/auth.api";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import ConfirmDialog from "../../../components/confirm-dialog";
+import ConfirmDialog from "../../../components/dialogs/confirm-dialog";
 
 interface IProps {
 	onToLoginClick: () => void;

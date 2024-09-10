@@ -19,7 +19,7 @@ export default function Users() {
 		})
 			.catch(() => navigate("/"))
 			.then((result) => setUsers(result!.body!));
-	}, []);
+	}, [fetchAsync, navigate]);
 
 	return (
 		<AccountProtectedPage title="Пользователи">

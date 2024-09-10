@@ -27,6 +27,7 @@ export default function LoginByEmailForm({ onSubmit, loading }: IProps) {
 		<Form
 			control={control}
 			watch={watch}
+			onEnterKeyDown={handleSubmit(handleSubmitButtonClick)}
 			loading={loading}
 			style={{ marginBottom: 24 }}
 			fields={(builder) =>
