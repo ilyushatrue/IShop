@@ -1,5 +1,4 @@
 import { SubmitHandler, useForm } from "react-hook-form";
-import Form from "../../../components/form/form";
 import {
 	DialogActions,
 	DialogContent,
@@ -9,6 +8,8 @@ import {
 import OutlinedButton from "../../../components/buttons/outlined-button";
 import Button from "../../../components/buttons/button";
 import Dialog from "../../../components/dialogs/dialog";
+import InputEmail from "../../../components/form/inputs/input-email";
+import Form from "../../../components/form/form";
 
 export default function ResetPasswordDialog({
 	open,
@@ -20,7 +21,7 @@ export default function ResetPasswordDialog({
 	onClose: () => void;
 }) {
 	const defaultValues = { email: "" };
-	const { handleSubmit, control, watch, reset } = useForm<{ email: string }>({
+	const { handleSubmit, control, reset } = useForm<{ email: string }>({
 		mode: "onSubmit",
 		reValidateMode: "onBlur",
 		defaultValues: defaultValues,
@@ -40,18 +41,9 @@ export default function ResetPasswordDialog({
 					На указанный адрес эл. почты будет отправлено сообщение на
 					изменение пароля.
 				</DialogContentText>
-				<Form
-					watch={watch}
-					onEnterKeyDown={handleSubmit(handleSubmitButtonClick)}
-					control={control}
-					fields={(builder) =>
-						builder.email({
-							name: "email",
-							required: true,
-							variant: "standard",
-						})
-					}
-				/>
+				<Form onEnterKeyDown={handleSubmit(handleSubmitButtonClick)}>
+					<InputEmail control={control} name="email" />
+				</Form>
 			</DialogContent>
 			<DialogActions>
 				<OutlinedButton

@@ -13,6 +13,7 @@ import { mediaApi } from "../../../api/endpoints/media.api";
 import IconButton from "../../buttons/icon-button";
 import Image from "../../image";
 import { IFormField } from "./form-field.interface";
+import { useMediaQueryContext } from "../../../app/infrastructure/media-query-context";
 
 export interface IFormImageField<T extends FieldValues> extends IFormField<T> {
 	id?: string;
@@ -26,7 +27,7 @@ export default function InputImage<T extends FieldValues>({
 	name,
 	id,
 	label = "Изображение",
-	size = "medium",
+	size,
 	variant = "filled",
 	margin = "dense",
 	required = false,
@@ -36,10 +37,11 @@ export default function InputImage<T extends FieldValues>({
 	shape = "rounded",
 	tip,
 }: { control: Control<T> } & IFormImageField<T>) {
+	const { xs } = useMediaQueryContext();
+	size = size || (xs ? "small" : "medium");
 	const { fetchAsync } = useApi();
 	const { popupError } = usePopup();
 	const fileInputRef = useRef<HTMLInputElement | null>(null);
-
 	const handleIconClick = () => {
 		fileInputRef.current?.click();
 	};

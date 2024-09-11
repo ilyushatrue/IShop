@@ -1,7 +1,12 @@
 import { SubmitHandler, useForm } from "react-hook-form";
-import Form from "../../../components/form/form";
 import { Box } from "@mui/material";
 import Button from "../../../components/buttons/button";
+import InputEmail from "../../../components/form/inputs/input-email";
+import { InputPhone } from "../../../components/form/inputs/input-phone";
+import InputText from "../../../components/form/inputs/input-text";
+import InputPassword from "../../../components/form/inputs/input-password";
+import InputPasswordConfirm from "../../../components/form/inputs/input-password-confirm";
+import Form from "../../../components/form/form";
 
 interface IRegisterForm {
 	firstName: string;
@@ -27,7 +32,7 @@ export default function RegisterForm({
 		password: "",
 		confirmPassword: "",
 	};
-	const { handleSubmit, control, watch, reset } = useForm<IRegisterForm>({
+	const { handleSubmit, control, watch } = useForm<IRegisterForm>({
 		mode: "onChange",
 		reValidateMode: "onBlur",
 		defaultValues,
@@ -38,46 +43,27 @@ export default function RegisterForm({
 	};
 
 	return (
-		<Form<IRegisterForm>
-			control={control}
-			watch={watch}
-			loading={loading}
-			style={{ marginBottom: 24 }}
-			fields={(builder) =>
-				builder
-					.text({
-						name: "firstName",
-						label: "Имя",
-						size: "small",
-						required: true,
-					})
-					.text({
-						name: "lastName",
-						label: "Фамилия",
-						size: "small",
-					})
-					.phone({
-						name: "phone",
-						size: "small",
-						required: false,
-					})
-					.email({
-						name: "email",
-						size: "small",
-						required: true,
-					})
-					.password({
-						name: "password",
-						size: "small",
-					})
-					.passwordConfirm({
-						label: "Повторите пароль",
-						name: "confirmPassword",
-						size: "small",
-						password: "password",
-					})
-			}
-		>
+		<Form sx={{ marginBottom: 4 }}>
+			<InputText
+				control={control}
+				name="firstName"
+				required
+				label="Имя"
+			/>
+			<InputText
+				control={control}
+				name="lastName"
+				required
+				label="Фамилия"
+			/>
+			<InputPhone control={control} name="phone" />
+			<InputEmail control={control} name="email" required />
+			<InputPassword control={control} name="password" />
+			<InputPasswordConfirm
+				control={control}
+				name="confirmPassword"
+				password={watch("password")}
+			/>
 			<Box display={"flex"} justifyContent={"center"} marginTop={"16px"}>
 				<Button
 					onClick={handleSubmit(handleSubmitButtonClick)}

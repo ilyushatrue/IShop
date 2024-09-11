@@ -1,6 +1,7 @@
 import { TextField } from "@mui/material";
 import { Control, Controller, FieldValues } from "react-hook-form";
 import { IFormField } from "./form-field.interface";
+import { useMediaQueryContext } from "../../../app/infrastructure/media-query-context";
 
 const DECIMAL_MAX_VALUE = 79228162514264337593543950335;
 export interface IFormNumberField<T extends FieldValues> extends IFormField<T> {
@@ -11,7 +12,7 @@ export default function InputNumber<T extends FieldValues>({
 	control,
 	name,
 	label,
-	size = "medium",
+	size,
 	variant = "filled",
 	margin = "dense",
 	required = false,
@@ -20,6 +21,8 @@ export default function InputNumber<T extends FieldValues>({
 	min = -DECIMAL_MAX_VALUE,
 	max = DECIMAL_MAX_VALUE,
 }: IFormNumberField<T> & { control: Control<T> }) {
+	const { xs } = useMediaQueryContext();
+	size = size || (xs ? "small" : "medium");
 	return (
 		<Controller
 			key={name}

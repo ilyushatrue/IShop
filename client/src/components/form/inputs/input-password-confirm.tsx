@@ -4,11 +4,11 @@ import {
 	Controller,
 	FieldValues,
 	Path,
-	PathValue,
 	RegisterOptions,
 } from "react-hook-form";
 import { useState } from "react";
 import { IFormField } from "./form-field.interface";
+import { useMediaQueryContext } from "../../../app/infrastructure/media-query-context";
 
 const getValidateOptions = <T extends FieldValues>(
 	required: boolean,
@@ -29,20 +29,21 @@ const getValidateOptions = <T extends FieldValues>(
 export default function InputPasswordConfirm<T extends FieldValues>({
 	control,
 	name,
-	label = "Пароль",
-	size = "medium",
+	password,
+	label = "Подтвердите пароль",
+	size,
 	variant = "filled",
 	margin = "dense",
 	required = true,
-	onChange,
 	readonly,
 	disabled,
 }: {
 	control: Control<T>;
-	onChange: () => PathValue<T, Path<T>>;
+	password: string;
 } & IFormField<T>) {
-	const [password, setPassword] = useState<string>("");
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+	const { xs } = useMediaQueryContext();
+	size = size || (xs ? "small" : "medium");
 
 	const handleClickShowPassword = () => setIsPasswordVisible((show) => !show);
 
@@ -50,12 +51,6 @@ export default function InputPasswordConfirm<T extends FieldValues>({
 		event: React.MouseEvent<HTMLButtonElement>
 	) => {
 		event.preventDefault();
-	};
-
-	const handleOnChange = () => {
-		if (onChange) {
-			setPassword(onChange());
-		}
 	};
 
 	return (
@@ -72,10 +67,7 @@ export default function InputPasswordConfirm<T extends FieldValues>({
 					type={isPasswordVisible ? "text" : "password"}
 					margin={margin}
 					fullWidth
-					onChange={(e) => {
-						field.onChange(e);
-						handleOnChange();
-					}}
+					onChange={field.onChange}
 					onBlur={field.onBlur}
 					value={field.value}
 					error={!!error}
@@ -90,17 +82,15 @@ export default function InputPasswordConfirm<T extends FieldValues>({
 								edge="end"
 								size="small"
 							>
-								{isPasswordVisible ? (
-									<Icon>visibility_off</Icon>
-								) : (
-									<Icon>visibility_off</Icon>
-								)}
+								<Icon>
+									{isPasswordVisible
+										? "visibility_off"
+										: "visibility"}
+								</Icon>
 							</IconButton>
 						),
 					}}
-				>
-					<Icon sx={{ height: 50, width: 50 }}>visibility</Icon>
-				</TextField>
+				/>
 			)}
 		/>
 	);

@@ -1,12 +1,13 @@
 import { TextField } from "@mui/material";
 import { Control, Controller, FieldValues } from "react-hook-form";
 import { IFormField } from "./form-field.interface";
+import { useMediaQueryContext } from "../../../app/infrastructure/media-query-context";
 
 export default function InputText<T extends FieldValues>({
 	control,
 	name,
 	label,
-	size = "medium",
+	size,
 	variant = "filled",
 	margin = "dense",
 	required = false,
@@ -14,6 +15,8 @@ export default function InputText<T extends FieldValues>({
 	readonly,
 	multiline,
 }: { control: Control<T> } & IFormField<T>) {
+	const { xs } = useMediaQueryContext();
+	size = size || (xs ? "small" : "medium");
 	return (
 		<Controller
 			key={name}

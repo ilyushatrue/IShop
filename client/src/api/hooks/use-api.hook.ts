@@ -35,6 +35,7 @@ export default function useApi() {
 	): SuccessHandler<ApiResponse<TOut>> => {
 		const successHandler: SuccessHandler<ApiResponse<TOut>> = {
 			popup: (message) => {
+				console.log(23)
 				popupSuccess(message);
 				return successHandler;
 			},
@@ -84,6 +85,7 @@ export default function useApi() {
 		setIsFetching(true);
 		try {
 			const response = await request;
+			console.log(response.ok)
 			if (response.ok) {
 				if (onSuccess) {
 					const successHandler = getSuccessHandler(response);

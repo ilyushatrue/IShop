@@ -7,6 +7,7 @@ import {
 	RegisterOptions,
 } from "react-hook-form";
 import { IFormField } from "./form-field.interface";
+import { useMediaQueryContext } from "../../../app/infrastructure/media-query-context";
 
 const getValidateOptions = <T extends FieldValues>(
 	required: boolean
@@ -23,13 +24,15 @@ export default function InputEmail<T extends FieldValues>({
 	control,
 	name,
 	label = "Эл. почта",
-	size = "medium",
+	size,
 	variant = "filled",
 	margin = "dense",
 	required = false,
 	disabled,
 	readonly,
 }: { control: Control<T> } & IFormField<T>) {
+	const { xs } = useMediaQueryContext();
+	size = size || (xs ? "small" : "medium");
 	return (
 		<Controller
 			key={name}

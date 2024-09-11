@@ -1,11 +1,13 @@
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useMediaQueryContext } from "../../../../app/infrastructure/media-query-context";
 import OutlinedButton from "../../../../components/buttons/outlined-button";
 import FormActions from "../../../../components/form/form-actions";
 import { IProduct } from "../../../../api/interfaces/product/product.interface";
-import Form from "../../../../components/form/form";
 import { useEffect } from "react";
 import Button from "../../../../components/buttons/button";
+import InputImage from "../../../../components/form/inputs/input-image";
+import InputText from "../../../../components/form/inputs/input-text";
+import InputNumber from "../../../../components/form/inputs/input-number";
+import Form from "../../../../components/form/form";
 
 export default function ProductEditForm({
 	onSubmit,
@@ -16,14 +18,11 @@ export default function ProductEditForm({
 	onSubmit: (values: IProduct) => void;
 	loading: boolean;
 }) {
-	const { xs } = useMediaQueryContext();
-	const size = xs ? "small" : "medium";
-	const { handleSubmit, control, watch, reset, formState } =
-		useForm<IProduct>({
-			mode: "onChange",
-			reValidateMode: "onBlur",
-			defaultValues,
-		});
+	const { handleSubmit, control, reset, formState } = useForm<IProduct>({
+		mode: "onBlur",
+		reValidateMode: "onBlur",
+		defaultValues,
+	});
 
 	useEffect(() => {
 		reset(defaultValues);
@@ -34,40 +33,33 @@ export default function ProductEditForm({
 	};
 
 	return (
-		<Form
-			control={control}
-			watch={watch}
-			loading={loading}
-			fields={(builder) =>
-				builder
-					.image({
-						name: "imageId",
-						required: true,
-						size: size,
-						label: "Изображение",
-						containerSized: true,
-					})
-					.text({
-						name: "name",
-						required: true,
-						label: "Наименование",
-						size: size,
-					})
-					.text({
-						name: "description",
-						label: "Описание",
-						multiline: true,
-						size: size,
-					})
-					.number({
-						name: "price",
-						label: "Цена",
-						min: 1,
-						max: 1_000_000,
-						size: size,
-					})
-			}
-		>
+		<Form onEnterKeyDown={handleSubmit(handleSubmitButtonClick)}>
+			<InputImage
+				control={control}
+				name="imageId"
+				containerSized
+				label="Изображение"
+			/>
+			<InputText
+				control={control}
+				name="name"
+				label="Наименование"
+				required
+			/>
+			<InputText
+				control={control}
+				name="description"
+				label="Описание"
+				required
+			/>
+			<InputNumber
+				control={control}
+				name="price"
+				label="Цена"
+				required
+				min={1}
+				max={1_000_000}
+			/>
 			<FormActions
 				sx={{ display: "flex", justifyContent: "space-between" }}
 			>

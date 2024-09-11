@@ -1,6 +1,5 @@
 import { DialogTitle } from "@mui/material";
 import { IProductCategory } from "../../../api/interfaces/product-categories/product-category.interface";
-import Form from "../../../components/form/form";
 import FormActions from "../../../components/form/form-actions";
 import { SubmitHandler, useForm } from "react-hook-form";
 import OutlinedButton from "../../../components/buttons/outlined-button";
@@ -36,60 +35,60 @@ export default function CategoryEditDialog({
 		onSubmit(values);
 	};
 
-	return (
-		<Dialog open={open} fullWidth onClose={onClose}>
-			<DialogTitle>
-				{`${action === "edit" ? "Редактировать" : "Создать"} категорию`}
-			</DialogTitle>
-			<Form
-				loading={loading}
-				style={{ padding: 20 }}
-				watch={watch}
-				control={control}
-				fields={(builder) =>
-					builder
-						.text({
-							name: "name",
-							label: "Системное наименование",
-							required: true,
-						})
-						.text({
-							name: "title",
-							label: "Заголовок",
-							required: true,
-						})
-						.text({
-							name: "iconName",
-							label: "Название иконки",
-							required: true,
-						})
-						.number({
-							name: "order",
-							label: "Порядок",
-							required: true,
-						})
-						.select({
-							name: "parentId",
-							label: "Подкатегория категории",
-							options: categoriesHierarchy.map((c) => ({
-								key: c.id,
-								value: c.title,
-							})),
-						})
-				}
-			>
-				<FormActions>
-					<OutlinedButton onClick={() => reset()}>
-						Отмена
-					</OutlinedButton>
-					<Button
-						onClick={handleSubmit(handleSubmitButtonClick)}
-						autoFocus
-					>
-						Добавить
-					</Button>
-				</FormActions>
-			</Form>
-		</Dialog>
+	return (<></>
+		// <Dialog open={open} fullWidth onClose={onClose}>
+		// 	<DialogTitle>
+		// 		{`${action === "edit" ? "Редактировать" : "Создать"} категорию`}
+		// 	</DialogTitle>
+		// 	<Form
+		// 		loading={loading}
+		// 		style={{ padding: 20 }}
+		// 		watch={watch}
+		// 		control={control}
+		// 		fields={(builder) =>
+		// 			builder
+		// 				.text({
+		// 					name: "name",
+		// 					label: "Системное наименование",
+		// 					required: true,
+		// 				})
+		// 				.text({
+		// 					name: "title",
+		// 					label: "Заголовок",
+		// 					required: true,
+		// 				})
+		// 				.text({
+		// 					name: "iconName",
+		// 					label: "Название иконки",
+		// 					required: true,
+		// 				})
+		// 				.number({
+		// 					name: "order",
+		// 					label: "Порядок",
+		// 					required: true,
+		// 				})
+		// 				.select({
+		// 					name: "parentId",
+		// 					label: "Подкатегория категории",
+		// 					options: categoriesHierarchy.map((c) => ({
+		// 						key: c.id,
+		// 						value: c.title,
+		// 					})),
+		// 				})
+		// 		}
+		// 	>
+		// 		<FormActions>
+		// 			<OutlinedButton onClick={() => reset()}>
+		// 				Отмена
+		// 			</OutlinedButton>
+		// 			<Button
+		// 				onClick={handleSubmit(handleSubmitButtonClick)}
+		// 				autoFocus
+		// 			>
+		// 				Добавить
+		// 			</Button>
+		// 		</FormActions>
+		// 	</Form>
+		// </Dialog>
 	);
 }

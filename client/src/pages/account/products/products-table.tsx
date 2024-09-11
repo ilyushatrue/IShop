@@ -237,6 +237,7 @@ export default function ProductsTable({
 										component="th"
 										scope="row"
 										padding="none"
+										sx={{mt:2}}
 									>
 										<Image
 											imageId={row.imageId}
@@ -278,7 +279,7 @@ export default function ProductsTable({
 				page={page}
 				onPageChange={handleChangePage}
 				onRowsPerPageChange={handleChangeRowsPerPage}
-				labelRowsPerPage={"Строк на странице"}
+				labelRowsPerPage={"Показывать строк"}
 			/>
 			<FormControlLabel
 				sx={{ marginLeft: 1 }}

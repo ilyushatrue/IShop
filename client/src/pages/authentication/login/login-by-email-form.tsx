@@ -1,7 +1,7 @@
 import { SubmitHandler, useForm } from "react-hook-form";
 import { ILoginByEmailRequest } from "../../../api/contracts/authentication/login-by-email-request.interface";
 import Button from "../../../components/buttons/button";
-import NewForm from "../../../components/new-form/new-form";
+import Form from "../../../components/form/form";
 import FormActions from "../../../components/form/form-actions";
 import InputEmail from "../../../components/form/inputs/input-email";
 import InputPassword from "../../../components/form/inputs/input-password";
@@ -26,7 +26,10 @@ export default function LoginByEmailForm({ onSubmit, loading }: IProps) {
 	};
 
 	return (
-		<NewForm sx={{ marginBottom: 4 }}>
+		<Form
+			onEnterKeyDown={handleSubmit(handleSubmitButtonClick)}
+			sx={{ marginBottom: 4 }}
+		>
 			<InputEmail control={control} name="email" />
 			<InputPassword control={control} name="password" />
 			<FormActions sx={{ justifyContent: "center" }}>
@@ -39,6 +42,6 @@ export default function LoginByEmailForm({ onSubmit, loading }: IProps) {
 					Войти
 				</Button>
 			</FormActions>
-		</NewForm>
+		</Form>
 	);
 }

@@ -28,9 +28,6 @@ interface IProps {
 	onToRegisterClick: () => void;
 }
 
-const MemoizedLoginByEmailForm = React.memo(LoginByEmailForm);
-const MemoizedLoginByPhoneForm = React.memo(LoginByPhoneForm);
-
 export default function Login({ onToRegisterClick }: IProps) {
 	const { sm } = useMediaQueryContext();
 
@@ -181,14 +178,13 @@ export default function Login({ onToRegisterClick }: IProps) {
 					</ToggleButton>
 				</ToggleButtonGroup>
 				<Box sx={{ display: authType === "email" ? "block" : "none" }}>
-					<MemoizedLoginByEmailForm
+					<LoginByEmailForm
 						loading={isFetching}
 						onSubmit={handleLoginByEmailAsync}
-						
 					/>
 				</Box>
 				<Box sx={{ display: authType === "phone" ? "block" : "none" }}>
-					<MemoizedLoginByPhoneForm
+					<LoginByPhoneForm
 						loading={isFetching}
 						onSubmit={handleLoginByPhoneAsync}
 					/>

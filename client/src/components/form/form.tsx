@@ -1,59 +1,28 @@
-import { ReactElement, useEffect, useRef } from "react";
-import FormBuilder, { FormBuilderRef } from "./form-builder";
-import { Control, FieldValues, UseFormWatch } from "react-hook-form";
+import { useEffect, useRef } from "react";
 import { Box, BoxProps } from "@mui/material";
 
-export interface FormProps<T extends FieldValues> extends BoxProps {
-	watch: UseFormWatch<T>;
-	control: Control<T, any>;
-	fields: (builder: FormBuilderRef<T>) => void;
-	loading?: boolean;
-	children?: ReactElement;
+export interface FormProps extends BoxProps {
 	onEnterKeyDown?: () => void;
 }
-export default function Form<T extends FieldValues>({
-	control,
-	watch,
-	fields,
-	loading = false,
-	children,
-	onEnterKeyDown,
-	...props
-}: FormProps<T>) {
-	const builderRef = useRef<FormBuilderRef<T>>(null);
-	const boxRef = useRef<HTMLDivElement>(null);
+export default function Form({ onEnterKeyDown, ...props }: FormProps) {
+	const formRef = useRef<HTMLFormElement>(null);
+
 	useEffect(() => {
-		fields(builderRef.current!);
-		const ref = boxRef.current;
+		const ref = formRef.current;
 		if (!onEnterKeyDown || !ref) return;
+
 		const handleEnterKeyDown = (event: KeyboardEvent) => {
-			event.stopPropagation();
-			if (event.key === "Enter") {
-				if (ref!.contains(event.target as Node)) {
-					event.stopPropagation();
-					onEnterKeyDown();
-				}
+			if (event.key === "Enter" && ref.contains(event.target as Node)) {
+				event.stopPropagation();
+				onEnterKeyDown();
 			}
 		};
 
 		ref.addEventListener("keydown", handleEnterKeyDown);
-
 		return () => {
-			if (!onEnterKeyDown || !ref) return;
 			ref.removeEventListener("keydown", handleEnterKeyDown);
 		};
-	}, [fields, onEnterKeyDown]);
+	}, [onEnterKeyDown]);
 
-	return (
-		<Box ref={boxRef} {...props}>
-			<FormBuilder<T>
-				watch={watch}
-				control={control}
-				loading={loading}
-				ref={builderRef}
-			>
-				{children}
-			</FormBuilder>
-		</Box>
-	);
+	return <Box component={"form"} ref={formRef} {...props} />;
 }

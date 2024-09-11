@@ -52,6 +52,9 @@ export default function AccountPageMainBoxHeader({
 						left: 0,
 						color: "primary.200",
 						marginLeft: 1,
+						display: "flex",
+						alignItems: "center",
+						justifyContent: "flex-start",
 						"&:hover": {
 							color: "primary.100",
 						},
@@ -62,6 +65,7 @@ export default function AccountPageMainBoxHeader({
 					{xs ? "" : backText}
 				</Button>
 			)}
+
 			{children}
 		</Box>
 	);

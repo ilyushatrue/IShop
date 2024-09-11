@@ -8,6 +8,7 @@ import {
 } from "react-hook-form";
 import { useState } from "react";
 import { IFormField } from "./form-field.interface";
+import { useMediaQueryContext } from "../../../app/infrastructure/media-query-context";
 
 export interface IFormPasswordField<T extends FieldValues>
 	extends IFormField<T> {
@@ -44,7 +45,7 @@ export default function InputPassword<T extends FieldValues>({
 	control,
 	name,
 	label = "Пароль",
-	size = "medium",
+	size,
 	variant = "filled",
 	margin = "dense",
 	required = true,
@@ -53,6 +54,8 @@ export default function InputPassword<T extends FieldValues>({
 	validationRequired = true,
 }: { control: Control<T> } & IFormPasswordField<T>) {
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+	const { xs } = useMediaQueryContext();
+	size = size || (xs ? "small" : "medium");
 
 	const handleClickShowPassword = () => setIsPasswordVisible((show) => !show);
 
@@ -92,11 +95,11 @@ export default function InputPassword<T extends FieldValues>({
 								edge="end"
 								size="small"
 							>
-								{isPasswordVisible ? (
-									<Icon>visibility_off</Icon>
-								) : (
-									<Icon>visibility</Icon>
-								)}
+								<Icon>
+									{isPasswordVisible
+										? "visibility_off"
+										: "visibility"}
+								</Icon>
 							</IconButton>
 						),
 					}}

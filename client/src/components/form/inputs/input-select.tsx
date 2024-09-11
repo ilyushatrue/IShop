@@ -13,6 +13,7 @@ import {
 import { Control, Controller, FieldValues } from "react-hook-form";
 import { IFormField } from "./form-field.interface";
 import { ReactNode, useMemo } from "react";
+import { useMediaQueryContext } from "../../../app/infrastructure/media-query-context";
 
 export interface IFormSelectField<T extends FieldValues> extends IFormField<T> {
 	options: { key: number | string; value: string }[];
@@ -27,13 +28,15 @@ export default function InputSelect<T extends FieldValues>({
 	label,
 	multiple,
 	endAdornment,
-	size = "medium",
+	size,
 	variant = "filled",
 	margin = "dense",
 	required = false,
 	disabled,
 	readonly,
 }: { control: Control<T> } & IFormSelectField<T>) {
+	const { xs } = useMediaQueryContext();
+	size = size || (xs ? "small" : "medium");
 	const ITEM_HEIGHT = 48;
 	const ITEM_PADDING_TOP = 8;
 	const optionsMap = useMemo(() => options.groupBy((o) => o.key), [options]);

@@ -7,6 +7,7 @@ import {
 	RegisterOptions,
 } from "react-hook-form";
 import { IFormField } from "./form-field.interface";
+import { useMediaQueryContext } from "../../../app/infrastructure/media-query-context";
 
 export function phoneNumberPipe(phone: string): string {
 	const countryDigit = "7";
@@ -57,13 +58,15 @@ export function InputPhone<T extends FieldValues>({
 	control,
 	name,
 	label = "Номер телефона",
-	size = "medium",
+	size,
 	variant = "filled",
 	margin = "dense",
 	required = false,
 	disabled,
 	readonly,
 }: { control: Control<T> } & IFormField<T>) {
+	const { xs } = useMediaQueryContext();
+	size = size || (xs ? "small" : "medium");
 	return (
 		<Controller
 			key={name}

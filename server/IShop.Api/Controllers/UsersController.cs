@@ -47,9 +47,8 @@ public class UsersController(
     [HttpGet("current")]
     public async Task<IActionResult> GetCurrent(CancellationToken cancellationToken)
     {
-        var userId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "UserId")?.Value;
-
-        var userRoleId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "RoleId")?.Value;
+        var userId = HttpContext.Request.Cookies["user-id"];
+        var userRoleId = HttpContext.Request.Cookies["user-role"];
         var userRole = userRoleId == null ? RoleEnum.Visitor : Enum.Parse<RoleEnum>(userRoleId);
         var getMenuItemsByRoleQuery = new GetMenuItemsByRoleQuery(userRole);
 

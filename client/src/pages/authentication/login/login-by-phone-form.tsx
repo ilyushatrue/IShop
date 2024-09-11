@@ -1,8 +1,10 @@
 import { SubmitHandler, useForm } from "react-hook-form";
 import { ILoginByPhoneRequest } from "../../../api/contracts/authentication/login-by-phone-request.interface";
-import Form from "../../../components/form/form";
 import Button from "../../../components/buttons/button";
-import { Box } from "@mui/material";
+import InputPassword from "../../../components/form/inputs/input-password";
+import FormActions from "../../../components/form/form-actions";
+import { InputPhone } from "../../../components/form/inputs/input-phone";
+import Form from "../../../components/form/form";
 
 interface IProps {
 	onSubmit: (values: ILoginByPhoneRequest) => void;
@@ -13,7 +15,7 @@ export default function LoginByPhoneForm({ onSubmit, loading }: IProps) {
 		password: "",
 		phone: "7",
 	};
-	const { handleSubmit, control, watch } = useForm<ILoginByPhoneRequest>({
+	const { handleSubmit, control } = useForm<ILoginByPhoneRequest>({
 		mode: "onBlur",
 		reValidateMode: "onBlur",
 		defaultValues,
@@ -27,22 +29,12 @@ export default function LoginByPhoneForm({ onSubmit, loading }: IProps) {
 
 	return (
 		<Form
-			control={control}
-			watch={watch}
-			loading={loading}
-			style={{ marginBottom: 24 }}
-			fields={(builder) =>
-				builder
-					.phone({
-						name: "phone",
-					})
-					.password({
-						name: "password",
-						validationRequired: false,
-					})
-			}
+			onEnterKeyDown={handleSubmit(handleSubmitButtonClick)}
+			sx={{ marginBottom: 4 }}
 		>
-			<Box display={"flex"} justifyContent={"center"} marginTop={"16px"}>
+			<InputPhone control={control} name="phone" />
+			<InputPassword control={control} name="password" />
+			<FormActions sx={{ justifyContent: "center" }}>
 				<Button
 					onClick={handleSubmit(handleSubmitButtonClick)}
 					size="large"
@@ -51,7 +43,7 @@ export default function LoginByPhoneForm({ onSubmit, loading }: IProps) {
 				>
 					Войти
 				</Button>
-			</Box>
+			</FormActions>
 		</Form>
 	);
 }

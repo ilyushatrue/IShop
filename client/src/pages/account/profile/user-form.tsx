@@ -1,87 +1,80 @@
-import { SubmitHandler, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { IUser } from "../../../api/interfaces/user/user.interface";
-import Form from "../../../components/form/form";
 import FormActions from "../../../components/form/form-actions";
 import OutlinedButton from "../../../components/buttons/outlined-button";
 import Button from "../../../components/buttons/button";
-import { useMediaQueryContext } from "../../../app/infrastructure/media-query-context";
 import { BoxProps } from "@mui/material";
+import Form from "../../../components/form/form";
+import InputImage from "../../../components/form/inputs/input-image";
+import InputText from "../../../components/form/inputs/input-text";
+import { InputPhone } from "../../../components/form/inputs/input-phone";
+import InputEmail from "../../../components/form/inputs/input-email";
+import useApi from "../../../api/hooks/use-api.hook";
+import usersApi from "../../../api/endpoints/users.api";
 
 interface IUserForm extends Omit<BoxProps, "onSubmit"> {
 	defaultValues: IUser;
-	onSubmit: (values: IUser) => void;
-	loading: boolean;
 }
 
-export default function UserForm({
-	onSubmit,
-	defaultValues,
-	loading,
-	...props
-}: IUserForm) {
-	const { xs } = useMediaQueryContext();
-	const { handleSubmit, control, watch, reset, formState } = useForm<IUser>({
+export default function UserForm({ defaultValues, ...props }: IUserForm) {
+	const { fetchAsync, isFetching } = useApi();
+	const { handleSubmit, control, reset, formState } = useForm<IUser>({
 		mode: "onBlur",
 		reValidateMode: "onBlur",
 		defaultValues,
 	});
 
-	const handleSubmitButtonClick: SubmitHandler<IUser> = (values) => {
-		onSubmit(values);
-	};
+	async function handleFormSubmitAsync(user: IUser) {
+		await fetchAsync({
+			request: usersApi.updateUserData(user),
+			onSuccess: (handler) => handler.popup("Данные успешно обновлены!"),
+			onError: (handler) => handler.log().popup(),
+			triggerPageLoader: true,
+		}).then((resp) => {
+			if (resp.ok) {
+				reset(user);
+			}
+		});
+	}
 
 	return (
-		<Form
-			{...props}
-			control={control}
-			watch={watch}
-			loading={loading}
-			onEnterKeyDown={handleSubmit(handleSubmitButtonClick)}
-			fields={(builder) =>
-				builder
-					.image({
-						name: "avatarId",
-						shape: "circled",
-						label: "Аватар",
-						containerSized: true,
-						size: xs ? "small" : "medium",
-					})
-					.text({
-						name: "firstName",
-						label: "Имя",
-						required: true,
-						size: xs ? "small" : "medium",
-					})
-					.text({
-						name: "lastName",
-						label: "Фамилия",
-						size: xs ? "small" : "medium",
-					})
-					.phone({
-						name: "phone",
-						size: xs ? "small" : "medium",
-					})
-					.email({
-						name: "email",
-						required: true,
-						disabled: true,
-						size: xs ? "small" : "medium",
-					})
-			}
-		>
+		<Form {...props} onEnterKeyDown={handleSubmit(handleFormSubmitAsync)}>
+			<InputImage
+				control={control}
+				name="avatarId"
+				label="Аватар"
+				containerSized
+				disabled={isFetching}
+			/>
+			<InputText
+				control={control}
+				name="firstName"
+				required
+				label="Имя"
+				disabled={isFetching}
+			/>
+			<InputText
+				control={control}
+				name="lastName"
+				required
+				label="Фамилия"
+				disabled={isFetching}
+			/>
+			<InputPhone control={control} name="phone" disabled={isFetching} />
+			<InputEmail control={control} name="email" disabled required />
 			<FormActions>
 				<OutlinedButton
 					size="large"
 					onClick={() => reset()}
-					disabled={loading || !formState.isDirty}
+					disabled={isFetching || !formState.isDirty}
 				>
 					Отмена
 				</OutlinedButton>
 				<Button
 					size="large"
-					onClick={handleSubmit(handleSubmitButtonClick)}
+					onClick={handleSubmit(handleFormSubmitAsync)}
 					autoFocus
-					disabled={loading || !formState.isDirty}
+					disabled={isFetching || !formState.isDirty}
 				>
 					Сохранить
 				</Button>

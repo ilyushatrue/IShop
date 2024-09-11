@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import AccountProtectedPage from "../account-protected-page";
 import AccountPageSideBox from "../account-page-side-box";
 import AccountPageMainBox from "../account-page-main-box";
+import AccountPageMainBoxHeader from "../account-page-main-box-header";
 export default function Users() {
 	const [users, setUsers] = useState<any[]>([]);
 	const navigate = useNavigate();
@@ -25,6 +26,7 @@ export default function Users() {
 		<AccountProtectedPage title="Пользователи">
 			<AccountPageSideBox />
 			<AccountPageMainBox>
+				<AccountPageMainBoxHeader>Пользователи</AccountPageMainBoxHeader>
 				{users.map((user, index) => (
 					<div
 						key={index}
