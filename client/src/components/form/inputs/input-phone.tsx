@@ -78,6 +78,7 @@ export function InputPhone<T extends FieldValues>({
 					type="text"
 					margin={margin}
 					fullWidth
+					onBlur={field.onBlur}
 					onChange={(e) => {
 						const formattedValue = phoneNumberPipe(e.target.value);
 						field.onChange(formattedValue);

@@ -36,6 +36,7 @@ export default function InputText<T extends FieldValues>({
 					disabled={disabled}
 					InputProps={{ readOnly: readonly }}
 					fullWidth
+					onBlur={field.onBlur}
 					onChange={field.onChange}
 					value={field.value}
 					error={!!error}

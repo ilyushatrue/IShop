@@ -21,7 +21,7 @@ export default function UserForm({
 }: IUserForm) {
 	const { xs } = useMediaQueryContext();
 	const { handleSubmit, control, watch, reset, formState } = useForm<IUser>({
-		mode: "onChange",
+		mode: "onBlur",
 		reValidateMode: "onBlur",
 		defaultValues,
 	});
@@ -36,6 +36,7 @@ export default function UserForm({
 			control={control}
 			watch={watch}
 			loading={loading}
+			onEnterKeyDown={handleSubmit(handleSubmitButtonClick)}
 			fields={(builder) =>
 				builder
 					.image({
@@ -68,9 +69,7 @@ export default function UserForm({
 					})
 			}
 		>
-			<FormActions
-				sx={{ display: "flex", justifyContent: "space-between" }}
-			>
+			<FormActions>
 				<OutlinedButton
 					size="large"
 					onClick={() => reset()}

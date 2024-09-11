@@ -84,6 +84,7 @@ export default function InputImage<T extends FieldValues>({
 					fullWidth
 					margin={margin}
 					variant={variant}
+					onBlur={field.onBlur}
 					sx={{
 						display: "flex",
 						alignItems: "center",

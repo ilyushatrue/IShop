@@ -14,7 +14,7 @@ export default function LoginByPhoneForm({ onSubmit, loading }: IProps) {
 		phone: "7",
 	};
 	const { handleSubmit, control, watch } = useForm<ILoginByPhoneRequest>({
-		mode: "onChange",
+		mode: "onBlur",
 		reValidateMode: "onBlur",
 		defaultValues,
 	});

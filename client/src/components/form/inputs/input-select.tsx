@@ -69,6 +69,7 @@ export default function InputSelect<T extends FieldValues>({
 					variant={variant}
 					margin={margin}
 					disabled={disabled}
+					onBlur={field.onBlur}
 					size={size}
 					error={!!error}
 				>

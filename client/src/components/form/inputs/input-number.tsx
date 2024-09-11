@@ -44,6 +44,7 @@ export default function InputNumber<T extends FieldValues>({
 					InputProps={{ readOnly: readonly }}
 					fullWidth
 					onChange={field.onChange}
+					onBlur={field.onBlur}
 					value={field.value}
 					error={!!error}
 					helperText={error && error.message}

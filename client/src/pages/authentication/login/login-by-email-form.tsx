@@ -1,15 +1,17 @@
 import { SubmitHandler, useForm } from "react-hook-form";
 import { ILoginByEmailRequest } from "../../../api/contracts/authentication/login-by-email-request.interface";
-import Form from "../../../components/form/form";
-import { Box } from "@mui/material";
 import Button from "../../../components/buttons/button";
+import NewForm from "../../../components/new-form/new-form";
+import FormActions from "../../../components/form/form-actions";
+import InputEmail from "../../../components/form/inputs/input-email";
+import InputPassword from "../../../components/form/inputs/input-password";
 interface IProps {
 	onSubmit: (values: ILoginByEmailRequest) => void;
 	loading: boolean;
 }
 export default function LoginByEmailForm({ onSubmit, loading }: IProps) {
-	const { handleSubmit, control, watch } = useForm<ILoginByEmailRequest>({
-		mode: "onSubmit",
+	const { handleSubmit, control } = useForm<ILoginByEmailRequest>({
+		mode: "onBlur",
 		reValidateMode: "onBlur",
 		defaultValues: {
 			password: "",
@@ -24,20 +26,10 @@ export default function LoginByEmailForm({ onSubmit, loading }: IProps) {
 	};
 
 	return (
-		<Form
-			control={control}
-			watch={watch}
-			onEnterKeyDown={handleSubmit(handleSubmitButtonClick)}
-			loading={loading}
-			style={{ marginBottom: 24 }}
-			fields={(builder) =>
-				builder.email({ name: "email", required: true }).password({
-					name: "password",
-					validationRequired: false,
-				})
-			}
-		>
-			<Box display={"flex"} justifyContent={"center"} marginTop={"16px"}>
+		<NewForm sx={{ marginBottom: 4 }}>
+			<InputEmail control={control} name="email" />
+			<InputPassword control={control} name="password" />
+			<FormActions sx={{ justifyContent: "center" }}>
 				<Button
 					onClick={handleSubmit(handleSubmitButtonClick)}
 					size="large"
@@ -46,7 +38,7 @@ export default function LoginByEmailForm({ onSubmit, loading }: IProps) {
 				>
 					Войти
 				</Button>
-			</Box>
-		</Form>
+			</FormActions>
+		</NewForm>
 	);
 }

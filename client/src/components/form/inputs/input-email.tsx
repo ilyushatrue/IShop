@@ -46,8 +46,9 @@ export default function InputEmail<T extends FieldValues>({
 					disabled={disabled}
 					InputProps={{ readOnly: readonly }}
 					autoComplete="email"
-					fullWidth
+					onBlur={field.onBlur}
 					onChange={field.onChange}
+					fullWidth
 					value={field.value}
 					error={!!error}
 					helperText={error && error.message}

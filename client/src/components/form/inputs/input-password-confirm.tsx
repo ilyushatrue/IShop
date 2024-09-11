@@ -76,6 +76,7 @@ export default function InputPasswordConfirm<T extends FieldValues>({
 						field.onChange(e);
 						handleOnChange();
 					}}
+					onBlur={field.onBlur}
 					value={field.value}
 					error={!!error}
 					helperText={error && error.message}

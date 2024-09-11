@@ -77,6 +77,7 @@ export default function InputPassword<T extends FieldValues>({
 					type={isPasswordVisible ? "text" : "password"}
 					margin={margin}
 					fullWidth
+					onBlur={field.onBlur}
 					onChange={field.onChange}
 					value={field.value}
 					error={!!error}
