@@ -47,9 +47,14 @@ public class UsersController(
     [HttpGet("current")]
     public async Task<IActionResult> GetCurrent(CancellationToken cancellationToken)
     {
-        var userId = HttpContext.Request.Cookies["user-id"];
-        var userRoleId = HttpContext.Request.Cookies["user-role"];
-        var userRole = userRoleId == null ? RoleEnum.Visitor : Enum.Parse<RoleEnum>(userRoleId);
+        string? userId = null;
+        var userRole = RoleEnum.Visitor;
+        if (HttpContext.Request.Cookies["jwt-access-token"] != null)
+        {
+            userId = HttpContext.Request.Cookies["user-id"];
+            var userRoleId = HttpContext.Request.Cookies["user-role"]!;
+            userRole = Enum.Parse<RoleEnum>(userRoleId);
+        }
         var getMenuItemsByRoleQuery = new GetMenuItemsByRoleQuery(userRole);
 
         var menuItems = await getMenuItemsByRoleQueryHandler.Handle(getMenuItemsByRoleQuery, cancellationToken);

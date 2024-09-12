@@ -44,11 +44,11 @@ function AirbnbThumbComponent(props: AirbnbThumbComponentProps) {
 }
 export default function ShopPageFilters() {
 	const defaultFromPrice = 3000;
-	const defaultToPrice = 100000;
-	const maxPrice = 500000;
+	const defaultToPrice = 100_000;
+	const maxPrice = 500_000;
 	const minPrice = 0;
 	const [fromPrice, setFromPrice] = useState(3000);
-	const [toPrice, setToPrice] = useState(100000);
+	const [toPrice, setToPrice] = useState(100_000);
 	const handleChange = (event: Event, newValue: number | number[]) => {
 		const [from, to] = newValue as number[];
 		setFromPrice(from);

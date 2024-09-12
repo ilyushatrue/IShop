@@ -7,12 +7,13 @@ export interface IUserState {
 	lastName: string | null;
 	email: string | null;
 	phone: string | null;
-	avatarId: string | null,
-	isAuthenticated: boolean
-	favoriteProducts: IProduct[]
+	avatarId: string | null;
+	isAuthenticated: boolean;
+	favoriteProducts: IProduct[];
 }
 
 export interface IGlobalState {
-	productCategories: IProductCategory[]
-	menuItems: IMenuItem[]
+	productCategories: IProductCategory[];
+	menuItems: IMenuItem[];
+	searchValue?: string;
 }

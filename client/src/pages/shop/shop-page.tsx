@@ -1,53 +1,29 @@
-import { ReactNode } from "react";
 import Page from "../../components/page";
-import { Box, BoxProps } from "@mui/material";
-import { useAppSelector } from "../../app/hooks/redux/use-app-selector";
+import { BoxProps } from "@mui/material";
 import { useMediaQueryContext } from "../../app/infrastructure/media-query-context";
-import ShopPageFilters from "./filters";
+import { useEffect } from "react";
+import { useAppDispatch } from "../../app/hooks/redux/use-app-dispatch";
+import { setShopping } from "../../store/page.slice";
+import { setSearchValue } from "../../store/global.slice";
 
-export default function ShopPage({
-	children,
-	mainBoxProps,
-	sideBoxProps,
-}: {
-	sideBoxProps?: BoxProps;
-	mainBoxProps?: BoxProps;
-	children: ReactNode;
-}) {
-	const navbarHeight = useAppSelector((state) => state.page.navbar.height);
-	const { screenSize, xs } = useMediaQueryContext();
-
+export default function ShopPage({ sx, ...props }: BoxProps) {
+	const { xs } = useMediaQueryContext();
+	const dispatch = useAppDispatch();
+	useEffect(() => {
+		console.log(2)
+		dispatch(setShopping(true));
+		dispatch(setSearchValue(""))
+	}, [dispatch]);
 	return (
-		<Page sx={{ mt: 2 }}>
-			<Box display={"flex"} gap={2} flexDirection={xs ? "column" : "row"}>
-				<Box
-					{...sideBoxProps}
-					sx={{
-						bgcolor: "white",
-						boxShadow: "0px 0px 10px rgba(0,0,0,0.1)",
-						borderRadius: "24px",
-						padding: 2,
-						width: xs ? "100%" : 200,
-					}}
-				>
-					<ShopPageFilters />
-				</Box>
-				<Box
-					{...mainBoxProps}
-					minHeight={`calc(100vh - ${
-						navbarHeight[screenSize] + 50
-					}px)`}
-					sx={{
-						bgcolor: "white",
-						boxShadow: "0px 0px 10px rgba(0,0,0,0.1)",
-						borderRadius: "24px",
-						padding: 2,
-						width: xs ? "100%" : 1200,
-					}}
-				>
-					{children}
-				</Box>
-			</Box>
-		</Page>
+		<Page
+			{...props}
+			sx={{
+				display: "flex",
+				gap: 2,
+				flexDirection: xs ? "column" : "row",
+				mt: 2,
+				...sx,
+			}}
+		/>
 	);
 }

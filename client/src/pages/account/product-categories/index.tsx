@@ -139,7 +139,7 @@ export default function ProductCategories() {
 			editColumn,
 			deleteColumn,
 		};
-	}, []);
+	}, [navigate]);
 
 	function closeEditDialog() {
 		setEditCategory((prev) => ({

@@ -56,12 +56,5 @@ export const MediaQueryProvider: React.FC<MediaQueryProviderProps> = ({
 	);
 };
 
-export const useMediaQueryContext = (): MediaQueryContextType => {
-	const context = useContext(MediaQueryContext);
-	if (!context) {
-		throw new Error(
-			"useMediaQueryContext must be used within a MediaQueryProvider"
-		);
-	}
-	return context;
-};
+export const useMediaQueryContext = (): MediaQueryContextType =>
+	useContext(MediaQueryContext)!;

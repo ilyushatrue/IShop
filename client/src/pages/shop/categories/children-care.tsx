@@ -7,6 +7,9 @@ import Products from "../products";
 import ShopPage from "../shop-page";
 import { Pagination, PaginationItem } from "@mui/material";
 import { useAppSelector } from "../../../app/hooks/redux/use-app-selector";
+import ShopPageMainBox from "../shop-page-main-box";
+import ShopPageSideBox from "../shop-page-side-box";
+import ShopPageFilters from "../shop-page-filters";
 
 export default function ChilrdenCare() {
 	const categoryName = "child-care";
@@ -24,6 +27,7 @@ export default function ChilrdenCare() {
 		pageSize: number;
 	}>({ totalPages: 1, currentPage: 1, pageSize: 12 });
 	useEffect(() => {
+		if (!category) return;
 		if (!id) {
 			navigate("1");
 			return;
@@ -33,7 +37,6 @@ export default function ChilrdenCare() {
 			onError: (handler) => handler.log().popup().throw(),
 			triggerPageLoader: true,
 		})
-			.catch(() => navigate("/not-found"))
 			.then((res) => {
 				const { currentPage, pageItems, pageSize, totalPages } =
 					res!.body!;
@@ -43,8 +46,9 @@ export default function ChilrdenCare() {
 					pageSize: pageSize,
 					totalPages: totalPages,
 				});
-			});
-	}, [category.id, fetchAsync, id, navigate]);
+			})
+			.catch(() => navigate("/not-found"));
+	}, [category, fetchAsync, id, navigate]);
 
 	function handleProductUpdate(product: IProduct) {
 		const updatedProducts = [...products];
@@ -54,27 +58,34 @@ export default function ChilrdenCare() {
 	}
 	return (
 		<ShopPage>
-			<Products
-				onUpdate={handleProductUpdate}
-				products={products!}
-				onDelete={(id) =>
-					setProducts((prev) => [...prev].filter((p) => p.id !== id))
-				}
-			/>
-			{products.length > 0 && (
-				<Pagination
-					sx={{ display: "flex", justifyContent: "end" }}
-					page={pageProps.currentPage}
-					count={pageProps.totalPages}
-					renderItem={(item) => (
-						<PaginationItem
-							component={Link}
-							to={`${path}${item.page?.toString() ?? "1"}`}
-							{...item}
-						/>
-					)}
+			<ShopPageSideBox>
+				<ShopPageFilters />
+			</ShopPageSideBox>
+			<ShopPageMainBox>
+				<Products
+					onUpdate={handleProductUpdate}
+					products={products!}
+					onDelete={(id) =>
+						setProducts((prev) =>
+							[...prev].filter((p) => p.id !== id)
+						)
+					}
 				/>
-			)}
+				{products.length > 0 && (
+					<Pagination
+						sx={{ display: "flex", justifyContent: "end" }}
+						page={pageProps.currentPage}
+						count={pageProps.totalPages}
+						renderItem={(item) => (
+							<PaginationItem
+								component={Link}
+								to={`${path}${item.page?.toString() ?? "1"}`}
+								{...item}
+							/>
+						)}
+					/>
+				)}
+			</ShopPageMainBox>
 		</ShopPage>
 	);
 }

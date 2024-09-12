@@ -44,10 +44,10 @@ export default function ProductPage() {
 			onError: (handler) => handler.log().popup().throw(),
 			triggerPageLoader: true,
 		})
+			.then((res) => setProduct(res!.body))
 			.catch((err) => {
 				navigate("server-is-dead");
-			})
-			.then((res) => setProduct(res!.body));
+			});
 	}, [fetchAsync, id, navigate]);
 
 	function addToCart() {

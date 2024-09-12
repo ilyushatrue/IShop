@@ -5,6 +5,9 @@ import { useEffect, useState } from "react";
 import productsApi from "../../api/endpoints/products.api";
 import { useNavigate } from "react-router-dom";
 import ShopPage from "./shop-page";
+import ShopPageFilters from "./shop-page-filters";
+import ShopPageMainBox from "./shop-page-main-box";
+import ShopPageSideBox from "./shop-page-side-box";
 
 export default function Main() {
 	const { fetchAsync } = useApi();
@@ -18,8 +21,8 @@ export default function Main() {
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
 		})
-			.catch(() => navigate("/not-found"))
-			.then((res) => setProducts(res!.body!.pageItems));
+			.then((res) => setProducts(res!.body!.pageItems))
+			.catch(() => navigate("/not-found"));
 	}, [fetchAsync, navigate]);
 
 	function handleProductUpdate(product: IProduct) {
@@ -31,13 +34,20 @@ export default function Main() {
 
 	return (
 		<ShopPage>
-			<Products
-				onUpdate={handleProductUpdate}
-				products={products!}
-				onDelete={(id) =>
-					setProducts((prev) => [...prev].filter((p) => p.id !== id))
-				}
-			/>
+			<ShopPageSideBox>
+				<ShopPageFilters />
+			</ShopPageSideBox>
+			<ShopPageMainBox>
+				<Products
+					onUpdate={handleProductUpdate}
+					products={products!}
+					onDelete={(id) =>
+						setProducts((prev) =>
+							[...prev].filter((p) => p.id !== id)
+						)
+					}
+				/>
+			</ShopPageMainBox>
 		</ShopPage>
 	);
 }

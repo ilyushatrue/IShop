@@ -1,9 +1,10 @@
 import NavTabs from "./tabs/nav-tabs";
-import { Box, Icon } from "@mui/material";
+import { Box, Grid, Icon, TextField, Typography } from "@mui/material";
 import NavAvatar, { IAvatar } from "./nav-avatar";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../app/hooks/redux/use-app-selector";
 import IconButton from "../buttons/icon-button";
+import { useMediaQueryContext } from "../../app/infrastructure/media-query-context";
 
 interface IProps {
 	menuItems: {
@@ -25,6 +26,7 @@ export default function NavTopBar({
 	const favoriteProductsCount = useAppSelector(
 		(state) => state.user.favoriteProducts.length
 	);
+	const { xs, sm } = useMediaQueryContext();
 	const navigate = useNavigate();
 
 	return (
@@ -43,57 +45,110 @@ export default function NavTopBar({
 		>
 			<Box width={displayWidth} display={"flex"} flexDirection={"column"}>
 				<Box height={"60px"} width={"100%"}>
-					<Box
-						display={"flex"}
-						justifyContent={"end"}
-						gap={2}
-						marginY={1}
-						alignItems={"center"}
-					>
-						<Box
-							display={"flex"}
-							justifyContent={"end"}
-							alignItems={"center"}
-							height={40}
-							bgcolor={"whitesmoke"}
-							borderRadius={"24px"}
-							width={600}
+					<Grid container sx={{ width: "100%", marginY: 1 }}>
+						<Grid
+							xs={0}
+							sm={1}
+							md={2}
+							lg={3}
+							item
+							sx={{
+								display: "flex",
+								alignItems: "end",
+								gap: 1,
+								opacity: "0.9",
+							}}
 						>
-							<Icon sx={{ mr: 2 }}>search</Icon>
-						</Box>
-						<IconButton
-							orientation="vertical"
-							caption="Заказы"
-							iconName="local_shipping"
-							iconSx={{ color: "black" }}
-							onClick={() => navigate("/my/purchases")}
-						/>
-						<IconButton
-							orientation="vertical"
-							caption="Избранное"
-							badgeContent={favoriteProductsCount}
-							iconName="favorite"
-							iconSx={{ color: "black" }}
-							onClick={() => navigate("/my/favorites")}
-						/>
-						<IconButton
-							orientation="vertical"
-							caption="Корзина"
-							iconName="shopping_bag"
-							iconSx={{ color: "black" }}
-							onClick={() => navigate("/my/cart")}
-						/>
-						<Box display={"flex"} alignItems={"center"}>
-							{avatar && (
-								<NavAvatar
-									tip={avatar.tip}
-									menuItems={avatar.menuItems}
-								/>
+							{!xs && !sm && (
+								<Typography
+									sx={{
+										fontSize: 30,
+										fontWeight: "bold",
+										height: 30,
+										ml: 1,
+										cursor: "default",
+										userSelect: "none",
+									}}
+								>
+									ISHOP
+								</Typography>
 							)}
-						</Box>
-					</Box>
+						</Grid>
+						<Grid
+							xs={6}
+							item
+							sx={{
+								display: "flex",
+								alignItems: "center",
+								justifyContent: "center",
+							}}
+						>
+							<TextField
+								onChange={console.log}
+								placeholder="телефон iphone"
+								sx={{
+									width: 600,
+									padding: 0,
+								}}
+								inputProps={{
+									sx: { paddingY: 1, paddingX: 2 },
+								}}
+								InputProps={{
+									sx: {
+										userSelect: "none",
+										borderRadius: "12px",
+										bgcolor: "rgb(253,253,253)",
+									},
+									endAdornment: <Icon>search</Icon>,
+								}}
+							/>
+						</Grid>
+						<Grid
+							xs={6}
+							sm={5}
+							md={4}
+							lg={3}
+							item
+							sx={{
+								display: "flex",
+								justifyContent: "end",
+								alignItems: "center",
+								gap: 2,
+							}}
+						>
+							<IconButton
+								orientation="vertical"
+								caption="Заказы"
+								iconName="local_shipping"
+								iconSx={{ color: "black" }}
+								onClick={() => navigate("/my/purchases")}
+							/>
+							<IconButton
+								orientation="vertical"
+								caption="Избранное"
+								badgeContent={favoriteProductsCount}
+								iconName="favorite"
+								iconSx={{ color: "black" }}
+								onClick={() => navigate("/my/favorites")}
+							/>
+							<IconButton
+								orientation="vertical"
+								caption="Корзина"
+								iconName="shopping_bag"
+								iconSx={{ color: "black" }}
+								onClick={() => navigate("/my/cart")}
+							/>
+
+							<NavAvatar
+								tip={avatar.tip}
+								menuItems={avatar.menuItems}
+							/>
+						</Grid>
+					</Grid>
 				</Box>
-				<Box height={"60px"}>
+				<Box
+					sx={{ display: "flex", alignItems: "end", height: "60px" }}
+				>
 					<NavTabs
 						value={value}
 						menuItems={menuItems}

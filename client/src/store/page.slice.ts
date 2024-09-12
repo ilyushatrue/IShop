@@ -2,10 +2,11 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 interface IPageState {
 	loading: boolean;
+	shopping: boolean;
 	displayWidth: number;
 	navbar: {
 		height: {
-			xs: number
+			xs: number;
 			sm: number;
 			md: number;
 			lg: number;
@@ -21,14 +22,15 @@ interface IPageState {
 }
 const menuItems: IPageState = {
 	loading: false,
+	shopping: true,
 	displayWidth: 1440,
 	navbar: {
 		height: {
 			xs: 60,
-			sm: 112,
-			md: 112,
-			lg: 112,
-			xl: 112,
+			sm: 120,
+			md: 120,
+			lg: 120,
+			xl: 120,
 		},
 	},
 	tabs: [
@@ -67,15 +69,24 @@ const pageSlice = createSlice({
 			state.loading = action.payload;
 		},
 		setActiveTab(state, action: PayloadAction<string | undefined>) {
-			const item = state.tabs.slice().reverse().find((x) => x.href === action?.payload?.substring(0, x.href.length));
+			const item = state.tabs
+				.slice()
+				.reverse()
+				.find(
+					(x) =>
+						x.href === action?.payload?.substring(0, x.href.length)
+				);
 			state.tabs.map((x) => {
 				x.active = false;
 				return x;
 			});
 			if (item) item.active = true;
 		},
+		setShopping(state, action: PayloadAction<boolean>) {
+			state.shopping = action.payload;
+		},
 	},
 });
 
-export const { setActiveTab, setIsPageLoading } = pageSlice.actions;
+export const { setActiveTab, setIsPageLoading, setShopping } = pageSlice.actions;
 export default pageSlice.reducer;
