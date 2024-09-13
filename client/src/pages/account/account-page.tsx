@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import { useAppDispatch } from "../../app/hooks/redux/use-app-dispatch";
 import { setShopping } from "../../store/page.slice";
 
-export default function AccountPage({ children, ...props }: BoxProps) {
+export default function AccountPage({ children, sx, ...props }: BoxProps) {
 	const navbarHeight = useAppSelector((state) => state.page.navbar.height);
 	const { screenSize } = useMediaQueryContext();
 	const dispatch = useAppDispatch();
@@ -14,7 +14,7 @@ export default function AccountPage({ children, ...props }: BoxProps) {
 		dispatch(setShopping(false));
 	}, [dispatch]);
 	return (
-		<Page {...props}>
+		<Page {...props} sx={{ ...sx }}>
 			<Box
 				display={"flex"}
 				my={2}

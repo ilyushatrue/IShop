@@ -15,7 +15,7 @@ export default function ShopPageMainBox({ sx, ...props }: BoxProps) {
 				boxShadow: "0px 0px 10px rgba(0,0,0,0.1)",
 				borderRadius: "24px",
 				padding: 2,
-				width: xs ? "100%" : 1175,
+				width: xs ? "100%" : 1200,
 				...sx,
 			}}
 		/>

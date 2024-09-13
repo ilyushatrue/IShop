@@ -1,4 +1,4 @@
-import { Dialog, Grid } from "@mui/material";
+import { Grid } from "@mui/material";
 import { IProduct } from "../../api/interfaces/product/product.interface";
 import { useMemo, useState } from "react";
 import useApi from "../../api/hooks/use-api.hook";
@@ -60,7 +60,7 @@ export default function Products({ products, onDelete, onUpdate }: IProps) {
 			onSuccess: () => onDelete(id),
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
-		});
+		}).catch();
 	}
 
 	async function handleToFavoritesAsync(productId: string, value: boolean) {
@@ -75,7 +75,7 @@ export default function Products({ products, onDelete, onUpdate }: IProps) {
 						})
 					),
 				onError: (handler) => handler.log().popup(),
-			});
+			}).catch();
 		} else {
 			let favoritesFromLocalStorage =
 				window.localStorage.getItem("favorite-products");
@@ -118,14 +118,16 @@ export default function Products({ products, onDelete, onUpdate }: IProps) {
 			onSuccess: (handler) => handler.popup("Данные сохранены"),
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
-		}).then(() => {
-			onUpdate(product);
-		});
+		})
+			.then(() => {
+				onUpdate(product);
+			})
+			.catch();
 	}
 
 	return (
 		<>
-			<Grid container rowSpacing={4} width={"100%"} height={"100%"}>
+			<Grid container rowSpacing={10} width={"100%"} height={"100%"}>
 				{products.map((p, index) => {
 					const isFavorite = userFavoriteProducts.some(
 						(ufp) => ufp.id === p.id

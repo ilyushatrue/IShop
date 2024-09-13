@@ -10,9 +10,8 @@ export default function ShopPage({ sx, ...props }: BoxProps) {
 	const { xs } = useMediaQueryContext();
 	const dispatch = useAppDispatch();
 	useEffect(() => {
-		console.log(2)
 		dispatch(setShopping(true));
-		dispatch(setSearchValue(""))
+		dispatch(setSearchValue(""));
 	}, [dispatch]);
 	return (
 		<Page

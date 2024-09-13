@@ -21,7 +21,7 @@ export default function Main() {
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
 		})
-			.then((res) => setProducts(res!.body!.pageItems))
+			.then((res) => setProducts(res.body!.pageItems))
 			.catch(() => navigate("/not-found"));
 	}, [fetchAsync, navigate]);
 

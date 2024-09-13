@@ -7,7 +7,6 @@ import { setIsPageLoading } from "../../store/page.slice";
 type ErrorHandler<T> = {
 	log: () => ErrorHandler<T>;
 	popup: (message?: string) => ErrorHandler<T>;
-	throw: () => void;
 };
 
 type SuccessHandler<T> = {
@@ -35,7 +34,6 @@ export default function useApi() {
 	): SuccessHandler<ApiResponse<TOut>> => {
 		const successHandler: SuccessHandler<ApiResponse<TOut>> = {
 			popup: (message) => {
-				console.log(23)
 				popupSuccess(message);
 				return successHandler;
 			},
@@ -67,10 +65,6 @@ export default function useApi() {
 				);
 				return errorHandler;
 			},
-			throw: () => {
-				const { message, name } = apiResult.errors[0];
-				throw new Error(message, { cause: name });
-			},
 		};
 		return errorHandler;
 	};
@@ -83,21 +77,24 @@ export default function useApi() {
 	}: Fetch<TOut>): Promise<ApiResponse<TOut>> => {
 		if (triggerPageLoader) dispatch(setIsPageLoading(true));
 		setIsFetching(true);
+		let response: ApiResponse<TOut> = null!;
 		try {
-			const response = await request;
-			console.log(response.ok)
+			response = await request;
 			if (response.ok) {
 				if (onSuccess) {
 					const successHandler = getSuccessHandler(response);
 					onSuccess(successHandler);
 				}
-			} else {
-				if (onError) {
-					const errorHandler = getErrorHandler(response);
-					onError(errorHandler);
-				}
+				return response;
 			}
-			return response;
+			const { message, name } = response.errors[0];
+			throw new Error(message, { cause: name });
+		} catch (error: any) {
+			if (onError) {
+				const errorHandler = getErrorHandler(response);
+				onError(errorHandler);
+			}
+			throw error;
 		} finally {
 			setIsFetching(false);
 			if (triggerPageLoader) dispatch(setIsPageLoading(false));

@@ -64,7 +64,9 @@ export default function ProductsMenu() {
 				: productsApi.getAllAsync(page, rowsPerPage),
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
-		}).then((res) => setProducts(res!.body!.pageItems!));
+		})
+			.then((res) => setProducts(res!.body!.pageItems!))
+			.catch();
 	}, [categoryId, fetchAsync, page, rowsPerPage]);
 
 	const handleAddProduct = () => {
@@ -81,7 +83,9 @@ export default function ProductsMenu() {
 			onSuccess: (handler) => handler.popup("Новый товар добавлен."),
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
-		}).then(reload);
+		})
+			.then(reload)
+			.catch();
 	}
 
 	const handleChangeRowsPerPage = (
@@ -102,11 +106,15 @@ export default function ProductsMenu() {
 			onSuccess: (handler) => handler.popup("Данные сохранены"),
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
-		}).then((response) => {
-			if (response.ok) {
-				setProducts((prev) => prev.filter((x) => !ids.includes(x.id)));
-			}
-		});
+		})
+			.then((response) => {
+				if (response.ok) {
+					setProducts((prev) =>
+						prev.filter((x) => !ids.includes(x.id))
+					);
+				}
+			})
+			.catch();
 	}
 	const closeDeleteDialog = () => {
 		setConfirmDeleteState((prev) => ({ ...prev, open: false }));

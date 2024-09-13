@@ -41,10 +41,10 @@ export default function ProductPage() {
 		if (!id) return;
 		fetchAsync({
 			request: productsApi.getByIdAsync(id),
-			onError: (handler) => handler.log().popup().throw(),
+			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
 		})
-			.then((res) => setProduct(res!.body))
+			.then((res) => setProduct(res.body))
 			.catch((err) => {
 				navigate("server-is-dead");
 			});
@@ -59,9 +59,11 @@ export default function ProductPage() {
 				handler.popup("Товар успешно добавлен в корзину!"),
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
-		}).then(() => {
-			setAddedToCart(true);
-		});
+		})
+			.then(() => {
+				setAddedToCart(true);
+			})
+			.catch();
 	}
 
 	return (

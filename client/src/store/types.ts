@@ -15,5 +15,5 @@ export interface IUserState {
 export interface IGlobalState {
 	productCategories: IProductCategory[];
 	menuItems: IMenuItem[];
-	searchValue?: string;
+	searchValue: string;
 }

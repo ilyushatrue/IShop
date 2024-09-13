@@ -5,6 +5,9 @@ import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../app/hooks/redux/use-app-selector";
 import IconButton from "../buttons/icon-button";
 import { useMediaQueryContext } from "../../app/infrastructure/media-query-context";
+import { ChangeEvent } from "react";
+import { useAppDispatch } from "../../app/hooks/redux/use-app-dispatch";
+import { setSearchValue } from "../../store/global.slice";
 
 interface IProps {
 	menuItems: {
@@ -23,11 +26,16 @@ export default function NavTopBar({
 	onChange,
 }: IProps) {
 	const { navbar, displayWidth } = useAppSelector((state) => state.page);
+	const dispatch = useAppDispatch();
 	const favoriteProductsCount = useAppSelector(
 		(state) => state.user.favoriteProducts.length
 	);
 	const { xs, sm } = useMediaQueryContext();
 	const navigate = useNavigate();
+
+	const handleSearchValueChange = (e: ChangeEvent<HTMLInputElement>) => {
+		dispatch(setSearchValue(e.target.value));
+	};
 
 	return (
 		<Box
@@ -84,7 +92,7 @@ export default function NavTopBar({
 							}}
 						>
 							<TextField
-								onChange={console.log}
+								onChange={handleSearchValueChange}
 								placeholder="телефон iphone"
 								sx={{
 									width: 600,

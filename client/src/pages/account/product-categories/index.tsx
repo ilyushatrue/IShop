@@ -153,7 +153,9 @@ export default function ProductCategories() {
 			request: productsApi.syncCategoriesAsync(values),
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
-		}).then(reload);
+		})
+			.then(reload)
+			.catch();
 	}
 
 	function handleEditCategory(inputCategory: IProductCategory) {

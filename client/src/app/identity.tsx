@@ -33,7 +33,6 @@ export default function Identity({
 		usersApi
 			.getCurrentAsync()
 			.then((res) => {
-				console.log(1234);
 				if (res.ok) {
 					const { productCategories, user, menuItems } = res.body!;
 					if (user) {
@@ -66,6 +65,7 @@ export default function Identity({
 							productCategories: productCategories.map((pc) =>
 								setCategoryParentNull(pc)
 							),
+							searchValue: "",
 						})
 					);
 				} else {

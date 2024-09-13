@@ -15,7 +15,7 @@ export default function Users() {
 	useEffect(() => {
 		fetchAsync<IUser[]>({
 			request: usersApi.getListAsync(),
-			onError: (handler) => handler.log().popup().throw(),
+			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
 		})
 			.catch(() => navigate("/"))

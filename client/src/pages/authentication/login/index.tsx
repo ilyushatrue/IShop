@@ -73,7 +73,7 @@ export default function Login({ onToRegisterClick }: IProps) {
 	async function handleLoginByEmailAsync(request: ILoginByEmailRequest) {
 		await fetchAsync({
 			request: apiAuth.loginByEmailAsync(request),
-			onError: (handler) => handler.log().popup().throw(),
+			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
 		})
 			.then(handleSuccessfulLoginAsync)
@@ -97,7 +97,9 @@ export default function Login({ onToRegisterClick }: IProps) {
 			await fetchAsync({
 				request: productsApi.toFavoritesRangeAsync(values),
 				triggerPageLoader: true,
-			}).then(() => window.localStorage.removeItem("favorite-products"));
+			})
+				.then(() => window.localStorage.removeItem("favorite-products"))
+				.catch();
 		}
 		redirect("/my/profile");
 	}
@@ -112,7 +114,7 @@ export default function Login({ onToRegisterClick }: IProps) {
 				),
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
-		});
+		}).catch();
 	}
 
 	async function handleResendEmailAsync(email: string) {
@@ -125,7 +127,7 @@ export default function Login({ onToRegisterClick }: IProps) {
 				),
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
-		});
+		}).catch();
 	}
 	return (
 		<>

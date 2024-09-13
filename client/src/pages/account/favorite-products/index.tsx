@@ -51,7 +51,9 @@ export default function FavoriteProducts() {
 			onSuccess: (handler) => handler.popup("Новый товар добавлен."),
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
-		}).then(reload);
+		})
+			.then(reload)
+			.catch();
 	}
 
 	async function handleDeleteProductAsync(productIds: string[]) {
@@ -63,7 +65,7 @@ export default function FavoriteProducts() {
 				),
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
-		});
+		}).catch();
 	}
 	const closeDeleteDialog = () => setIsDeleteDialogOn(false);
 	const openDeleteDialog = () => setIsDeleteDialogOn(true);

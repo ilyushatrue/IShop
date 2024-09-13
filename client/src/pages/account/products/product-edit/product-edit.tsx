@@ -50,7 +50,7 @@ export default function ProductEdit() {
 		if (!id) return;
 		fetchAsync({
 			request: productsApi.getByIdAsync(id),
-			onError: (error) => error.log().popup().throw(),
+			onError: (error) => error.log().popup(),
 		})
 			.then((result) => {
 				setProduct(result!.body!);

@@ -55,7 +55,7 @@ export default function ProductsTable({
 	const [order, setOrder] = useState<Order>("asc");
 	const [orderBy, setOrderBy] = useState<keyof IProduct>("name");
 	const [selected, setSelected] = useState<string[]>([]);
-	const [dense, setDense] = useState<boolean>(xs);
+	const [dense, setDense] = useState<boolean>(false);
 	const recordPairs = useMemo<[IProduct, ITableValue][]>(() => {
 		return rows.map((row) => [
 			row,

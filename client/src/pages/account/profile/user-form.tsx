@@ -30,11 +30,11 @@ export default function UserForm({ defaultValues, ...props }: IUserForm) {
 			onSuccess: (handler) => handler.popup("Данные успешно обновлены!"),
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
-		}).then((resp) => {
-			if (resp.ok) {
+		})
+			.then(() => {
 				reset(user);
-			}
-		});
+			})
+			.catch();
 	}
 
 	return (

@@ -27,7 +27,6 @@ export default function NavSideBar({
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const [searchText, setSearchText] = useState(searchValue);
 	useEffect(() => {
-		console.log("searchValue", searchValue);
 		setSearchText(searchValue);
 		setShowSearch(shopping);
 	}, [shopping, searchValue, value]);
@@ -99,7 +98,7 @@ export default function NavSideBar({
 						InputProps={{
 							sx: {
 								userSelect: "none",
-								fontSize: 14,
+								fontSize: 16,
 								borderRadius: "12px",
 								bgcolor: "rgb(253,253,253)",
 							},

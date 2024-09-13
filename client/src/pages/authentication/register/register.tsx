@@ -23,7 +23,9 @@ export default function Register({ onToLoginClick }: IProps) {
 			request: apiAuth.registerAsync(request),
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
-		}).then(() => setIsEmailConfirmationDialogOn(true));
+		})
+			.then(() => setIsEmailConfirmationDialogOn(true))
+			.catch();
 	}
 
 	return (

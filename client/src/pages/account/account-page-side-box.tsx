@@ -4,23 +4,25 @@ import { useAppSelector } from "../../app/hooks/redux/use-app-selector";
 import IconButton from "../../components/buttons/icon-button";
 import { useMediaQueryContext } from "../../app/infrastructure/media-query-context";
 
-export default function AccountPageSideBox({ ...props }: BoxProps) {
+export default function AccountPageSideBox({ sx, ...props }: BoxProps) {
 	const { xs } = useMediaQueryContext();
 	const navigate = useNavigate();
 	const menuItems = useAppSelector((state) => state.global.menuItems);
 	const pathname = useLocation().pathname;
 	if (xs) return null;
-	
+
 	return (
 		<Box
 			{...props}
-			overflow={"hidden"}
-			width={200}
-			minHeight={500}
-			paddingTop={4}
-			borderRadius={4}
-			boxShadow={"0px 0px 10px rgba(0,0,0,0.1)"}
-			bgcolor={"white"}
+			sx={{
+				...sx,
+				flex: 1,
+				overflow: "hidden",
+				paddingTop: 4,
+				borderRadius: 4,
+				boxShadow: "0px 0px 10px rgba(0,0,0,0.1)",
+				bgcolor: "white",
+			}}
 		>
 			<Box display={"flex"} flexDirection={"column"} alignItems={"start"}>
 				{menuItems.map((item) => (

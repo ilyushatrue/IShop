@@ -38,10 +38,12 @@ export default function NavBar() {
 			request: apiAuth.logoutAsync(),
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
-		}).then(() => {
-			navigate("/auth");
-			dispatch(resetCurrentUserState());
-		});
+		})
+			.then(() => {
+				navigate("/auth");
+				dispatch(resetCurrentUserState());
+			})
+			.catch();
 	}, [dispatch, fetchAsync, navigate]);
 
 	const menuAvatar = useMemo<IAvatar>(() => {
