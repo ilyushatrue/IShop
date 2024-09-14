@@ -26,7 +26,6 @@ export default class StrictApi extends BaseApi {
 		request: ApiRequest,
 		onResponse?: (response: Response) => Promise<TOut>
 	) {
-		"strict"
 		const response = await this.reauthorize(
 			this.handleRequest("GET", request)
 		);

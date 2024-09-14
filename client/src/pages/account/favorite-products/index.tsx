@@ -53,7 +53,7 @@ export default function FavoriteProducts() {
 			triggerPageLoader: true,
 		})
 			.then(reload)
-			.catch();
+			.catch(Boolean);
 	}
 
 	async function handleDeleteProductAsync(productIds: string[]) {
@@ -65,7 +65,7 @@ export default function FavoriteProducts() {
 				),
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
-		}).catch();
+		}).catch(Boolean);
 	}
 	const closeDeleteDialog = () => setIsDeleteDialogOn(false);
 	const openDeleteDialog = () => setIsDeleteDialogOn(true);

@@ -1,6 +1,13 @@
-import * as React from "react";
 import { Snackbar, IconButton, SnackbarContent } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import {
+	createContext,
+	FC,
+	ReactNode,
+	SyntheticEvent,
+	useCallback,
+	useState,
+} from "react";
 
 type PopupType = "error" | "success";
 
@@ -9,16 +16,14 @@ interface PopupContextType {
 	popupSuccess: (message: string) => void;
 }
 
-export const PopupContext = React.createContext<PopupContextType | undefined>(
+export const PopupContext = createContext<PopupContextType | undefined>(
 	undefined
 );
 
-export const PopupProvider: React.FC<{ children: React.ReactNode }> = ({
-	children,
-}) => {
-	const [open, setOpen] = React.useState(false);
-	const [message, setMessage] = React.useState("");
-	const [type, setType] = React.useState<PopupType>("success");
+export const PopupProvider: FC<{ children: ReactNode }> = ({ children }) => {
+	const [open, setOpen] = useState(false);
+	const [message, setMessage] = useState("");
+	const [type, setType] = useState<PopupType>("success");
 
 	const handleClick = (message: string, type: PopupType) => {
 		setMessage(message);
@@ -26,7 +31,7 @@ export const PopupProvider: React.FC<{ children: React.ReactNode }> = ({
 		setOpen(true);
 	};
 
-	const handleClose = (_: React.SyntheticEvent | Event, reason?: string) => {
+	const handleClose = (_: SyntheticEvent | Event, reason?: string) => {
 		if (reason === "clickaway") {
 			return;
 		}
@@ -44,8 +49,14 @@ export const PopupProvider: React.FC<{ children: React.ReactNode }> = ({
 		</IconButton>
 	);
 
-	const popupError = (message: string) => handleClick(message, "error");
-	const popupSuccess = (message: string) => handleClick(message, "success");
+	const popupError = useCallback(
+		(message: string) => handleClick(message, "error"),
+		[]
+	);
+	const popupSuccess = useCallback(
+		(message: string) => handleClick(message, "success"),
+		[]
+	);
 
 	return (
 		<PopupContext.Provider value={{ popupError, popupSuccess }}>

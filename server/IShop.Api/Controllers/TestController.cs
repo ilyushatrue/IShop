@@ -6,4 +6,11 @@ namespace IShop.Api.Controllers;
 [Route("test")]
 public class TestController() : ApiController
 {
+    [HttpGet]
+    public async Task<bool> Wait(CancellationToken cancellationToken)
+    {
+        await Task.Delay(10000, cancellationToken);
+
+        return true;
+    }
 }

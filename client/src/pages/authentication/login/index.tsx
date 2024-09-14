@@ -61,6 +61,12 @@ export default function Login({ onToRegisterClick }: IProps) {
 		})
 			.then(handleSuccessfulLoginAsync)
 			.catch((error: Error) => {
+				// const firstError = response.errors[0];
+				// if (firstError) {
+				// 	throw new Error(firstError.message, { cause: firstError.name });
+				// } else {
+				// 	throw new Error(undefined, { cause: response.status });
+				// }
 				if (error.cause === "email-not-confirmed") {
 					setIsEmailAlreadyConfirmedDialogOn({
 						is: true,
@@ -99,7 +105,7 @@ export default function Login({ onToRegisterClick }: IProps) {
 				triggerPageLoader: true,
 			})
 				.then(() => window.localStorage.removeItem("favorite-products"))
-				.catch();
+				.catch(Boolean);
 		}
 		redirect("/my/profile");
 	}
@@ -114,7 +120,7 @@ export default function Login({ onToRegisterClick }: IProps) {
 				),
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
-		}).catch();
+		}).catch(Boolean);
 	}
 
 	async function handleResendEmailAsync(email: string) {
@@ -127,7 +133,7 @@ export default function Login({ onToRegisterClick }: IProps) {
 				),
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
-		}).catch();
+		}).catch(Boolean);
 	}
 	return (
 		<>

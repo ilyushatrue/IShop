@@ -25,6 +25,7 @@ public class GetAllProductsQueryHandler(
         pager.PageItems = await productRepository.GetAllAsync(
             pager.CurrentPage,
             pager.PageSize,
+            query.Search,
             cancellationToken);
 
         return pager;

@@ -23,15 +23,15 @@ function App() {
 						},
 					}}
 				/>
-				<Identity>
-					<PopupProvider>
+				<PopupProvider>
+					<Identity>
 						<BrowserRouter>
 							<MediaQueryProvider>
 								<Router />
 							</MediaQueryProvider>
 						</BrowserRouter>
-					</PopupProvider>
-				</Identity>
+					</Identity>
+				</PopupProvider>
 			</ThemeProvider>
 		</Provider>
 	);

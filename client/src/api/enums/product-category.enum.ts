@@ -6,7 +6,7 @@ export enum ProductCategoryEnum {
 }
 
 export const productCategoryEnumName: Record<ProductCategoryEnum, string> = {
-	[ProductCategoryEnum.Clothes]: "Одежда",
+	[ProductCategoryEnum.Clothes]: "Одежда и обувь",
 	[ProductCategoryEnum.Electronics]: "Электроника",
 	[ProductCategoryEnum.Yard]: "Дом и сад",
 	[ProductCategoryEnum.ChildCare]: "Детские товары",

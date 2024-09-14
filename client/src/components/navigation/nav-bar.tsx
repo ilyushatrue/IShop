@@ -43,7 +43,7 @@ export default function NavBar() {
 				navigate("/auth");
 				dispatch(resetCurrentUserState());
 			})
-			.catch();
+			.catch(Boolean);
 	}, [dispatch, fetchAsync, navigate]);
 
 	const menuAvatar = useMemo<IAvatar>(() => {

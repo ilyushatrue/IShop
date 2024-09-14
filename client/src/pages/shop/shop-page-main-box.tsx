@@ -9,12 +9,13 @@ export default function ShopPageMainBox({ sx, ...props }: BoxProps) {
 	return (
 		<Box
 			{...props}
-			minHeight={`calc(100vh - ${navbarHeight[screenSize] + 50}px)`}
 			sx={{
+				position: "relative",
 				bgcolor: "white",
 				boxShadow: "0px 0px 10px rgba(0,0,0,0.1)",
 				borderRadius: "24px",
 				padding: 2,
+				minHeight: `calc(100vh - ${navbarHeight[screenSize] + 50}px)`,
 				width: xs ? "100%" : 1200,
 				...sx,
 			}}

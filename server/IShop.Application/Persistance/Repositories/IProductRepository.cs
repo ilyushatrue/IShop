@@ -7,6 +7,6 @@ public interface IProductRepository
     void Create(Product product);
     void Update(Product product);
     Task DeleteRangeByIdAsync(Guid[] ids, CancellationToken cancellationToken);
-    Task<List<Product>> GetAllAsync(int currentPage, int pageSize, CancellationToken cancellationToken);
-    Task<List<Product>> GetListByCategoryAsync(int categoryId, int currentPage, int pageSize, CancellationToken cancellationToken);
+    Task<List<Product>> GetAllAsync(int currentPage, int pageSize, string? search, CancellationToken cancellationToken);
+    Task<List<Product>> GetListByCategoryAsync(int categoryId, string? search, int currentPage, int pageSize, CancellationToken cancellationToken);
 }

@@ -1,7 +1,14 @@
 import { useNavigate, useParams } from "react-router-dom";
 import Page from "../../components/page";
 import { useAppSelector } from "../../app/hooks/redux/use-app-selector";
-import { Button as MuiButton, Box, Grid, Icon, Paper } from "@mui/material";
+import {
+	Button as MuiButton,
+	Box,
+	Grid,
+	Icon,
+	Paper,
+	Typography,
+} from "@mui/material";
 import Image from "../../components/image";
 import { useEffect, useState } from "react";
 import useApi from "../../api/hooks/use-api.hook";
@@ -63,7 +70,7 @@ export default function ProductPage() {
 			.then(() => {
 				setAddedToCart(true);
 			})
-			.catch();
+			.catch(Boolean);
 	}
 
 	return (
@@ -87,9 +94,15 @@ export default function ProductPage() {
 						<Grid item xs={12} sm={4}>
 							<Image imageId={product.imageId} size={"100%"} />
 						</Grid>
-						<Grid item xs={12} sm={4}>
-							{product.name}
-							{product.description}
+						<Grid item xs={12} sm={4} sx={{ paddingX: 2 }}>
+							<Typography>{product.name}</Typography>
+							<Typography
+								sx={{
+									wordWrap: "break-word",
+								}}
+							>
+								{product.description}
+							</Typography>
 						</Grid>
 						<Grid item xs={12} sm={4}>
 							<Paper

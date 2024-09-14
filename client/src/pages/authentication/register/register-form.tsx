@@ -27,7 +27,7 @@ export default function RegisterForm({
 	const defaultValues = {
 		firstName: "",
 		lastName: "",
-		phone: "+7",
+		phone: "",
 		email: "",
 		password: "",
 		confirmPassword: "",
@@ -56,7 +56,6 @@ export default function RegisterForm({
 				required
 				label="Фамилия"
 			/>
-			<InputPhone control={control} name="phone" />
 			<InputEmail control={control} name="email" required />
 			<InputPassword control={control} name="password" />
 			<InputPasswordConfirm

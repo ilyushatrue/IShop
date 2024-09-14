@@ -60,7 +60,7 @@ export default function InputImage<T extends FieldValues>({
 				onError: (handler) => handler.log().popup(),
 			})
 				.then((res) => field.onChange(res!.body))
-				.catch();
+				.catch(Boolean);
 		} else {
 			popupError("Не удалось загрузить изображение.");
 		}

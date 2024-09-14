@@ -29,31 +29,39 @@ export default function Clothes() {
 		pageSize: number;
 	}>({ totalPages: 1, currentPage: 1, pageSize: 12 });
 
-	const fetchData = useCallback(() => {
-		if (!category) return;
-		if (!id) {
-			navigate("1");
-			return;
-		}
-		if (isNaN(+id)) return;
+	const fetchData = useCallback(
+		(search?: string) => {
+			if (!category) return;
+			if (!id) {
+				navigate("1");
+				return;
+			}
+			if (isNaN(+id)) return;
 
-		fetchAsync({
-			request: ProductsApi.getByCategoryAsync(category.id, +id, 12),
-			onError: (handler) => handler.log().popup(),
-			triggerPageLoader: true,
-		})
-			.then((res) => {
-				const { currentPage, pageItems, pageSize, totalPages } =
-					res!.body!;
-				setProducts(pageItems);
-				setPageProps({
-					currentPage: currentPage,
-					pageSize: pageSize,
-					totalPages: totalPages,
-				});
+			fetchAsync({
+				request: ProductsApi.getFilteredAsync(
+					category.id,
+					+id,
+					12,
+					search ?? ""
+				),
+				onError: (handler) => handler.log().popup(),
+				triggerPageLoader: true,
 			})
-			.catch(() => navigate("/not-found"));
-	}, [category, fetchAsync, id, navigate]);
+				.then((res) => {
+					const { currentPage, pageItems, pageSize, totalPages } =
+						res!.body!;
+					setProducts(pageItems);
+					setPageProps({
+						currentPage: currentPage,
+						pageSize: pageSize,
+						totalPages: totalPages,
+					});
+				})
+				.catch(() => navigate("/not-found"));
+		},
+		[category, fetchAsync, id, navigate]
+	);
 
 	useEffect(() => {
 		fetchData();
@@ -63,7 +71,9 @@ export default function Clothes() {
 		const timeoutMs = 1500;
 
 		const timeout = setTimeout(() => {
-			if (currSearch.current !== searchValue) fetchData();
+			if (currSearch.current !== searchValue) {
+				fetchData(searchValue);
+			}
 			currSearch.current = searchValue;
 		}, timeoutMs);
 
@@ -96,6 +106,9 @@ export default function Clothes() {
 				{products.length > 0 && (
 					<Pagination
 						sx={{
+							position: "absolute",
+							bottom: 20,
+							right: 10,
 							display: "flex",
 							justifyContent: "end",
 						}}

@@ -34,7 +34,7 @@ export default function UserForm({ defaultValues, ...props }: IUserForm) {
 			.then(() => {
 				reset(user);
 			})
-			.catch();
+			.catch(Boolean);
 	}
 
 	return (
@@ -43,6 +43,7 @@ export default function UserForm({ defaultValues, ...props }: IUserForm) {
 				control={control}
 				name="avatarId"
 				label="Аватар"
+				shape="circled"
 				containerSized
 				disabled={isFetching}
 			/>

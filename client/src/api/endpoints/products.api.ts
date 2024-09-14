@@ -16,8 +16,12 @@ export default class ProductsApi {
 		);
 	}
 
-	public static async getAllAsync(page: number, pageSize: number) {
-		const queryString = `?page=${page}&pageSize=${pageSize}`;
+	public static async getAllAsync(
+		page: number,
+		pageSize: number,
+		search?: string
+	) {
+		const queryString = `?page=${page}&pageSize=${pageSize}&search=${search}`;
 		return await BaseApi.httpGet<IPager<IProduct>>(
 			{ url: baseUrl + queryString },
 			(response) => response.json()
@@ -32,6 +36,19 @@ export default class ProductsApi {
 		const queryString = `?categoryId=${categoryId}&page=${page}&pageSize=${pageSize}`;
 		return await BaseApi.httpGet<IPager<IProduct>>(
 			{ url: `${baseUrl}/by-category${queryString}` },
+			(response) => response.json()
+		);
+	}
+
+	public static async getFilteredAsync(
+		categoryId: number,
+		page: number,
+		pageSize: number,
+		search?: string
+	) {
+		const queryString = `?categoryId=${categoryId}&search=${search}&page=${page}&pageSize=${pageSize}`;
+		return await BaseApi.httpGet<IPager<IProduct>>(
+			{ url: `${baseUrl}/filtered${queryString}` },
 			(response) => response.json()
 		);
 	}

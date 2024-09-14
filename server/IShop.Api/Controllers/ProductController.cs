@@ -33,9 +33,11 @@ public class ProductController(
     public async Task<IActionResult> GetAllProductsAsync(
         [FromQuery] int page,
         [FromQuery] int pageSize,
+        [FromQuery] string? search,
         CancellationToken cancellationToken)
     {
-        var result = await getAllProductsQueryHandler.Handle(new(page, pageSize), cancellationToken);
+        var command = new GetAllProductsQuery(page, pageSize, search);
+        var result = await getAllProductsQueryHandler.Handle(command, cancellationToken);
         var pagedList = new Pager<ProductDto>()
         {
             PageItems = mapper.Map<IEnumerable<ProductDto>>(result.PageItems),
@@ -55,14 +57,16 @@ public class ProductController(
     }
 
     [AllowAnonymous]
-    [HttpGet("by-category")]
+    [HttpGet("filtered")]
     public async Task<IActionResult> GetProductsByCategory(
         [FromQuery] int categoryId,
+        [FromQuery] string? search,
         [FromQuery] int page,
         [FromQuery] int pageSize,
         CancellationToken cancellationToken)
     {
-        var result = await getProductsByCategoryQueryHandler.Handle(new(categoryId, page, pageSize), cancellationToken);
+        var command = new GetProductsByCategoryQuery(categoryId, search, page, pageSize);
+        var result = await getProductsByCategoryQueryHandler.Handle(command, cancellationToken);
         var pagedList = new Pager<ProductDto>()
         {
             PageItems = mapper.Map<IEnumerable<ProductDto>>(result.PageItems),

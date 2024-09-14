@@ -18,6 +18,7 @@ import { getComparator } from "../../../components/table/table";
 import { Stack } from "@mui/material";
 import TooltipIconButton from "../../../components/buttons/tooltip-button";
 import { IProduct } from "../../../api/interfaces/product/product.interface";
+import { ProductCategoryEnum } from "../../../api/enums/product-category.enum";
 
 interface ITableValue {
 	id: string;
@@ -26,6 +27,7 @@ interface ITableValue {
 	name: string;
 }
 export default function ProductsTable({
+	title,
 	rows,
 	loading,
 	onChange,
@@ -34,6 +36,7 @@ export default function ProductsTable({
 	onEdit,
 	rowsPerPage: _rowsPerPage,
 }: {
+	title: string;
 	rows: IProduct[];
 	loading: boolean;
 	rowsPerPage: number;
@@ -142,7 +145,7 @@ export default function ProductsTable({
 		<Box>
 			<TableToolbar
 				numSelected={selected.length}
-				title={"Избранное"}
+				title={title}
 				loading={loading}
 			>
 				<Stack direction={"row"} spacing={1}>
@@ -237,21 +240,27 @@ export default function ProductsTable({
 										component="th"
 										scope="row"
 										padding="none"
-										sx={{mt:2}}
+										sx={{ mt: 2 }}
 									>
 										<Image
 											imageId={row.imageId}
 											size={dense ? 40 : 80}
 										/>
 									</TableCell>
+									<TableCell component="th" scope="row">
+										{row.name}
+									</TableCell>
 									<TableCell
 										component="th"
 										scope="row"
-										padding="none"
+										sx={{
+											maxWidth: 200,
+											whiteSpace: "normal",
+											wordWrap: "break-word",
+										}}
 									>
-										{row.name}
+										{row.description}
 									</TableCell>
-									<TableCell>{row.description}</TableCell>
 								</TableRow>
 							);
 						})}

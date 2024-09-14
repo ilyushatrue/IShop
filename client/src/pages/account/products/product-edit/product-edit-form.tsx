@@ -51,6 +51,7 @@ export default function ProductEditForm({
 				name="description"
 				label="Описание"
 				required
+				multiline
 			/>
 			<InputNumber
 				control={control}
@@ -76,7 +77,7 @@ export default function ProductEditForm({
 					autoFocus
 					disabled={loading || !formState.isDirty}
 				>
-					Добавить
+					Сохранить
 				</Button>
 			</FormActions>
 		</Form>

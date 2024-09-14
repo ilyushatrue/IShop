@@ -1,10 +1,8 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import useApi from "../../../api/hooks/use-api.hook";
 import ProductsApi from "../../../api/endpoints/products.api";
 import { IProduct } from "../../../api/interfaces/product/product.interface";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { useAppSelector } from "../../../app/hooks/redux/use-app-selector";
-import { IProductCategory } from "../../../api/interfaces/product-categories/product-category.interface";
+import { useNavigate, useParams } from "react-router-dom";
 import { ICreateProductCommand } from "../../../api/interfaces/product/commands/create-product-command.interface";
 import { reload } from "../../../app/helpers/reload";
 import AccountProtectedPage from "../account-protected-page";
@@ -13,49 +11,27 @@ import ProductsTable from "./products-table";
 import AccountPageSideBox from "../account-page-side-box";
 import AccountPageMainBox from "../account-page-main-box";
 import AccountPageMainBoxHeader from "../account-page-main-box-header";
-import { ProductCategoryEnum } from "../../../api/enums/product-category.enum";
+import {
+	ProductCategoryEnum,
+	productCategoryEnumName,
+} from "../../../api/enums/product-category.enum";
 
 export default function ProductsMenu() {
 	const { category } = useParams();
 	const categoryEnum =
-		ProductCategoryEnum[category!.capitalize() as keyof typeof category] +
-		1;
-	console.log(category, categoryEnum);
+		+ProductCategoryEnum[category!.capitalize() as keyof typeof category];
+	const categoryId = categoryEnum + 1;
 	const [confirmDeleteState, setConfirmDeleteState] = useState<{
 		open: boolean;
 		items: IProduct[];
 	}>({ open: false, items: [] });
 	const { isFetching, fetchAsync } = useApi();
+
 	const [products, setProducts] = useState<IProduct[]>([]);
 	const rowsPerPageOptions = [10, 25, 100];
 	const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[0]);
 	const [page, setPage] = useState(0);
-	const location = useLocation();
 	const navigate = useNavigate();
-	const appcategories = useAppSelector(
-		(state) => state.global.productCategories
-	);
-
-	const categoryId = useMemo(() => {
-		const parts = location.pathname.split("/").filter((part) => part);
-		const categories = parts.slice(2);
-		if (!categories.length) return 0;
-		let curr: IProductCategory[] = appcategories;
-		let item: IProductCategory;
-		if (categories[0] === "add") return 0;
-
-		const getresult = (
-			cat: string,
-			categories: IProductCategory[]
-		): IProductCategory => {
-			return categories.find((x) => x.name === cat)!;
-		};
-		categories.forEach((category) => {
-			item = getresult(category, curr);
-			curr = item.children;
-		});
-		return item!.id;
-	}, [appcategories, location.pathname]);
 
 	useEffect(() => {
 		fetchAsync({
@@ -66,7 +42,7 @@ export default function ProductsMenu() {
 			triggerPageLoader: true,
 		})
 			.then((res) => setProducts(res!.body!.pageItems!))
-			.catch();
+			.catch(Boolean);
 	}, [categoryId, fetchAsync, page, rowsPerPage]);
 
 	const handleAddProduct = () => {
@@ -85,7 +61,7 @@ export default function ProductsMenu() {
 			triggerPageLoader: true,
 		})
 			.then(reload)
-			.catch();
+			.catch(Boolean);
 	}
 
 	const handleChangeRowsPerPage = (
@@ -114,7 +90,7 @@ export default function ProductsMenu() {
 					);
 				}
 			})
-			.catch();
+			.catch(Boolean);
 	}
 	const closeDeleteDialog = () => {
 		setConfirmDeleteState((prev) => ({ ...prev, open: false }));
@@ -136,6 +112,11 @@ export default function ProductsMenu() {
 				</AccountPageMainBoxHeader>
 
 				<ProductsTable
+					title={
+						productCategoryEnumName[
+							categoryEnum as ProductCategoryEnum
+						]
+					}
 					loading={isFetching}
 					onAdd={handleAddProduct}
 					onChange={console.log}

@@ -9,6 +9,7 @@ import {
 } from "../store/user.slice";
 import { setInitialAppState } from "../store/global.slice";
 import { IProductCategory } from "../api/interfaces/product-categories/product-category.interface";
+import useApi from "../api/hooks/use-api.hook";
 
 export default function Identity({
 	children,
@@ -16,10 +17,9 @@ export default function Identity({
 	children: ReactElement;
 }): ReactElement {
 	const imagesPath = getConstant("IMAGES_PATH");
-	console.log(imagesPath + "/server-is-dead.png");
+	const { fetchAsync, isFetching } = useApi();
 	const dispatch = useAppDispatch();
 	const [serverIsDead, setServerIsDead] = useState(false);
-	const [isLoading, setIsLoading] = useState(true);
 
 	const setCategoryParentNull = useCallback((parent: IProductCategory) => {
 		parent.children?.map((child) => {
@@ -31,52 +31,38 @@ export default function Identity({
 	}, []);
 
 	useEffect(() => {
-		UsersApi.getCurrentAsync()
+		fetchAsync({
+			request: UsersApi.getCurrentAsync(),
+		})
 			.then((res) => {
-				if (res.ok) {
-					const { productCategories, user, menuItems } = res.body!;
-					if (user) {
-						const {
-							avatarId,
-							email,
-							firstName,
-							lastName,
-							phone,
-							favoriteProducts,
-						} = user!;
-						dispatch(
-							updateCurrentUserState({
-								isAuthenticated: true,
-								avatarId: avatarId,
-								email: email,
-								firstName: firstName,
-								favoriteProducts: favoriteProducts,
-								lastName: lastName,
-								phone: phone,
-							})
-						);
-					}
-
+				if (!res.ok) {
+					dispatch(resetCurrentUserState());
+					return;
+				}
+				const { productCategories, user, menuItems } = res.body!;
+				if (user) {
 					dispatch(
-						setInitialAppState({
-							menuItems: menuItems.sort(
-								(a, b) => a.order - b.order
-							),
-							productCategories: productCategories.map((pc) =>
-								setCategoryParentNull(pc)
-							),
-							searchValue: "",
+						updateCurrentUserState({
+							...user,
+							isAuthenticated: true,
 						})
 					);
-				} else {
-					dispatch(resetCurrentUserState());
 				}
-			})
-			.catch(() => setServerIsDead(true))
-			.finally(() => setIsLoading(false));
-	}, [dispatch, setCategoryParentNull]);
 
-	if (isLoading) {
+				dispatch(
+					setInitialAppState({
+						menuItems: menuItems.sort((a, b) => a.order - b.order),
+						productCategories: productCategories.map((pc) =>
+							setCategoryParentNull(pc)
+						),
+						searchValue: "",
+					})
+				);
+			})
+			.catch(() => setServerIsDead(true));
+	}, [dispatch, fetchAsync, setCategoryParentNull]);
+
+	if (isFetching) {
 		return (
 			<div
 				style={{

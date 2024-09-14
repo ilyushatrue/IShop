@@ -49,7 +49,7 @@ export default function FavoriteProductsTable({
 	const [order, setOrder] = useState<Order>("asc");
 	const [orderBy, setOrderBy] = useState<keyof ITableValue>("name");
 	const [selected, setSelected] = useState<string[]>([]);
-	const [dense, setDense] = useState<boolean>(xs);
+	const [dense, setDense] = useState<boolean>(false);
 
 	const handleRequestSort = (
 		event: React.MouseEvent<unknown>,

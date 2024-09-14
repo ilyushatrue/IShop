@@ -1,5 +1,4 @@
 import getConstant from "../app/infrastructure/constant-provider";
-import { StatusCodes } from "./enums/status-codes.enum";
 
 export type ApiRequest = {
 	url: string;
@@ -26,19 +25,23 @@ export default class BaseApi {
 			body: undefined,
 			errors: [],
 			ok: response.ok,
-			status: StatusCodes.INTERNAL_SERVER_ERROR,
+			status: response.status,
 		};
-		if (apiResponse.ok) {
+		console.log(apiResponse);
+		if (response.ok) {
 			const successResult = await onResponse?.(response);
-			apiResponse.status = response.status;
 			apiResponse.body = successResult;
 		} else {
-			const { message, name, status } = (await response.json()) ?? {
-				detail: "Ошибка сервера...",
-				status: 500,
-			};
-			apiResponse.status = status;
-			apiResponse.errors = [{ message, name }];
+			const responseContent = await response.json();
+			if (responseContent) {
+				apiResponse.status = responseContent.status;
+				apiResponse.errors = [
+					{
+						message: responseContent.message,
+						name: responseContent.name,
+					},
+				];
+			}
 		}
 		return apiResponse;
 	}
@@ -57,14 +60,8 @@ export default class BaseApi {
 			},
 		};
 		const requestInit = props?.(defaultRequestInit) || defaultRequestInit;
-		let response: Response = null!;
-		try {
-			response = await fetch(fullUrl, requestInit);
-			return response;
-		} catch (error) {
-			console.error(error);
-			return response;
-		}
+
+		return await fetch(fullUrl, requestInit);
 	}
 
 	public static async httpGet<TOut>(

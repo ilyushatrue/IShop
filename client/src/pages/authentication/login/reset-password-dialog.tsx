@@ -59,7 +59,7 @@ export default function ResetPasswordDialog({
 					size="large"
 					onClick={handleSubmit(handleSubmitButtonClick)}
 				>
-					Добавить
+					Отправить
 				</Button>
 			</DialogActions>
 		</Dialog>

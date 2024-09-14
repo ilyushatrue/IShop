@@ -155,7 +155,7 @@ export default function ProductCategories() {
 			triggerPageLoader: true,
 		})
 			.then(reload)
-			.catch();
+			.catch(Boolean);
 	}
 
 	function handleEditCategory(inputCategory: IProductCategory) {

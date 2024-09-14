@@ -5,7 +5,7 @@ import { setIsPageLoading } from "../../store/page.slice";
 import { ApiResponse } from "../base-api";
 
 type ErrorHandler<T> = {
-	log: () => ErrorHandler<T>;
+	log: (level?: "info" | "warn" | "error") => ErrorHandler<T>;
 	popup: (message?: string) => ErrorHandler<T>;
 };
 
@@ -47,22 +47,38 @@ export default function useApi() {
 	};
 
 	const _getErrorHandler = <TOut>(
-		apiResult: ApiResponse<TOut>
+		error: Error
 	): ErrorHandler<ApiResponse<TOut>> => {
 		const errorHandler: ErrorHandler<ApiResponse<TOut>> = {
-			log: () => {
-				console.error(apiResult);
+			log: (level) => {
+				let message = error.message;
+				if (error.name === "AbortError") {
+					message = "Запрос был отменен пользователем.";
+				}
+				switch (level) {
+					case "error":
+						console.error(message ?? "", error);
+						break;
+					case "warn":
+						console.warn(message ?? "", error);
+						break;
+					case "info":
+						console.info(message ?? "", error);
+						break;
+					default:
+						console.error(message ?? "", error);
+				}
+
 				return errorHandler;
 			},
 			popup: (message) => {
-				const apiMessage = apiResult.errors[0]?.message;
-				popupError(
-					apiMessage
-						? apiMessage
-						: message
-						? message
-						: "Что-то пошло не так. Обратитесь к администратору."
-				);
+				if (error.name === "AbortError") {
+					return errorHandler;
+				}
+				const defaultMessage =
+					"Что-то пошло не так. Обратитесь к администратору.";
+				const popupMessage = error.message ?? message ?? defaultMessage;
+				popupError(popupMessage);
 				return errorHandler;
 			},
 		};
@@ -85,13 +101,17 @@ export default function useApi() {
 					const successHandler = getSuccessHandler(response);
 					onSuccess(successHandler);
 				}
-				return response;
+			} else {
+				console.log(response)
+				const firstError = response.errors?.[0];
+				throw new Error(firstError?.message ?? "", {
+					cause: firstError?.name ?? response.status,
+				});
 			}
-			const { message, name } = response.errors[0];
-			throw new Error(message, { cause: name });
+			return response;
 		} catch (error: any) {
 			if (onError) {
-				const errorHandler = getErrorHandler(response);
+				const errorHandler = getErrorHandler(error);
 				onError(errorHandler);
 			}
 			throw error;

@@ -26,23 +26,44 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
         dbContext.Products.RemoveRange(entities);
     }
 
-    public async Task<List<Product>> GetListByCategoryAsync(int categoryId, int currentPage, int pageSize, CancellationToken cancellationToken)
+    public async Task<List<Product>> GetListByCategoryAsync(
+        int categoryId,
+        string? search,
+        int currentPage,
+        int pageSize,
+        CancellationToken cancellationToken)
     {
         var offset = (currentPage - 1) * pageSize;
 
-        return await dbContext.Products
-            .Where(p => p.CategoryId == categoryId)
-            .Skip(offset)
-            .Take(pageSize)
-            .Include(p => p.Category)
-            .ToListAsync(cancellationToken);
+        IQueryable<Product> query = dbContext.Products
+            .Where(p => p.CategoryId == categoryId);
+
+        if (!string.IsNullOrEmpty(search))
+        {
+            search = search.ToLower();
+            query = query.Where(p => p.Name.ToLower().Contains(search) || (p.Description != null && p.Description.ToLower().Contains(search)));
+        }
+
+        query = query.Skip(offset)
+                     .Take(pageSize)
+                     .Include(p => p.Category);
+
+        return await query.ToListAsync(cancellationToken);
     }
 
-    public async Task<List<Product>> GetAllAsync(int currentPage, int pageSize, CancellationToken cancellationToken)
+    public async Task<List<Product>> GetAllAsync(int currentPage, int pageSize, string? search, CancellationToken cancellationToken)
     {
         var offset = (currentPage - 1) * pageSize;
 
-        return await dbContext.Products
+        IQueryable<Product> query = dbContext.Products;
+
+        if (!string.IsNullOrEmpty(search))
+        {
+            search = search.ToLower();
+            query = query.Where(p => p.Name.ToLower().Contains(search) || (p.Description != null && p.Description.ToLower().Contains(search)));
+        }
+
+        return await query
             .Skip(offset)
             .Take(pageSize)
             .Include(p => p.Category)

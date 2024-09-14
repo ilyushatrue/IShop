@@ -37,7 +37,7 @@ export default function ProductCard({
 	return (
 		<Card
 			onClick={() => onClick(id)}
-			src={imagesPath + "/media/image/" + imageId}
+			src={`${imagesPath}/media/image/${imageId}`}
 			width={xs ? "100%" : "250px"}
 			actions={[
 				{
@@ -57,12 +57,14 @@ export default function ProductCard({
 					fontSize: 28,
 				},
 			]}
-			height={xs ? "300px" : 250}
+			height={xs ? "300px" : 300}
 		>
 			<Typography
 				variant="body2"
 				sx={{ fontWeight: 600, fontSize: 20, mt: 1 }}
-			>{`${price.toLocaleString("ru-RU").replace(/,/g, " ")} ₽`}</Typography>
+			>{`${price
+				.toLocaleString("ru-RU")
+				.replace(/,/g, " ")} ₽`}</Typography>
 			<Typography variant="body2" sx={{ fontWeight: 500 }}>
 				{name}
 			</Typography>

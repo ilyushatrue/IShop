@@ -25,7 +25,7 @@ export default function Register({ onToLoginClick }: IProps) {
 			triggerPageLoader: true,
 		})
 			.then(() => setIsEmailConfirmationDialogOn(true))
-			.catch();
+			.catch(Boolean);
 	}
 
 	return (

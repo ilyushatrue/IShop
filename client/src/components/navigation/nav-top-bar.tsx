@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../app/hooks/redux/use-app-selector";
 import IconButton from "../buttons/icon-button";
 import { useMediaQueryContext } from "../../app/infrastructure/media-query-context";
-import { ChangeEvent } from "react";
+import { ChangeEvent, useState } from "react";
 import { useAppDispatch } from "../../app/hooks/redux/use-app-dispatch";
 import { setSearchValue } from "../../store/global.slice";
 
@@ -27,6 +27,7 @@ export default function NavTopBar({
 }: IProps) {
 	const { navbar, displayWidth } = useAppSelector((state) => state.page);
 	const dispatch = useAppDispatch();
+	const [searchText, setSearchText] = useState("");
 	const favoriteProductsCount = useAppSelector(
 		(state) => state.user.favoriteProducts.length
 	);
@@ -34,8 +35,12 @@ export default function NavTopBar({
 	const navigate = useNavigate();
 
 	const handleSearchValueChange = (e: ChangeEvent<HTMLInputElement>) => {
-		dispatch(setSearchValue(e.target.value));
+		const value = e.target.value;
+		setSearchText(value);
+		dispatch(setSearchValue(value));
 	};
+
+	const navigateTo = (path: string) => () => navigate(path);
 
 	return (
 		<Box
@@ -74,9 +79,10 @@ export default function NavTopBar({
 										fontWeight: "bold",
 										height: 30,
 										ml: 1,
-										cursor: "default",
+										cursor: "pointer",
 										userSelect: "none",
 									}}
+									onClick={navigateTo("/")}
 								>
 									ISHOP
 								</Typography>
@@ -94,6 +100,7 @@ export default function NavTopBar({
 							<TextField
 								onChange={handleSearchValueChange}
 								placeholder="телефон iphone"
+								value={searchText}
 								sx={{
 									width: 600,
 									padding: 0,
@@ -109,6 +116,7 @@ export default function NavTopBar({
 									},
 									endAdornment: <Icon>search</Icon>,
 								}}
+								autoComplete="off"
 							/>
 						</Grid>
 						<Grid
@@ -129,7 +137,7 @@ export default function NavTopBar({
 								caption="Заказы"
 								iconName="local_shipping"
 								iconSx={{ color: "black" }}
-								onClick={() => navigate("/my/purchases")}
+								onClick={navigateTo("/my/purchases")}
 							/>
 							<IconButton
 								orientation="vertical"
@@ -137,14 +145,14 @@ export default function NavTopBar({
 								badgeContent={favoriteProductsCount}
 								iconName="favorite"
 								iconSx={{ color: "black" }}
-								onClick={() => navigate("/my/favorites")}
+								onClick={navigateTo("/my/favorites")}
 							/>
 							<IconButton
 								orientation="vertical"
 								caption="Корзина"
 								iconName="shopping_bag"
 								iconSx={{ color: "black" }}
-								onClick={() => navigate("/my/cart")}
+								onClick={navigateTo("/my/cart")}
 							/>
 
 							<NavAvatar
