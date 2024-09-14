@@ -10,7 +10,7 @@ import InputText from "../../../components/form/inputs/input-text";
 import { InputPhone } from "../../../components/form/inputs/input-phone";
 import InputEmail from "../../../components/form/inputs/input-email";
 import useApi from "../../../api/hooks/use-api.hook";
-import usersApi from "../../../api/endpoints/users.api";
+import UsersApi from "../../../api/endpoints/users.api";
 
 interface IUserForm extends Omit<BoxProps, "onSubmit"> {
 	defaultValues: IUser;
@@ -26,7 +26,7 @@ export default function UserForm({ defaultValues, ...props }: IUserForm) {
 
 	async function handleFormSubmitAsync(user: IUser) {
 		await fetchAsync({
-			request: usersApi.updateUserData(user),
+			request: UsersApi.updateUserData(user),
 			onSuccess: (handler) => handler.popup("Данные успешно обновлены!"),
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,

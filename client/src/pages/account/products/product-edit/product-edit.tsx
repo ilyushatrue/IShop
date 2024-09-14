@@ -4,7 +4,7 @@ import ProductEditForm from "./product-edit-form";
 import { IProduct } from "../../../../api/interfaces/product/product.interface";
 import { useNavigate, useParams } from "react-router-dom";
 import useApi from "../../../../api/hooks/use-api.hook";
-import productsApi from "../../../../api/endpoints/products.api";
+import ProductsApi from "../../../../api/endpoints/products.api";
 import { ProductCategoryEnum } from "../../../../api/enums/product-category.enum";
 import AccountPageSideBox from "../../account-page-side-box";
 import AccountPageMainBox from "../../account-page-main-box";
@@ -36,7 +36,7 @@ export default function ProductEdit() {
 	const [product, setProduct] = useState(defaultValues);
 
 	const handleSubmit = (values: IProduct) => {
-		const cb = id ? productsApi.updateAsync : productsApi.createAsync;
+		const cb = id ? ProductsApi.updateAsync : ProductsApi.createAsync;
 		fetchAsync({
 			request: cb(values),
 			onSuccess: (success) => success.popup("Данные сохранены"),
@@ -49,7 +49,7 @@ export default function ProductEdit() {
 	useEffect(() => {
 		if (!id) return;
 		fetchAsync({
-			request: productsApi.getByIdAsync(id),
+			request: ProductsApi.getByIdAsync(id),
 			onError: (error) => error.log().popup(),
 		})
 			.then((result) => {

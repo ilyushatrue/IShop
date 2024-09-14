@@ -4,7 +4,7 @@ import { Link, Typography } from "@mui/material";
 import Template from "../template";
 import RegisterForm from "./register-form";
 import useApi from "../../../api/hooks/use-api.hook";
-import apiAuth from "../../../api/endpoints/auth.api";
+import AuthApi from "../../../api/endpoints/auth.api";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ConfirmDialog from "../../../components/dialogs/confirm-dialog";
@@ -20,7 +20,7 @@ export default function Register({ onToLoginClick }: IProps) {
 
 	async function handleRegisterAsync(request: IRegisterRequest) {
 		await fetchAsync({
-			request: apiAuth.registerAsync(request),
+			request: AuthApi.registerAsync(request),
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
 		})

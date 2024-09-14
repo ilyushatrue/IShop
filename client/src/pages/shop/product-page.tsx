@@ -5,10 +5,10 @@ import { Button as MuiButton, Box, Grid, Icon, Paper } from "@mui/material";
 import Image from "../../components/image";
 import { useEffect, useState } from "react";
 import useApi from "../../api/hooks/use-api.hook";
-import productsApi from "../../api/endpoints/products.api";
 import { IProduct } from "../../api/interfaces/product/product.interface";
 import { useMediaQueryContext } from "../../app/infrastructure/media-query-context";
 import Button from "../../components/buttons/button";
+import ProductsApi from "../../api/endpoints/products.api";
 
 export default function ProductPage() {
 	const navigate = useNavigate();
@@ -40,7 +40,7 @@ export default function ProductPage() {
 	useEffect(() => {
 		if (!id) return;
 		fetchAsync({
-			request: productsApi.getByIdAsync(id),
+			request: ProductsApi.getByIdAsync(id),
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
 		})
@@ -54,7 +54,7 @@ export default function ProductPage() {
 		console.log("addToCart");
 		return;
 		fetchAsync({
-			request: productsApi.addToCartAsync(id!),
+			request: ProductsApi.addToCartAsync(id!),
 			onSuccess: (handler) =>
 				handler.popup("Товар успешно добавлен в корзину!"),
 			onError: (handler) => handler.log().popup(),

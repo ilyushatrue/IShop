@@ -1,19 +1,22 @@
-import { httpGet, httpPut } from "../api";
 import { IUser } from "../interfaces/user/user.interface";
 import { IApiInitialResponse } from "../interfaces/api-initial-response.interface";
+import StrictApi from "../strict-api";
 
-const usersApi = {
-	getCurrentAsync: async () =>
-		await httpGet<IApiInitialResponse>(
-			{ url: "/users/current", authenticate: true, },
+export default class UsersApi {
+	public static async getCurrentAsync() {
+		return await StrictApi.httpGet<IApiInitialResponse>(
+			{ url: "/users/current" },
 			(r) => r.json()
-		),
+		);
+	}
 
-	getListAsync: async () =>
-		await httpGet<IUser[]>({ url: "/users", authenticate: true, }, (r) => r.json()),
+	public static async getListAsync() {
+		return await StrictApi.httpGet<IUser[]>({ url: "/users" }, (r) =>
+			r.json()
+		);
+	}
 
-	updateUserData: async (data: IUser) =>
-		await httpPut({ url: `/users`, body: data, authenticate: true, }),
-};
-
-export default usersApi;
+	public static async updateUserData(data: IUser) {
+		return await StrictApi.httpPut({ url: `/users`, body: data });
+	}
+}

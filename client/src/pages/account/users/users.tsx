@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { IUser } from "../../../api/interfaces/user/user.interface";
 import useApi from "../../../api/hooks/use-api.hook";
-import usersApi from "../../../api/endpoints/users.api";
+import UsersApi from "../../../api/endpoints/users.api";
 import { useNavigate } from "react-router-dom";
 import AccountProtectedPage from "../account-protected-page";
 import AccountPageSideBox from "../account-page-side-box";
@@ -14,7 +14,7 @@ export default function Users() {
 	const { fetchAsync } = useApi();
 	useEffect(() => {
 		fetchAsync<IUser[]>({
-			request: usersApi.getListAsync(),
+			request: UsersApi.getListAsync(),
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
 		})

@@ -15,10 +15,10 @@ import { ILoginByEmailRequest } from "../../../api/contracts/authentication/logi
 import { ILoginByPhoneRequest } from "../../../api/contracts/authentication/login-by-phone-request.interface";
 import { redirect } from "../../../app/helpers/redirect";
 import useApi from "../../../api/hooks/use-api.hook";
-import apiAuth from "../../../api/endpoints/auth.api";
+import AuthApi from "../../../api/endpoints/auth.api";
 import ResetPasswordDialog from "./reset-password-dialog";
 import EmailConfirmAlreadySentDialog from "./email-confirm-already-sent-dialog";
-import productsApi from "../../../api/endpoints/products.api";
+import ProductsApi from "../../../api/endpoints/products.api";
 import { useMediaQueryContext } from "../../../app/infrastructure/media-query-context";
 import { IProduct } from "../../../api/interfaces/product/product.interface";
 
@@ -55,7 +55,7 @@ export default function Login({ onToRegisterClick }: IProps) {
 
 	async function handleLoginByPhoneAsync(request: ILoginByPhoneRequest) {
 		await fetchAsync({
-			request: apiAuth.loginByPhoneAsync(request),
+			request: AuthApi.loginByPhoneAsync(request),
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
 		})
@@ -72,7 +72,7 @@ export default function Login({ onToRegisterClick }: IProps) {
 
 	async function handleLoginByEmailAsync(request: ILoginByEmailRequest) {
 		await fetchAsync({
-			request: apiAuth.loginByEmailAsync(request),
+			request: AuthApi.loginByEmailAsync(request),
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
 		})
@@ -95,7 +95,7 @@ export default function Login({ onToRegisterClick }: IProps) {
 				(item) => ({ productId: item.id, value: true })
 			);
 			await fetchAsync({
-				request: productsApi.toFavoritesRangeAsync(values),
+				request: ProductsApi.toFavoritesRangeAsync(values),
 				triggerPageLoader: true,
 			})
 				.then(() => window.localStorage.removeItem("favorite-products"))
@@ -107,7 +107,7 @@ export default function Login({ onToRegisterClick }: IProps) {
 	async function handleResetPasswordAsync(email: string) {
 		setIsResetPasswordDialogOn(false);
 		await fetchAsync({
-			request: apiAuth.sendResetPasswordEmailAsync(email),
+			request: AuthApi.sendResetPasswordEmailAsync(email),
 			onSuccess: (handler) =>
 				handler.popup(
 					"Сообщение о смене пароля отправлено на эл. почту"
@@ -120,7 +120,7 @@ export default function Login({ onToRegisterClick }: IProps) {
 	async function handleResendEmailAsync(email: string) {
 		setIsEmailAlreadyConfirmedDialogOn((prev) => ({ ...prev, is: false }));
 		await fetchAsync({
-			request: apiAuth.sendEmailConfirmEmailAsync(email),
+			request: AuthApi.sendEmailConfirmEmailAsync(email),
 			onSuccess: (handler) =>
 				handler.popup(
 					"Сообщение о смене пароля отправлено на эл. почту"

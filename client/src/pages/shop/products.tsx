@@ -5,12 +5,12 @@ import useApi from "../../api/hooks/use-api.hook";
 import { useAppSelector } from "../../app/hooks/redux/use-app-selector";
 import ProductCard from "./card/product-card";
 import ProductCardEditDialog from "./card/product-card-edit-dialog";
-import productsApi from "../../api/endpoints/products.api";
 import { useAppDispatch } from "../../app/hooks/redux/use-app-dispatch";
 import { setFavoriteProduct } from "../../store/user.slice";
 import { redirect } from "../../app/helpers/redirect";
 import { useMediaQueryContext } from "../../app/infrastructure/media-query-context";
 import ConfirmDialog from "../../components/dialogs/confirm-dialog";
+import ProductsApi from "../../api/endpoints/products.api";
 
 interface IProps {
 	products: IProduct[];
@@ -56,7 +56,7 @@ export default function Products({ products, onDelete, onUpdate }: IProps) {
 		const id = productToDeleteId;
 		setProductToDeleteId("");
 		fetchAsync({
-			request: productsApi.deleteByIdAsync(id),
+			request: ProductsApi.deleteByIdAsync(id),
 			onSuccess: () => onDelete(id),
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
@@ -66,7 +66,7 @@ export default function Products({ products, onDelete, onUpdate }: IProps) {
 	async function handleToFavoritesAsync(productId: string, value: boolean) {
 		if (isAuth) {
 			await fetchAsync({
-				request: productsApi.toFavoritesAsync(productId, value),
+				request: ProductsApi.toFavoritesAsync(productId, value),
 				onSuccess: () =>
 					dispatch(
 						setFavoriteProduct({
@@ -114,7 +114,7 @@ export default function Products({ products, onDelete, onUpdate }: IProps) {
 	async function handleEditProductAsync(product: IProduct) {
 		setProductToEdit(undefined);
 		fetchAsync({
-			request: productsApi.updateAsync(product),
+			request: ProductsApi.updateAsync(product),
 			onSuccess: (handler) => handler.popup("Данные сохранены"),
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,

@@ -9,7 +9,7 @@ import {
 import useApi from "../../../api/hooks/use-api.hook";
 import { usePopup } from "../../../app/hooks/use-popup.hook";
 import { useRef } from "react";
-import { mediaApi } from "../../../api/endpoints/media.api";
+import MediaApi from "../../../api/endpoints/media.api";
 import IconButton from "../../buttons/icon-button";
 import Image from "../../image";
 import { IFormField } from "./form-field.interface";
@@ -55,7 +55,7 @@ export default function InputImage<T extends FieldValues>({
 			const formData = new FormData();
 			formData.append("file", file);
 			await fetchAsync({
-				request: mediaApi.uploadFile(formData),
+				request: MediaApi.uploadFile(formData),
 				onSuccess: (handler) => handler.validate((res) => !!res.body),
 				onError: (handler) => handler.log().popup(),
 			})

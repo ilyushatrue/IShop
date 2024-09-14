@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Box } from "@mui/material";
 import useApi from "../../../api/hooks/use-api.hook";
-import { mediaApi } from "../../../api/endpoints/media.api";
+import MediaApi from "../../../api/endpoints/media.api";
 import IconButton from "../../../components/buttons/icon-button";
 import { usePopup } from "../../../app/hooks/use-popup.hook";
 import Avatar from "../../../components/avatar";
@@ -21,7 +21,7 @@ export default function AvatarPlus({
 	useEffect(() => {
 		if (!imageId) return;
 		fetchAsync({
-			request: mediaApi.getImageById(imageId),
+			request: MediaApi.getImageById(imageId),
 		}).catch();
 	}, [fetchAsync, imageId]);
 
@@ -37,7 +37,7 @@ export default function AvatarPlus({
 			const formData = new FormData();
 			formData.append("file", file);
 			fetchAsync({
-				request: mediaApi.uploadFile(formData),
+				request: MediaApi.uploadFile(formData),
 				onSuccess: (handler) => handler.validate((res) => !!res.body),
 				onError: (handler) => handler.log().popup(),
 			})

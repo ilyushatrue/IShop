@@ -1,8 +1,15 @@
-import React from 'react'
-import Page from '../../components/page'
+import { useEffect } from "react";
+import Page from "../../components/page";
+import useApi from "../../api/hooks/use-api.hook";
+import { TestApi } from "../../api/endpoints/test.api";
 
 export default function Test() {
-  return (
-	<Page>Test</Page>
-  )
+	const {fetchAsync} = useApi()
+	useEffect(()=>{
+		fetchAsync({
+			request: TestApi.getAllCategories()
+		})
+
+	},[fetchAsync])
+	return <Page>Test</Page>;
 }

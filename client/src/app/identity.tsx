@@ -2,7 +2,7 @@ import { ReactElement, useCallback, useEffect, useState } from "react";
 import { useAppDispatch } from "./hooks/redux/use-app-dispatch";
 import { CircularProgress } from "@mui/material";
 import getConstant from "./infrastructure/constant-provider";
-import usersApi from "../api/endpoints/users.api";
+import UsersApi from "../api/endpoints/users.api";
 import {
 	resetCurrentUserState,
 	updateCurrentUserState,
@@ -16,6 +16,7 @@ export default function Identity({
 	children: ReactElement;
 }): ReactElement {
 	const imagesPath = getConstant("IMAGES_PATH");
+	console.log(imagesPath + "/server-is-dead.png");
 	const dispatch = useAppDispatch();
 	const [serverIsDead, setServerIsDead] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
@@ -30,8 +31,7 @@ export default function Identity({
 	}, []);
 
 	useEffect(() => {
-		usersApi
-			.getCurrentAsync()
+		UsersApi.getCurrentAsync()
 			.then((res) => {
 				if (res.ok) {
 					const { productCategories, user, menuItems } = res.body!;
@@ -118,7 +118,7 @@ export default function Identity({
 				>
 					<h1>{"Сайт не доступен :("}</h1>
 					<img
-						src={imagesPath + "/server-is-dead.png"}
+						src={`${imagesPath}/server-is-dead.png`}
 						alt="logo"
 						style={{
 							margin: "auto",

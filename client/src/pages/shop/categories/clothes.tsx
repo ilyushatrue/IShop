@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import useApi from "../../../api/hooks/use-api.hook";
 import { IProduct } from "../../../api/interfaces/product/product.interface";
-import productsApi from "../../../api/endpoints/products.api";
+import ProductsApi from "../../../api/endpoints/products.api";
 import Products from "../products";
 import ShopPage from "../shop-page";
 import { Pagination, PaginationItem } from "@mui/material";
@@ -38,7 +38,7 @@ export default function Clothes() {
 		if (isNaN(+id)) return;
 
 		fetchAsync({
-			request: productsApi.getByCategoryAsync(category.id, +id, 12),
+			request: ProductsApi.getByCategoryAsync(category.id, +id, 12),
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
 		})

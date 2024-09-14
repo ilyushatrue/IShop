@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import useApi from "../../../api/hooks/use-api.hook";
-import productsApi from "../../../api/endpoints/products.api";
+import ProductsApi from "../../../api/endpoints/products.api";
 import { IProduct } from "../../../api/interfaces/product/product.interface";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useAppSelector } from "../../../app/hooks/redux/use-app-selector";
@@ -60,8 +60,8 @@ export default function ProductsMenu() {
 	useEffect(() => {
 		fetchAsync({
 			request: categoryId
-				? productsApi.getByCategoryAsync(categoryId, page, rowsPerPage)
-				: productsApi.getAllAsync(page, rowsPerPage),
+				? ProductsApi.getByCategoryAsync(categoryId, page, rowsPerPage)
+				: ProductsApi.getAllAsync(page, rowsPerPage),
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
 		})
@@ -79,7 +79,7 @@ export default function ProductsMenu() {
 
 	async function handleSubmitAsync(values: ICreateProductCommand) {
 		await fetchAsync({
-			request: productsApi.createAsync(values),
+			request: ProductsApi.createAsync(values),
 			onSuccess: (handler) => handler.popup("Новый товар добавлен."),
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
@@ -102,7 +102,7 @@ export default function ProductsMenu() {
 		closeDeleteDialog();
 		const ids = products.map((p) => p.id);
 		fetchAsync({
-			request: productsApi.deleteRangeByIdAsync(ids),
+			request: ProductsApi.deleteRangeByIdAsync(ids),
 			onSuccess: (handler) => handler.popup("Данные сохранены"),
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,

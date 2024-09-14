@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../app/hooks/redux/use-app-dispatch";
 import { useAppSelector } from "../../app/hooks/redux/use-app-selector";
 import useApi from "../../api/hooks/use-api.hook";
-import apiAuth from "../../api/endpoints/auth.api";
+import AuthApi from "../../api/endpoints/auth.api";
 import { resetCurrentUserState } from "../../store/user.slice";
 import { useMediaQueryContext } from "../../app/infrastructure/media-query-context";
 
@@ -35,7 +35,7 @@ export default function NavBar() {
 
 	const handleLogout = useCallback(() => {
 		fetchAsync({
-			request: apiAuth.logoutAsync(),
+			request: AuthApi.logoutAsync(),
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
 		})

@@ -2,12 +2,12 @@ import Products from "./products";
 import { IProduct } from "../../api/interfaces/product/product.interface";
 import useApi from "../../api/hooks/use-api.hook";
 import { useEffect, useState } from "react";
-import productsApi from "../../api/endpoints/products.api";
 import { useNavigate } from "react-router-dom";
 import ShopPage from "./shop-page";
 import ShopPageFilters from "./shop-page-filters";
 import ShopPageMainBox from "./shop-page-main-box";
 import ShopPageSideBox from "./shop-page-side-box";
+import ProductsApi from "../../api/endpoints/products.api";
 
 export default function Main() {
 	const { fetchAsync } = useApi();
@@ -16,7 +16,7 @@ export default function Main() {
 
 	useEffect(() => {
 		fetchAsync({
-			request: productsApi.getAllAsync(1, 10),
+			request: ProductsApi.getAllAsync(1, 10),
 			onSuccess: (handler) => handler,
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,

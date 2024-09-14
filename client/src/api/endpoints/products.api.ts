@@ -1,93 +1,110 @@
-import { httpGet, httpPost, httpPut, httpDelete } from "../api";
 import { ICreateProductCategoryCommand } from "../interfaces/product-categories/commands/create-product-category-command.interface";
 import { IProductCategory } from "../interfaces/product-categories/product-category.interface";
 import { ICreateProductCommand } from "../interfaces/product/commands/create-product-command.interface";
 import { IProduct } from "../interfaces/product/product.interface";
 import { IPager } from "../interfaces/pager.interface";
+import BaseApi from "../base-api";
+import StrictApi from "../strict-api";
 
 const baseUrl = "/products";
 
-const productsApi = {
-	getByIdAsync: async (id: string) => {
-		return await httpGet<IProduct>(
+export default class ProductsApi {
+	public static async getByIdAsync(id: string) {
+		return await BaseApi.httpGet<IProduct>(
 			{ url: `${baseUrl}/${id}` },
 			(response) => response.json()
 		);
-	},
-	getAllAsync: async (page: number, pageSize: number) => {
+	}
+
+	public static async getAllAsync(page: number, pageSize: number) {
 		const queryString = `?page=${page}&pageSize=${pageSize}`;
-		return await httpGet<IPager<IProduct>>(
+		return await BaseApi.httpGet<IPager<IProduct>>(
 			{ url: baseUrl + queryString },
 			(response) => response.json()
 		);
-	},
-	getByCategoryAsync: async (
+	}
+
+	public static async getByCategoryAsync(
 		categoryId: number,
 		page: number,
 		pageSize: number
-	) => {
+	) {
 		const queryString = `?categoryId=${categoryId}&page=${page}&pageSize=${pageSize}`;
-		return await httpGet<IPager<IProduct>>(
+		return await BaseApi.httpGet<IPager<IProduct>>(
 			{ url: `${baseUrl}/by-category${queryString}` },
 			(response) => response.json()
 		);
-	},
-	getAllCategories: async () =>
-		await httpGet<IProductCategory[]>(
+	}
+
+	public static async getAllCategories() {
+		return await BaseApi.httpGet<IProductCategory[]>(
 			{ url: `${baseUrl}/categories` },
 			(response) => response.json()
-		),
+		);
+	}
 
-	createAsync: async (product: ICreateProductCommand) =>
-		await httpPost({ url: baseUrl, body: product, authenticate: true }),
+	public static async createAsync(product: ICreateProductCommand) {
+		return await StrictApi.httpPost({
+			url: baseUrl,
+			body: product,
+		});
+	}
 
-	createCategoryAsync: async (category: ICreateProductCategoryCommand) =>
-		await httpPost({
+	public static async createCategoryAsync(
+		category: ICreateProductCategoryCommand
+	) {
+		return await StrictApi.httpPost({
 			url: `${baseUrl}/categories`,
 			body: category,
-			authenticate: true,
-		}),
+		});
+	}
 
-	syncCategoriesAsync: async (categories: IProductCategory[]) =>
-		await httpPut({
+	public static async syncCategoriesAsync(categories: IProductCategory[]) {
+		return await StrictApi.httpPut({
 			url: `${baseUrl}/categories`,
 			body: categories,
-			authenticate: true,
-		}),
-
-	deleteByIdAsync: async (id: string) =>
-		await httpDelete({ url: `${baseUrl}/${id}`, authenticate: true }),
-
-	deleteRangeByIdAsync: async (ids: string[]) =>
-		await httpDelete({ url: `${baseUrl}`, authenticate: true, body: ids }),
-
-	updateAsync: async (product: IProduct) =>
-		await httpPut({ url: baseUrl, body: product, authenticate: true }),
-
-	toFavoritesAsync: async (productId: string, value: boolean) => {
-		const queryString = `?productId=${productId}&value=${value}`;
-		return await httpPost({
-			url: `${baseUrl}/to-favorites${queryString}`,
-			authenticate: true,
 		});
-	},
+	}
 
-	toFavoritesRangeAsync: async (
+	public static async deleteByIdAsync(id: string) {
+		return await StrictApi.httpDelete({
+			url: `${baseUrl}/${id}`,
+		});
+	}
+
+	public static async deleteRangeByIdAsync(ids: string[]) {
+		return await StrictApi.httpDelete({
+			url: `${baseUrl}`,
+			body: ids,
+		});
+	}
+
+	public static async updateAsync(product: IProduct) {
+		return await StrictApi.httpPut({
+			url: baseUrl,
+			body: product,
+		});
+	}
+
+	public static async toFavoritesAsync(productId: string, value: boolean) {
+		const queryString = `?productId=${productId}&value=${value}`;
+		return await StrictApi.httpPost({
+			url: `${baseUrl}/to-favorites${queryString}`,
+		});
+	}
+
+	public static async toFavoritesRangeAsync(
 		array: { productId: string; value: boolean }[]
-	) => {
-		return await httpPost({
+	) {
+		return await StrictApi.httpPost({
 			url: `${baseUrl}/to-favorites-range`,
 			body: array,
-			authenticate: true,
 		});
-	},
+	}
 
-	addToCartAsync: async (id: string) => {
-		return await httpPost({
+	public static async addToCartAsync(id: string) {
+		return await StrictApi.httpPost({
 			url: `${baseUrl}/add-to-cart/${id}`,
-			authenticate: true,
 		});
-	},
-};
-
-export default productsApi;
+	}
+}

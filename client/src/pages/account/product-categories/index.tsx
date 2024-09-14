@@ -1,5 +1,5 @@
 import useApi from "../../../api/hooks/use-api.hook";
-import productsApi from "../../../api/endpoints/products.api";
+import ProductsApi from "../../../api/endpoints/products.api";
 import { useMemo, useState } from "react";
 import { useAppSelector } from "../../../app/hooks/redux/use-app-selector";
 import RecursiveTree, {
@@ -150,7 +150,7 @@ export default function ProductCategories() {
 
 	async function handleSaveMenuAsync(values: IProductCategory[]) {
 		fetchAsync({
-			request: productsApi.syncCategoriesAsync(values),
+			request: ProductsApi.syncCategoriesAsync(values),
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
 		})

@@ -1,8 +1,8 @@
 import { useCallback, useState } from "react";
-import { ApiResponse } from "../api";
 import { usePopup } from "../../app/hooks/use-popup.hook";
 import { useAppDispatch } from "../../app/hooks/redux/use-app-dispatch";
 import { setIsPageLoading } from "../../store/page.slice";
+import { ApiResponse } from "../base-api";
 
 type ErrorHandler<T> = {
 	log: () => ErrorHandler<T>;
@@ -55,7 +55,7 @@ export default function useApi() {
 				return errorHandler;
 			},
 			popup: (message) => {
-				const apiMessage = apiResult.errors[0].message;
+				const apiMessage = apiResult.errors[0]?.message;
 				popupError(
 					apiMessage
 						? apiMessage

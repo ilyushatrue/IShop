@@ -1,6 +1,6 @@
 import { useState } from "react";
 import useApi from "../../../api/hooks/use-api.hook";
-import productsApi from "../../../api/endpoints/products.api";
+import ProductsApi from "../../../api/endpoints/products.api";
 import { IProduct } from "../../../api/interfaces/product/product.interface";
 import { ICreateProductCommand } from "../../../api/interfaces/product/commands/create-product-command.interface";
 import { reload } from "../../../app/helpers/reload";
@@ -47,7 +47,7 @@ export default function FavoriteProducts() {
 	async function handleSubmitAsync(values: ICreateProductCommand) {
 		closeAddProductDialog();
 		await fetchAsync({
-			request: productsApi.createAsync(values),
+			request: ProductsApi.createAsync(values),
 			onSuccess: (handler) => handler.popup("Новый товар добавлен."),
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
@@ -58,7 +58,7 @@ export default function FavoriteProducts() {
 
 	async function handleDeleteProductAsync(productIds: string[]) {
 		fetchAsync({
-			request: productsApi.deleteRangeByIdAsync(productIds),
+			request: ProductsApi.deleteRangeByIdAsync(productIds),
 			onSuccess: () =>
 				setProducts((prev) =>
 					prev.filter((x) => !productIds.includes(x.id))

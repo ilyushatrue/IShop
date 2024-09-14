@@ -1,12 +1,11 @@
-import { httpGet, httpPost } from "../api";
+import StrictApi from "../strict-api";
 
 const baseUrl = "/media";
-export const mediaApi = {
-	uploadFile: (file: FormData) =>
-		httpPost(
+export default class MediaApi {
+	public static async uploadFile(file: FormData) {
+		return await StrictApi.httpPost(
 			{
 				url: `${baseUrl}/image/`,
-				authenticate: true,
 				props: (def) => ({
 					...def,
 					body: file,
@@ -14,10 +13,13 @@ export const mediaApi = {
 				}),
 			},
 			(response) => response.text()
-		),
-	getImageById: (id: string) =>
-		httpGet(
-			{ url: `${baseUrl}/image/${id}`, authenticate: true },
+		);
+	}
+
+	public static async getImageById(id: string) {
+		return await StrictApi.httpGet(
+			{ url: `${baseUrl}/image/${id}` },
 			(response) => response.blob()
-		),
-};
+		);
+	}
+}
