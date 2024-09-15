@@ -28,27 +28,32 @@ export default class ProductsApi {
 		);
 	}
 
-	public static async getByCategoryAsync(
-		categoryId: number,
-		page: number,
-		pageSize: number
-	) {
-		const queryString = `?categoryId=${categoryId}&page=${page}&pageSize=${pageSize}`;
-		return await BaseApi.httpGet<IPager<IProduct>>(
-			{ url: `${baseUrl}/by-category${queryString}` },
-			(response) => response.json()
-		);
-	}
+	public static async getFilteredAsync({
+		page,
+		pageSize,
+		categoryId,
+		search,
+		maxPrice,
+		minPrice,
+	}: {
+		page: number;
+		pageSize: number;
+		categoryId?: number;
+		search?: string;
+		minPrice?: number;
+		maxPrice?: number;
+	}) {
+		const queryString = new URLSearchParams({
+			page: String(page),
+			pageSize: String(pageSize),
+			...(categoryId && { categoryId: String(categoryId) }),
+			...(search && { search: String(search) }),
+			...(minPrice && { minPrice: String(minPrice) }),
+			...(maxPrice && { maxPrice: String(maxPrice) }),
+		}).toString();
 
-	public static async getFilteredAsync(
-		categoryId: number,
-		page: number,
-		pageSize: number,
-		search?: string
-	) {
-		const queryString = `?categoryId=${categoryId}&search=${search}&page=${page}&pageSize=${pageSize}`;
 		return await BaseApi.httpGet<IPager<IProduct>>(
-			{ url: `${baseUrl}/filtered${queryString}` },
+			{ url: `${baseUrl}/filtered?${queryString}` },
 			(response) => response.json()
 		);
 	}

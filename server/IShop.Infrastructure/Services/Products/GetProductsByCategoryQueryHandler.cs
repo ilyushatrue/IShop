@@ -1,35 +1,26 @@
 ﻿using IShop.Application.Common;
-using IShop.Application.Persistance;
 using IShop.Application.Persistance.Repositories;
 using IShop.Application.Products.Queries;
 using IShop.Domain.ProductRoot;
 
 namespace IShop.Infrastructure.Services.Products;
 public class GetProductsByCategoryQueryHandler(
-    IDbManager dbManager,
     IProductRepository productRepository) : IGetProductsByCategoryQueryHandler
 {
     public async Task<Pager<Product>> Handle(GetProductsByCategoryQuery query, CancellationToken cancellationToken)
     {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(query.CategoryId);
+        if (query.CategoryId.HasValue)
+        {
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(query.CategoryId.Value);
+        }
 
-        var recordsCount = await dbManager.CountRecordsAsync<Product>(
-            predicate: p => p.CategoryId == query.CategoryId, cancellationToken);
-
-        var pager = new Pager<Product>(
-            [],
-            recordsCount,
+        var pager = await productRepository.GetListByCategoryAsync(
             query.CurrentPage,
-            query.PageSize);
-
-        if (recordsCount == 0)
-            return pager;
-
-        pager.PageItems = await productRepository.GetListByCategoryAsync(
+            query.PageSize,
             query.CategoryId,
             query.Search,
-            pager.CurrentPage,
-            pager.PageSize,
+            query.MinPrice,
+            query.MaxPrice,
             cancellationToken);
 
         return pager;

@@ -5,28 +5,31 @@ import { IProduct } from "../../../../api/interfaces/product/product.interface";
 import { useNavigate, useParams } from "react-router-dom";
 import useApi from "../../../../api/hooks/use-api.hook";
 import ProductsApi from "../../../../api/endpoints/products.api";
-import { ProductCategoryEnum } from "../../../../api/enums/product-category.enum";
+import {
+	ProductCategoryEnum,
+	productCategoryEnumLink,
+} from "../../../../api/enums/product-category.enum";
 import AccountPageSideBox from "../../account-page-side-box";
 import AccountPageMainBox from "../../account-page-main-box";
 import { Box } from "@mui/material";
 import AccountPageMainBoxHeader from "../../account-page-main-box-header";
 
-export default function ProductEdit() {
+export default function ProductEdit({
+	category,
+}: {
+	category: ProductCategoryEnum;
+}) {
 	const navigate = useNavigate();
-	const { category, id } = useParams();
-	const backUrl = `/my/products/${category}`;
+	const { id: productId } = useParams();
+	const backUrl = `/my/products/${productCategoryEnumLink[category]}`;
 	const navigateBack = useCallback(
 		() => navigate(backUrl),
 		[backUrl, navigate]
 	);
 	const { fetchAsync } = useApi();
-	const categoryEnum =
-		ProductCategoryEnum[
-			category!.capitalize() as keyof typeof ProductCategoryEnum
-		] + 1;
-	console.log(categoryEnum);
+
 	const defaultValues: IProduct = {
-		categoryId: categoryEnum,
+		categoryId: category,
 		description: "",
 		id: "",
 		imageId: "",
@@ -36,7 +39,9 @@ export default function ProductEdit() {
 	const [product, setProduct] = useState(defaultValues);
 
 	const handleSubmit = (values: IProduct) => {
-		const cb = id ? ProductsApi.updateAsync : ProductsApi.createAsync;
+		const cb = productId
+			? ProductsApi.updateAsync
+			: ProductsApi.createAsync;
 		fetchAsync({
 			request: cb(values),
 			onSuccess: (success) => success.popup("Данные сохранены"),
@@ -47,16 +52,16 @@ export default function ProductEdit() {
 	};
 
 	useEffect(() => {
-		if (!id) return;
+		if (!productId) return;
 		fetchAsync({
-			request: ProductsApi.getByIdAsync(id),
+			request: ProductsApi.getByIdAsync(productId),
 			onError: (error) => error.log().popup(),
 		})
 			.then((result) => {
 				setProduct(result!.body!);
 			})
 			.catch(navigateBack);
-	}, [fetchAsync, id, navigateBack]);
+	}, [fetchAsync, productId, navigateBack]);
 
 	return (
 		<AccountPage>

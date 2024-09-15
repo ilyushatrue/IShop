@@ -2,6 +2,7 @@
 using IShop.Application.Persistance.Repositories;
 using IShop.Domain.ProductRoot;
 using Microsoft.EntityFrameworkCore;
+using IShop.Application.Common;
 
 namespace IShop.Infrastructure.Persistance.Repositories;
 
@@ -26,29 +27,59 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
         dbContext.Products.RemoveRange(entities);
     }
 
-    public async Task<List<Product>> GetListByCategoryAsync(
-        int categoryId,
-        string? search,
+    public async Task<Pager<Product>> GetListByCategoryAsync(
         int currentPage,
         int pageSize,
+        int? categoryId,
+        string? search,
+        int? minPrice,
+        int? maxPrice,
         CancellationToken cancellationToken)
     {
         var offset = (currentPage - 1) * pageSize;
 
-        IQueryable<Product> query = dbContext.Products
-            .Where(p => p.CategoryId == categoryId);
+        IQueryable<Product> query = GetProductsQuery(categoryId, search, minPrice, maxPrice);
 
-        if (!string.IsNullOrEmpty(search))
+        var recordsCount = await query
+            .CountAsync(cancellationToken);
+
+        var records = await query
+            .AsNoTracking()
+            .Skip(offset)
+            .Take(pageSize)
+            .Include(p => p.Category)
+            .ToListAsync(cancellationToken);
+
+        var pager = new Pager<Product>(records, recordsCount, currentPage, pageSize);
+
+        return pager;
+    }
+
+    private IQueryable<Product> GetProductsQuery(int? categoryId, string? search, int? minPrice, int? maxPrice)
+    {
+        IQueryable<Product> query = dbContext.Products;
+
+        if (categoryId.HasValue)
+        {
+            query = query.Where(p => p.CategoryId == categoryId);
+        }
+        if (minPrice.HasValue)
+        {
+            query = query.Where(p => p.Price >= minPrice.Value);
+        }
+        if (maxPrice.HasValue)
+        {
+            query = query.Where(p => p.Price <= maxPrice.Value);
+        }
+        if (!string.IsNullOrWhiteSpace(search))
         {
             search = search.ToLower();
-            query = query.Where(p => p.Name.ToLower().Contains(search) || (p.Description != null && p.Description.ToLower().Contains(search)));
+            query = query.Where(p =>
+                p.Name.ToLower().Contains(search) ||
+                (p.Description != null && p.Description.ToLower().Contains(search)));
         }
 
-        query = query.Skip(offset)
-                     .Take(pageSize)
-                     .Include(p => p.Category);
-
-        return await query.ToListAsync(cancellationToken);
+        return query;
     }
 
     public async Task<List<Product>> GetAllAsync(int currentPage, int pageSize, string? search, CancellationToken cancellationToken)

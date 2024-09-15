@@ -24,10 +24,16 @@ type Fetch<TOut> = {
 	triggerPageLoader?: boolean;
 };
 
-export default function useApi() {
+export default function useApi(
+	props: { loading?: boolean } = { loading: false }
+) {
+	const { loading } = props;
+	const [isFetching, setIsFetching] = useState(loading!);
 	const dispatch = useAppDispatch();
-	const [isFetching, setIsFetching] = useState(false);
 	const { popupError, popupSuccess } = usePopup();
+
+	const setPageLoading = (loading: boolean) =>
+		dispatch(setIsPageLoading(loading));
 
 	const _getSuccessHandler = <TOut>(
 		apiResult: ApiResponse<TOut>
@@ -78,7 +84,9 @@ export default function useApi() {
 				const defaultMessage =
 					"Что-то пошло не так. Обратитесь к администратору.";
 				const popupMessage = error.message ?? message ?? defaultMessage;
-				popupError(popupMessage);
+				if (popupMessage) {
+					popupError(popupMessage);
+				}
 				return errorHandler;
 			},
 		};
@@ -91,7 +99,7 @@ export default function useApi() {
 		onSuccess,
 		triggerPageLoader,
 	}: Fetch<TOut>): Promise<ApiResponse<TOut>> => {
-		if (triggerPageLoader) dispatch(setIsPageLoading(true));
+		if (triggerPageLoader) setPageLoading(true);
 		setIsFetching(true);
 		let response: ApiResponse<TOut> = null!;
 		try {
@@ -102,7 +110,6 @@ export default function useApi() {
 					onSuccess(successHandler);
 				}
 			} else {
-				console.log(response)
 				const firstError = response.errors?.[0];
 				throw new Error(firstError?.message ?? "", {
 					cause: firstError?.name ?? response.status,
@@ -117,7 +124,7 @@ export default function useApi() {
 			throw error;
 		} finally {
 			setIsFetching(false);
-			if (triggerPageLoader) dispatch(setIsPageLoading(false));
+			if (triggerPageLoader) setPageLoading(false);
 		}
 	};
 

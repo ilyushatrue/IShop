@@ -1,7 +1,9 @@
 import styled from "@emotion/styled";
 import { Slider, SliderThumb, Typography } from "@mui/material";
-import React, { useState } from "react";
+import React, { SyntheticEvent, useState } from "react";
+
 interface AirbnbThumbComponentProps extends React.HTMLAttributes<unknown> {}
+
 const AirbnbSlider = styled(Slider)(({ theme }) => ({
 	color: "black",
 	height: 3,
@@ -31,6 +33,7 @@ const AirbnbSlider = styled(Slider)(({ theme }) => ({
 		height: 3,
 	},
 }));
+
 function AirbnbThumbComponent(props: AirbnbThumbComponentProps) {
 	const { children, ...other } = props;
 	return (
@@ -42,18 +45,40 @@ function AirbnbThumbComponent(props: AirbnbThumbComponentProps) {
 		</SliderThumb>
 	);
 }
-export default function ShopPageFilters() {
+
+export default function ShopPageFilters({
+	onChange,
+	min,
+	max,
+}: {
+	min: number;
+	max: number;
+	onChange: ({ min, max }: { min: number; max: number }) => void;
+}) {
+	const [fromPrice, setFromPrice] = useState(min);
+	const [toPrice, setToPrice] = useState(max);
 	const defaultFromPrice = 3000;
 	const defaultToPrice = 100_000;
 	const maxPrice = 500_000;
 	const minPrice = 0;
-	const [fromPrice, setFromPrice] = useState(3000);
-	const [toPrice, setToPrice] = useState(100_000);
-	const handleChange = (event: Event, newValue: number | number[]) => {
+
+	const handleMouseUp = (
+		event: Event | SyntheticEvent<Element, Event>,
+		newValue: number | number[]
+	) => {
+		const [from, to] = newValue as number[];
+		onChange({ min: from, max: to });
+	};
+
+	const handleChange = (
+		event: Event | SyntheticEvent<Element, Event>,
+		newValue: number | number[]
+	) => {
 		const [from, to] = newValue as number[];
 		setFromPrice(from);
 		setToPrice(to);
 	};
+
 	return (
 		<>
 			<Typography>
@@ -65,6 +90,7 @@ export default function ShopPageFilters() {
 					index === 0 ? "Minimum price" : "Maximum price"
 				}
 				onChange={handleChange}
+				onChangeCommitted={handleMouseUp} // Используем onChangeCommitted вместо onChange
 				defaultValue={[defaultFromPrice, defaultToPrice]}
 				max={maxPrice}
 				min={minPrice}

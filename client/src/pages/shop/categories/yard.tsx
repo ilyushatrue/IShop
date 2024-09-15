@@ -10,16 +10,18 @@ import { useAppSelector } from "../../../app/hooks/redux/use-app-selector";
 import ShopPageFilters from "../shop-page-filters";
 import ShopPageMainBox from "../shop-page-main-box";
 import ShopPageSideBox from "../shop-page-side-box";
+import {
+	ProductCategoryEnum,
+	productCategoryEnumLink,
+} from "../../../api/enums/product-category.enum";
 
 export default function Yard() {
-	const categoryName = "yard";
-	const path = `/category/${categoryName}/`;
-	const category = useAppSelector((state) =>
-		state.global.productCategories.find((x) => x.name === categoryName)
-	)!;
+	const filterChangeRefetchTimeoutMs = 1500;
+	const category = ProductCategoryEnum.Yard;
+	const path = `/category/${productCategoryEnumLink[category]}/`;
 	const searchValue = useAppSelector((state) => state.global.searchValue);
 	const currSearch = useRef("");
-	const { id } = useParams<{ id: string }>();
+	const { pageNum } = useParams();
 	const navigate = useNavigate();
 	const { fetchAsync } = useApi();
 	const [products, setProducts] = useState<IProduct[]>([]);
@@ -28,23 +30,27 @@ export default function Yard() {
 		currentPage: number;
 		pageSize: number;
 	}>({ totalPages: 1, currentPage: 1, pageSize: 12 });
+	const [fromPrice, setFromPrice] = useState(3000);
+	const [toPrice, setToPrice] = useState(100_000);
 
 	const fetchData = useCallback(
 		(search?: string) => {
 			if (!category) return;
-			if (!id) {
+			if (!pageNum) {
 				navigate("1");
 				return;
 			}
-			if (isNaN(+id)) return;
+			if (isNaN(+pageNum)) return;
 
 			fetchAsync({
-				request: ProductsApi.getFilteredAsync(
-					category.id,
-					+id,
-					12,
-					search ?? ""
-				),
+				request: ProductsApi.getFilteredAsync({
+					page: 1,
+					pageSize: 10,
+					categoryId: category,
+					minPrice: fromPrice,
+					maxPrice: toPrice,
+					search: search ?? "",
+				}),
 				onError: (handler) => handler.log().popup(),
 				triggerPageLoader: true,
 			})
@@ -60,7 +66,7 @@ export default function Yard() {
 				})
 				.catch(() => navigate("/not-found"));
 		},
-		[category, fetchAsync, id, navigate]
+		[category, pageNum, fetchAsync, fromPrice, toPrice, navigate]
 	);
 
 	useEffect(() => {
@@ -68,14 +74,12 @@ export default function Yard() {
 	}, [fetchData]);
 
 	useEffect(() => {
-		const timeoutMs = 1500;
-
 		const timeout = setTimeout(() => {
 			if (currSearch.current !== searchValue) {
 				fetchData(searchValue);
 			}
 			currSearch.current = searchValue;
-		}, timeoutMs);
+		}, filterChangeRefetchTimeoutMs);
 
 		return () => {
 			clearTimeout(timeout);
@@ -88,10 +92,28 @@ export default function Yard() {
 		updatedProducts[productIndex] = product;
 		setProducts(updatedProducts);
 	}
+
+	const handlePriceRangeChange = ({
+		min,
+		max,
+	}: {
+		min: number;
+		max: number;
+	}) => {
+		setTimeout(() => {
+			setFromPrice(min);
+			setToPrice(max);
+		}, filterChangeRefetchTimeoutMs);
+	};
+
 	return (
 		<ShopPage>
 			<ShopPageSideBox>
-				<ShopPageFilters />
+				<ShopPageFilters
+					onChange={handlePriceRangeChange}
+					min={fromPrice}
+					max={toPrice}
+				/>
 			</ShopPageSideBox>
 			<ShopPageMainBox>
 				<Products
@@ -117,7 +139,7 @@ export default function Yard() {
 						renderItem={(item) => (
 							<PaginationItem
 								component={Link}
-								to={`${path}${item.page?.toString() ?? "1"}`}
+								to={`${path}${item.page ?? "1"}`}
 								{...item}
 							/>
 						)}

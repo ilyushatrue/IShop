@@ -1,7 +1,7 @@
 ﻿namespace IShop.Domain.Enums;
 public enum ProductCategoryEnum
 {
-    Clothes,
+    Clothes = 1,
     Electronics,
     Yard,
     ChildCare

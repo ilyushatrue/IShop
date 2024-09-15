@@ -17,7 +17,7 @@ export default function Identity({
 	children: ReactElement;
 }): ReactElement {
 	const imagesPath = getConstant("IMAGES_PATH");
-	const { fetchAsync, isFetching } = useApi();
+	const { fetchAsync, isFetching } = useApi({ loading: true });
 	const dispatch = useAppDispatch();
 	const [serverIsDead, setServerIsDead] = useState(false);
 

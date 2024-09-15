@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import useApi from "../../../api/hooks/use-api.hook";
 import ProductsApi from "../../../api/endpoints/products.api";
 import { IProduct } from "../../../api/interfaces/product/product.interface";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { ICreateProductCommand } from "../../../api/interfaces/product/commands/create-product-command.interface";
 import { reload } from "../../../app/helpers/reload";
 import AccountProtectedPage from "../account-protected-page";
@@ -16,34 +16,36 @@ import {
 	productCategoryEnumName,
 } from "../../../api/enums/product-category.enum";
 
-export default function ProductsMenu() {
-	const { category } = useParams();
-	const categoryEnum =
-		+ProductCategoryEnum[category!.capitalize() as keyof typeof category];
-	const categoryId = categoryEnum + 1;
+export default function ProductsMenu({
+	category,
+}: {
+	category: ProductCategoryEnum;
+}) {
 	const [confirmDeleteState, setConfirmDeleteState] = useState<{
 		open: boolean;
 		items: IProduct[];
 	}>({ open: false, items: [] });
-	const { isFetching, fetchAsync } = useApi();
+	const { isFetching, fetchAsync } = useApi({ loading: true });
 
 	const [products, setProducts] = useState<IProduct[]>([]);
 	const rowsPerPageOptions = [10, 25, 100];
 	const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[0]);
-	const [page, setPage] = useState(0);
+	const [page, setPage] = useState(1);
 	const navigate = useNavigate();
 
 	useEffect(() => {
 		fetchAsync({
-			request: categoryId
-				? ProductsApi.getByCategoryAsync(categoryId, page, rowsPerPage)
-				: ProductsApi.getAllAsync(page, rowsPerPage),
+			request: ProductsApi.getFilteredAsync({
+				page: page,
+				pageSize: rowsPerPage,
+				categoryId: category,
+			}),
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
 		})
 			.then((res) => setProducts(res!.body!.pageItems!))
 			.catch(Boolean);
-	}, [categoryId, fetchAsync, page, rowsPerPage]);
+	}, [category, fetchAsync, page, rowsPerPage]);
 
 	const handleAddProduct = () => {
 		navigate("add");
@@ -112,11 +114,7 @@ export default function ProductsMenu() {
 				</AccountPageMainBoxHeader>
 
 				<ProductsTable
-					title={
-						productCategoryEnumName[
-							categoryEnum as ProductCategoryEnum
-						]
-					}
+					title={productCategoryEnumName[category]}
 					loading={isFetching}
 					onAdd={handleAddProduct}
 					onChange={console.log}

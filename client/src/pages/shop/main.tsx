@@ -12,6 +12,7 @@ import { useAppSelector } from "../../app/hooks/redux/use-app-selector";
 import { Pagination, PaginationItem } from "@mui/material";
 
 export default function Main() {
+	const filterChangeRefetchTimeoutMs = 1500;
 	const { fetchAsync } = useApi();
 	const navigate = useNavigate();
 	const [products, setProducts] = useState<IProduct[]>([]);
@@ -21,7 +22,9 @@ export default function Main() {
 		totalPages: number;
 		currentPage: number;
 		pageSize: number;
-	}>({ totalPages: 1, currentPage: 1, pageSize: 12 });
+	}>({ totalPages: 1, currentPage: 1, pageSize: 10 });
+	const [fromPrice, setFromPrice] = useState(3000);
+	const [toPrice, setToPrice] = useState(100_000);
 
 	const fetchData = useCallback(
 		(search?: string) => {
@@ -51,14 +54,12 @@ export default function Main() {
 	}, [fetchData]);
 
 	useEffect(() => {
-		const timeoutMs = 1500;
-
 		const timeout = setTimeout(() => {
 			if (currSearch.current !== searchValue) {
 				fetchData(searchValue);
 			}
 			currSearch.current = searchValue;
-		}, timeoutMs);
+		}, filterChangeRefetchTimeoutMs);
 
 		return () => {
 			clearTimeout(timeout);
@@ -71,10 +72,27 @@ export default function Main() {
 		setProducts(updatedProducts);
 	}
 
+	const handlePriceRangeChange = ({
+		min,
+		max,
+	}: {
+		min: number;
+		max: number;
+	}) => {
+		setTimeout(() => {
+			setFromPrice(min);
+			setToPrice(max);
+		}, filterChangeRefetchTimeoutMs);
+	};
+
 	return (
 		<ShopPage>
 			<ShopPageSideBox>
-				<ShopPageFilters />
+				<ShopPageFilters
+					onChange={handlePriceRangeChange}
+					min={fromPrice}
+					max={toPrice}
+				/>
 			</ShopPageSideBox>
 			<ShopPageMainBox>
 				<Products

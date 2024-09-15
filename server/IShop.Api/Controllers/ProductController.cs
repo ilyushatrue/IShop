@@ -59,13 +59,18 @@ public class ProductController(
     [AllowAnonymous]
     [HttpGet("filtered")]
     public async Task<IActionResult> GetProductsByCategory(
-        [FromQuery] int categoryId,
-        [FromQuery] string? search,
         [FromQuery] int page,
         [FromQuery] int pageSize,
+        [FromQuery] int? categoryId,
+        [FromQuery] string? search,
+        [FromQuery] int? minPrice,
+        [FromQuery] int? maxPrice,
         CancellationToken cancellationToken)
     {
-        var command = new GetProductsByCategoryQuery(categoryId, search, page, pageSize);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(page);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(pageSize);
+
+        var command = new GetProductsByCategoryQuery(page, pageSize, categoryId, search, minPrice, maxPrice);
         var result = await getProductsByCategoryQueryHandler.Handle(command, cancellationToken);
         var pagedList = new Pager<ProductDto>()
         {

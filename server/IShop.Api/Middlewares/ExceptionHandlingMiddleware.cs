@@ -52,11 +52,15 @@ namespace IShop.Api.Middlewares
             }
             catch (ArgumentNullException ex)
             {
-                await HandleExceptionAsync(httpContext, StatusCodes.Status400BadRequest, "argument-null-exception", ex.Message, "");
+                await HandleExceptionAsync(httpContext, StatusCodes.Status400BadRequest, "argument-null-exception", ex.Message, ex.Message);
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                await HandleExceptionAsync(httpContext, StatusCodes.Status400BadRequest, "argument-out-of-range-exception", ex.Message);
             }
             catch (Exception ex)
             {
-                await HandleExceptionAsync(httpContext, StatusCodes.Status500InternalServerError, "internal-server-error", ex.Message, "");
+                await HandleExceptionAsync(httpContext, StatusCodes.Status500InternalServerError, "internal-server-error", ex.Message);
             }
 
             if (httpContext.Response.StatusCode == StatusCodes.Status403Forbidden)
