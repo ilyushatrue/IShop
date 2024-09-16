@@ -22,7 +22,7 @@ export default function AvatarPlus({
 		if (!imageId) return;
 		fetchAsync({
 			request: MediaApi.getImageById(imageId),
-		}).catch(Boolean);
+		}).catch(() => {});
 	}, [fetchAsync, imageId]);
 
 	const handleIconClick = () => {
@@ -45,7 +45,7 @@ export default function AvatarPlus({
 					setImageUrl(res!.body!);
 					onChange(res!.body!);
 				})
-				.catch(Boolean);
+				.catch(() => {});
 		} else {
 			popupError("Не удалось загрузить изображение.");
 		}

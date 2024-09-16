@@ -17,6 +17,7 @@ import Image from "../../../components/image";
 import { getComparator } from "../../../components/table/table";
 import { Stack } from "@mui/material";
 import TooltipIconButton from "../../../components/buttons/tooltip-button";
+import { IProduct } from "../../../api/interfaces/product/product.interface";
 
 interface ITableValue {
 	id: string;
@@ -31,10 +32,10 @@ export default function FavoriteProductsTable({
 	onChange,
 	onDelete,
 }: {
-	rows: ITableValue[];
+	rows: IProduct[];
 	loading: boolean;
-	onChange: (items: ITableValue[]) => void;
-	onDelete: (items: ITableValue[]) => void;
+	onChange: (items: IProduct[]) => void;
+	onDelete: (items: IProduct[]) => void;
 }) {
 	const defaultValue: ITableValue = {
 		id: "",

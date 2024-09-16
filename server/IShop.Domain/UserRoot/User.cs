@@ -1,6 +1,7 @@
 ﻿using IShop.Domain.Common.Models;
 using IShop.Domain.Enums;
 using IShop.Domain.MediaEntity;
+using IShop.Domain.ProductRoot;
 using IShop.Domain.UserRoot.Entities;
 using IShop.Domain.UserRoot.ValueObjects;
 
@@ -99,5 +100,10 @@ public class User : AggregateRoot<Guid>
             throw new Exception("EmailConfirmation = null");
 
         EmailConfirmation.UpdateToken(expiryDateTime);
+    }
+
+    public void AddFavoriteProduct(Product product)
+    {
+        _favoriteProducts.Add(new(Id, product.Id));
     }
 }

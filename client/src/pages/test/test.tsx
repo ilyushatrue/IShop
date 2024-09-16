@@ -13,7 +13,7 @@ export default function Test() {
 			request: TestApi.getAllCategories(signal),
 			onError: (error) => error.log("info").popup(),
 			triggerPageLoader: true,
-		}).catch(Boolean);
+		}).catch(() => {});
 	}, [fetchAsync, signal]);
 
 	const handleCancel = () => {

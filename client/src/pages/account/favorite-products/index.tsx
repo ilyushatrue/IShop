@@ -14,7 +14,10 @@ import AccountPageMainBox from "../account-page-main-box";
 import AccountPageMainBoxHeader from "../account-page-main-box-header";
 
 export default function FavoriteProducts() {
-	const [isDeleteDialogOn, setIsDeleteDialogOn] = useState(false);
+	const [deleteDialogProps, setDeleteDialogProps] = useState<{
+		isOn: boolean;
+		products: IProduct[];
+	}>({ isOn: false, products: [] });
 	const isAuth = useAppSelector((state) => state.user.isAuthenticated);
 	const { xs } = useMediaQueryContext();
 	const apiFavoriteProducts = useAppSelector(
@@ -53,29 +56,37 @@ export default function FavoriteProducts() {
 			triggerPageLoader: true,
 		})
 			.then(reload)
-			.catch(Boolean);
+			.catch(() => {});
 	}
 
 	async function handleDeleteProductAsync(productIds: string[]) {
+		closeDeleteDialog();
 		fetchAsync({
-			request: ProductsApi.deleteRangeByIdAsync(productIds),
+			request: ProductsApi.toFavoritesRangeAsync(
+				productIds.map((p) => ({ productId: p, value: false }))
+			),
 			onSuccess: () =>
 				setProducts((prev) =>
 					prev.filter((x) => !productIds.includes(x.id))
 				),
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
-		}).catch(Boolean);
+		}).catch(() => {});
 	}
-	const closeDeleteDialog = () => setIsDeleteDialogOn(false);
-	const openDeleteDialog = () => setIsDeleteDialogOn(true);
+
+	const closeDeleteDialog = () =>
+		setDeleteDialogProps((prev) => ({ ...prev, isOn: false }));
+
+	const openDeleteDialog = (products: IProduct[]) =>
+		setDeleteDialogProps({ isOn: true, products });
+
 	return (
 		<AccountPage>
 			<AccountPageSideBox />
 			<AccountPageMainBox>
 				<AccountPageMainBoxHeader>Избранное</AccountPageMainBoxHeader>
 				<FavoriteProductsTable
-					onDelete={console.log}
+					onDelete={openDeleteDialog}
 					loading={isFetching}
 					rows={products}
 					onChange={(values) =>
@@ -97,7 +108,7 @@ export default function FavoriteProducts() {
 						handleDeleteProductAsync(selectedItems.map((s) => s.id))
 					}
 					onClose={closeDeleteDialog}
-					open={isDeleteDialogOn}
+					open={deleteDialogProps.isOn}
 					title="Удалить из избранного"
 					content="Вы действительно хотите удалить выбранные товары?"
 				/>

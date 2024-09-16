@@ -42,9 +42,6 @@ export default function Login({ onToRegisterClick }: IProps) {
 		email?: string;
 	}>({ is: false });
 	const { fetchAsync, isFetching } = useApi();
-	useEffect(() => {
-		console.log(sm);
-	}, [sm]);
 
 	const handleAuthTypeChange = (
 		event: React.MouseEvent<HTMLElement>,
@@ -61,12 +58,6 @@ export default function Login({ onToRegisterClick }: IProps) {
 		})
 			.then(handleSuccessfulLoginAsync)
 			.catch((error: Error) => {
-				// const firstError = response.errors[0];
-				// if (firstError) {
-				// 	throw new Error(firstError.message, { cause: firstError.name });
-				// } else {
-				// 	throw new Error(undefined, { cause: response.status });
-				// }
 				if (error.cause === "email-not-confirmed") {
 					setIsEmailAlreadyConfirmedDialogOn({
 						is: true,
@@ -105,7 +96,7 @@ export default function Login({ onToRegisterClick }: IProps) {
 				triggerPageLoader: true,
 			})
 				.then(() => window.localStorage.removeItem("favorite-products"))
-				.catch(Boolean);
+				.catch(() => {});
 		}
 		redirect("/my/profile");
 	}
@@ -120,7 +111,7 @@ export default function Login({ onToRegisterClick }: IProps) {
 				),
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
-		}).catch(Boolean);
+		}).catch(() => {});
 	}
 
 	async function handleResendEmailAsync(email: string) {
@@ -133,7 +124,7 @@ export default function Login({ onToRegisterClick }: IProps) {
 				),
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
-		}).catch(Boolean);
+		}).catch(() => {});
 	}
 	return (
 		<>

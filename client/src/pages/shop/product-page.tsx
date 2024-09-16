@@ -16,8 +16,10 @@ import { IProduct } from "../../api/interfaces/product/product.interface";
 import { useMediaQueryContext } from "../../app/infrastructure/media-query-context";
 import Button from "../../components/buttons/button";
 import ProductsApi from "../../api/endpoints/products.api";
+import { usePopup } from "../../app/hooks/use-popup.hook";
 
 export default function ProductPage() {
+	const { popupError, popupSuccess } = usePopup();
 	const navigate = useNavigate();
 	const { id } = useParams();
 	const { favoriteProducts, isAuthenticated } = useAppSelector(
@@ -52,14 +54,15 @@ export default function ProductPage() {
 			triggerPageLoader: true,
 		})
 			.then((res) => setProduct(res.body))
-			.catch((err) => {
-				navigate("server-is-dead");
+			.catch((error: Error) => {
+				console.log("Вы не аутентифицированы.",error)
+				if(error.cause ===401){
+					popupError("Вы не аутентифицированы.")
+				}
 			});
 	}, [fetchAsync, id, navigate]);
 
 	function addToCart() {
-		console.log("addToCart");
-		return;
 		fetchAsync({
 			request: ProductsApi.addToCartAsync(id!),
 			onSuccess: (handler) =>
@@ -70,7 +73,7 @@ export default function ProductPage() {
 			.then(() => {
 				setAddedToCart(true);
 			})
-			.catch(Boolean);
+			.catch(() => {});
 	}
 
 	return (
@@ -121,6 +124,7 @@ export default function ProductPage() {
 								>
 									<Button
 										variant="contained"
+										disabled={addedToCart}
 										onClick={addToCart}
 										sx={{
 											width: "100%",

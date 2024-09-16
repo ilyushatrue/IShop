@@ -152,7 +152,8 @@ public class ProductController(
     [HttpPost("add-to-cart/{id}")]
     public async Task<IActionResult> AddProductToCartAsync(Guid id, CancellationToken cancellationToken)
     {
-        await addProductToCartCommandHandler.Handle(new(id), cancellationToken);
+        var userId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "UserId")!.Value;
+        await addProductToCartCommandHandler.Handle(new(id, Guid.Parse(userId)), cancellationToken);
         return Ok();
     }
 }

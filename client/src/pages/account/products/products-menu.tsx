@@ -44,7 +44,7 @@ export default function ProductsMenu({
 			triggerPageLoader: true,
 		})
 			.then((res) => setProducts(res!.body!.pageItems!))
-			.catch(Boolean);
+			.catch(() => {});
 	}, [category, fetchAsync, page, rowsPerPage]);
 
 	const handleAddProduct = () => {
@@ -63,7 +63,7 @@ export default function ProductsMenu({
 			triggerPageLoader: true,
 		})
 			.then(reload)
-			.catch(Boolean);
+			.catch(() => {});
 	}
 
 	const handleChangeRowsPerPage = (
@@ -92,7 +92,7 @@ export default function ProductsMenu({
 					);
 				}
 			})
-			.catch(Boolean);
+			.catch(() => {});
 	}
 	const closeDeleteDialog = () => {
 		setConfirmDeleteState((prev) => ({ ...prev, open: false }));

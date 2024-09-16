@@ -60,7 +60,7 @@ export default function Products({ products, onDelete, onUpdate }: IProps) {
 			onSuccess: () => onDelete(id),
 			onError: (handler) => handler.log().popup(),
 			triggerPageLoader: true,
-		}).catch(Boolean);
+		}).catch(() => {});
 	}
 
 	async function handleToFavoritesAsync(productId: string, value: boolean) {
@@ -75,7 +75,7 @@ export default function Products({ products, onDelete, onUpdate }: IProps) {
 						})
 					),
 				onError: (handler) => handler.log().popup(),
-			}).catch(Boolean);
+			}).catch(() => {});
 		} else {
 			let favoritesFromLocalStorage =
 				window.localStorage.getItem("favorite-products");
@@ -122,7 +122,7 @@ export default function Products({ products, onDelete, onUpdate }: IProps) {
 			.then(() => {
 				onUpdate(product);
 			})
-			.catch(Boolean);
+			.catch(() => {});
 	}
 
 	return (

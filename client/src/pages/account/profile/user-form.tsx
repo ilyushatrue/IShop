@@ -34,7 +34,7 @@ export default function UserForm({ defaultValues, ...props }: IUserForm) {
 			.then(() => {
 				reset(user);
 			})
-			.catch(Boolean);
+			.catch(() => {});
 	}
 
 	return (

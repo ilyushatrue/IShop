@@ -1,4 +1,5 @@
 import getConstant from "../app/infrastructure/constant-provider";
+import { StatusCodes } from "./enums/status-codes.enum";
 
 export type ApiRequest = {
 	url: string;
@@ -27,20 +28,23 @@ export default class BaseApi {
 			ok: response.ok,
 			status: response.status,
 		};
-		console.log(apiResponse);
 		if (response.ok) {
 			const successResult = await onResponse?.(response);
 			apiResponse.body = successResult;
 		} else {
-			const responseContent = await response.json();
-			if (responseContent) {
-				apiResponse.status = responseContent.status;
-				apiResponse.errors = [
-					{
-						message: responseContent.message,
-						name: responseContent.name,
-					},
-				];
+			try {
+				const responseContent = await response.json();
+				if (responseContent) {
+					apiResponse.status = responseContent.status;
+					apiResponse.errors = [
+						{
+							message: responseContent.message,
+							name: responseContent.name,
+						},
+					];
+				}
+			} catch {
+				apiResponse.status = StatusCodes.UNAUTHORIZED;
 			}
 		}
 		return apiResponse;

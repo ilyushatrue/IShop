@@ -3,6 +3,7 @@ import { usePopup } from "../../app/hooks/use-popup.hook";
 import { useAppDispatch } from "../../app/hooks/redux/use-app-dispatch";
 import { setIsPageLoading } from "../../store/page.slice";
 import { ApiResponse } from "../base-api";
+import { StatusCodes } from "../enums/status-codes.enum";
 
 type ErrorHandler<T> = {
 	log: (level?: "info" | "warn" | "error") => ErrorHandler<T>;
@@ -32,8 +33,10 @@ export default function useApi(
 	const dispatch = useAppDispatch();
 	const { popupError, popupSuccess } = usePopup();
 
-	const setPageLoading = (loading: boolean) =>
-		dispatch(setIsPageLoading(loading));
+	const setPageLoading = useCallback(
+		(loading: boolean) => dispatch(setIsPageLoading(loading)),
+		[dispatch]
+	);
 
 	const _getSuccessHandler = <TOut>(
 		apiResult: ApiResponse<TOut>
@@ -78,6 +81,9 @@ export default function useApi(
 				return errorHandler;
 			},
 			popup: (message) => {
+				if (error.cause === StatusCodes.UNAUTHORIZED) {
+					return errorHandler;
+				}
 				if (error.name === "AbortError") {
 					return errorHandler;
 				}
@@ -110,10 +116,17 @@ export default function useApi(
 					onSuccess(successHandler);
 				}
 			} else {
-				const firstError = response.errors?.[0];
-				throw new Error(firstError?.message ?? "", {
-					cause: firstError?.name ?? response.status,
-				});
+				if (response.errors.length) {
+					const firstError = response.errors?.[0];
+					throw new Error(firstError?.message ?? "", {
+						cause: firstError?.name ?? response.status,
+					});
+				}
+				if (response.status === StatusCodes.UNAUTHORIZED) {
+					throw new Error("Пользователь не аутентифицирован.", {
+						cause: StatusCodes.UNAUTHORIZED,
+					});
+				}
 			}
 			return response;
 		} catch (error: any) {
@@ -131,9 +144,9 @@ export default function useApi(
 	const getSuccessHandler = useCallback(_getSuccessHandler, [popupSuccess]);
 	const getErrorHandler = useCallback(_getErrorHandler, [popupError]);
 	const fetchAsync = useCallback(_fetchAsync, [
-		dispatch,
 		getErrorHandler,
 		getSuccessHandler,
+		setPageLoading,
 	]);
 
 	return { fetchAsync, isFetching };

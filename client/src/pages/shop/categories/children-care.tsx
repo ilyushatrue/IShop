@@ -15,7 +15,7 @@ import {
 	productCategoryEnumLink,
 } from "../../../api/enums/product-category.enum";
 
-export default function ChilrdenCare() {
+export default function ChildrenCare() {
 	const filterChangeRefetchTimeoutMs = 1500;
 	const category = ProductCategoryEnum.ChildCare;
 	const path = `/category/${productCategoryEnumLink[category]}/`;
@@ -35,16 +35,9 @@ export default function ChilrdenCare() {
 
 	const fetchData = useCallback(
 		(search?: string) => {
-			if (!category) return;
-			if (!pageNum) {
-				navigate("1");
-				return;
-			}
-			if (isNaN(+pageNum)) return;
-
 			fetchAsync({
 				request: ProductsApi.getFilteredAsync({
-					page: 1,
+					page: +pageNum!,
 					pageSize: 10,
 					categoryId: category,
 					minPrice: fromPrice,
@@ -100,10 +93,8 @@ export default function ChilrdenCare() {
 		min: number;
 		max: number;
 	}) => {
-		setTimeout(() => {
-			setFromPrice(min);
-			setToPrice(max);
-		}, filterChangeRefetchTimeoutMs);
+		setFromPrice(min);
+		setToPrice(max);
 	};
 
 	return (

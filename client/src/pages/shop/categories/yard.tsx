@@ -35,16 +35,9 @@ export default function Yard() {
 
 	const fetchData = useCallback(
 		(search?: string) => {
-			if (!category) return;
-			if (!pageNum) {
-				navigate("1");
-				return;
-			}
-			if (isNaN(+pageNum)) return;
-
 			fetchAsync({
 				request: ProductsApi.getFilteredAsync({
-					page: 1,
+					page: +pageNum!,
 					pageSize: 10,
 					categoryId: category,
 					minPrice: fromPrice,
@@ -100,10 +93,8 @@ export default function Yard() {
 		min: number;
 		max: number;
 	}) => {
-		setTimeout(() => {
-			setFromPrice(min);
-			setToPrice(max);
-		}, filterChangeRefetchTimeoutMs);
+		setFromPrice(min);
+		setToPrice(max);
 	};
 
 	return (
