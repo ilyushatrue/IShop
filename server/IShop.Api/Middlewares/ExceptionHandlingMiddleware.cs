@@ -50,6 +50,10 @@ namespace IShop.Api.Middlewares
             {
                 await HandleExceptionAsync(httpContext, StatusCodes.Status400BadRequest, ex.Name, ex.Message, ex.UserMessage);
             }
+            catch (ConflictException ex)
+            {
+                await HandleExceptionAsync(httpContext, StatusCodes.Status409Conflict, ex.Name, ex.Message, ex.UserMessage);
+            }
             catch (ArgumentNullException ex)
             {
                 await HandleExceptionAsync(httpContext, StatusCodes.Status400BadRequest, "argument-null-exception", ex.Message, ex.Message);
@@ -63,9 +67,14 @@ namespace IShop.Api.Middlewares
                 await HandleExceptionAsync(httpContext, StatusCodes.Status500InternalServerError, "internal-server-error", ex.Message);
             }
 
+            if (httpContext.Response.StatusCode == StatusCodes.Status401Unauthorized)
+            {
+                await HandleExceptionAsync(httpContext, StatusCodes.Status401Unauthorized, "unauthorized", "Ошибка аутентификации", "Пожалуйста, войдите в систему.");
+            }
+
             if (httpContext.Response.StatusCode == StatusCodes.Status403Forbidden)
             {
-                await HandleExceptionAsync(httpContext, StatusCodes.Status403Forbidden, "no-permission", "Недостаточно прав", "Недостаточно прав");
+                await HandleExceptionAsync(httpContext, StatusCodes.Status403Forbidden, "no-permission", "Недостаточно прав", "Недостаточно прав.");
             }
         }
 

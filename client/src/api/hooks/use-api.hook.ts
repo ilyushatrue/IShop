@@ -81,9 +81,6 @@ export default function useApi(
 				return errorHandler;
 			},
 			popup: (message) => {
-				if (error.cause === StatusCodes.UNAUTHORIZED) {
-					return errorHandler;
-				}
 				if (error.name === "AbortError") {
 					return errorHandler;
 				}

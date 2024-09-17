@@ -16,10 +16,8 @@ import { IProduct } from "../../api/interfaces/product/product.interface";
 import { useMediaQueryContext } from "../../app/infrastructure/media-query-context";
 import Button from "../../components/buttons/button";
 import ProductsApi from "../../api/endpoints/products.api";
-import { usePopup } from "../../app/hooks/use-popup.hook";
 
 export default function ProductPage() {
-	const { popupError, popupSuccess } = usePopup();
 	const navigate = useNavigate();
 	const { id } = useParams();
 	const { favoriteProducts, isAuthenticated } = useAppSelector(
@@ -54,12 +52,7 @@ export default function ProductPage() {
 			triggerPageLoader: true,
 		})
 			.then((res) => setProduct(res.body))
-			.catch((error: Error) => {
-				console.log("Вы не аутентифицированы.",error)
-				if(error.cause ===401){
-					popupError("Вы не аутентифицированы.")
-				}
-			});
+			.catch(() => {});
 	}, [fetchAsync, id, navigate]);
 
 	function addToCart() {
@@ -92,7 +85,7 @@ export default function ProductPage() {
 					bgcolor: "white",
 				}}
 			>
-				{!isFetching && product && (
+				{product && (
 					<Grid container>
 						<Grid item xs={12} sm={4}>
 							<Image imageId={product.imageId} size={"100%"} />

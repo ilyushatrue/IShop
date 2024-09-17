@@ -173,6 +173,7 @@ public static class DependencyInjection
                         context.Token = context.Request.Cookies["jwt-access-token"];
                         return Task.CompletedTask;
                     },
+                    
                 };
             });
 

@@ -32,19 +32,15 @@ export default class BaseApi {
 			const successResult = await onResponse?.(response);
 			apiResponse.body = successResult;
 		} else {
-			try {
-				const responseContent = await response.json();
-				if (responseContent) {
-					apiResponse.status = responseContent.status;
-					apiResponse.errors = [
-						{
-							message: responseContent.message,
-							name: responseContent.name,
-						},
-					];
-				}
-			} catch {
-				apiResponse.status = StatusCodes.UNAUTHORIZED;
+			const responseContent = await response.json();
+			if (responseContent) {
+				apiResponse.status = responseContent.status;
+				apiResponse.errors = [
+					{
+						message: responseContent.message,
+						name: responseContent.name,
+					},
+				];
 			}
 		}
 		return apiResponse;
