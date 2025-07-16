@@ -2,12 +2,12 @@ import BaseApi, { ApiRequest } from "./base-api";
 
 export default class StrictApi extends BaseApi {
 	public static async reauthorize(
-		request: Promise<Response>
+		request: () => Promise<Response>
 	): Promise<Response> {
 		const attemptsCount = 2;
 		let response: Response = null!;
 		for (let attempt = 1; attempt <= attemptsCount; attempt++) {
-			response = await request;
+			response = await request();
 			if (response.ok || attempt === attemptsCount) {
 				break;
 			}
@@ -26,7 +26,7 @@ export default class StrictApi extends BaseApi {
 		request: ApiRequest,
 		onResponse?: (response: Response) => Promise<TOut>
 	) {
-		const response = await this.reauthorize(
+		const response = await this.reauthorize(() =>
 			this.handleRequest("GET", request)
 		);
 		return this.handleResponse(response, onResponse);
@@ -35,7 +35,7 @@ export default class StrictApi extends BaseApi {
 		request: ApiRequest,
 		onResponse?: (response: Response) => Promise<TOut>
 	) {
-		const response = await this.reauthorize(
+		const response = await this.reauthorize(() =>
 			this.handleRequest("POST", request)
 		);
 		return this.handleResponse(response, onResponse);
@@ -44,7 +44,7 @@ export default class StrictApi extends BaseApi {
 		request: ApiRequest,
 		onResponse?: (response: Response) => Promise<TOut>
 	) {
-		const response = await this.reauthorize(
+		const response = await this.reauthorize(() =>
 			this.handleRequest("DELETE", request)
 		);
 		return this.handleResponse(response, onResponse);
@@ -53,7 +53,7 @@ export default class StrictApi extends BaseApi {
 		request: ApiRequest,
 		onResponse?: (response: Response) => Promise<TOut>
 	) {
-		const response = await this.reauthorize(
+		const response = await this.reauthorize(() =>
 			this.handleRequest("PUT", request)
 		);
 		return this.handleResponse(response, onResponse);
