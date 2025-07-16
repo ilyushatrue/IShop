@@ -1,6 +1,5 @@
 ﻿using IShop.Application.Persistance.Repositories;
 using IShop.Domain.UserRoot.Entities;
-using IShop.Infrastructure.Persistance;
 using Microsoft.EntityFrameworkCore;
 
 namespace IShop.Infrastructure.Persistance.Repositories;
@@ -29,4 +28,5 @@ public class UserFavoriteProductRepository(
             .Where(x => x.UserId == userId)
             .ToListAsync(cancellationToken);
     }
+
 }

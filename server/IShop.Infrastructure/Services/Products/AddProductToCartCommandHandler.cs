@@ -1,6 +1,7 @@
 ﻿using IShop.Application.Persistance;
 using IShop.Application.Persistance.Repositories;
 using IShop.Application.Products.Commands;
+using IShop.Domain.Common.Exceptions;
 
 namespace IShop.Infrastructure.Services.Products;
 public class AddProductToCartCommandHandler(
@@ -16,6 +17,13 @@ public class AddProductToCartCommandHandler(
         var user = await userRepository.GetByIdAsync(command.UserId, cancellationToken) ??
             throw new Exception($"Пользователь с id=${command.UserId} не был найден в базе данных.");
 
+        if (user.FavoriteProducts!.Any(x => x.ProductId == command.ProductId))
+        {
+            throw new ConflictException(
+                "product-is-already-in-cart", 
+                $"Товар с Id={product.Id} пользователя с Id=${user.Id} уже в корзине", 
+                $"Товар уже добавлен в корзину.");
+        }
         user.AddFavoriteProduct(product);
 
         var affectedCount = await dbManager.SaveChangesAsync(cancellationToken);
